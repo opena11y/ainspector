@@ -6,16 +6,16 @@ const fs = require('fs');
 const path = require('path');
 const nunjucks  = require('nunjucks');
 
-const version     = "1.0";
-const tagLineName = "Table of Contents for Headings, Landmarks and Links";
-const extName     = "TOC: Headings, Landmarks and Links";
+const version     = "4.0";
+const tagLineName = "Accessibility Inspector for WCAG, ARIA and ARIA in HTML specifications";
+const extName     = "AInspector for WCAG Evaluation";
 
 /* Constants */
 
 const outputDirectory   = './docs/';
 const templateDirectory = './src-docs/templates';
-const websiteURL        = 'https://opena11y.github.io/toc-headings-landmarks-links/';
-const repositoryURL     = 'https://github.com/opena11y/toc-headings-landmarks-links';
+const websiteURL        = 'https://opena11y.github.io/ainspector/';
+const repositoryURL     = 'https://github.com/opena11y/ainspector';
 
 // setUseCodeTags(true);
 

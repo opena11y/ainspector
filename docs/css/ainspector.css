@@ -9,6 +9,27 @@ body {
   font-family: arial, verdana, tahoma, "trebuchet MS", sans-serif;
 }
 
+.icon {
+  display: inline-block;
+}
+
+.icon svg {
+  width: 64px;
+}
+
+.icon path.border {
+  stroke: light-dark(#13294B, white);
+  fill: none;
+  stroke-width: 2;
+  stroke: light-dark(#13294B, white);
+}
+
+.icon polygon.text {
+  stroke-width: 1;
+  stroke: light-dark(#13294B, white);
+  fill: light-dark(#13294B, white);
+}
+
 main a,
 main a:visited {
   color: #2e64b7;

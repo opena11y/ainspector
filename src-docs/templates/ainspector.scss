@@ -26,6 +26,27 @@ body {
   font-family: $font-content;
 }
 
+.icon {
+  display: inline-block;
+}
+
+.icon svg {
+  width: 64px;
+}
+
+.icon path.border {
+  stroke: light-dark($iconBlue, white);
+  fill: none;
+  stroke-width: 2;
+  stroke: light-dark($iconBlue, white);
+}
+
+.icon polygon.text {
+  stroke-width: 1;
+  stroke: light-dark($iconBlue, white);
+  fill: light-dark($iconBlue, white);
+}
+
 main a,
 main a:visited {
   color: $linkMainColor;
