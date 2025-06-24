@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    {% include "./head.njk" %}
+  </head>
+  <body>
+    {% include "./header.njk" %}
+
+    <!-- Main section-->
+    <div id="main-section" class="container px-4">
+      <nav aria-label="Breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item active">{{title | safe}}</li>
+        </ol>
+      </nav>
+      <main class="row gx-4 justify-content-center">
+        <div class="col-lg-10">
+          {% block title %}
+          <h1>{{title}}</h1>
+          {% endblock %}
+
+          <div id="about">
+
+          <h2>Contributors</h2>
+          <ul>
+            <li>Jon Gunderson, <a href="https://openweba11y.com">Open Web Accessibility Services</a></li>
+          </ul>
+
+          <h2>Support</h2>
+
+          <p>Support for the {{extName}} project is provided by the <a href="https://dres.illinois.edu/">Division of Disability Resources and Educational Services</a> in the <a href="https://ahs.illinoie.edu">College of Applied Life Studies</a> at the <a href="htts://illinois.edu">University of Illinois at Urbana/Champaign</a>.
+
+            {% include "./feedback.njk" %}
+
+          </div>
+        </div>
+      </main>
+    </div>
+    {% include "./footer.njk" %}
+    {% include "./scripts.njk" %}
+
+  </body>
+</html>

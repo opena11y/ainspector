@@ -1,0 +1,19 @@
+# Node Modules       #
+######################
+# npm install should be run locally, don't check in those files
+node_modules
+package-lock.json
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Jekyll Generated pages
+######################
+_site

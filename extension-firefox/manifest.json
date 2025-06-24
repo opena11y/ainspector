@@ -1,0 +1,89 @@
+{
+  "manifest_version": 3,
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ainspector-firefox@openweba11y.com"
+    }
+  },
+  "name": "__MSG_extension_name_firefox__",
+  "version": "4.0.0",
+  "description": "__MSG_extension_description__",
+  "homepage_url": "https://opena11y.github.io/ainspector/",
+  "default_locale": "en",
+
+  "icons": {
+    "32":  "icons/light-ai-sidebar-32.png",
+    "48":  "icons/light-ai-sidebar-48.png",
+    "64":  "icons/light-ai-sidebar-64.png",
+    "128": "icons/light-ai-sidebar-128.png"
+  },
+  "action": {
+    "default_icon": {
+      "32":  "icons/light-ai-sidebar-32.png",
+      "48":  "icons/light-ai-sidebar-48.png",
+      "64":  "icons/light-ai-sidebar-64.png",
+      "128": "icons/light-ai-sidebar-128.png"
+    },
+    "default_title": "__MSG_toggle_menu__",
+    "theme_icons": [{
+      "light": "icons/light-ai-sidebar-32.png",
+      "dark": "icons/dark-ai-sidebar-32.png",
+      "size": 32
+    }, {
+      "light": "icons/light-ai-sidebar-48.png",
+      "dark": "icons/dark-ai-sidebar-48.png",
+      "size": 48
+    }, {
+      "light": "icons/light-ai-sidebar-64.png",
+      "dark": "icons/dark-ai-sidebar-64.png",
+      "size": 64
+    }, {
+      "light": "icons/light-ai-sidebar-128.png",
+      "dark": "icons/dark-sai-sidebar-128.png",
+      "size": 128
+    }]
+  },
+
+  "sidebar_action": {
+    "default_icon": {
+      "32":  "icons/light-ai-sidebar-32.png",
+      "48":  "icons/light-ai-sidebar-48.png",
+      "64":  "icons/light-ai-sidebar-64.png",
+      "128": "icons/light-ai-sidebar-128.png"
+    },
+    "default_title": "__MSG_extension_name_firefox__",
+    "default_panel": "ainspector-sidepanel.html",
+    "open_at_install": false
+  },
+
+  "commands": {
+    "_execute_sidebar_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+1",
+        "linux": "Alt+Shift+1",
+        "mac": "Command+Shift+1"
+      }
+    }
+  },
+  "web_accessible_resources": [{
+    "resources": ["ai-highlight.js"],
+    "matches": ["<all_urls>"]
+  }],
+  "background": {
+    "scripts": ["service-worker.js"],
+    "type": "module"
+  },
+    "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "js": [
+        "opena11y-for-ainspector.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "name": "ainspector-for-wcag-evaluation",
+  "description": "This plugin provides a dynamically-generated drop-down menu that allows keyboard and screen reader users to quickly skip to the most important places on the webpage.",
+  "keywords": [
+    "Web Page",
+    "Navigation",
+    "Table of Contents",
+    "Headings",
+    "Landmarks"
+  ],
+  "homepage": "https://github.com/opena11y/web-page-table-of-contents",
+  "author": "Jon Gunderson",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opena11y/web-page-table-of-contents.git"
+  },
+  "licenses": [
+    {
+      "type": "Mozilla Public License Version 2.0",
+      "url": "https://github.com/opena11y/web-page-table-of-contents/blob/main/LICENSE.md"
+    }
+  ],
+  "engines": {
+    "node": ">=6"
+  },
+  "devDependencies": {
+    "gulp-dart-sass": "^1.1.0",
+    "gulp-sass": "^5.1.0",
+    "sass": "^1.71.1"
+  },
+  "main": "Gruntfile.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "license": "MPL-2.0",
+  "dependencies": {
+    "eslint": "^8.24.0",
+    "gulp": "^5.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-eslint": "^6.0.0",
+    "gulp-install": "^1.1.0",
+    "gulp-minify": "^3.0.0",
+    "nunjucks": "^3.2.4",
+    "rollup": "^2.79.1",
+    "stream": "^0.0.2"
+  },
+  "version": "1.0.0",
+  "bugs": {
+    "url": "https://github.com/opena11y/web-page-table-of-contents/issues"
+  }
+}

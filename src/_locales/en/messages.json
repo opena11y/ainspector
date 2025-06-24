@@ -1,0 +1,1217 @@
+{
+  "extensionVersion": {
+    "message": "3.0.0",
+    "description": "Version of the extension"
+  },
+
+  "extensionVersionName": {
+    "message": "3.0.0",
+    "description": "Version of the extension"
+  },
+
+  "extensionName": {
+    "message": "AInspector",
+    "description": "Name of the extension"
+  },
+
+  "extensionDescription": {
+    "message": "Analyze web pages for WCAG 2.1 level A and AA requirements using the OpenA11y Evaluation Library 2.0.",
+    "description": "Description of the extension"
+  },
+
+  "extensionAuthor": {
+    "message": "Nicholas Hoyt and Jon Gunderson",
+    "description": "Authors of the extension"
+  },
+
+  "viewTitleSummaryLabel": {
+    "message": "Summary: ",
+    "description": "Label for summary view"
+  },
+
+  "backButtonLabel": {
+    "message": "Back",
+    "description": "Label for back button"
+  },
+
+  "detailsLabel": {
+    "message": "Details",
+    "description": "Label for details button"
+  },
+
+  "viewsButtonLabel": {
+    "message": "Views",
+    "description": "Label for views button"
+  },
+
+  "infoLocationLabel": {
+    "message": "Location",
+    "description": "Label for location value"
+  },
+
+  "infoTitleLabel": {
+    "message": "Title",
+    "description": "Label for title value"
+  },
+
+  "infoRulesetLabel": {
+    "message": "Ruleset",
+    "description": "Label for rulset value"
+  },
+
+  "infoScopeLabel": {
+    "message": "Scope",
+    "description": "Label for scope filter value"
+  },
+
+  "preferencesButtonLabel": {
+    "message": "Preferences",
+    "description": "Label for preferences button"
+  },
+
+  "tabIsLoading": {
+    "message": "Updating...",
+    "description": "Message indicating that content in the sidebar panel is being updated."
+  },
+
+  "protocolNotSupported": {
+    "message": "Protocol not supported; Unable to retrieve content information.",
+    "description": "Message explaining that page protocol does not support script injection."
+  },
+
+  "evaluationNotAllowed": {
+    "message": "Please try another page; Host permissions do not allow evaluation.",
+    "description": "Message explaining that host permissions do not allow script injection."
+  },
+
+  "landmarksLabel": {
+    "message": "Landmarks",
+    "description": "Label for Landmark rule category view"
+  },
+
+  "headingsLabel": {
+    "message": "Headings",
+    "description": "Label for Headings rule category view"
+  },
+
+  "stylesContentLabel": {
+    "message": "Color/Content",
+    "description": "Label for Color/Content rule category view"
+  },
+
+  "imagesLabel": {
+    "message": "Images",
+    "description": "Label for Images rule category view"
+  },
+
+  "formsLabel": {
+    "message": "Forms",
+    "description": "Label for Forms rule category view"
+  },
+
+  "linksLabel": {
+    "message": "Links",
+    "description": "Label for Links rule category view"
+  },
+
+  "tablesLabel": {
+    "message": "Tables/Layout",
+    "description": "Label for Tables/Layout rule category view"
+  },
+
+  "widgetsScriptsLabel": {
+    "message": "ARIA Widgets",
+    "description": "Label for ARIA Widgets rule category view"
+  },
+
+  "audioVideoLabel": {
+    "message": "Audio/Video",
+    "description": "Label for Audio/Video rule category view"
+  },
+
+  "keyboardLabel": {
+    "message": "Keyboard Support",
+    "description": "Label for Keyboard Support rule category view"
+  },
+
+  "timingLabel": {
+    "message": "Timing/Live Regions",
+    "description": "Label for Timing rule category view"
+  },
+
+  "siteNavigationLabel": {
+    "message": "Site Navigation",
+    "description": "Label for Site Navigation rule category view"
+  },
+
+  "allRulesLabel": {
+    "message": "All Rules",
+    "description": "Label for all rules view"
+  },
+
+  "summaryLabel": {
+    "message": "Summary",
+    "description": "Label for Summary view"
+  },
+
+  "g1.1": {
+    "message": "1.1 Text Alternatives",
+    "description": "Label for WCAG Guideline 1.1 view"
+  },
+
+  "g1.2": {
+    "message": "1.2 Time-based Media",
+    "description": "Label for WCAG Guideline 1.2 view"
+  },
+
+  "g1.3": {
+    "message": "1.3 Adaptable",
+    "description": "Label for WCAG Guideline 1.3 view"
+  },
+
+  "g1.4": {
+    "message": "1.4 Distinguishable",
+    "description": "Label for WCAG Guideline 1.4 view"
+  },
+
+  "g2.1": {
+    "message": "2.1 Keyboard Accessible",
+    "description": "Label for WCAG Guideline 2.1 view"
+  },
+
+  "g2.2": {
+    "message": "2.2 Enough Time",
+    "description": "Label for WCAG Guideline 2.2 view"
+  },
+
+  "g2.3": {
+    "message": "2.3 Seizures",
+    "description": "Label for WCAG Guideline 2.3 view"
+  },
+
+  "g2.4": {
+    "message": "2.4 Navigable",
+    "description": "Label for WCAG Guideline 2.4 view"
+  },
+
+  "g2.5": {
+    "message": "2.5 Input Modalities",
+    "description": "Label for WCAG Guideline 2.5 view"
+  },
+
+  "g3.1": {
+    "message": "3.1 Readable",
+    "description": "Label for WCAG Guideline 3.1 view"
+  },
+
+  "g3.2": {
+    "message": "3.2 Predictable",
+    "description": "Label for WCAG Guideline 3.2 view"
+  },
+
+  "g3.3": {
+    "message": "3.3 Input Assistance",
+    "description": "Label for WCAG Guideline 3.3 view"
+  },
+
+  "g4.1": {
+    "message": "4.1 Compatible",
+    "description": "Label for WCAG Guideline 4.1 view"
+  },
+
+  "scopeLabel": {
+    "message": "Scope",
+    "description": "Label for rule scope"
+  },
+
+  "pageLabel": {
+    "message": "Page",
+    "description": "Label for page scope"
+  },
+
+  "websiteLabel": {
+    "message": "Website",
+    "description": "Label for website scope"
+  },
+
+  "violationsAbbrev": {
+    "message": "V",
+    "description": "Abbreviation for violations"
+  },
+
+  "violationLabel": {
+    "message": "Violation",
+    "description": "Label for one violation results"
+  },
+
+  "violationsLabel": {
+    "message": "Violations",
+    "description": "Label for violation results"
+  },
+
+  "warningsAbbrev": {
+    "message": "W",
+    "description": "Abbreviation for warnings"
+  },
+
+  "warningLabel": {
+    "message": "Warning",
+    "description": "Label for one warning results"
+  },
+
+  "warningsLabel": {
+    "message": "Warnings",
+    "description": "Label for warning results"
+  },
+
+  "manualChecksAbbrev": {
+    "message": "MC",
+    "description": "Abbreviation for manual checks"
+  },
+
+  "manualCheckLabel": {
+    "message": "Manual Check",
+    "description": "Label for one manual check results"
+  },
+
+  "manualChecksLabel": {
+    "message": "Manual Checks",
+    "description": "Label for manual check results"
+  },
+
+  "passedAbbrev": {
+    "message": "P",
+    "description": "Abbreviation for passed"
+  },
+
+  "passedLabel": {
+    "message": "Passed",
+    "description": "Label for pass results"
+  },
+
+  "hiddenAbbrev": {
+    "message": "H",
+    "description": "Abbreviation for hidden"
+  },
+
+  "hiddenLabel": {
+    "message": "Hidden",
+    "description": "Label for hidden results"
+  },
+
+  "notApplicableAbbrev": {
+    "message": "N/A",
+    "description": "Abbreviation for not applicable"
+  },
+
+  "notApplicableLabel": {
+    "message": "Not Applicable",
+    "description": "Label for not applicable results"
+  },
+
+  "ruleCategoriesLabel": {
+    "message": "Rule Categories",
+    "description": "Label for the rule category group"
+  },
+
+  "ruleCategoryLabel": {
+    "message": "Category",
+    "description": "Label for the rule category group"
+  },
+
+  "guidelinesLabel": {
+    "message": "WCAG Guidelines",
+    "description": "Label for the guidelines group"
+  },
+
+  "guidelineLabel": {
+    "message": "Guideline",
+    "description": "Label for the guideline group"
+  },
+
+  "ruleLabel": {
+    "message": "Rule",
+    "description": "Rule column header for rule group view grid"
+  },
+
+  "resultLabel": {
+    "message": "Result",
+    "description": "Result column header for rule group view grid"
+  },
+
+  "successCriteriaAbbrev": {
+    "message": "SC",
+    "description": "Abbreviation for WCAG Success Criteria"
+  },
+
+  "successCriteriaLabel": {
+    "message": "Success Criteria",
+    "description": "WCAG Success Criteria"
+  },
+
+  "singleALabel": {
+    "message": "Single A",
+    "description": "WCAG Single A Success Criteria"
+  },
+
+  "doubleALabel": {
+    "message": "Double A",
+    "description": "WCAG Double A Success Criteria"
+  },
+
+  "noResultsMsg": {
+    "message": "No results",
+    "description": "Message for no results"
+  },
+
+  "noViolationsWarningsMCResultsMsg": {
+    "message": "No violations, warnings or manual check results",
+    "description": "Message when there are no violation, warning or manual check results"
+  },
+
+  "levelLabel": {
+    "message": "Level",
+    "description": "Level column header for rule group view grid"
+  },
+
+  "requiredAbbrev": {
+    "message": "Req",
+    "description": "Abbreviation for required column header for rule group view grid"
+  },
+
+  "requiredLabel": {
+    "message": "Required",
+    "description": "Required column header for rule group view grid"
+  },
+
+  "requiredValue": {
+    "message": "Y",
+    "description": "Value for required column in rule group grid"
+  },
+
+  "ruleResultsLabel": {
+    "message": "Rule Results",
+    "description": "Label for rule result grid"
+  },
+
+  "ruleResultGridLabel": {
+    "message": "Rule Group Results",
+    "description": "Label for rule results grid"
+  },
+
+  "ruleResultsGridLabel": {
+    "message": "Rule Results",
+    "description": "Label for rule results grid"
+  },
+
+  "ruleCategoryGridLabel": {
+    "message": "Category Results",
+    "description": "Label for rule results grid"
+  },
+
+  "guidelineGridLabel": {
+    "message": "Guideline Results",
+    "description": "Label for rule results grid"
+  },
+
+  "ruleScopeGridLabel": {
+    "message": "Scope Results",
+    "description": "Label for rule results grid"
+  },
+
+  "ruleSelectedLabel": {
+    "message": "Selected Rule",
+    "description": "Selected rule label for rule information"
+  },
+
+  "copyLabel": {
+    "message": "Copy",
+    "description": "label for copy button"
+  },
+
+  "copySuccessLabel": {
+    "message": "Copied!",
+    "description": "label when copy is successful for the copy button"
+  },
+
+  "copyFailedLabel": {
+    "message": "Copy Failed!",
+    "description": "label when copy fails for the copy button"
+  },
+
+  "copyRuleInfoDesc": {
+    "message": "Copy rule information to clipboard",
+    "description": "Description of button to copy rule information"
+  },
+
+  "copyElemInfoDesc": {
+    "message": "Copy element details to clipboard",
+    "description": "Description of button to copy element information"
+  },
+
+  "ruleIdLabel": {
+    "message": "Rule ID",
+    "description": "Rule ID label for rule information"
+  },
+
+  "ruleSummaryLabel": {
+    "message": "Summary",
+    "description": "Summary section label for rule information"
+  },
+
+  "ruleScopeLabel": {
+    "message": "Rule Scope",
+    "description": "Rule Scope section label for rule information"
+  },
+
+  "ruleDefinitionLabel": {
+    "message": "Definition",
+    "description": "Definition section label for rule information"
+  },
+
+  "ruleRuleDefinitionLabel": {
+    "message": "Rule Definition",
+    "description": "Rule definition label "
+  },
+
+
+  "ruleActionLabel": {
+    "message": "Action",
+    "description": "Action section label for rule information"
+  },
+
+  "rulePurposeLabel": {
+    "message": "Purpose",
+    "description": "Purpose section label for rule information"
+  },
+
+  "ruleTechniquesLabel": {
+    "message": "Techniques",
+    "description": "Techniques section label for rule information"
+  },
+
+  "ruleTargetLabel": {
+    "message": "Target Elements",
+    "description": "Target elements section label for rule information"
+  },
+
+  "ruleComplianceLabel": {
+    "message": "Compliance",
+    "description": "Compliance section label for rule information"
+  },
+
+  "ruleSCLabel": {
+    "message": "WCAG Success Criteria",
+    "description": "WCAG Success Criteria section label for rule information"
+  },
+
+  "ruleAdditionalLabel": {
+    "message": "Additional Information",
+    "description": "Additional information section label for rule information"
+  },
+
+  "detailsActionLabel": {
+    "message": "Details / Action",
+    "description": "Details/action tab label in rule results view"
+  },
+
+  "websiteResultLabel": {
+    "message": "Website Result",
+    "description": "Website result label in rule results CSV"
+  },
+
+  "pageResultLabel": {
+    "message": "Page Result",
+    "description": "Page result label in rule results CSV"
+  },
+
+  "elementResultsLabel": {
+    "message": "Element Results",
+    "description": "Element results label in rule results CSV"
+  },
+
+  "elementLabel": {
+    "message": "Element",
+    "description": "Element column label in grid for rule results view"
+  },
+
+  "positionAbbrev": {
+    "message": "Pos",
+    "description": "Position column abbreviation in grid for rule results view"
+  },
+
+  "positionLabel": {
+    "message": "Position",
+    "description": "Position column label in grid for rule results view"
+  },
+
+  "actionLabel": {
+    "message": "Action",
+    "description": "Action column label in grid for rule results view"
+  },
+
+  "highlightLabel": {
+    "message": "Highlight",
+    "description": "Label text for the highlight select box"
+  },
+
+  "highlightOptionNone": {
+    "message": "None",
+    "description": "None option in the highlight select box"
+  },
+
+  "highlightOptionSelected": {
+    "message": "Selected",
+    "description": "Selected option in the highlight select box"
+  },
+
+  "highlightOptionVW": {
+    "message": "V/W",
+    "description": "Violations/Warning option in the highlight select box"
+  },
+
+  "highlightOptionAll": {
+    "message": "All",
+    "description": "All option in the highlight select box"
+  },
+
+  "elementGridLabel": {
+    "message": "Results",
+    "description": "Label for Rule/Element results grid"
+  },
+
+  "elementSelectedLabel": {
+    "message": "Selected Result",
+    "description": "Selected element, page or website details label for rule information"
+  },
+
+  "viewsMenuButtonLabel": {
+    "message": "Views",
+    "description": "Label for button in views menu button"
+  },
+
+  "exportDataButtonLabel": {
+    "message": "Export Data",
+    "description": "Label for export data button in the footer of the main panel"
+  },
+
+  "exportDialogTitle": {
+    "message": "Data Export Options",
+    "description": "Title for data export options dialog box"
+  },
+
+  "rerunEvalButtonLabel": {
+    "message": "Rerun Evaluation",
+    "description": "Label for rerun evaluation button in the footer of the main panel"
+  },
+
+  "rerunEvalDialogTitle": {
+    "message": "Rerun Evaluation: Specify Delay",
+    "description": "Title for rerun evaluation dialog box"
+  },
+
+  "rerunEvalSelectLabel": {
+    "message": "Rerun evaluation in ",
+    "description": "Label for select input in rerun evaluation dialog box"
+  },
+
+  "rerunEvalPromptForDelayLabel": {
+    "message": "Do not prompt for delay setting",
+    "description": "Label for checkbox input in rerun evaluation dialog box"
+  },
+
+  "cancelButtonLabel": {
+    "message": "Cancel",
+    "description": "Label for Cancel button in a dialog box"
+  },
+
+  "okButtonLabel": {
+    "message": "OK",
+    "description": "Label for OK button in a dialog box"
+  },
+
+  "closeButtonLabel": {
+    "message": "Close",
+    "description": "Label for Close button in a dialog box"
+  },
+
+  "rerunButtonLabel": {
+    "message": "Rerun",
+    "description": "Label for Rerun button in a dialog box"
+  },
+
+  "exportButtonLabel": {
+    "message": "Export",
+    "description": "Label for Export button in a dialog box"
+  },
+
+  "moreButtonLabel": {
+    "message": "Concepts and Terms",
+    "description": "Label for Concepts and Terms button in a dialog box"
+  },
+
+  "elementResultType": {
+    "message": "Result Type",
+    "description": "Result type heading in element, page or website results view."
+  },
+
+
+  "elementResultAction": {
+    "message": "Action",
+    "description": "Action heading in element, page or website results view."
+  },
+
+  "elementResultMessage": {
+    "message": "Message",
+    "description": "Message heading in element, page or website results view."
+  },
+
+  "elementResultRole": {
+    "message": "Role",
+    "description": "Role heading in element results view."
+  },
+
+  "elementResultTagName": {
+    "message": "Tag Name",
+    "description": "Tag name heading in element results view."
+  },
+
+  "elementResultAccName": {
+    "message": "Accessible Name",
+    "description": "Accessible name heading in element results view."
+  },
+
+  "elementResultAccNameRequired": {
+    "message": "(Required)",
+    "description": "Required for accessible name heading in element results view."
+  },
+
+  "elementResultAccNameProhibited": {
+    "message": "(Prohibited)",
+    "description": "Prohibited for accessible name heading in element results view."
+  },
+
+  "elementResultAccDesc": {
+    "message": "Accessible Description",
+    "description": "Accessible name heading in element results view."
+  },
+
+  "elementResultErrorDesc": {
+    "message": "Error Message",
+    "description": "Error Message heading in element results view."
+  },
+
+  "elementResultCCR": {
+    "message": "Color Contrast Ratio",
+    "description": "Color Contrast Ratio heading in element results view."
+  },
+
+  "elementResultVisibility": {
+    "message": "Visibility",
+    "description": "Visibility heading in element results view."
+  },
+
+  "elementResultAttributeHeader": {
+    "message": "Attribute",
+    "description": "Column header for attribute results in element results view."
+  },
+
+  "elementResultValueHeader": {
+    "message": "Value",
+    "description": "Column header for attribute results in element results view."
+  },
+
+  "shortcutDefaultBack": {
+    "message": "Backspace",
+    "description": "Default shortcut key for activating the Back button."
+  },
+
+  "shortcutDefaultCopy": {
+    "message": "c",
+    "description": "Default shortcut key for activating the copy rule or element information."
+  },
+
+  "shortcutDefaultViews": {
+    "message": "v",
+    "description": "Default shortcut key for activating the Views menu."
+  },
+
+  "shortcutDefaultExport": {
+    "message": "e",
+    "description": "Default shortcut key for activating the Export button."
+  },
+
+  "shortcutDefaultRerun": {
+    "message": "r",
+    "description": "Default shortcut key for activating the Rerun Evaluation button."
+  },
+
+  "csvPageTitle": {
+    "message": "Page Title:",
+    "description": "Page title label for CSV export."
+  },
+
+  "csvPageURL": {
+    "message": "Page URL:",
+    "description": "Page URL label for CSV export."
+  },
+
+  "csvRuleTotals": {
+    "message": "Rule Totals",
+    "description": "Used in rule results for CSV export for labeling summary results."
+  },
+
+  "csvNumberOfRulesWith": {
+    "message": "Number of rules with",
+    "description": "Used in rule results for CSV export for labeling summary results."
+  },
+
+  "csvNumberOfElementsWith": {
+    "message": "Number of results with",
+    "description": "Used in element, page and website results for CSV export for labeling summary results."
+  },
+
+  "csvRuleset": {
+    "message": "Ruleset:",
+    "description": "Ruleset label for CSV export."
+  },
+
+  "csvDate": {
+    "message": "Date:",
+    "description": "Date label for CSV export."
+  },
+
+  "csvTime": {
+    "message": "Time:",
+    "description": "Time label for CSV export."
+  },
+
+  "csvSource": {
+    "message": "Source:",
+    "description": "Source label for CSV export."
+  },
+
+  "csvGroupTitle": {
+    "message": "Group Title:",
+    "description": "Group title label for CSV export."
+  },
+
+  "csvRuleId": {
+    "message": "Rule ID",
+    "description": "Rule ID columns header for CSV export."
+  },
+
+  "csvRuleSummary": {
+    "message": "Rule Summary",
+    "description": "Rule Summary columns header for CSV export."
+  },
+
+  "csvResultValue": {
+    "message": "Result Value",
+    "description": "Result Value column header for CSV export"
+  },
+
+  "csvSuccessCriteria": {
+    "message": "Success Criteria",
+    "description": "Success Criteria column header for CSV export"
+  },
+
+  "csvSummary-landmarksLabel": {
+    "message": "Number of Landmark rules with",
+    "description": "CSV label for Landmark rule category for number of rules with"
+  },
+
+  "csvSummary-headingsLabel": {
+    "message": "Number of Heading rules with",
+    "description": "CSV label for Headings rule category for number of rules with"
+  },
+
+  "csvSummary-stylesContentLabel": {
+    "message": "Number of Color/Content rules with",
+    "description": "CSV label for Color/Content rule category for number of rules with"
+  },
+
+  "csvSummary-imagesLabel": {
+    "message": "Number of Image rules with",
+    "description": "CSV label for Images rule category for number of rules with"
+  },
+
+  "csvSummary-formsLabel": {
+    "message": "Number of Form rules with",
+    "description": "CSV label for Forms rule category for number of rules with"
+  },
+
+  "csvSummary-linksLabel": {
+    "message": "Number of Link rules with",
+    "description": "CSV label for Links rule category for number of rules with"
+  },
+
+  "csvSummary-tablesLabel": {
+    "message": "Number of Link rules with",
+    "description": "CSV label for Links rule category for number of rules with"
+  },
+
+  "csvSummary-widgetsScriptsLabel": {
+    "message": "Number of Script rules with",
+    "description": "CSV label for Scripts rule category for number of rules with"
+  },
+
+  "csvSummary-audioVideoLabel": {
+    "message": "Number of Audio/Video rules with",
+    "description": "CSV label for Audo/Video rule category for number of rules with"
+  },
+
+  "csvSummary-keyboardLabel": {
+    "message": "Number of Keyboard Support rules with",
+    "description": "CSV label for Keyboard Support rule category for number of rules with"
+  },
+
+  "csvSummary-timingLabel": {
+    "message": "Number of Timing and Live Region rules with",
+    "description": "CSV label for Timing rule category for number of rules with"
+  },
+
+  "csvSummary-siteNavigationLabel": {
+    "message": "Number of Site Navigation rules with",
+    "description": "CSV label for Site Navigation rule category for number of rules with"
+  },
+
+  "csvSummary-allRulesLabel": {
+    "message": "Number of rules with",
+    "description": "CSV label for All Rules for number of rules with"
+  },
+
+  "csvSummary-g1.1": {
+    "message": "Number of 1.1 Text Alternative rules with",
+    "description": "CSV label for Guideline 1.1 Text Alternative guideline for number of rules with"
+  },
+
+  "csvSummary-g1.2": {
+    "message": "Number of 1.2 Time-based Media rules with",
+    "description": "CSV label for Guideline 1.2 Time-based Media guideline for number of rules with"
+  },
+
+  "csvSummary-g1.3": {
+    "message": "Number of 1.3 Adaptable rules with",
+    "description": "CSV label for Guideline 1.3 Adaptable guideline for number of rules with"
+  },
+
+  "csvSummary-g1.4": {
+    "message": "Number of 1.4 Distinguishable rules with",
+    "description": "CSV label for Guideline 1.4 Distinguishable guideline for number of rules with"
+  },
+
+  "csvSummary-g2.1": {
+    "message": "Number of 2.1 Keyboard Accessible rules with",
+    "description": "CSV label for Guideline 2.1 Keyboard Accessible guideline for number of rules with"
+  },
+
+  "csvSummary-g2.2": {
+    "message": "Number of 2.2 Enough Time rules with",
+    "description": "CSV label for Guideline 2.2 Enough Time guideline for number of rules with"
+  },
+
+  "csvSummary-g2.3": {
+    "message": "Number of 2.3 Seizures rules with",
+    "description": "CSV label for Guideline 2.3 Seizures guideline for number of rules with"
+  },
+
+  "csvSummary-g2.4": {
+    "message": "Number of 2.4 Navigable rules with",
+    "description": "CSV label for Guideline 2.4 Navigable guideline for number of rules with"
+  },
+
+  "csvSummary-g2.5": {
+    "message": "Number of 2.5 Input Modalities rules with",
+    "description": "CSV label for Guideline 2.5 INput Modalities guideline for number of rules with"
+  },
+
+  "csvSummary-g3.1": {
+    "message": "Number of 3.1 Readable rules with",
+    "description": "CSV label for Guideline 3.1 Readable guideline for number of rules with"
+  },
+
+  "csvSummary-g3.2": {
+    "message": "Number of 3.2 Predictable rules with",
+    "description": "CSV label for Guideline 3.2 Predictable guideline for number of rules with"
+  },
+
+  "csvSummary-g3.3": {
+    "message": "Number of 3.3 Input Assistance rules with",
+    "description": "CSV label for Guideline 3.3 Input Assistance guideline for number of rules with"
+  },
+
+  "csvSummary-g4.1": {
+    "message": "Number of 4.1 Compatible rules with",
+    "description": "CSV label for Guideline 4.1 Compatible guideline for number of rules with"
+  },
+
+  "shortcutsHeading": {
+    "message": "Keyboard Shortcuts",
+    "description": "Label for section on configuring shortcut keys."
+  },
+
+  "shortcutsEnabledLabel": {
+    "message": "Enable keyboard shortcuts.",
+    "description": "Label for checkbox enabling shortcuts."
+  },
+
+ "shortcutsTableShortcut": {
+    "message": "Key",
+    "description": "Heading for shortcut column in table."
+  },
+
+ "shortcutsTableAction": {
+    "message": "Action",
+    "description": "Heading for action column in table."
+  },
+
+  "shortcutBackLabel": {
+    "message": "Activates Back button.",
+    "description": "Describes the action of the Back shortcut key."
+  },
+
+  "shortcutViewsLabel": {
+    "message": "Activates Views button.",
+    "description": "Describes the action of the Views shortcut key."
+  },
+
+  "shortcutExportLabel": {
+    "message": "Activates Export button.",
+    "description": "Describes the action of the Export shortcut key."
+  },
+
+  "shortcutRerunLabel": {
+    "message": "Activates Rerun Evaluation button.",
+    "description": "Describes the action of the Re-run shortcut key."
+  },
+
+  "shortcutCopyLabel": {
+    "message": "Activates Copy button.",
+    "description": "Describes the action of the Copy shortcut key."
+  },
+
+  "shortcutsNotes": {
+    "message": "Note: Leaving the shortcut key value empty disables the shortcut.",
+    "description": "Note providing information on how to disabled an individual shortcut."
+  },
+
+  "shortcutAllreadyUsed": {
+    "message": "The $key is already being used.",
+    "description": "Feedback to use if the shortcut is already defined."
+  },
+
+  "summaryInfoButtonLabel": {
+    "message": "Element Result Descriptions",
+    "description": "Results information button label"
+  },
+
+  "infoDialogTitle": {
+    "message": "Results Legend",
+    "description": "Info dialog title for all views"
+  },
+
+  "numericalResultsLabel": {
+    "message": "Numerical Results",
+    "description": "Label for Numerical Results headingin result information dialog"
+
+  },
+
+  "ruleResultTypesLabel": {
+    "message": "Rule Result Types",
+    "description": "Label for Result Types heading in result information dialog"
+
+  },
+
+  "elementResultTypesLabel": {
+    "message": "Element Result Types",
+    "description": "Label for Result Types heading in result information dialog"
+
+  },
+
+  "moreButtonDisabled": {
+    "message": "Tab already opened in browser window",
+    "description": "Provides help on why more information button is disabled"
+  },
+
+  "ruleNumberDesc": {
+    "message": "Number of rules with corresponding result type",
+    "description": "Provides information on the meaning of numbers in rule group all all rules view"
+  },
+
+  "elementNumberDesc": {
+    "message": "Number of target elements with corresponding result type",
+    "description": "Provides information on the meaning of numbers in rule view"
+  },
+
+  "noRole": {
+    "message": "no role",
+    "description": "Identifies an element with no default role value"
+  },
+
+  "scopeAllRulesLabel": {
+    "message": "All rules",
+    "description": "Element, Page and Website rules included in evaluation"
+  },
+
+  "scopePageRulesLabel": {
+    "message": "Page rules",
+    "description": "Only Page rules included in evaluation"
+  },
+
+  "scopeWebsiteRulesLabel": {
+    "message": "Website rules",
+    "description": "Only Website rules included in evaluation"
+  },
+
+  "getMoreInfo": {
+    "message": "Get More Info",
+    "description": "Accessible name for get more information icon"
+  },
+
+  "resultsLegend": {
+    "message": "Results Legend",
+    "description": "Accessible description for get more information icon"
+  },
+
+  "optionsTitle": {
+    "message": "General",
+    "description": "Title for the options page"
+  },
+
+  "optionsViewsMenuLegend": {
+    "message": "Views menu",
+    "description": "Legend for view menu in the options page"
+  },
+
+  "optionsInclWcagGlLabel": {
+    "message": "Include WCAG Guidelines",
+    "description": "Label for checkbox to include WCAG Guidelines in views menu"
+  },
+
+  "optionsInclRuleScopeLabel": {
+    "message": "Include Rule Scope",
+    "description": "Label for checkbox to include Rule Scope options in views menu"
+  },
+
+  "optionsRerunEvaluationLegend": {
+    "message": "Rerun Evaluation button",
+    "description": "Legend for rerun evaluation section in the options page"
+  },
+
+  "optionsNoDelayLabel": {
+    "message": "Rerun with no delay",
+    "description": "Label for rerun with no delay checkbox in the options page"
+  },
+
+  "optionsPromptForDelayLabel": {
+    "message": "Prompt for delay setting",
+    "description": "Label for rerun with prompted delay checkbox in the options page"
+  },
+
+  "optionsEvaluationHeading": {
+    "message": "Evaluation",
+    "description": "Heading for the evaluation section of the options page"
+  },
+
+  "optionsRulesetLegend": {
+    "message": "Ruleset",
+    "description": "Legend for ruleset radio button group in the options page"
+  },
+
+  "optionsRulesetStrictLabel": {
+    "message": "HTML5 and ARIA Ruleset",
+    "description": "Label for strict ruleset checkbox on the options page"
+  },
+
+  "optionsRulesetTransLabel": {
+    "message": "HTML4 Legacy Techniques",
+    "description": "Label for transitional ruleset checkbox on the options page"
+  },
+
+  "optionsRuleResultsLegend": {
+    "message": "Rule Result Types filter",
+    "description": "Legend for the rule results section on the options page"
+  },
+
+  "optionsInclPassNaLabel": {
+    "message": "Include 'Passed' and 'Not Applicable' results",
+    "description": "Label for checkbox to include pass and n/a results in the options page"
+  },
+
+  "optionsResetDefaults": {
+    "message": "Reset Defaults",
+    "description": "Label for reset defaults in the options page"
+  },
+
+  "optionsExportHeading": {
+    "message": "Data Export",
+    "description": "Label for the data export section of the options page"
+  },
+
+  "optionsExportPrompt": {
+    "message": "Prompt for data export options",
+    "description": "Prompt for export options when the export button is pressed"
+  },
+
+  "optionsExportButtonLegend": {
+    "message": "Export Data button",
+    "description": "Legend for prompt for export options button"
+  },
+
+  "optionsExportFormatLegend": {
+    "message": "File Format",
+    "description": "Legend for the group of radio buttons for choosing an output format in the export section of the options page"
+  },
+
+  "optionsExportCSVLabel": {
+    "message": "CSV (e.g. spreadsheets)",
+    "description": "Label for the CSV radio button option in the export section of the options page"
+  },
+
+  "optionsExportJSONLabel": {
+    "message": "JSON (e.g. databases and applications)",
+    "description": "Label for the JSON radio button option in the export section of the options page"
+  },
+
+  "optionsExportFilenameLegend": {
+    "message": "Filename Options",
+    "description": "Legend for the filenaming options in export section of the options page"
+  },
+
+  "optionsExportPrefixLabel": {
+    "message": "Prefix for export file name (up to 16 characters long)",
+    "description": "Label for prefix string input in the export section of the options page"
+  },
+
+  "optionsExportPrefixDesc": {
+    "message": "Note: For operating system compatibility file name cannot contain any spaces or <>:\"/\\|?*[] characters.",
+    "description": "Label for prefix string input in the export section of the options page"
+  },
+
+  "optionsExportPrefixErrorToLong": {
+    "message": "Prefix can only be 16 characters long.",
+    "description": "Error feedback for prefix string being too long"
+  },
+
+  "optionsExportPrefixErrorCharNotAllowed": {
+    "message": "Prefix cannot contain the $key character.",
+    "description": "Error feedback on characters that cannot not be in prefix."
+  },
+
+  "optionsExportIncludeDate": {
+    "message": "Include date and time.",
+    "description": "Label for including date and time in the export export file name"
+  },
+
+  "optionsExportIncludeDateDesc": {
+    "message": "(e.g. yyyy-mm-dd-XXh-YYm-ZZs)",
+    "description": "Additional information on format for including date and time in the export export file name"
+  },
+
+  "optionsExportPromptForOptions": {
+    "message": "Do not prompt for data export options",
+    "description": "Label for disable prompting for export export file name options when activating the export button."
+  }
+
+}

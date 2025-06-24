@@ -1,0 +1,64 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extension_name_opera__",
+  "version": "4.0.0",
+  "description": "__MSG_extension_description__",
+  "homepage_url": "https://opena11y.github.io/ainspector/",
+  "default_locale": "en",
+  "icons": {
+    "32":  "icons/light-ai-sidebar-32.png",
+    "48":  "icons/light-ai-sidebar-48.png",
+    "64":  "icons/light-ai-sidebar-64.png",
+    "128": "icons/light-ai-sidebar-128.png"
+  },
+
+  "sidebar_action": {
+    "default_icon": {
+      "32":  "icons/light-ai-sidebar-32.png",
+      "48":  "icons/light-ai-sidebar-48.png",
+      "64":  "icons/light-ai-sidebar-64.png",
+      "128": "icons/light-ai-sidebar-128.png"
+    },
+    "default_title": "__MSG_extension_name_firefox__",
+    "default_panel": "ai-sidepanel.html",
+    "open_at_install": false
+  },
+
+  "commands": {
+    "_execute_sidebar_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+0",
+        "linux": "Alt+Shift+0",
+        "mac": "Command+Shift+0"
+      }
+    }
+  },
+
+  "background": {
+    "service_worker": "service-worker.js",
+    "type": "module"
+  },
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "scripting",
+    "sidePanel",
+    "storage"
+  ],
+  "web_accessible_resources": [{
+    "resources": ["ai-highlight.js"],
+    "matches": ["<all_urls>"]
+  }],
+  "content_scripts": [
+    {
+      "js": [
+        "opena11y-for-ainspector.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
