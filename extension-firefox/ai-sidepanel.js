@@ -3,8 +3,7 @@
 import DebugLogging   from './debug.js';
 
 import {
-  getMessage,
-  setTablistAttr
+  getMessage
 } from './utils.js';
 
 import {
@@ -48,9 +47,9 @@ function onError(error) {
 /* templates */
 const template = document.createElement('template');
 template.innerHTML = `
-  <div id="id-toc-sidepanel"
-       class="toc-sidepanel">
-    <toc-tablist></toc-tablist>
+  <div id="id-ai-sidepanel"
+       class="ai-sidepanel">
+    <p>Hello World!</p>
   </div>
 `;
 
@@ -69,7 +68,7 @@ class AISidePanel extends HTMLElement {
     document.querySelector('title').textContent = getMessage('extension_name_chrome');
 
     const version = browserRuntime.getManifest().version;
-    setTablistAttr('version', version);
+    this.setAttribute('version', version);
 
     /*
     *   Add Window event listeners

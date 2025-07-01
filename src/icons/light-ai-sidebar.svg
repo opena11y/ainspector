@@ -13,7 +13,7 @@
       stroke: black;
     }
     polygon.text {
-      stroke-width: 1;
+      stroke-width: 2;
       stroke: black;
       fill: black;
     }

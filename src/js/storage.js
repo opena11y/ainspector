@@ -2,9 +2,20 @@
 *   storage.js
 */
 
+import {
+  getMessage
+} from './utils.js';
 
-// Get message strings from locale-specific messages.json file
-const getMessage = browser.i18n.getMessage;
+import DebugLogging from './debug.js';
+
+/* constants */
+
+const debug = new DebugLogging('storage', false);
+debug.flag = false;
+
+const browserStorage = typeof browser === 'object' ?
+                       browser.storage.local :
+                       chrome.storage.sync;
 
 export const defaultOptions = {
   isSidebarOpen: false,
@@ -42,7 +53,7 @@ export const defaultOptions = {
 */
 export function getOptions () {
   return new Promise (function (resolve, reject) {
-    let promise = browser.storage.local.get();
+    let promise = browserStorage.get();
     promise.then(
       options => {
         if (isComplete(options)) {
@@ -64,7 +75,7 @@ export function getOptions () {
 */
 export function saveOptions (options) {
   return new Promise (function (resolve, reject) {
-    let promise = browser.storage.local.set(options);
+    let promise = browserStorage.set(options);
     promise.then(
       () => { resolve() },
       message => { reject(new Error(`saveOptions: ${message}`)) }

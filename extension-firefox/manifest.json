@@ -52,7 +52,7 @@
       "128": "icons/light-ai-sidebar-128.png"
     },
     "default_title": "__MSG_extension_name_firefox__",
-    "default_panel": "ainspector-sidepanel.html",
+    "default_panel": "ai-sidepanel.html",
     "open_at_install": false
   },
 
@@ -73,9 +73,11 @@
     "scripts": ["service-worker.js"],
     "type": "module"
   },
+  "options_ui": {
+    "page": "ai-options.html"
+  },
     "permissions": [
     "activeTab",
-    "scripting",
     "storage"
   ],
   "content_scripts": [

@@ -25,7 +25,7 @@ body {
 }
 
 .icon polygon.text {
-  stroke-width: 1;
+  stroke-width: 2;
   stroke: light-dark(#13294B, white);
   fill: light-dark(#13294B, white);
 }

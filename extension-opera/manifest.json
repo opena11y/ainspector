@@ -42,10 +42,9 @@
     "http://*/*",
     "https://*/*"
   ],
+  "options_page": "ai-options.html",
   "permissions": [
-    "tabs",
     "activeTab",
-    "scripting",
     "sidePanel",
     "storage"
   ],

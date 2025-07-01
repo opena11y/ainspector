@@ -42,16 +42,15 @@
     "type": "module"
   },
  "side_panel": {
-    "default_path": "ainspector-sidepanel.html"
+    "default_path": "ai-sidepanel.html"
   },
+  "options_page": "ai-options.html",
   "host_permissions": [
     "http://*/*",
     "https://*/*"
   ],
   "permissions": [
-    "tabs",
     "activeTab",
-    "scripting",
     "sidePanel",
     "storage"
   ],
