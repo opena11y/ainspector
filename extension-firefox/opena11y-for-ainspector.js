@@ -725,8 +725,8 @@
   *   Handles BOM and NBSP characters.
   */
   function normalize (s) {
-  //  const rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
-    const rtrim = /[\u0000-\u001F\u007F-\u009F]/g;
+    const rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+  //  const rtrim = /[\u0000-\u001F\u007F-\u009F]/g;
     return s.replace(rtrim, '').replace(/\s+/g, ' ');
   }
 
@@ -39805,9 +39805,9 @@
 
   }
 
-  /* opena11y-for-toc.js */
+  /* opena11y-for-ainspector.js */
 
-  const HIGHLIGHT_ELEMENT_NAME = 'toc-highlight';
+  const HIGHLIGHT_ELEMENT_NAME = 'ai-highlight';
 
   const browserRuntime = typeof browser === 'object' ?
                 browser.runtime :
@@ -39820,8 +39820,8 @@
 
   const scriptNode = document.createElement('script');
   scriptNode.type = 'text/javascript';
-  scriptNode.id = 'id-toc-highlight';
-  scriptNode.src = browserRuntime.getURL('toc-highlight.js');
+  scriptNode.id = 'id-ai-highlight';
+  scriptNode.src = browserRuntime.getURL('ai-highlight.js');
   document.body.appendChild(scriptNode);
 
 
@@ -39860,15 +39860,6 @@
         }
       }
 
-      // Focus elements
-      if(request.focusPosition) {
-        const he = document.querySelector(HIGHLIGHT_ELEMENT_NAME);
-
-        if (he) {
-          he.setAttribute('data-attr', 'data-opena11y-id');
-          he.setAttribute('focus-position', request.focusPosition);
-        }
-      }
 
       // Update heading, region and link information
       if(request.runEvaluation) {
@@ -39894,7 +39885,7 @@
 
   setInterval(() => {
     chrome.runtime
-      .sendMessage({ ['toc-sidepanel-open']: true })
+      .sendMessage({ ['ai-sidepanel-open']: true })
       .then((msgRes) => {
       })
       .catch( () => {

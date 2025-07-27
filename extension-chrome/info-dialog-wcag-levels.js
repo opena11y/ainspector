@@ -1,4 +1,4 @@
-/* info-dialog-levels.js */
+/* info-dialog-wcag-levels.js */
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -53,4 +53,7 @@ export default class InfoWCAGLevels extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
+
+window.customElements.define("info-wcag-levels", InfoWCAGLevels);
+
 

@@ -13,9 +13,22 @@ import DebugLogging from './debug.js';
 const debug = new DebugLogging('storage', false);
 debug.flag = false;
 
+const browserRuntime = typeof browser === 'object' ?
+              browser.runtime :
+              chrome.runtime;
+
 const browserStorage = typeof browser === 'object' ?
                        browser.storage.local :
                        chrome.storage.sync;
+
+// Generic error handler
+function notLastError () {
+  if (!browserRuntime.lastError) { return true; }
+  else {
+    debug && console.log(browserRuntime.lastError.message);
+    return false;
+  }
+}
 
 export const defaultOptions = {
   isSidebarOpen: false,
@@ -80,6 +93,18 @@ export function saveOptions (options) {
       () => { resolve() },
       message => { reject(new Error(`saveOptions: ${message}`)) }
     );
+  });
+}
+
+
+/*
+** resetDefaultOptions
+*/
+export function resetDefaultOptions () {
+  return new Promise (function (resolve, reject) {
+    browserStorage.set(defaultOptions, function () {
+      if (notLastError()) { resolve() }
+    });
   });
 }
 

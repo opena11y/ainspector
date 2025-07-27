@@ -1,34 +1,51 @@
-/* optionsTablist.js */
+/* options-tablist.js */
 
-const debug = false;
+// Imports
+
+import DebugLogging  from './debug.js';
+
+import {
+  resetDefaultOptions
+} from './storage.js';
+
+import {
+  setI18nLabels
+} from './utils.js';
+
+// Constants
+
+const debug = new DebugLogging('[options-tablist]', false);
+debug.flag = false;
 
 class OptionsTablist {
   constructor () {
 
-    // Initialize abbreviations and labels
-    this.tabs      =  document.querySelectorAll('[role=tablist] [role=tab]');
-    this.tabpanels =  [];
+  // Initialize abbreviations and labels
+  this.tabs      =  document.querySelectorAll('[role=tablist] [role=tab]');
+  this.tabpanels =  [];
 
-    this.firstTab = this.tabs[0];
-    this.lastTab = this.tabs[this.tabs.length-1];
+  setI18nLabels(document, debug.flag);
 
-    // Event handlers
+  this.firstTab = this.tabs[0];
+  this.lastTab = this.tabs[this.tabs.length-1];
 
-   for (let i = 0; i < this.tabs.length; i += 1) {
+  // Event handlers
+
+  for (let i = 0; i < this.tabs.length; i += 1) {
       const tab = this.tabs[i];
       let node = false;
       const id = tab.getAttribute('aria-controls');
       if (id) {
         node = document.getElementById(id);
         if (node) {
-          debug && console.log(`[id found]: ${id} ${node}`);
+          debug.flag && debug.log(`[id found]: ${id} ${node}`);
         }
         else {
-          debug && console.log(`[id not found]: ${id}`);
+          debug.flag && debug.log(`[id not found]: ${id}`);
         }
       }
       else {
-        debug && console.log(`[id]: none`);
+        debug.flag && debug.log(`[id]: none`);
       }
       this.tabpanels.push(node);
 
@@ -59,13 +76,9 @@ class OptionsTablist {
   }
 
   showTabpanel(showTab, focusFlag=true) {
-    debug && console.log(`[showTabpanel]`);
     for (let i = 0; i < this.tabs.length; i += 1) {
       const tab = this.tabs[i];
       const tabpanel = this.tabpanels[i];
-
-      debug && console.log(`[showTabpanel][${i}][${tab === showTab}]`);
-      debug && console.log(`[showTabpanel][${i}][${tabpanel.id}]`);
 
       if (tab === showTab) {
         tabpanel.classList.remove('hide');
@@ -87,7 +100,6 @@ class OptionsTablist {
 
   handleTabClick(event) {
     const tgt = event.currentTarget;
-    debug && console.log(`[handleTabClick]: ${tgt.id}`);
     this.showTabpanel(tgt, false);
     event.preventDefault();
     event.stopPropagation();
@@ -137,4 +149,6 @@ class OptionsTablist {
 
 }
 
-new OptionsTablist();
+window.addEventListener("load", () => {
+  new OptionsTablist();
+})

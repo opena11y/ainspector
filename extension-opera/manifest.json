@@ -46,6 +46,7 @@
   "permissions": [
     "activeTab",
     "sidePanel",
+    "downloads",
     "storage"
   ],
   "web_accessible_resources": [{

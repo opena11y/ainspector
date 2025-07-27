@@ -1,4 +1,4 @@
-/* infoScopes.js */
+/* info-dialog-aria-versions.js */
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -45,4 +45,6 @@ export default class InfoAriaVersions extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
+
+window.customElements.define("info-aria-versions", InfoAriaVersions);
 

@@ -1,4 +1,4 @@
-/* info-scopes.js */
+/* info-dialog-scopes.js */
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -51,4 +51,7 @@ export default class InfoScopes extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
+
+window.customElements.define("info-scopes", InfoScopes);
+
 

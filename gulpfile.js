@@ -29,6 +29,7 @@ gulp.task('linting', () => {
     'src/*.html',
   ])
     .pipe(dest('extension-chrome'))
+    .pipe(dest('extension-edge'))
     .pipe(dest('extension-opera'))
     .pipe(dest('extension-firefox'));
 });
@@ -38,6 +39,7 @@ gulp.task('extensionsLocales', () => {
     'src/_locales/en/*.json',
   ])
     .pipe(dest('extension-chrome/_locales/en'))
+    .pipe(dest('extension-edge/_locales/en'))
     .pipe(dest('extension-opera/_locales/en'))
     .pipe(dest('extension-firefox/_locales/en'));
 });
@@ -46,6 +48,7 @@ gulp.task('style', function () {
   return gulp.src('./src/scss/*.scss')
   .pipe(sass().on('error', sass.logError))
     .pipe(dest('extension-chrome'))
+    .pipe(dest('extension-edge'))
     .pipe(dest('extension-opera'))
     .pipe(dest('extension-firefox'));
 });

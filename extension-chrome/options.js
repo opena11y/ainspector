@@ -1,23 +1,23 @@
 /* options.js */
 
 import { getOptions, saveOptions, defaultOptions } from './storage.js';
-import { isCharacterAllowed, validatePrefix, validateShortcut } from './validate.js';
+import { isCharacterAllowed, validatePrefix, validateShortcut } from './options-validate.js';
 
 // Information dialogs
 import InfoDialog from './info-dialog.js';
 customElements.define('info-dialog', InfoDialog);
 
 import InfoRulesets from './info-rulesets.js';
-customElements.define('info-rulesets', InfoRulesets);
+customElements.define('info-dialog-rulesets', InfoRulesets);
 
 import InfoWCAGLevels from './info-wcag-levels.js';
-customElements.define('info-wcag-levels', InfoWCAGLevels);
+customElements.define('info-dialog-wcag-levels', InfoWCAGLevels);
 
 import InfoScopes from './info-scopes.js';
-customElements.define('info-scopes', InfoScopes);
+customElements.define('info-dialog-scopes', InfoScopes);
 
 import InfoAriaVersions from './info-aria-versions.js';
-customElements.define('info-aria-versions', InfoAriaVersions);
+customElements.define('info-dialog-aria-versions', InfoAriaVersions);
 
 
 // Get message strings from locale-specific messages.json file

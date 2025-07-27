@@ -10,7 +10,7 @@
   },
 
   "extension_author": {
-    "message": "Jon Gunderson",
+    "message": "Jon Gunderson and Nicholas Noyt",
     "description": "Authors of the extension"
   },
 
@@ -1207,6 +1207,147 @@
   "optionsExportPromptForOptions": {
     "message": "Do not prompt for data export options",
     "description": "Label for disable prompting for export export file name options when activating the export button."
+  },
+  "options_tab_ruleset_label": {
+    "message": "Ruleset Options",
+    "description": "Label for ruleset options options tab"
+  },
+  "options_tab_general_label": {
+    "message": "General",
+    "description": "Label for general options tab"
+  },
+  "options_tab_export_label": {
+    "message": "Export",
+    "description": "Label for export options tab"
+  },
+  "options_tab_shortcuts_label": {
+    "message": "Shortcuts",
+    "description": "Label for shortcuts options tab"
+  },
+  "options_ruleset_legend": {
+    "message": "Ruleset",
+    "description": "Legend for ruleset radio group"
+  },
+  "options_ruleset_wcag_22_label": {
+    "message": "WCAG 2.2",
+    "description": "Label for wcag 2.2 ruleset radio"
+  },
+  "options_ruleset_wcag_21_label": {
+    "message": "WCAG 2.1",
+    "description": "Label for wcag 2.1 ruleset radio"
+  },
+  "options_ruleset_wcag_20_label": {
+    "message": "WCAG 2.0",
+    "description": "Label for wcag 2.0 ruleset radio"
+  },
+  "options_ruleset_first_step_label": {
+    "message": "First Step Rules",
+    "description": "Label for first step ruleset radio"
+  },
+  "options_ruleset_wcag_levels_legend": {
+    "message": "WCAG Rule Levels",
+    "description": "Legend for wcag level radio group"
+  },
+  "options_ruleset_wcag_level_a_label": {
+    "message": "Level A only",
+    "description": "Label for wcag level A only radio"
+  },
+  "options_ruleset_wcag_level_aa_label": {
+    "message": "Levels A and AA ",
+    "description": "Label for wcag level A and AA radio"
+  },
+  "options_ruleset_wcag_level_enhanced_label": {
+    "message": "Levels A, AA and Enhanced Color Contrast and Enhanced Target Size rules (Level AAA)",
+    "description": "Label for wcag level A, AA and enhanced colot and size radio"
+  },
+  "options_ruleset_aria_version_legend": {
+    "message": "ARIA Version",
+    "description": "Legend for ARIA Version radio group"
+  },
+  "options_ruleset_aria_12_label": {
+    "message": "ARIA 1.2. (Current Standard)",
+    "description": "Label for ARIA 1.2 in ruleset options panel"
+  },
+  "options_ruleset_aria_13_label": {
+    "message": "ARIA 1.3 (Working Draft 23 January 2024)",
+    "description": "Label for ARIA 1.2 in ruleset options panel"
+  },
+  "options_rule_scope_legend": {
+    "message": " Rule Scope filter",
+    "description": "Legend for rule scope radio buttons"
+  },
+  "options_rule_scope_all_label": {
+    "message": " All rules (Element, Page, and Website scopes)",
+    "description": "Label for all rule scopes radio button"
+  },
+  "options_rule_scope_page_label": {
+    "message": " Page scope rules only",
+    "description": "Label for scope page only radio button"
+  },
+  "options_rule_scope_website_label": {
+    "message": " Website scope rules only",
+    "description": "Label for scope website only radio button"
+  },
+  "options_general_rule_results_legend": {
+    "message": "Rule Results",
+    "description": "Legend for include pass and n/a in results checkbox"
+  },
+  "options_general_incl_pass_na_label": {
+    "message": "Include 'Pass' and 'N/A' results",
+    "description": "Label for include pass and n/a in results label"
+  },
+  "options_general_no_delay_label": {
+    "message": "Rerun with no delay",
+    "description": "Label for rerun with no delay label"
+  },
+  "options_general_prompt_for_delay_label": {
+    "message": "Prompt for delay setting",
+    "description": "Label for prompt for delay label"
+  },
+  "options_general_views_menu_legend": {
+    "message": "'Views' menu",
+    "description": "Legend view menu guidelines option"
+  },
+  "options_general_incl_wcag_gl_label": {
+    "message": "Include WCAG Guidelines",
+    "description": "Label for include wcag guidelines checkbox"
+  },
+  "options_reset_defaults_button": {
+    "message": "Reset Defaults",
+    "description": "Label for reset defaults button"
+  },
+  "info_dialog_ruleset_info_button": {
+    "message": "Ruleset Information",
+    "description": "Label ruleset information info dialog box button"
+  },
+  "info_dialog_more_ruleset_info_button": {
+    "message": "More Ruleset Information",
+    "description": "Label more ruleset information info button"
+  },
+  "info_dialog_wcag_level_info_button": {
+    "message": "WCAG Level Information",
+    "description": "Label wcag level information info dialog box button"
+  },
+  "info_dialog_more_wcag_level_info_button": {
+    "message": "More WCAG Level Information",
+    "description": "Label more wcag level information info button"
+  },
+  "info_dialog_aria_version_info_button": {
+    "message": "ARIA Version Information",
+    "description": "Label ARIA Version information info dialog box button"
+  },
+  "info_dialog_more_aria_version_info_button": {
+    "message": "More ARIA Version Information",
+    "description": "Label more ARIA Version information info button"
+  },
+  "info_dialog_rule_scope_info_button": {
+    "message": "Rule Scope Information",
+    "description": "Label rule scope information info dialog box button"
+  },
+  "info_dialog_more_rule_scope_info_button": {
+    "message": "More ARIA Version Information",
+    "description": "Label more ARIA Version information info button"
   }
+
 
 }

@@ -1,4 +1,4 @@
-/* info-rulesets.js */
+/* info-dialog-rulesets.js */
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -72,4 +72,6 @@ export default class InfoRulesets extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
+
+window.customElements.define("info-ruleset", InfoRulesets);
 
