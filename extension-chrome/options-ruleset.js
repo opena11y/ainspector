@@ -23,8 +23,6 @@ const optionsRulesetTemplate = document.createElement('template');
 optionsRulesetTemplate.innerHTML = `
   <form>
     <fieldset>
-
-    <fieldset>
       <legend>
         <span data-i18n="options_ruleset_legend">
           Ruleset
@@ -32,7 +30,7 @@ optionsRulesetTemplate.innerHTML = `
         <info-dialog
           data-more-info-url="https://opena11y.github.io/evaluation-library/rulesets.html">
           <div slot="content">
-            <info-wcag-levels></info-wcag-levels>
+            <info-ruleset></info-ruleset>
           </div>
           <span slot="open-button"
                data-i18n="info_dialog_ruleset_info_button">

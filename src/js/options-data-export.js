@@ -1,4 +1,4 @@
-/* options-general.js */
+/* options-data-export.js */
 
 // Imports
 
@@ -16,62 +16,84 @@ import {
 
 // Constants
 
-const debug = new DebugLogging('[options-general]', false);
+const debug = new DebugLogging('[options-export]', false);
 debug.flag = true;
 
-const optionsGeneralTemplate = document.createElement('template');
-optionsGeneralTemplate.innerHTML = `
+const optionsDataExportTemplate = document.createElement('template');
+optionsDataExportTemplate.innerHTML = `
   <form>
     <fieldset>
-      <legend data-i18n="options_general_rule_results_legend">
-        Rule Results
+      <legend data-i18n="options_data_export_button_legend">
+        Export Data Button
       </legend>
       <label>
         <input type="checkbox"
-               data-option="resultsIncludePassNa"/>
-        <span data-i18n="options_general_incl_pass_na_label">
-          Include 'Pass' and 'N/A' results
+               data-option="promptForExportOptions"/>
+        <span data-i18n="options_data_export_prompt_label">
+          Prompt for data export options
         </span>
       </label>
     </fieldset>
 
     <fieldset>
-      <legend data-i18n="option_general_rerun_evaluation_legend">'
-        Rerun Evaluation' Button
+      <legend data-i18n="options_data_export_format_legend">
+        Export Format
       </legend>
       <label>
         <input type="radio"
-               name="delay"
-               value="false"
-               data-option="rerunDelayEnabled"
-               data-option-checked="false"/>
-        <span data-i18n="options_general_no_delay_label">
-          Rerun with no delay
+               name="export-format"
+               value="CSV"
+               data-option="exportFormat"/>
+        <span data-i18n="options_data_export_csv_label" >
+          CSV
         </span>
       </label>
       <label>
         <input type="radio"
-              name="delay"
-              value="true"
-              data-option="rerunDelayEnabled"
-               data-option-checked="true"/>
-        <span data-i18n="options_general_prompt_for_delay_label">
-          Prompt for delay setting
+               name="export-format"
+               value="JSON"
+               data-option="exportFormat"/>
+        <span data-i18n="options_data_export_json_label" >
+          JSON
         </span>
       </label>
     </fieldset>
 
     <fieldset>
-      <legend data-i18n="options_general_views_menu_legend">
-        'Views' menu
+      <legend data-i18n="options_data_export_filename_legend">
+        Filename Options
       </legend>
+
+      <label id="options-export-prefix-label"
+             for="options-export-prefix"
+             data-i18n="options_data_export_prefix_label">
+          Export File Prefix (up to 16 characters)
+      </label>
+      <div class="input">
+        <input id="options-export-prefix"
+              type="text"
+              size="30"
+              data-option="filenamePrefix"
+              aria-describedby="options-export-prefix-desc options-export-prefix-note"/>
+        <span class="feedback prefix">
+          <img src="icons/error-icon-15.png" alt=""/>
+          <span id="options-export-prefix-desc" aria-live="assertive"></span>
+        </span>
+      </div>
+      <div class="desc"
+           data-i18n="options_data_export_prefix_note_desc">
+        Note: Prefix cannot contain spaces or <code>&lt;&gt;:"/\|?*[]</code> characters.
+      </div>
+
       <label>
-        <input type="Checkbox"
-               data-option="viewsMenuIncludeGuidelines"/>
-        <span id="options_general_incl_wcag_gl_label">
-          Include WCAG Guidelines
+        <input type="number"
+               min="1"
+               data-option="filenameIndex"/>
+        <span data-i18n="options_data_export_index_label">
+          File name index
         </span>
       </label>
+
     </fieldset>
 
     <button id="button-reset"
@@ -83,13 +105,13 @@ optionsGeneralTemplate.innerHTML = `
   </form>
 `;
 
-class OptionsGeneral extends HTMLElement {
+class OptionsDataExport extends HTMLElement {
 
   constructor() {
 
     // Helper function
     function getNode (id) {
-      return optionsGeneral.shadowRoot.querySelector(`#${id}`);
+      return optionsDataExport.shadowRoot.querySelector(`#${id}`);
     }
 
     super();
@@ -97,10 +119,10 @@ class OptionsGeneral extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     // const used for help function
 
-    const optionsGeneral = this;
+    const optionsDataExport = this;
 
-    const optionsGeneralClone = optionsGeneralTemplate.content.cloneNode(true);
-    this.shadowRoot.appendChild(optionsGeneralClone);
+    const optionsDataExportClone = optionsDataExportTemplate.content.cloneNode(true);
+    this.shadowRoot.appendChild(optionsDataExportClone);
 
     // Add stylesheet
     const linkNode = document.createElement('link');
@@ -120,10 +142,10 @@ class OptionsGeneral extends HTMLElement {
       resetDefaultOptions().then(this.updateOptions.bind(this));
     });
 
-    optionsGeneral.shadowRoot.querySelectorAll('input[type=checkbox], input[type=radio]').forEach( input => {
-      input.addEventListener('focus',  optionsGeneral.onFocus);
-      input.addEventListener('blur',   optionsGeneral.onBlur);
-      input.addEventListener('change', optionsGeneral.onChange.bind(optionsGeneral));
+    optionsDataExport.shadowRoot.querySelectorAll('input[type=checkbox], input[type=radio]').forEach( input => {
+      input.addEventListener('focus',  optionsDataExport.onFocus);
+      input.addEventListener('blur',   optionsDataExport.onBlur);
+      input.addEventListener('change', optionsDataExport.onChange.bind(optionsDataExport));
     });
   }
 
@@ -142,9 +164,7 @@ class OptionsGeneral extends HTMLElement {
         }
         else {
           if (input.type === 'radio') {
-            const checkedValue = input.getAttribute('data-option-checked');
-            const value = options[option] ? 'true' : 'false';
-            input.checked = checkedValue === value;
+            input.checked = input.value === options[option];
           }
           else {
             input.value = options[option];
@@ -154,7 +174,7 @@ class OptionsGeneral extends HTMLElement {
     });
   }
 
-  saveGeneralOptions () {
+  saveDataExportOptions () {
    const formControls = this.formControls;
   getOptions().then( (options) => {
 
@@ -167,14 +187,11 @@ class OptionsGeneral extends HTMLElement {
         else {
           if (input.type === 'radio') {
             if (input.checked) {
-              const checkedValue = input.getAttribute('data-option-checked');
-              options[option] = checkedValue === 'true';
+              options[option] = input.value;
             }
           }
           else {
-            if (input.type === 'text') {
-             options[option] = input.value;
-            }
+           options[option] = input.value;
           }
         }
       });
@@ -197,9 +214,9 @@ class OptionsGeneral extends HTMLElement {
 
   onChange () {
     debug && console.log(`[saveOptions]`);
-    this.saveGeneralOptions();
+    this.saveDataExportOptions();
   }
 
 }
 
-window.customElements.define("options-general", OptionsGeneral);
+window.customElements.define("options-data-export", OptionsDataExport);

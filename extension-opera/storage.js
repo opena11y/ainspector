@@ -51,6 +51,7 @@ export const defaultOptions = {
   filenameRuleResult: 'rule-result-{rule}{date}{time}',
   includeDate: true,
   includeTime: true,
+  filenameIndex: 1,
   promptForExportOptions: true,
   shortcutBack:  getMessage('shortcutDefaultBack'),
   shortcutViews: getMessage('shortcutDefaultViews'),

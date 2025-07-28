@@ -1068,146 +1068,6 @@
     "message": "Results Legend",
     "description": "Accessible description for get more information icon"
   },
-
-  "optionsTitle": {
-    "message": "General",
-    "description": "Title for the options page"
-  },
-
-  "optionsViewsMenuLegend": {
-    "message": "Views menu",
-    "description": "Legend for view menu in the options page"
-  },
-
-  "optionsInclWcagGlLabel": {
-    "message": "Include WCAG Guidelines",
-    "description": "Label for checkbox to include WCAG Guidelines in views menu"
-  },
-
-  "optionsInclRuleScopeLabel": {
-    "message": "Include Rule Scope",
-    "description": "Label for checkbox to include Rule Scope options in views menu"
-  },
-
-  "optionsRerunEvaluationLegend": {
-    "message": "Rerun Evaluation button",
-    "description": "Legend for rerun evaluation section in the options page"
-  },
-
-  "optionsNoDelayLabel": {
-    "message": "Rerun with no delay",
-    "description": "Label for rerun with no delay checkbox in the options page"
-  },
-
-  "optionsPromptForDelayLabel": {
-    "message": "Prompt for delay setting",
-    "description": "Label for rerun with prompted delay checkbox in the options page"
-  },
-
-  "optionsEvaluationHeading": {
-    "message": "Evaluation",
-    "description": "Heading for the evaluation section of the options page"
-  },
-
-  "optionsRulesetLegend": {
-    "message": "Ruleset",
-    "description": "Legend for ruleset radio button group in the options page"
-  },
-
-  "optionsRulesetStrictLabel": {
-    "message": "HTML5 and ARIA Ruleset",
-    "description": "Label for strict ruleset checkbox on the options page"
-  },
-
-  "optionsRulesetTransLabel": {
-    "message": "HTML4 Legacy Techniques",
-    "description": "Label for transitional ruleset checkbox on the options page"
-  },
-
-  "optionsRuleResultsLegend": {
-    "message": "Rule Result Types filter",
-    "description": "Legend for the rule results section on the options page"
-  },
-
-  "optionsInclPassNaLabel": {
-    "message": "Include 'Passed' and 'Not Applicable' results",
-    "description": "Label for checkbox to include pass and n/a results in the options page"
-  },
-
-  "optionsResetDefaults": {
-    "message": "Reset Defaults",
-    "description": "Label for reset defaults in the options page"
-  },
-
-  "optionsExportHeading": {
-    "message": "Data Export",
-    "description": "Label for the data export section of the options page"
-  },
-
-  "optionsExportPrompt": {
-    "message": "Prompt for data export options",
-    "description": "Prompt for export options when the export button is pressed"
-  },
-
-  "optionsExportButtonLegend": {
-    "message": "Export Data button",
-    "description": "Legend for prompt for export options button"
-  },
-
-  "optionsExportFormatLegend": {
-    "message": "File Format",
-    "description": "Legend for the group of radio buttons for choosing an output format in the export section of the options page"
-  },
-
-  "optionsExportCSVLabel": {
-    "message": "CSV (e.g. spreadsheets)",
-    "description": "Label for the CSV radio button option in the export section of the options page"
-  },
-
-  "optionsExportJSONLabel": {
-    "message": "JSON (e.g. databases and applications)",
-    "description": "Label for the JSON radio button option in the export section of the options page"
-  },
-
-  "optionsExportFilenameLegend": {
-    "message": "Filename Options",
-    "description": "Legend for the filenaming options in export section of the options page"
-  },
-
-  "optionsExportPrefixLabel": {
-    "message": "Prefix for export file name (up to 16 characters long)",
-    "description": "Label for prefix string input in the export section of the options page"
-  },
-
-  "optionsExportPrefixDesc": {
-    "message": "Note: For operating system compatibility file name cannot contain any spaces or <>:\"/\\|?*[] characters.",
-    "description": "Label for prefix string input in the export section of the options page"
-  },
-
-  "optionsExportPrefixErrorToLong": {
-    "message": "Prefix can only be 16 characters long.",
-    "description": "Error feedback for prefix string being too long"
-  },
-
-  "optionsExportPrefixErrorCharNotAllowed": {
-    "message": "Prefix cannot contain the $key character.",
-    "description": "Error feedback on characters that cannot not be in prefix."
-  },
-
-  "optionsExportIncludeDate": {
-    "message": "Include date and time.",
-    "description": "Label for including date and time in the export export file name"
-  },
-
-  "optionsExportIncludeDateDesc": {
-    "message": "(e.g. yyyy_mm_dd_XXh_YYm_ZZs)",
-    "description": "Additional information on format for including date and time in the export export file name"
-  },
-
-  "optionsExportPromptForOptions": {
-    "message": "Do not prompt for data export options",
-    "description": "Label for disable prompting for export export file name options when activating the export button."
-  },
   "options_tab_ruleset_label": {
     "message": "Ruleset Options",
     "description": "Label for ruleset options options tab"
@@ -1296,6 +1156,10 @@
     "message": "Include 'Pass' and 'N/A' results",
     "description": "Label for include pass and n/a in results label"
   },
+  "option_general_rerun_evaluation_legend": {
+    "message": "Rerun Evaluation' Button",
+    "description": "Legend for rerun evaluation options"
+  },
   "options_general_no_delay_label": {
     "message": "Rerun with no delay",
     "description": "Label for rerun with no delay label"
@@ -1312,9 +1176,81 @@
     "message": "Include WCAG Guidelines",
     "description": "Label for include wcag guidelines checkbox"
   },
+  "options_data_export_button_legend": {
+    "message": "Export Data Button",
+    "description": "Legend for export data button options"
+  },
+  "options_data_export_prompt_label": {
+    "message": "Prompt for data export options",
+    "description": "Label for prompt for data export checkbox"
+  },
+  "options_data_export_format_legend": {
+    "message": "Export Format",
+    "description": "Legend for export format options"
+  },
+  "options_data_export_csv_label": {
+    "message": "CSV",
+    "description": "Label for CSV format option radio button"
+  },
+  "options_data_export_json_label": {
+    "message": "JSON",
+    "description": "Label for JSON format option radio button"
+  },
+  "options_data_export_filename_legend": {
+    "message": "Filename Options",
+    "description": "Legend for Filename Options"
+  },
+  "options_data_export_prefix_label": {
+    "message": "Export File Prefix",
+    "description": "Label for export file prefix textbox"
+  },
+  "options_data_export_prefix_note_desc": {
+    "message": "Note: Prefix cannot contain more than 32 characters or include spaces or <code>&lt;&gt;:\"/\\|?*[]</code> characters.",
+    "description": "Description for export file prefix textbox"
+  },
+  "options_data_export_index_label": {
+    "message": "File name index",
+    "description": "Label for export index number field"
+  },
   "options_reset_defaults_button": {
     "message": "Reset Defaults",
     "description": "Label for reset defaults button"
+  },
+  "options_shortcuts_heading_shortcuts": {
+    "message": "Shortcuts",
+    "description": "Shortcut heading for table of shortcuts"
+  },
+  "options_shortcuts_heading_actions": {
+    "message": "Actions",
+    "description": "Actions heading for table of shortcuts"
+  },
+  "options_shortcuts_back_button": {
+    "message": "Activates Back button.",
+    "description": "Label for back shortcut key"
+  },
+  "options_shortcuts_export": {
+    "message": "Activates Export button.",
+    "description": "Label for export shortcut key"
+  },
+  "options_shortcuts_rerun": {
+    "message": "Activates Rerun button.",
+    "description": "Label for rerun shortcut key"
+  },
+  "options_shortcuts_view": {
+    "message": "Activates View button.",
+    "description": "Label for view shortcut key"
+  },
+  "options_shortcuts_copy": {
+    "message": "Activates Copy button.",
+    "description": "Label for copy button"
+  },
+  "options_shortcuts_export": {
+    "message": "Activates Export button.",
+    "description": "Label for export shortcut key"
+  },
+  "options_shortcuts_note": {
+    "message": "Note: Leaving the shortcut key value empty disables the shortcut.",
+    "description": "Note related to how to disable a shortcut"
   },
   "info_dialog_ruleset_info_button": {
     "message": "Ruleset Information",

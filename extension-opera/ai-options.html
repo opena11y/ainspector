@@ -3,8 +3,9 @@
 <html>
   <head>
     <meta charset="utf-8"/>
-    <link rel="stylesheet" href="options.css"/>
+    <link rel="stylesheet" href="ai-options.css"/>
     <link rel="stylesheet" href="options-tablist.css"/>
+
     <script type="module" src="info-dialog.js"></script>
     <script type="module" src="info-dialog-aria-versions.js"></script>
     <script type="module" src="info-dialog-rulesets.js"></script>
@@ -12,6 +13,8 @@
     <script type="module" src="info-dialog-wcag-levels.js"></script>
     <script type="module" src="options-ruleset.js"></script>
     <script type="module" src="options-general.js"></script>
+    <script type="module" src="options-data-export.js"></script>
+    <script type="module" src="options-shortcuts.js"></script>
     <script type="module" src="options-tablist.js"></script>
   </head>
 
@@ -66,14 +69,14 @@
            role="tabpanel"
            id="tabpanel-export-options"
            aria-labelledby="tab-export-options">
-          <p>Under development</p>
+           <options-data-export></options-data-export>
       </div>
 
       <div class="tabpanel"
            role="tabpanel"
            id="tabpanel-shortcut-keys"
            aria-labelledby="tab-shortcut-keys">
-          <p>Under development</p>
+           <options-shortcuts></options-shortcuts>
       </div>
 
 

@@ -16,11 +16,11 @@ import {
 
 // Constants
 
-const debug = new DebugLogging('[options-ruleset]', false);
+const debug = new DebugLogging('[options-general]', false);
 debug.flag = true;
 
-const optionsRulesetTemplate = document.createElement('template');
-optionsRulesetTemplate.innerHTML = `
+const optionsGeneralTemplate = document.createElement('template');
+optionsGeneralTemplate.innerHTML = `
   <form>
     <fieldset>
       <legend data-i18n="options_general_rule_results_legend">
@@ -36,7 +36,7 @@ optionsRulesetTemplate.innerHTML = `
     </fieldset>
 
     <fieldset>
-      <legend id="options-rerun-evaluation-legend">'
+      <legend data-i18n="option_general_rerun_evaluation_legend">'
         Rerun Evaluation' Button
       </legend>
       <label>
@@ -89,7 +89,7 @@ class OptionsGeneral extends HTMLElement {
 
     // Helper function
     function getNode (id) {
-      return optionsRuleset.shadowRoot.querySelector(`#${id}`);
+      return optionsGeneral.shadowRoot.querySelector(`#${id}`);
     }
 
     super();
@@ -97,10 +97,10 @@ class OptionsGeneral extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     // const used for help function
 
-    const optionsRuleset = this;
+    const optionsGeneral = this;
 
-    const optionsRulesetClone = optionsRulesetTemplate.content.cloneNode(true);
-    this.shadowRoot.appendChild(optionsRulesetClone);
+    const optionsGeneralClone = optionsGeneralTemplate.content.cloneNode(true);
+    this.shadowRoot.appendChild(optionsGeneralClone);
 
     // Add stylesheet
     const linkNode = document.createElement('link');
@@ -120,10 +120,10 @@ class OptionsGeneral extends HTMLElement {
       resetDefaultOptions().then(this.updateOptions.bind(this));
     });
 
-    optionsRuleset.shadowRoot.querySelectorAll('input[type=checkbox], input[type=radio]').forEach( input => {
-      input.addEventListener('focus',  optionsRuleset.onFocus);
-      input.addEventListener('blur',   optionsRuleset.onBlur);
-      input.addEventListener('change', optionsRuleset.onChange.bind(optionsRuleset));
+    optionsGeneral.shadowRoot.querySelectorAll('input[type=checkbox], input[type=radio]').forEach( input => {
+      input.addEventListener('focus',  optionsGeneral.onFocus);
+      input.addEventListener('blur',   optionsGeneral.onBlur);
+      input.addEventListener('change', optionsGeneral.onChange.bind(optionsGeneral));
     });
   }
 
@@ -154,7 +154,7 @@ class OptionsGeneral extends HTMLElement {
     });
   }
 
-  saveRulesetOptions () {
+  saveGeneralOptions () {
    const formControls = this.formControls;
   getOptions().then( (options) => {
 
@@ -197,7 +197,7 @@ class OptionsGeneral extends HTMLElement {
 
   onChange () {
     debug && console.log(`[saveOptions]`);
-    this.saveRulesetOptions();
+    this.saveGeneralOptions();
   }
 
 }
