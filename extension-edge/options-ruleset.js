@@ -7,7 +7,7 @@ import DebugLogging  from './debug.js';
 import {
   getOptions,
   saveOptions,
-  resetDefaultOptions
+  resetRulesetOptions
 } from './storage.js';
 
 import {
@@ -230,8 +230,8 @@ optionsRulesetTemplate.innerHTML = `
 
     <button id="button-reset"
             type="reset"
-            data-i18n="options_reset_defaults_button">
-            Reset Defaults
+            data-i18n="options_reset_ruleset_defaults_button">
+            Reset Ruleset Defaults
     </button>
 
   </form>
@@ -271,7 +271,7 @@ class OptionsRuleset extends HTMLElement {
     this.updateOptions();
 
     getNode('button-reset').addEventListener('click', () => {
-      resetDefaultOptions().then(this.updateOptions.bind(this));
+      resetRulesetOptions().then(this.updateOptions.bind(this));
     });
 
     optionsRuleset.shadowRoot.querySelectorAll('input[type=checkbox], input[type=radio]').forEach( input => {

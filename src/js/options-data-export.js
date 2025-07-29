@@ -7,17 +7,25 @@ import DebugLogging  from './debug.js';
 import {
   getOptions,
   saveOptions,
-  resetDefaultOptions
+  resetExportOptions
 } from './storage.js';
 
 import {
-  setI18nLabels
+  setI18nLabels,
+  getMessage
 } from './utils.js';
+
+import {
+  isCharacterAllowed,
+  validatePrefix
+} from './options-validate.js'
 
 // Constants
 
 const debug = new DebugLogging('[options-export]', false);
-debug.flag = true;
+debug.flag = false;
+
+const MAX_PREFIX_LENGTH = 32;
 
 const optionsDataExportTemplate = document.createElement('template');
 optionsDataExportTemplate.innerHTML = `
@@ -74,15 +82,17 @@ optionsDataExportTemplate.innerHTML = `
               type="text"
               size="30"
               data-option="filenamePrefix"
-              aria-describedby="options-export-prefix-desc options-export-prefix-note"/>
-        <span class="feedback prefix">
-          <img src="icons/error-icon-15.png" alt=""/>
-          <span id="options-export-prefix-desc" aria-live="assertive"></span>
+              aria-describedby="options-export-prefix-error options-export-prefix-note"/>
+        <span class="feedback prefix" role="status">
+          <img src="icons/error-icon-15.png" alt="" hidden/>
+          <span id="options-export-prefix-error"></span>
         </span>
       </div>
       <div class="desc"
-           data-i18n="options_data_export_prefix_note_desc">
-        Note: Prefix cannot contain spaces or <code>&lt;&gt;:"/\|?*[]</code> characters.
+        <span data-i18n="options_data_export_prefix_note_desc">
+          Note: Prefix cannot contain spaces or the following characters
+        </span>
+        : <code>&lt;&gt;:"/\|?*[]</code>.
       </div>
 
       <label>
@@ -98,8 +108,8 @@ optionsDataExportTemplate.innerHTML = `
 
     <button id="button-reset"
             type="reset"
-            data-i18n="options_reset_defaults_button">
-            Reset Defaults
+            data-i18n="options_reset_export_defaults_button">
+            Reset Export Data Defaults
     </button>
 
   </form>
@@ -139,7 +149,7 @@ class OptionsDataExport extends HTMLElement {
     this.updateOptions();
 
     getNode('button-reset').addEventListener('click', () => {
-      resetDefaultOptions().then(this.updateOptions.bind(this));
+      resetExportOptions().then(this.updateOptions.bind(this));
     });
 
     optionsDataExport.shadowRoot.querySelectorAll('input[type=checkbox], input[type=radio]').forEach( input => {
@@ -147,6 +157,18 @@ class OptionsDataExport extends HTMLElement {
       input.addEventListener('blur',   optionsDataExport.onBlur);
       input.addEventListener('change', optionsDataExport.onChange.bind(optionsDataExport));
     });
+
+    this.exportPrefixInput = getNode('options-export-prefix');
+    this.exportPrefixInput.addEventListener('keydown', this.onKeydownValidatePrefix.bind(this));
+    this.exportPrefixInput.addEventListener('keyup', this.onKeyupValidatePrefix.bind(this));
+
+    this.exportPrefixError = getNode('options-export-prefix-error');
+
+    this.errorMsgKey = getMessage('options_data_export_prefix_error_char_not_allowed');
+    debug.log(`[errorMsgKey]: ${this.errorMsgKey}`);
+    this.errorMsgLength = getMessage('options_data_export_prefix_error_to_long');
+    debug.log(`[errorMsgLength]: ${this.errorMsgLength}`);
+
   }
 
   updateOptions () {
@@ -199,6 +221,15 @@ class OptionsDataExport extends HTMLElement {
     });
   }
 
+  hidePrefixError() {
+    this.exportPrefixError.parentNode.classList.remove('show');
+  }
+
+  showPrefixError(message) {
+    this.exportPrefixError.parentNode.classList.add('show');
+    this.exportPrefixError.textContent = message;
+  }
+
   // Event handlers
 
   onFocus (event) {
@@ -215,6 +246,33 @@ class OptionsDataExport extends HTMLElement {
   onChange () {
     debug && console.log(`[saveOptions]`);
     this.saveDataExportOptions();
+  }
+
+  onKeydownValidatePrefix (event) {
+    this.hidePrefixError();
+    const key = event.key;
+    if (!isCharacterAllowed(key)) {
+      this.showPrefixError(this.errorMsgKey.replaceAll('KEY', `"${key}"`));
+      event.stopPropagation();
+      event.preventDefault();
+    } else {
+      if ((key.length === 1) &&
+          (this.exportPrefixInput.value.length === MAX_PREFIX_LENGTH)) {
+        this.showPrefixError(this.errorMsgLength.replaceAll('LENGTH', MAX_PREFIX_LENGTH));
+        event.stopPropagation();
+        event.preventDefault();
+      }
+    }
+  }
+
+  onKeyupValidatePrefix () {
+    const value = validatePrefix(this.exportPrefixInput.value, MAX_PREFIX_LENGTH);
+    if (value !== this.exportPrefixInput.value) {
+      if (this.exportPrefixInput.value.length >= MAX_PREFIX_LENGTH) {
+        this.showPrefixError(this.errorMsgLength.replace('LENGTH', MAX_PREFIX_LENGTH));
+      }
+    }
+    this.exportPrefixInput.value = value;
   }
 
 }

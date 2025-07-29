@@ -1205,16 +1205,44 @@
     "description": "Label for export file prefix textbox"
   },
   "options_data_export_prefix_note_desc": {
-    "message": "Note: Prefix cannot contain more than 32 characters or include spaces or <code>&lt;&gt;:\"/\\|?*[]</code> characters.",
+    "message": "Note: Prefix cannot contain spaces or the following characters",
     "description": "Description for export file prefix textbox"
   },
   "options_data_export_index_label": {
     "message": "File name index",
     "description": "Label for export index number field"
   },
+  "options_data_export_prefix_error_to_long": {
+    "message": "Prefix can only be LENGTH characters long.",
+    "description": "Error feedback for prefix string being too long"
+  },
+  "options_data_export_prefix_error_char_not_allowed": {
+    "message": "Prefix cannot contain the KEY character.",
+    "description": "Error feedback on characters that cannot not be in prefix."
+  },
   "options_reset_defaults_button": {
     "message": "Reset Defaults",
     "description": "Label for reset defaults button"
+  },
+  "options_reset_ruleset_defaults_button": {
+    "message": "Reset Ruleset Defaults",
+    "description": "Label for reset ruleset defaults button"
+  },
+  "options_reset_general_defaults_button": {
+    "message": "Reset General Defaults",
+    "description": "Label for reset general defaults button"
+  },
+  "options_reset_export_defaults_button": {
+    "message": "Reset Export Data Defaults",
+    "description": "Label for reset export defaults button"
+  },
+  "options_reset_shortcut_defaults_button": {
+    "message": "Reset Shortcut Defaults",
+    "description": "Label for reset shortcut defaults button"
+  },
+  "options_shortcuts_enable": {
+    "message": "Enable keyboard shortcuts",
+    "description": "Label for shortcuts enabled checkbox"
   },
   "options_shortcuts_heading_shortcuts": {
     "message": "Shortcuts",

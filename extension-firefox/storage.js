@@ -30,37 +30,48 @@ function notLastError () {
   }
 }
 
-export const defaultOptions = {
-  isSidebarOpen: false,
-  viewsMenuIncludeGuidelines: true,
+export const rulesetOptions = {
   ruleset: 'WCAG21',
   level : 'AA',
   scopeFilter: 'ALL',
   ariaVersion: 'ARIA12',
+};
+
+export const generalOptions = {
+  resultsIncludePassNa: true,
   rerunDelayEnabled: true,
   rerunDelayValue: '5',
-  resultsIncludePassNa: true,
+  viewsMenuIncludeGuidelines: true,
+  isSidebarOpen: false,
   highlight: 'selected',
-  // Properties for exporting reports
+  documentationURL: 'https://opena11y.github.io/evaluation-library/concepts.html'
+};
+
+export const exportOptions = {
   projectTitle: '',
   evaluatorName: '',
   exportFormat: 'CSV',  // other option is JSON
   filenamePrefix: 'ainspector',
-  filenameAllRules: 'all-rules{date}{time}',
-  filenameRuleGroup: 'rule-group-{group}{date}{time}',
-  filenameRuleResult: 'rule-result-{rule}{date}{time}',
+  filenameAllRules: 'all-rules{date}{time}{index}',
+  filenameRuleGroup: 'rule-group-{group}-{index}',
+  filenameRuleResult: 'rule-result-{rule}-{index}',
   includeDate: true,
   includeTime: true,
   filenameIndex: 1,
   promptForExportOptions: true,
+};
+
+export const shortcutOptions = {
   shortcutBack:  getMessage('shortcutDefaultBack'),
   shortcutViews: getMessage('shortcutDefaultViews'),
   shortcutExport:getMessage('shortcutDefaultExport'),
   shortcutRerun: getMessage('shortcutDefaultRerun'),
   shortcutCopy:  getMessage('shortcutDefaultCopy'),
   shortcutsEnabled: false,
-  documentationURL: 'https://opena11y.github.io/evaluation-library/concepts.html'
 };
+
+
+const defaultOptions = Object.assign(rulesetOptions, generalOptions, exportOptions, shortcutOptions)
 
 /*
 **  getOptions
@@ -104,6 +115,50 @@ export function saveOptions (options) {
 export function resetDefaultOptions () {
   return new Promise (function (resolve, reject) {
     browserStorage.set(defaultOptions, function () {
+      if (notLastError()) { resolve() }
+    });
+  });
+}
+
+/*
+** resetRulesetOptions
+*/
+export function resetRulesetOptions () {
+  return new Promise (function (resolve, reject) {
+    browserStorage.set(rulesetOptions, function () {
+      if (notLastError()) { resolve() }
+    });
+  });
+}
+
+/*
+** resetGeneralOptions
+*/
+export function resetGeneralOptions () {
+  return new Promise (function (resolve, reject) {
+    browserStorage.set(generalOptions, function () {
+      if (notLastError()) { resolve() }
+    });
+  });
+}
+
+/*
+** resetExportOptions
+*/
+export function resetExportOptions () {
+  return new Promise (function (resolve, reject) {
+    browserStorage.set(exportOptions, function () {
+      if (notLastError()) { resolve() }
+    });
+  });
+}
+
+/*
+** resetShortcutOptions
+*/
+export function resetShortcutOptions () {
+  return new Promise (function (resolve, reject) {
+    browserStorage.set(shortcutOptions, function () {
       if (notLastError()) { resolve() }
     });
   });

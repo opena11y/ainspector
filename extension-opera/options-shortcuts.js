@@ -7,7 +7,7 @@ import DebugLogging  from './debug.js';
 import {
   getOptions,
   saveOptions,
-  resetDefaultOptions
+  resetShortcutOptions
 } from './storage.js';
 
 import {
@@ -17,134 +17,143 @@ import {
 // Constants
 
 const debug = new DebugLogging('[options-shortcuts]', false);
-debug.flag = true;
+debug.flag = false;
 
 const optionsShortcutsTemplate = document.createElement('template');
 optionsShortcutsTemplate.innerHTML = `
   <form>
-        <table class="shortcuts">
-          <thead>
-            <tr>
-              <th data-i18n="options_shortcuts_heading_shortcuts">
-                Shortcut
-              </th>
-              <th data-i18n="options_shortcuts_heading_actions">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <kbd>
-                  Backspace/<br/>Delete
-                </kbd>
-              </td>
-              <td>
-                <div data-i18n="options_shortcuts_back_button">
-                  Activates Back button.
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <input type="text"
-                       size="1"
-                       data-option="shortcutCopy"
-                       id="shortcut-copy"
-                       aria-describedby="shortcut-copy-desc">
-                <div class="feedback shortcut">
-                  <img src="icons/error-icon-15.png"
-                       alt=""/>
-                  <span id="shortcut-copy-desc"
-                        role="status">
-                  </span>
-                </div>
-              </td>
-              <td>
-                <label for="shortcut-copy"
-                       data-i18n="options_shortcuts_copy">
-                  Activates Copy button.
-                </label>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <input type="text"
-                       size="1"
-                       data-option="shortcutExport"
-                       id="shortcut-export"
-                       aria-describedby="shortcut-export-desc">
-                <div class="feedback shortcut">
-                  <img src="icons/error-icon-15.png"
-                       alt=""/>
-                  <span id="shortcut-export-desc"
-                        role="status">
-                  </span>
-                </div>
-              </td>
-              <td>
-                <label for="shortcut-export"
-                       data-i18n="options_shortcuts_export">
-                  Activates Export button.
-                </label>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <input type="text"
-                       size="1"
-                       data-option="shortcutRerun"
-                       id="shortcut-rerun"
-                       aria-describedby="shortcut-rerun-desc">
-                <div class="feedback shortcut">
-                  <img src="icons/error-icon-15.png"
-                       alt=""/>
-                  <span id="shortcut-rerun-desc"
-                        role="status">
-                  </span>
-                </div>
-              </td>
-              <td>
-                <label for="shortcut-rerun"
-                       data-i18n="options_shortcuts_rerun">
-                  Activates Rerun Evaluation button.
-                </label>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <input type="text"
-                       size="1"
-                       data-option="shortcutViews"
-                       id="shortcut-views"
-                       aria-describedby="shortcut-views-desc">
-                <div class="feedback shortcut">
-                  <img src="icons/error-icon-15.png"
-                       alt=""/>
-                  <span id="shortcut-views-desc"
-                        role="status">
-                  </span>
-                </div>
-              </td>
-              <td>
-                <label for="shortcut-views"
-                       data-i18n="options_shortcuts_view">
-                 Activates View button.
-                </label>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="note"
-           data-i18n="options_shortcuts_note">
-           Note: Leaving the shortcut key value empty disables the shortcut.
-        </p>
+
+    <label>
+      <input type="checkbox"
+             data-option="shortcutsEnabled"/>
+      <span data-i18n="options_shortcuts_enable">
+        Enable keyboard shortcuts
+      </span>
+    </label>
+
+    <table class="shortcuts">
+      <thead>
+        <tr>
+          <th data-i18n="options_shortcuts_heading_shortcuts">
+            Shortcut
+          </th>
+          <th data-i18n="options_shortcuts_heading_actions">
+            Action
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <kbd>
+              Backspace/<br/>Delete
+            </kbd>
+          </td>
+          <td>
+            <div data-i18n="options_shortcuts_back_button">
+              Activates Back button.
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input type="text"
+                   size="1"
+                   data-option="shortcutCopy"
+                   id="shortcut-copy"
+                   aria-describedby="shortcut-copy-desc">
+            <div class="feedback shortcut">
+              <img src="icons/error-icon-15.png"
+                   alt=""/>
+              <span id="shortcut-copy-desc"
+                    role="status">
+              </span>
+            </div>
+          </td>
+          <td>
+            <label for="shortcut-copy"
+                   data-i18n="options_shortcuts_copy">
+              Activates Copy button.
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input type="text"
+                   size="1"
+                   data-option="shortcutExport"
+                   id="shortcut-export"
+                   aria-describedby="shortcut-export-desc">
+            <div class="feedback shortcut">
+              <img src="icons/error-icon-15.png"
+                   alt=""/>
+              <span id="shortcut-export-desc"
+                    role="status">
+              </span>
+            </div>
+          </td>
+          <td>
+            <label for="shortcut-export"
+                   data-i18n="options_shortcuts_export">
+              Activates Export button.
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input type="text"
+                   size="1"
+                   data-option="shortcutRerun"
+                   id="shortcut-rerun"
+                   aria-describedby="shortcut-rerun-desc">
+            <div class="feedback shortcut">
+              <img src="icons/error-icon-15.png"
+                   alt=""/>
+              <span id="shortcut-rerun-desc"
+                    role="status">
+              </span>
+            </div>
+          </td>
+          <td>
+            <label for="shortcut-rerun"
+                   data-i18n="options_shortcuts_rerun">
+              Activates Rerun Evaluation button.
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input type="text"
+                   size="1"
+                   data-option="shortcutViews"
+                   id="shortcut-views"
+                   aria-describedby="shortcut-views-desc">
+            <div class="feedback shortcut">
+              <img src="icons/error-icon-15.png"
+                   alt=""/>
+              <span id="shortcut-views-desc"
+                    role="status">
+              </span>
+            </div>
+          </td>
+          <td>
+            <label for="shortcut-views"
+                   data-i18n="options_shortcuts_view">
+             Activates View button.
+            </label>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note"
+       data-i18n="options_shortcuts_note">
+       Note: Leaving the shortcut key value empty disables the shortcut.
+    </p>
 
     <button id="button-reset"
             type="reset"
-            data-i18n="options_reset_defaults_button">
-            Reset Defaults
+            data-i18n="options_reset_shortcut_defaults_button">
+            Reset Shortcut Defaults
     </button>
 
   </form>
@@ -184,7 +193,7 @@ class OptionsShortcuts extends HTMLElement {
     this.updateOptions();
 
     getNode('button-reset').addEventListener('click', () => {
-      resetDefaultOptions().then(this.updateOptions.bind(this));
+      resetShortcutOptions().then(this.updateOptions.bind(this));
     });
 
     optionsShortcuts.shadowRoot.querySelectorAll('input[type=checkbox], input[type=radio]').forEach( input => {

@@ -7,7 +7,7 @@ import DebugLogging  from './debug.js';
 import {
   getOptions,
   saveOptions,
-  resetDefaultOptions
+  resetGeneralOptions
 } from './storage.js';
 
 import {
@@ -17,7 +17,7 @@ import {
 // Constants
 
 const debug = new DebugLogging('[options-general]', false);
-debug.flag = true;
+debug.flag = false;
 
 const optionsGeneralTemplate = document.createElement('template');
 optionsGeneralTemplate.innerHTML = `
@@ -76,8 +76,8 @@ optionsGeneralTemplate.innerHTML = `
 
     <button id="button-reset"
             type="reset"
-            data-i18n="options_reset_defaults_button">
-            Reset Defaults
+            data-i18n="options_reset_general_defaults_button">
+            Reset General Defaults
     </button>
 
   </form>
@@ -117,7 +117,7 @@ class OptionsGeneral extends HTMLElement {
     this.updateOptions();
 
     getNode('button-reset').addEventListener('click', () => {
-      resetDefaultOptions().then(this.updateOptions.bind(this));
+      resetGeneralOptions().then(this.updateOptions.bind(this));
     });
 
     optionsGeneral.shadowRoot.querySelectorAll('input[type=checkbox], input[type=radio]').forEach( input => {
