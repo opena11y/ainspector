@@ -166,7 +166,7 @@ class OptionsDataExport extends HTMLElement {
       if (input.type === 'checkbox' || input.type === 'radio') {
         input.addEventListener('focus',  optionsDataExport.onFocus);
         input.addEventListener('blur',   optionsDataExport.onBlur);
-        input.parentNode.addEventListener('pointerover',   optionsDataExport.onPointerover);
+        input.parentNode.addEventListener('poiinterover',   optionsDataExport.onPointerover);
       }
       input.addEventListener('change', optionsDataExport.onChange.bind(optionsDataExport));
     });
@@ -177,6 +177,8 @@ class OptionsDataExport extends HTMLElement {
 
     this.exportPrefixError = getNode('options-export-prefix-error');
 
+    this.onResize();
+    window.addEventListener('resize', this.onResize.bind(this));
   }
 
   updateOptions () {
@@ -248,15 +250,16 @@ class OptionsDataExport extends HTMLElement {
   // Event handlers
 
   onFocus (event) {
-    const node = event.currentTarget.parentNode;
-    const rect = node.querySelector('span').getBoundingClientRect();
-    node.style.width = (rect.width + 40) + 'px';
-    node.classList.add('focus');
+    const pNode = event.currentTarget.parentNode;
+    pNode.classList.add('focus');
+    const rect = pNode.querySelector('span').getBoundingClientRect();
+    pNode.style.width = (rect.width + 40) + 'px';
   }
 
   onPointerover (event) {
-    const rect = event.currentTarget.querySelector('span').getBoundingClientRect();
-    event.currentTarget.style.width = (rect.width + 40) + 'px';
+    const pNode = event.currentTarget;
+    const rect = pNode.querySelector('span').getBoundingClientRect();
+    pNode.style.width = (rect.width + 40) + 'px';
   }
 
   onBlur (event) {
@@ -293,6 +296,15 @@ class OptionsDataExport extends HTMLElement {
       }
     }
     this.exportPrefixInput.value = value;
+  }
+
+  onResize() {
+    this.shadowRoot.querySelectorAll('input[type=radio], input[type=checkbox]').forEach( input => {
+      const node = input.parentNode;
+      if (node) {
+        node.style.width = 'auto';
+      }
+    });
   }
 
 }

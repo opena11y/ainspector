@@ -1,0 +1,8 @@
+/* ai-sidepanel.css */
+
+.ai-sidepanel {
+  font-family: var(--main-font-family);
+  font-size: var(--main-font-size);
+  color: light-dark(var(--main-color-light), var(--main-color-dark));
+  background: light-dark(var(--main-background-light), var(--main-background-dark));
+}

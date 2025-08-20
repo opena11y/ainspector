@@ -47,8 +47,7 @@ function onError(error) {
 /* templates */
 const template = document.createElement('template');
 template.innerHTML = `
-  <div id="id-ai-sidepanel"
-       class="ai-sidepanel">
+  <div class="ai-sidepanel">
     <p>Hello World!</p>
   </div>
 `;
@@ -60,6 +59,12 @@ class AISidePanel extends HTMLElement {
 
     // Add DOM tree from template
     this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+    // Use external CSS stylesheet
+    let link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', 'ai-sidepanel.css');
+    this.shadowRoot.appendChild(link);
 
     this.lastStatus = '';
 

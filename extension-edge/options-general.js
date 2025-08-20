@@ -124,8 +124,11 @@ class OptionsGeneral extends HTMLElement {
       input.addEventListener('focus',  optionsGeneral.onFocus);
       input.addEventListener('blur',   optionsGeneral.onBlur);
       input.addEventListener('change', optionsGeneral.onChange.bind(optionsGeneral));
-      input.parentNode.addEventListener('pointerover', optionsGeneral.onPointerover);
+      input.parentNode.addEventListener('blur',   optionsGeneral.onPointerover);
     });
+
+    this.onResize();
+    window.addEventListener('resize', this.onResize.bind(this));
   }
 
   updateOptions () {
@@ -186,15 +189,16 @@ class OptionsGeneral extends HTMLElement {
   // Event handlers
 
   onFocus (event) {
-    const node = event.currentTarget.parentNode;
-    const rect = node.querySelector('span').getBoundingClientRect();
-    node.style.width = (rect.width + 40) + 'px';
-    node.classList.add('focus');
+    const pNode = event.currentTarget.parentNode;
+    pNode.classList.add('focus');
+    const rect = pNode.querySelector('span').getBoundingClientRect();
+    pNode.style.width = (rect.width + 40) + 'px';
   }
 
   onPointerover (event) {
-    const rect = event.currentTarget.querySelector('span').getBoundingClientRect();
-    event.currentTarget.style.width = (rect.width + 40) + 'px';
+    const pNode = event.currentTarget;
+    const rect = pNode.querySelector('span').getBoundingClientRect();
+    pNode.style.width = (rect.width + 40) + 'px';
   }
 
   onBlur (event) {
@@ -206,6 +210,14 @@ class OptionsGeneral extends HTMLElement {
     this.saveGeneralOptions();
   }
 
+  onResize() {
+    this.shadowRoot.querySelectorAll('input[type=radio], input[type=checkbox]').forEach( input => {
+      const node = input.parentNode;
+      if (node) {
+        node.style.width = 'auto';
+      }
+    });
+  }
 }
 
 window.customElements.define("options-general", OptionsGeneral);
