@@ -1,7 +1,19 @@
-/* optionsTablist.css */
+/* generated from options-tablist.scss */
+@use 'ai-base';
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  font-size: ai-base.$font-size-options;
+  font-family: ai-base.$font-family;
+  color: light-dark(ai-base.$color-light, ai-base.$color-dark);
+  background-color: light-dark(ai-base.$background-light, ai-base.$background-dark);
+}
 
 div.tablist {
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid light-dark(ai-base.$color-light, ai-base.$color-dark);
 }
 
 div.tab {
@@ -10,7 +22,7 @@ div.tab {
   margin-left: 6px;
   maring-right: 6px;
   display: inline-block;
-  font-size: 1.25rem;
+  font-size: ai-base.$font-size-tab;
   cursor: pointer;
 }
 
@@ -20,10 +32,9 @@ div.tab:hover {
 }
 
 div[aria-selected].tab {
-  padding-bottom: 4px;
-  border-bottom: 2px solid rgb(0, 97, 224);
-  font-weight: bold;
-  color: rgb(0, 97, 224);
+  padding-bottom: 2px;
+  border-bottom: 4px solid light-dark(ai-base.$color-focus-light, ai-base.$color-focus-dark);
+  color: light-dark(ai-base.$color-focus-light, ai-base.$color-focus-dark);;
 }
 
 div.tabpanel {

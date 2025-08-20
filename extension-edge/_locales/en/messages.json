@@ -1213,12 +1213,24 @@
     "description": "Label for export index number field"
   },
   "options_data_export_prefix_error_to_long": {
-    "message": "Prefix can only be LENGTH characters long.",
-    "description": "Error feedback for prefix string being too long"
+    "message": "Prefix can only be $length$ characters long.",
+    "description": "Error feedback for prefix string being too long",
+    "placeholders": {
+      "length": {
+        "content": "$1",
+        "example": "32"
+      }
+    }
   },
   "options_data_export_prefix_error_char_not_allowed": {
-    "message": "Prefix cannot contain the KEY character.",
-    "description": "Error feedback on characters that cannot not be in prefix."
+    "message": "Prefix cannot contain the \"$key$\" character.",
+    "description": "Error feedback on characters that cannot not be in prefix.",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "["
+      }
+    }
   },
   "options_reset_defaults_button": {
     "message": "Reset Defaults",
@@ -1243,6 +1255,14 @@
   "options_shortcuts_enable": {
     "message": "Enable keyboard shortcuts",
     "description": "Label for shortcuts enabled checkbox"
+  },
+  "options_shortcuts_backspace": {
+    "message": "Backspace",
+    "description": "Label for backspace key"
+  },
+  "options_shortcuts_delete": {
+    "message": "Delete",
+    "description": "Label for delete key"
   },
   "options_shortcuts_heading_shortcuts": {
     "message": "Shortcuts",

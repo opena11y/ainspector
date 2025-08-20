@@ -1,27 +1,17 @@
-/* options.css */
+/* generated from options.scss */
+@use 'ai-base';
+
+:root {
+  color-scheme: light dark;
+}
 
 body {
   margin: 1em;
   padding: 4px;
-  font-size: 1.2em;
-}
-
-span.title {
-  font-size: 3 rem;
-  font-weight: bold;
-  margin: 1.5rem 0 0.75rem;
-}
-
-h1 {
-  font-size: 3 rem;
-  font-weight: bold;
-  margin: 1.5rem 0 0.75rem;
-}
-
-h2 {
-  font-size: 2.25 rem;
-  font-weight: normal;
-  margin: 1.5rem 0 0.75rem;
+  font-size: ai-base.$font-size-options;
+  font-family: ai-base.$font-family;
+  color: light-dark(ai-base.$color-light, ai-base.$color-dark);
+  background-color: light-dark(ai-base.$background-light, ai-base.$background-dark);
 }
 
 .checkbox {
@@ -35,13 +25,15 @@ fieldset {
 }
 
 legend {
-  font-size: 110%;
+  font-size: ai-base.$font-size-legend;
   font-weight: bold;
 }
 
 label  {
+  font-size: ai-base.$font-size-options;
   display:  block;
-  margin: 0.25em;
+  margin: 0.125em;
+  padding: 0.125em;
 }
 
 label[for] {
@@ -50,12 +42,15 @@ label[for] {
 }
 
 input[type="text"] {
+  font-size: ai-base.$font-size-options;
   margin:  0;
   padding: 0;
   margin-left:  0.5em;
+  display: inline-block;
 }
 
 .desc {
+  font-size: ai-base.$font-size-options;
   margin:  0;
   padding: 0;
   margin-left:  0.5em;
@@ -69,15 +64,16 @@ input[type="text"] {
   font-weight:  bold;
 }
 
-
 .note {
   margin:  0;
   padding: 0;
   font-style: italic;
+  font-size: ai-base.$font-size-options;
 }
 
 .note span {
   font-weight: bold;
+  font-size: ai-base.$font-size-options;
 }
 
 p.note {
@@ -88,22 +84,24 @@ p.note {
 
 button[type=reset] {
   margin-top:  2em;
+  font-size: ai-base.$font-size-options;
 }
 
 select {
   display: block;
+  font-size: ai-base.$font-size-options;
 }
 
 .feedback {
-  color: black;
-  border: 2px solid red;
-  background:  white;
+  border: 2px solid light-dark(ai-base.$color-feedback-light, ai-base.$color-feedback-dark);
+  background:  light-dark(ai-base.$background-feedback-light, ai-base.$background-feedback-dark);
   padding: 2px;
   border-radius:  4px;
+  font-size: ai-base.$font-size-options;
 }
 
 .feedback img {
-  height: 12px !important;
+  height: 1.1em !important;
 }
 
 .feedback.shortcut {
@@ -128,5 +126,14 @@ select {
   visibility:  visible;
 }
 
+label.focus {
+  outline: ButtonText 2px solid;
+  background: #eee;
+}
 
+button:focus {
+  outline: ButtonText 2px solid;
+  outline-offset: 0.125em;
+
+}
 

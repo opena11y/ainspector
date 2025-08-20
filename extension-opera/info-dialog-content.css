@@ -1,7 +1,30 @@
-/* infoRulesets.css */
+/* info-dialog-content.css */
+
+.content {
+  font-family: var(--main-font-family);
+  font-size: var(--main-font-size);
+  color: light-dark(var(--main-color-light), var(--main-color-dark));
+  background: light-dark(var(--main-background-light), var(--main-background-dark));
+}
+
+a[href],
+a[href]:link,
+a[href]:visited {
+  color: light-dark(var(--link-color-light), var(--link-color-dark));
+}
+
+a[href]:focus {
+  color: light-dark(var(--link-color-light), var(--link-color-dark));
+  outline-style: var(--link-outline-style);
+  outline-offset: var(--link-outline-offset);
+  outline-width: var(--link-outline-width);
+  outline-color: light-dark(var(--link-outline-color-light), var(--link-outline-color-dark));
+}
+
 h3 {
   margin: 0;
   padding: 0;
+  margin-bottom: 0.5em;
   font-size: 1.1em;
 }
 
@@ -15,22 +38,21 @@ h3 {
 table.table,
 table.table th,
 table.table td {
-  border-collapse: collapse;
-  padding: 5px;
-  margin-bottom: 1em;
+    border-collapse: collapse;
+    padding: 5px;
+    margin-bottom: 1em;
 }
 
-table.table thead th {
+table.table th {
   font-weight: bold;
 }
 
-table.table th,
 table.table td {
   font-weight: normal;
 }
 
 table.table-striped tbody tr:nth-child(odd) {
-  background-color: #eee;
+  background-color: light-dark(#eee, #333);
 }
 
 table.table .text-end {
@@ -46,6 +68,5 @@ table.table .text-top {
 }
 
 table.table .term {
-  font-style: italic;
   font-isze: 1.1em;
 }

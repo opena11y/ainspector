@@ -3,8 +3,7 @@
 <html>
   <head>
     <meta charset="utf-8"/>
-    <link rel="stylesheet" href="ai-options.css"/>
-    <link rel="stylesheet" href="options-tablist.css"/>
+    <link rel="stylesheet" href="base.css"/>
 
     <script type="module" src="info-dialog.js"></script>
     <script type="module" src="info-dialog-aria-versions.js"></script>
@@ -19,67 +18,6 @@
   </head>
 
   <body>
-    <form>
-      <div class="tablist" role="tablist">
-        <div class="tab"
-             role="tab"
-             id="tab-ruleset-options"
-             aria-controls="tabpanel-ruleset-options"
-             data-i18n="options_tab_ruleset_label">
-          Ruleset Options
-        </div>
-        <div class="tab"
-             role="tab"
-             id="tab-general-options"
-             aria-controls="tabpanel-general-options"
-             data-i18n="options_tab_general_label">
-          General
-        </div>
-        <div class="tab"
-             role="tab"
-             id="tab-export-options"
-             aria-controls="tabpanel-export-options"
-             data-i18n="options_tab_export_label">
-          Data Export
-        </div>
-        <div class="tab"
-             role="tab"
-             id="tab-shortcut-keys"
-             aria-controls="tabpanel-shortcut-keys"
-             data-i18n="options_tab_shortcuts_label">
-          Shortcut Keys
-        </div>
-      </div>
-
-      <div class="tabpanel"
-           role="tabpanel"
-           id="tabpanel-ruleset-options"
-           aria-labelledby="tab-ruleset-options">
-           <options-ruleset></options-ruleset>
-      </div>
-
-      <div class="tabpanel"
-           role="tabpanel"
-           id="tabpanel-general-options"
-           aria-labelledby="tab-general-options">
-           <options-general></options-general>
-      </div>
-
-      <div class="tabpanel"
-           role="tabpanel"
-           id="tabpanel-export-options"
-           aria-labelledby="tab-export-options">
-           <options-data-export></options-data-export>
-      </div>
-
-      <div class="tabpanel"
-           role="tabpanel"
-           id="tabpanel-shortcut-keys"
-           aria-labelledby="tab-shortcut-keys">
-           <options-shortcuts></options-shortcuts>
-      </div>
-
-
-     </form>
+     <options-tablist></options-tablist>
   </body>
 </html>

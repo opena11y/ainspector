@@ -11,8 +11,7 @@ import {
 } from './storage.js';
 
 import {
-  setI18nLabels,
-  getMessage
+  setI18nLabels
 } from './utils.js';
 
 import {
@@ -22,6 +21,10 @@ import {
 
 // Constants
 
+const browserI18n = typeof browser === 'object' ?
+            browser.i18n :
+            chrome.i18n;
+
 const debug = new DebugLogging('[options-export]', false);
 debug.flag = false;
 
@@ -29,7 +32,7 @@ const MAX_PREFIX_LENGTH = 32;
 
 const optionsDataExportTemplate = document.createElement('template');
 optionsDataExportTemplate.innerHTML = `
-  <form>
+  <form class="options">
     <fieldset>
       <legend data-i18n="options_data_export_button_legend">
         Export Data Button
@@ -77,17 +80,21 @@ optionsDataExportTemplate.innerHTML = `
              data-i18n="options_data_export_prefix_label">
           Export File Prefix (up to 16 characters)
       </label>
+
       <div class="input">
         <input id="options-export-prefix"
               type="text"
               size="30"
               data-option="filenamePrefix"
               aria-describedby="options-export-prefix-error options-export-prefix-note"/>
+
         <span class="feedback prefix" role="status">
-          <img src="icons/error-icon-15.png" alt="" hidden/>
+          <img src="icons/error-icon-15.png" alt="" />
           <span id="options-export-prefix-error"></span>
         </span>
+
       </div>
+
       <div class="desc"
         <span data-i18n="options_data_export_prefix_note_desc">
           Note: Prefix cannot contain spaces or the following characters
@@ -95,14 +102,17 @@ optionsDataExportTemplate.innerHTML = `
         : <code>&lt;&gt;:"/\|?*[]</code>.
       </div>
 
-      <label>
-        <input type="number"
+      <label for="options-export-index"
+             data-i18n="options_data_export_index_label">
+        File name index
+      </label>
+
+      <div class="input">
+        <input id="options-export-index"
+               type="number"
                min="1"
                data-option="filenameIndex"/>
-        <span data-i18n="options_data_export_index_label">
-          File name index
-        </span>
-      </label>
+      </div>
 
     </fieldset>
 
@@ -152,9 +162,11 @@ class OptionsDataExport extends HTMLElement {
       resetExportOptions().then(this.updateOptions.bind(this));
     });
 
-    optionsDataExport.shadowRoot.querySelectorAll('input[type=checkbox], input[type=radio]').forEach( input => {
-      input.addEventListener('focus',  optionsDataExport.onFocus);
-      input.addEventListener('blur',   optionsDataExport.onBlur);
+    optionsDataExport.shadowRoot.querySelectorAll('input').forEach( input => {
+      if (input.type === 'checkbox' || input.type === 'radio') {
+        input.addEventListener('focus',  optionsDataExport.onFocus);
+        input.addEventListener('blur',   optionsDataExport.onBlur);
+      }
       input.addEventListener('change', optionsDataExport.onChange.bind(optionsDataExport));
     });
 
@@ -164,11 +176,6 @@ class OptionsDataExport extends HTMLElement {
 
     this.exportPrefixError = getNode('options-export-prefix-error');
 
-    this.errorMsgKey = getMessage('options_data_export_prefix_error_char_not_allowed');
-    debug.log(`[errorMsgKey]: ${this.errorMsgKey}`);
-    this.errorMsgLength = getMessage('options_data_export_prefix_error_to_long');
-    debug.log(`[errorMsgLength]: ${this.errorMsgLength}`);
-
   }
 
   updateOptions () {
@@ -177,7 +184,7 @@ class OptionsDataExport extends HTMLElement {
     getOptions().then( (options) => {
 
       formControls.forEach( input => {
-        debug.flag && console.log(`[update][${input.id}]: ${options[input.getAttribute('data-option')]} (${input.getAttribute('data-option')})`);
+        debug.flag && debug.log(`[update][${input.id}]: ${options[input.getAttribute('data-option')]} (${input.getAttribute('data-option')})`);
 
         const option = input.getAttribute('data-option');
 
@@ -201,7 +208,7 @@ class OptionsDataExport extends HTMLElement {
   getOptions().then( (options) => {
 
       formControls.forEach( input => {
-        debug.flag && console.log(`[update][${input.id}]: ${options[input.getAttribute('data-option')]} (${input.getAttribute('data-option')})`);
+        debug.flag && debug.log(`[update][${input.id}]: ${options[input.getAttribute('data-option')]} (${input.getAttribute('data-option')})`);
         const option = input.getAttribute('data-option');
         if (input.type === 'checkbox') {
           options[option] = input.checked;
@@ -213,6 +220,13 @@ class OptionsDataExport extends HTMLElement {
             }
           }
           else {
+           if (option === 'filenameIndex') {
+              debug.log(`[index]: ${input.value} (${typeof input.value})`);
+              const value = parseInt(input.value);
+              if (!value || value < 1) {
+                input.value = 1;
+              }
+           }
            options[option] = input.value;
           }
         }
@@ -244,7 +258,7 @@ class OptionsDataExport extends HTMLElement {
   }
 
   onChange () {
-    debug && console.log(`[saveOptions]`);
+    debug.flag && debug.log(`[saveOptions]`);
     this.saveDataExportOptions();
   }
 
@@ -252,13 +266,13 @@ class OptionsDataExport extends HTMLElement {
     this.hidePrefixError();
     const key = event.key;
     if (!isCharacterAllowed(key)) {
-      this.showPrefixError(this.errorMsgKey.replaceAll('KEY', `"${key}"`));
+      this.showPrefixError(browserI18n.getMessage('options_data_export_prefix_error_char_not_allowed', key));
       event.stopPropagation();
       event.preventDefault();
     } else {
       if ((key.length === 1) &&
           (this.exportPrefixInput.value.length === MAX_PREFIX_LENGTH)) {
-        this.showPrefixError(this.errorMsgLength.replaceAll('LENGTH', MAX_PREFIX_LENGTH));
+        this.showPrefixError(browserI18n.getMessage('options_data_export_prefix_error_to_long', MAX_PREFIX_LENGTH.toString()));
         event.stopPropagation();
         event.preventDefault();
       }
@@ -269,7 +283,7 @@ class OptionsDataExport extends HTMLElement {
     const value = validatePrefix(this.exportPrefixInput.value, MAX_PREFIX_LENGTH);
     if (value !== this.exportPrefixInput.value) {
       if (this.exportPrefixInput.value.length >= MAX_PREFIX_LENGTH) {
-        this.showPrefixError(this.errorMsgLength.replace('LENGTH', MAX_PREFIX_LENGTH));
+        this.showPrefixError(browserI18n.getMessage('options_data_export_prefix_error_to_long', MAX_PREFIX_LENGTH.toString()));
       }
     }
     this.exportPrefixInput.value = value;

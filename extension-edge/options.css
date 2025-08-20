@@ -1,30 +1,13 @@
 /* options.css */
-body {
-  margin: 1em;
-  padding: 4px;
-  font-size: 1.2em;
-}
 
-span.title {
-  font-size: 3 rem;
-  font-weight: bold;
-  margin: 1.5rem 0 0.75rem;
-}
+form.options {
+  --legend-font-size: 14pt;
+  --input-font-size: 12pt;
 
-h1 {
-  font-size: 3 rem;
-  font-weight: bold;
-  margin: 1.5rem 0 0.75rem;
-}
+  .checkbox {
+    margin-left: 12px;
+  }
 
-h2 {
-  font-size: 2.25 rem;
-  font-weight: normal;
-  margin: 1.5rem 0 0.75rem;
-}
-
-.checkbox {
-  margin-left: 12px;
 }
 
 fieldset {
@@ -34,13 +17,19 @@ fieldset {
 }
 
 legend {
-  font-size: 110%;
+  font-size: var(--legend-font-size);
   font-weight: bold;
 }
 
-label {
-  display: block;
-  margin: 0.25em;
+label  {
+  margin: 0;
+  padding: 0;
+  font-size: var(--input-font-size);
+  display:  block;
+  margin-top: 0.125em;
+  margin-bottom: 0.125em;
+  padding-top: 0.125em;
+  padding-bottom: 0.125em;
 }
 
 label[for] {
@@ -48,80 +37,151 @@ label[for] {
   margin-bottom: none;
 }
 
-input[type=text] {
-  margin: 0;
+tr label[for] {
+  margin-left: 0;
+}
+
+input[type=checkbox],
+input[type=radio] {
+  outline: none;
+}
+
+input[type="text"],
+input[type="number"] {
+  font-size: var(--input-font-size);
+  margin:  0;
   padding: 0;
-  margin-left: 0.5em;
+  margin-left:  0.5em;
+  display: inline-block;
 }
 
 .desc {
-  margin: 0;
+  font-size: var(--input-font-size);
+  margin:  0;
   padding: 0;
-  margin-left: 0.5em;
+  margin-left:  0.5em;
   margin-bottom: 1em;
   font-style: italic;
 }
 
 .desc code {
-  font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+  font-family: var(--code-font-family);
   font-style: normal !important;
-  font-weight: bold;
+  font-weight:  bold;
 }
 
 .note {
-  margin: 0;
+  font-size: var(--input-font-size);
+  margin:  0;
   padding: 0;
   font-style: italic;
 }
 
 .note span {
   font-weight: bold;
+  font-size: var(--input-font-size);
 }
 
 p.note {
-  margin: 0.5em;
-  margin-left: 0.75em;
+  margin:  0.5em;
+  margin-left:  0.75em;
   padding: 0;
 }
 
 button[type=reset] {
-  margin-top: 2em;
+  margin-top:  2em;
+  font-size: var(--input-font-size);
 }
 
 select {
   display: block;
+  font-size: var(--input-font-size);
 }
 
 .feedback {
-  color: black;
-  border: 2px solid red;
-  background: white;
+  border: 2px solid light-dark(var(--feedback-color-light), var(--feedback-color-dark));
+  background:  light-dark(var(--feedback-background-light), var(--feedback-background-dark));
   padding: 2px;
-  border-radius: 4px;
+  border-radius:  4px;
+  font-size: var(--input-font-size);
 }
 
 .feedback img {
-  height: 12px !important;
+  height: 1.1em !important;
 }
 
 .feedback.shortcut {
-  display: none;
+  display:  none;
   position: absolute;
-  left: 1em;
+  left:  1em;
   top: 1em;
-  width: 18em;
+  width:  18em;
   z-index: 10;
 }
 
 .feedback.shortcut.show {
-  display: block;
+  display:  block;
 }
 
 .feedback.prefix {
-  display: inline-block;
-  visibility: hidden;
+  display:  inline-block;
+  visibility:  hidden;
 }
 
 .feedback.prefix.show {
-  visibility: visible;
+  visibility:  visible;
 }
+
+table.shortcuts {
+  padding: 0;
+  margin: 0;
+  margin-top: 0.5em;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+table.shortcuts td {
+  padding-top: 0.125em;
+  padding-bottom: 0.125em;
+}
+
+input[type=text]:focus,
+input[type=number]:focus {
+  outline-offset: var(--input-outline-offset);
+  outline-width: var(--input-outline-width);
+  outline-style:  var(--input-outline-style);
+  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+  background: light-dark(var(--input-background-light), var(--input-background-dark));
+}
+
+tr input[type=text]:focus {
+  outline: none;
+}
+
+tr:has(input):hover {
+  background: light-dark(var(--input-background-light), var(--input-background-dark));
+}
+
+tr:has(input:focus),
+label.focus {
+  outline-offset: 1px;
+  outline-width: var(--input-outline-width);
+  outline-style:  var(--input-outline-style);
+  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+  background: light-dark(var(--input-background-light), var(--input-background-dark));
+}
+
+label.focus {
+  outline-offset: var(--input-outline-offset);
+  outline-width: var(--input-outline-width);
+  outline-style:  var(--input-outline-style);
+  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+}
+
+button:focus {
+  outline-offset: var(--input-outline-offset);
+  outline-width: var(--input-outline-width);
+  outline-style:  var(--input-outline-style);
+  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+}
+

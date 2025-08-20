@@ -21,7 +21,7 @@ debug.flag = false;
 
 const optionsRulesetTemplate = document.createElement('template');
 optionsRulesetTemplate.innerHTML = `
-  <form>
+  <form class="options">
     <fieldset>
       <legend>
         <span data-i18n="options_ruleset_legend">

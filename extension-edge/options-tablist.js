@@ -1,139 +1,250 @@
 /* options-tablist.js */
 
-// Imports
+/* Imports */
 
-import DebugLogging  from './debug.js';
-
-import {
-  resetDefaultOptions
-} from './storage.js';
+import DebugLogging from './debug.js';
 
 import {
+  getMessage,
+  removeChildContent,
   setI18nLabels
 } from './utils.js';
 
-// Constants
+import {
+  getOptions,
+  saveOptions,
+  saveOption
+} from './storage.js'
 
-const debug = new DebugLogging('[options-tablist]', false);
+/* Constants */
+
+const debug = new DebugLogging('options-tablist', false);
 debug.flag = false;
 
-class OptionsTablist {
+/* templates */
+const template = document.createElement('template');
+template.innerHTML = `
+  <div class="tablist">
+      <div role="tablist">
+        <div class="tab"
+             role="tab"
+             aria-controls="tabpanel-ruleset-options">
+          <span class="focus">
+            <span id="tab-ruleset-options"
+                  data-i18n="options_tab_ruleset_label">
+               Ruleset Options
+            </span>
+          </span>
+        </div>
+        <div class="tab"
+             role="tab"
+             aria-controls="tabpanel-general-options">
+          <span class="focus">
+            <span id="tab-general-options"
+                  data-i18n="options_tab_general_label">
+               General
+            </span>
+          </span>
+        </div>
+        <div class="tab"
+             role="tab"
+             aria-controls="tabpanel-export-options">
+             <span class="focus">
+               <span id="tab-export-options"
+                     data-i18n="options_tab_export_label">
+                Data Export
+               </span>
+            </span>
+        </div>
+        <div class="tab"
+             role="tab"
+             id="tab-shortcut-keys"
+             aria-controls="tabpanel-shortcut-keys">
+             <span class="focus">
+               <span id="tab-shortcut-options"
+                     data-i18n="options_tab_shortcuts_label">
+                 Shortcut Keys
+              </span>
+            </span>
+        </div>
+      </div>
+
+      <div class="tabpanel"
+           role="tabpanel"
+           id="tabpanel-ruleset-options"
+           aria-labelledby="tab-ruleset-options">
+           <options-ruleset></options-ruleset>
+      </div>
+
+      <div class="tabpanel"
+           role="tabpanel"
+           id="tabpanel-general-options"
+           aria-labelledby="tab-general-options">
+           <options-general></options-general>
+      </div>
+
+      <div class="tabpanel"
+           role="tabpanel"
+           id="tabpanel-export-options"
+           aria-labelledby="tab-export-options">
+           <options-data-export></options-data-export>
+      </div>
+
+      <div class="tabpanel"
+           role="tabpanel"
+           id="tabpanel-shortcut-keys"
+           aria-labelledby="tab-shortcut-keys">
+           <options-shortcuts></options-shortcuts>
+      </div>
+  </div>
+`;
+
+class OptionsTablist extends HTMLElement {
   constructor () {
+    super();
+    this.attachShadow({ mode: 'open' });
 
-  // Initialize abbreviations and labels
-  this.tabs      =  document.querySelectorAll('[role=tablist] [role=tab]');
-  this.tabpanels =  [];
+    // Use external CSS stylesheet for styling
+    const linkFocus = document.createElement('link');
+    linkFocus.setAttribute('rel', 'stylesheet');
+    linkFocus.setAttribute('href', './tablist.css');
+    this.shadowRoot.appendChild(linkFocus);
 
-  setI18nLabels(document, debug.flag);
 
-  this.firstTab = this.tabs[0];
-  this.lastTab = this.tabs[this.tabs.length-1];
+    // Add DOM tree from template
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-  // Event handlers
+    this.divTitle        = this.shadowRoot.querySelector('#id-div-title');
+    this.divTablist      = this.shadowRoot.querySelector('[role="tablist"]');
+    this.divTabpanels    = this.shadowRoot.querySelector('#tabpanels');
 
-  for (let i = 0; i < this.tabs.length; i += 1) {
-      const tab = this.tabs[i];
-      let node = false;
-      const id = tab.getAttribute('aria-controls');
-      if (id) {
-        node = document.getElementById(id);
-        if (node) {
-          debug.flag && debug.log(`[id found]: ${id} ${node}`);
-        }
-        else {
-          debug.flag && debug.log(`[id not found]: ${id}`);
-        }
+    this.optionsRuleset    = this.shadowRoot.querySelector('options-ruleset');
+    this.optionsGeneral    = this.shadowRoot.querySelector('options-general');
+    this.optionsDataExport = this.shadowRoot.querySelector('options-data-export');
+    this.optionsShortcuts  = this.shadowRoot.querySelector('options-shortcuts');
+
+    this.tabNodes = [];
+
+    this.firstTab = null;
+    this.lastTab = null;
+
+    this.tabNodes = Array.from(this.divTablist.querySelectorAll('[role=tab]'));
+    this.tabpanels = [];
+
+    this.tabNodes.forEach( (tabNode) => {
+      const tabpanel = {};
+
+      const tabpanelNode =  this.shadowRoot.querySelector(`#${tabNode.getAttribute('aria-controls')}`);
+
+      tabNode.tabIndex = -1;
+      tabNode.setAttribute('aria-selected', 'false');
+
+      tabpanel.node = tabpanelNode;
+      tabpanel.contentNode = tabpanelNode.firstElementChild;
+
+      this.tabpanels.push(tabpanel);
+
+      tabNode.addEventListener('keydown', this.handleTabKeydown.bind(this));
+      tabNode.addEventListener('click',   this.handleTabClick.bind(this));
+
+      if (!this.firstTab) {
+        this.firstTab = tabNode;
+      }
+      this.lastTab = tabNode;
+    });
+
+    setI18nLabels(this.shadowRoot, debug.flag);
+
+    getOptions().then((options) => {
+
+      const lastTabNode = options.lastTabId ?
+                          this.shadowRoot.querySelector(`#${options.lastTabId}`) :
+                          null;
+
+      if (options.lastTabId && lastTabNode) {
+        this.setSelectedTab(lastTabNode, false);
       }
       else {
-        debug.flag && debug.log(`[id]: none`);
+        this.setSelectedTab(this.firstTab, false);
       }
-      this.tabpanels.push(node);
+    });
 
-      tab.tabIndex = -1;
-      tab.addEventListener('click', this.handleTabClick.bind(this));
-      tab.addEventListener('keydown', this.handleTabKeydown.bind(this));
+  }
+  // Tablist support functions and handlers
+
+  setSelectedTab(currentTab, setFocus) {
+    const tabListObj = this;
+    if (typeof setFocus !== 'boolean') {
+      setFocus = true;
     }
 
-    this.showTabpanel(this.firstTab);
-  }
-
-  get selectedTabIndex () {
-    for (let i = 0; i < this.tabs.length; i += 1) {
-      const tab = this.tabs[i];
-      if (tab.getAttribute('aria-selected') === 'true') {
-        return i;
+    saveOption('lastTabId', currentTab.id).then( () => {
+      for (var i = 0; i < this.tabNodes.length; i += 1) {
+        var tab = this.tabNodes[i];
+        if (currentTab === tab) {
+          tab.setAttribute('aria-selected', 'true');
+          tab.tabIndex = 0;
+          tabListObj.tabpanels[i].node.classList.remove('is-hidden');
+          tabListObj.tabpanels[i].contentNode.setAttribute('visible', 'true');
+          if (setFocus) {
+            tab.focus();
+          }
+        } else {
+          tab.setAttribute('aria-selected', 'false');
+          tab.tabIndex = -1;
+          this.tabpanels[i].node.classList.add('is-hidden');
+          this.tabpanels[i].contentNode.setAttribute('visible', 'false');
+        }
       }
-    }
-    return 0;
+    });
   }
 
-  focus () {
-    if (this.selectedTabId === 'tabpanel-1') {
-      this.tabDiv1.focus();
+  setSelectedToPreviousTab(currentTab) {
+    var index;
+
+    if (currentTab === this.firstTab) {
+      this.setSelectedTab(this.lastTab);
     } else {
-      this.tabDiv2.focus();
+      index = this.tabNodes.indexOf(currentTab);
+      this.setSelectedTab(this.tabNodes[index - 1]);
     }
   }
 
-  showTabpanel(showTab, focusFlag=true) {
-    for (let i = 0; i < this.tabs.length; i += 1) {
-      const tab = this.tabs[i];
-      const tabpanel = this.tabpanels[i];
+  setSelectedToNextTab(currentTab) {
+    var index;
 
-      if (tab === showTab) {
-        tabpanel.classList.remove('hide');
-        tab.setAttribute('aria-selected', 'true');
-        tab.tabIndex = 0;
-        if (focusFlag) {
-          tab.focus();
-        }
-      }
-      else {
-        tabpanel.classList.add('hide');
-        tab.removeAttribute('aria-selected');
-        tab.tabIndex = -1;
-      }
+    if (currentTab === this.lastTab) {
+      this.setSelectedTab(this.firstTab);
+    } else {
+      index = this.tabNodes.indexOf(currentTab);
+      this.setSelectedTab(this.tabNodes[index + 1]);
     }
   }
 
-  // Event handlers
-
-  handleTabClick(event) {
-    const tgt = event.currentTarget;
-    this.showTabpanel(tgt, false);
-    event.preventDefault();
-    event.stopPropagation();
-  }
+  /* EVENT HANDLERS */
 
   handleTabKeydown(event) {
     const tgt = event.currentTarget;
     let flag = false;
-    let index = this.selectedTabIndex;
 
-    switch(event.key) {
+    switch (event.key) {
       case 'ArrowLeft':
-        if (index > 0) {
-          index = index - 1;
-        }
-        this.showTabpanel(this.tabs[index]);
+        this.setSelectedToPreviousTab(tgt);
         flag = true;
         break;
 
       case 'ArrowRight':
-        if (index < (this.tabs.length - 1)) {
-          index = index + 1;
-        }
-        this.showTabpanel(this.tabs[index]);
+        this.setSelectedToNextTab(tgt);
         flag = true;
         break;
 
       case 'Home':
-        this.showTabpanel(this.firstTab);
+        this.setSelectedTab(this.firstTab);
         flag = true;
         break;
 
       case 'End':
-        this.showTabpanel(this.lastTab);
+        this.setSelectedTab(this.lastTab);
         flag = true;
         break;
 
@@ -142,13 +253,19 @@ class OptionsTablist {
     }
 
     if (flag) {
-      event.preventDefault();
       event.stopPropagation();
+      event.preventDefault();
     }
   }
 
+  handleTabClick(event) {
+    this.setSelectedTab(event.currentTarget);
+  }
+
+
 }
 
-window.addEventListener("load", () => {
-  new OptionsTablist();
-})
+window.customElements.define('options-tablist', OptionsTablist);
+
+
+

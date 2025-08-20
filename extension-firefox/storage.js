@@ -44,7 +44,8 @@ export const generalOptions = {
   viewsMenuIncludeGuidelines: true,
   isSidebarOpen: false,
   highlight: 'selected',
-  documentationURL: 'https://opena11y.github.io/evaluation-library/concepts.html'
+  documentationURL: 'https://opena11y.github.io/evaluation-library/concepts.html',
+  lastTabId: ''
 };
 
 export const exportOptions = {
@@ -108,6 +109,21 @@ export function saveOptions (options) {
   });
 }
 
+/*
+**  saveOption
+*
+*   @desc  Saves a specific option
+*/
+export function saveOption (option, value) {
+  return new Promise (function (resolve) {
+     getOptions().then( (options) => {
+      options[option] = value;
+      saveOptions(options).then(() => {
+        if (notLastError()) { resolve(); }
+      });
+    });
+  });
+}
 
 /*
 ** resetDefaultOptions

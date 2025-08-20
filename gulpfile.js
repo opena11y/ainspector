@@ -45,8 +45,7 @@ gulp.task('extensionsLocales', () => {
 });
 
 gulp.task('style', function () {
-  return gulp.src('./src/scss/*.scss')
-  .pipe(sass().on('error', sass.logError))
+  return gulp.src('./src/css/*.css')
     .pipe(dest('extension-chrome'))
     .pipe(dest('extension-edge'))
     .pipe(dest('extension-opera'))
@@ -62,8 +61,7 @@ gulp.task('documentation', function (cb) {
 })
 
 gulp.task('documentationStyle', function () {
-  return gulp.src('./src-docs/templates/*.scss')
-  .pipe(sass().on('error', sass.logError))
+  return gulp.src('./src-docs/css/*.css')
   .pipe(gulp.dest('./docs/css'));
 });
 

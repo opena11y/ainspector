@@ -21,7 +21,7 @@ debug.flag = false;
 
 const optionsShortcutsTemplate = document.createElement('template');
 optionsShortcutsTemplate.innerHTML = `
-  <form>
+  <form class="options">
 
     <label>
       <input type="checkbox"
@@ -45,12 +45,15 @@ optionsShortcutsTemplate.innerHTML = `
       <tbody>
         <tr>
           <td>
-            <kbd>
-              Backspace/<br/>Delete
+            <kbd data-i18n="options_shortcuts_backspace">
+              Backspace
+            </kbd>/<br/><kbd data-i18n="options_shortcuts_delete">
+              Delete
             </kbd>
           </td>
           <td>
-            <div data-i18n="options_shortcuts_back_button">
+            <div class="nofeedback"
+              data-i18n="options_shortcuts_back_button">
               Activates Back button.
             </div>
           </td>

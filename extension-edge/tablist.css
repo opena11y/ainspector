@@ -1,0 +1,140 @@
+/* tablist.css */
+
+:root {
+  color-scheme: light dark;
+}
+
+.tablist {
+
+  --tab-color-light: var(--primary-color);
+  --tab-color-dark: var(--primary-color-dark);
+  --tab-background-light: #eee;
+  --tab-background-dark: #333;
+  --tab-border-color-light: var(--primary-color);
+  --tab-border-color-dark:  var(--primary-color-dark);
+
+  --tab-selected-color-light: var(--primary-color);
+  --tab-selected-color-dark: var(--primary-color-dark);
+  --tab-selected-background-light: white;
+  --tab-selected-background-dark: black;
+
+
+  padding: 0;
+  padding-left: 6px;
+  padding-right: 6px;
+  font-family: var(--main-font-family);
+  font-size: var(--main-font-size);
+  color: light-dark(var(--main-color-light), var(--main-color-dark));
+  background-color: light-dark(var(--main-background-light), var(--main-background-dark));
+  min-width: 100%;
+}
+
+[role=tab] {
+  display: inline-block;
+  position: relative;
+  z-index: 2;
+  top: 1px;
+  margin: 0;
+  margin-top: 6px;
+  padding: 3px 3px 4px;
+  border-width: 2px;
+  border-style: solid;
+  border-bottom-width: 2px;
+  border-radius: 5px 5px 0px 0px;
+  outline: none;
+  font-weight: bold;
+  max-width: 10em;
+  text-align: left;
+  cursor: pointer;
+  border-color: light-dark(var(--tab-border-color-light), var(--tab-border-color-dark));
+  color: light-dark(var(--tab-color-light), var(--tab-color-dark));
+  background-color: light-dark(var(--tab-background-light), var(--tab-background-dark));;
+}
+
+[role=tab][aria-selected=true] {
+  top: 2px;
+  padding: 2px 2px 3px;
+  margin-top: 0;
+  border-width: 2px;
+  border-top-width: 8px;
+  border-bottom-width: 2px;
+  color: light-dark(#000, #fff);
+  background-color: light-dark(var(--tab-selected-background-light), var(--tab-selected-background-dark));
+  border-bottom-color: light-dark(var(--tab-selected-background-light), var(--tab-selected-background-dark));;
+  border-top-color: light-dark(var(--orange), var(--orange-dark));
+}
+
+[role=tab][aria-selected=false] {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: light-dark(var(--tab-border-color-light), var(--tab-border-color-dark));
+}
+
+[role=tabpanel] {
+  padding: 5px;
+  border-width: 2px;
+  border-style: solid;
+  overflow: hidden;
+  border-color: light-dark(var(--tab-border-color-light), var(--tab-border-color-dark));
+  background: light-dark(var(--tab-background-color-light), var(--widget-background-color-dark));;
+}
+
+[role=tabpanel].is-hidden {
+  display: none;
+}
+
+/* focus styling */
+
+[role="tab"] span.focus {
+  display: inline-block;
+  margin: 2px;
+  padding: 4px 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[role="tab"]:hover span.focus,
+[role="tab"]:focus span.focus,
+[role="tab"]:active span.focus {
+  padding: 2px 4px;
+  border-width: 2px;
+  border-style: solid;
+  border-color:  light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+}
+
+@media (forced-colors: active) {
+  .tablist {
+    color: CanvasText;
+    background-color: Canvas;
+  }
+
+  [role=tab] {
+    border-color: ButtonBorder;
+    color: CanvasText;
+    background-color: ButtonFace;
+  }
+
+  [role=tab][aria-selected=true] {
+    color: CanvasText;
+    background-color: Canvas;
+    border-bottom-color: Canvas;
+    border-top-color: ActiveText;
+  }
+
+  [role=tab][aria-selected=false] {
+    border-bottom-color: ButtonBorder;
+  }
+
+  [role=tabpanel] {
+    border-color: ButtonBorder;
+    background: Canvas;
+  }
+
+  [role="tab"]:hover span.focus,
+  [role="tab"]:focus span.focus,
+  [role="tab"]:active span.focus {
+    border-color: ActiveText;
+  }
+
+}
