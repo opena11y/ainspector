@@ -158,6 +158,8 @@ tr input[type=text]:focus {
   outline: none;
 }
 
+label:has(input[type=radio]):hover,
+label:has(input[type=checkbox]):hover,
 tr:has(input):hover {
   background: light-dark(var(--input-background-light), var(--input-background-dark));
 }

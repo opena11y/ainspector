@@ -124,6 +124,7 @@ class OptionsGeneral extends HTMLElement {
       input.addEventListener('focus',  optionsGeneral.onFocus);
       input.addEventListener('blur',   optionsGeneral.onBlur);
       input.addEventListener('change', optionsGeneral.onChange.bind(optionsGeneral));
+      input.parentNode.addEventListener('pointerover', optionsGeneral.onPointerover);
     });
   }
 
@@ -189,6 +190,11 @@ class OptionsGeneral extends HTMLElement {
     const rect = node.querySelector('span').getBoundingClientRect();
     node.style.width = (rect.width + 40) + 'px';
     node.classList.add('focus');
+  }
+
+  onPointerover (event) {
+    const rect = event.currentTarget.querySelector('span').getBoundingClientRect();
+    event.currentTarget.style.width = (rect.width + 40) + 'px';
   }
 
   onBlur (event) {

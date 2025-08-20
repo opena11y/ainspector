@@ -203,6 +203,7 @@ class OptionsShortcuts extends HTMLElement {
       input.addEventListener('focus',  optionsShortcuts.onFocus);
       input.addEventListener('blur',   optionsShortcuts.onBlur);
       input.addEventListener('change', optionsShortcuts.onChange.bind(optionsShortcuts));
+      input.parentNode.addEventListener('pointerover',   optionsShortcuts.onPointerover);
     });
   }
 
@@ -268,6 +269,11 @@ class OptionsShortcuts extends HTMLElement {
     const rect = node.querySelector('span').getBoundingClientRect();
     node.style.width = (rect.width + 40) + 'px';
     node.classList.add('focus');
+  }
+
+  onPointerover (event) {
+    const rect = event.currentTarget.querySelector('span').getBoundingClientRect();
+    event.currentTarget.style.width = (rect.width + 40) + 'px';
   }
 
   onBlur (event) {

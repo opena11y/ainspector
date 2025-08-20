@@ -278,6 +278,7 @@ class OptionsRuleset extends HTMLElement {
       input.addEventListener('focus',  optionsRuleset.onFocus);
       input.addEventListener('blur',   optionsRuleset.onBlur);
       input.addEventListener('change', optionsRuleset.onChange.bind(optionsRuleset));
+      input.parentNode.addEventListener('pointerover',   optionsRuleset.onPointerover);
     });
   }
 
@@ -333,6 +334,11 @@ class OptionsRuleset extends HTMLElement {
     const rect = node.querySelector('span').getBoundingClientRect();
     node.style.width = (rect.width + 40) + 'px';
     node.classList.add('focus');
+  }
+
+  onPointerover (event) {
+    const rect = event.currentTarget.querySelector('span').getBoundingClientRect();
+    event.currentTarget.style.width = (rect.width + 40) + 'px';
   }
 
   onBlur (event) {

@@ -166,6 +166,7 @@ class OptionsDataExport extends HTMLElement {
       if (input.type === 'checkbox' || input.type === 'radio') {
         input.addEventListener('focus',  optionsDataExport.onFocus);
         input.addEventListener('blur',   optionsDataExport.onBlur);
+        input.parentNode.addEventListener('pointerover',   optionsDataExport.onPointerover);
       }
       input.addEventListener('change', optionsDataExport.onChange.bind(optionsDataExport));
     });
@@ -251,6 +252,11 @@ class OptionsDataExport extends HTMLElement {
     const rect = node.querySelector('span').getBoundingClientRect();
     node.style.width = (rect.width + 40) + 'px';
     node.classList.add('focus');
+  }
+
+  onPointerover (event) {
+    const rect = event.currentTarget.querySelector('span').getBoundingClientRect();
+    event.currentTarget.style.width = (rect.width + 40) + 'px';
   }
 
   onBlur (event) {
