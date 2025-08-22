@@ -1,0 +1,88 @@
+/* views-menu-button.css */
+
+.views-menu-button {
+  margin: 0;
+  padding: 0;
+  display:  inline-block;
+  position: absolute;
+}
+
+.views-menu-button button {
+  font-size: var(--button-font-size);
+  color: light-dark(var(--button-color-light), var(--button-color-dark));
+  border: var(--button-border) solid light-dark(var(--button-color-light), var(--button-color-dark));
+  background-color: light-dark(var(--button-background-light), var(--button-background-dark));
+  border-radius: var(--button-radius);
+  margin: var(--button-margin);
+}
+
+.views-menu-button button svg.down {
+  padding-left: 0.125em;
+  fill: light-dark(var(--button-color-light), var(--button-color-dark));
+  stroke: light-dark(var(--button-color-light), var(--button-color-dark));
+}
+
+.views-menu-button button[aria-expanded="true"] svg.down {
+  transform: rotate(180deg);
+}
+
+.views-menu-button [role="menu"] {
+  display: none;
+  margin: 0;
+  padding: 6px 4px;
+  border: 2px solid light-dark(var(--button-color-light), var(--button-color-dark));
+  border-radius: var(--button-radius);
+  background-color: light-dark(var(--main-background-light), var(--main-background-dark));
+  right: 0;
+  height: 300px;
+  overflow-y: scroll;
+}
+
+.views-menu-button [role="menuitem"],
+.views-menu-button [role="group"] div.label {
+  margin: 1px;
+  padding: var(--input-outline-offset);
+  display: block;
+  width: 12em;
+  background-color: light-dark(var(--main-background-light), var(--main-background-dark));
+  color: light-dark(var(--main-color-light), var(--main-color-dark));
+}
+
+.views-menu-button [role="group"] div.label {
+  border-bottom: 1px solid light-dark(var(--primary-color-light), var(--primary-color-dark));
+  font-weight: bold;
+  border-radius: 0;
+}
+
+.views-menu-button [role="group"] > [role="menuitem"] {
+  margin-left: 0;
+}
+
+/* focus styling */
+
+.views-menu-button [role="menuitem"]:focus {
+  background: light-dark(var(--input-background-light), var(--input-background-dark));
+  outline-offset: 0;
+  outline-width: var( --input-outline-width);
+  outline-style: var( --input-outline-style);
+  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+}
+
+.views-menu-button [role="menuitem"]:hover {
+  background: light-dark(var(--input-background-light), var(--input-background-dark));
+  cursor: pointer;
+}
+
+.views-menu-button button:focus {
+  outline-offset: var(--input-outline-offset);
+  outline-width: var( --input-outline-width);
+  outline-style: var( --input-outline-style);
+  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+}
+
+.views-menu-button button:hover {
+  cursor: pointer;
+}
+
+
+

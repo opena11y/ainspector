@@ -166,11 +166,6 @@ class OptionsShortcuts extends HTMLElement {
 
   constructor() {
 
-    // Helper function
-    function getNode (id) {
-      return optionsShortcuts.shadowRoot.querySelector(`#${id}`);
-    }
-
     super();
 
     this.attachShadow({ mode: 'open' });
@@ -195,7 +190,7 @@ class OptionsShortcuts extends HTMLElement {
 
     this.updateOptions();
 
-    getNode('button-reset').addEventListener('click', () => {
+    this.shadowRoot.querySelector('#button-reset').addEventListener('click', () => {
       resetShortcutOptions().then(this.updateOptions.bind(this));
     });
 

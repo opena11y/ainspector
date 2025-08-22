@@ -1,9 +1,13 @@
 /* ai-sidepanel.js */
 
-import DebugLogging   from './debug.js';
+/* Imports */
+import DebugLogging  from './debug.js';
 
 import {
-  getMessage
+  getMessage,
+  setI18nLabels,
+  updateContent,
+  updateHighlightConfig
 } from './utils.js';
 
 import {
@@ -12,7 +16,7 @@ import {
 
 /* Constants */
 
-const debug = new DebugLogging('aiSidePanel', false);
+const debug = new DebugLogging('ai-sidepanel', false);
 debug.flag = false;
 
 // Browser Constants
@@ -47,9 +51,60 @@ function onError(error) {
 /* templates */
 const template = document.createElement('template');
 template.innerHTML = `
-  <div class="ai-sidepanel">
-    <p>Hello World!</p>
-  </div>
+<div id="container">
+  <header>
+    <h1 id="view-title"
+        aria-live="polite">
+      Some title content
+    </h1>
+    <button id="back-button"
+             data-i18n="back_button_label">
+    </button>
+    <views-menu-button></views-menu-button>
+  </header>
+
+  <main>
+    <!-- The ids for each view must be synchronized with the viewId
+      constant defined in panel.js -->
+    <div id="all-rules" class="view">
+      <p>All Rules</p>
+    </div>
+    <div id="rule-group" class="view" hidden>
+      <p>Rule Group</p>
+    </div>
+    <div id="rule-result" class="view" hidden>
+      <p>Rule Result</p>
+    </div>
+  </main>
+
+  <footer>
+    <div id="info-title" class="info">
+      <span class="label" data-i18n="info_title_label"></span>
+      <span class="value" aria-live="polite"></span>
+    </div>
+
+    <div id="info-location" class="info">
+      <span class="label" data-i18n="info_location_label"></span>
+      <span class="value"></span>
+    </div>
+
+    <div id="info-ruleset" class="info">
+      <span class="label" data-i18n="info_ruleset_label"></span>
+      <span class="value"></span>
+    </div>
+
+    <div class="footer-buttons">
+      <button id="preferences-button"
+              data-i18n="options_button_label">
+      </button>
+      <rerun-evaluation-button>
+      </rerun-evaluation-button>
+      <export-button>
+      </export-button>
+    </div>
+
+  </footer>
+</div>
 `;
 
 class AISidePanel extends HTMLElement {
@@ -74,6 +129,8 @@ class AISidePanel extends HTMLElement {
 
     const version = browserRuntime.getManifest().version;
     this.setAttribute('version', version);
+
+    setI18nLabels(this.shadowRoot, debug.flag);
 
     /*
     *   Add Window event listeners

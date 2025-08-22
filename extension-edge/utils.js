@@ -72,23 +72,11 @@ export function setI18nLabels (docNode, debug=false) {
   }
 
 /*
-**  @function setTablistAttr
-*/
-
-export function setTablistAttr (attr, value) {
-    const sidepanelNode = document.querySelector('toc-sidepanel');
-    const tablistNode   = sidepanelNode.shadowRoot.querySelector('toc-tablist');
-    if (tablistNode) {
-      tablistNode.setAttribute(attr, value);
-    }
-  }
-
-/*
 **  @function updateContent
 */
 
 export function updateContent () {
-  const sidepanelNode = document.querySelector('toc-sidepanel');
+  const sidepanelNode = document.querySelector('ai-sidepanel');
   if (sidepanelNode) {
     sidepanelNode.updateContent();
   }
@@ -99,7 +87,7 @@ export function updateContent () {
 */
 
 export function highlightOrdinalPosition (ordinalPosition, info='') {
-  const sidepanelNode = document.querySelector('toc-sidepanel');
+  const sidepanelNode = document.querySelector('ai-sidepanel');
   if (sidepanelNode) {
     sidepanelNode.highlightOrdinalPosition(ordinalPosition, info);
   }
@@ -110,7 +98,7 @@ export function highlightOrdinalPosition (ordinalPosition, info='') {
 */
 
 export function updateHighlightConfig (options) {
-  const sidepanelNode = document.querySelector('toc-sidepanel');
+  const sidepanelNode = document.querySelector('ai-sidepanel');
   if (sidepanelNode) {
     sidepanelNode.updateHighlightConfig(options);
   }
@@ -121,10 +109,31 @@ export function updateHighlightConfig (options) {
 */
 
 export function focusOrdinalPosition (ordinalPosition) {
-  const sidepanelNode = document.querySelector('toc-sidepanel');
+  const sidepanelNode = document.querySelector('ai-sidepanel');
   if (sidepanelNode) {
     sidepanelNode.focusOrdinalPosition(ordinalPosition);
   }
+}
+
+/*
+ * @function isOverElement
+ *
+ * @desc Returns true if pointer over an element
+ *
+ * @param {Object}   elem  DOM element node
+ * @param {Number}   x     client x coordinator of pointer
+ * @param {Number}   y     client y coordinator of pointer
+ *
+ * @return {object}  see @desc
+ */
+
+export function isOverElement(elem, x, y) {
+  const rect = elem.getBoundingClientRect();
+
+  return (rect.left <= x) &&
+         (rect.right >= x) &&
+         (rect.top <= y) &&
+         (rect.bottom >= y);
 }
 
 

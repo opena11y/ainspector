@@ -129,11 +129,6 @@ class OptionsDataExport extends HTMLElement {
 
   constructor() {
 
-    // Helper function
-    function getNode (id) {
-      return optionsDataExport.shadowRoot.querySelector(`#${id}`);
-    }
-
     super();
 
     this.attachShadow({ mode: 'open' });

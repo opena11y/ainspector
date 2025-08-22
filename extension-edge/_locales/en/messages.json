@@ -24,7 +24,7 @@
     "description": "Label for summary view"
   },
 
-  "backButtonLabel": {
+  "back_button_label": {
     "message": "Back",
     "description": "Label for back button"
   },
@@ -39,19 +39,19 @@
     "description": "Label for views button"
   },
 
-  "infoLocationLabel": {
+  "info_location_label": {
     "message": "Location",
     "description": "Label for location value"
   },
 
-  "infoTitleLabel": {
+  "info_title_label": {
     "message": "Title",
     "description": "Label for title value"
   },
 
-  "infoRulesetLabel": {
+  "info_ruleset_label": {
     "message": "Ruleset",
-    "description": "Label for rulset value"
+    "description": "Label for ruleset value"
   },
 
   "infoScopeLabel": {
@@ -59,9 +59,9 @@
     "description": "Label for scope filter value"
   },
 
-  "preferencesButtonLabel": {
-    "message": "Preferences",
-    "description": "Label for preferences button"
+  "options_button_label": {
+    "message": "Options",
+    "description": "Label for options button"
   },
 
   "tabIsLoading": {
@@ -79,72 +79,72 @@
     "description": "Message explaining that host permissions do not allow script injection."
   },
 
-  "landmarksLabel": {
+  "landmarks_label": {
     "message": "Landmarks",
     "description": "Label for Landmark rule category view"
   },
 
-  "headingsLabel": {
+  "headings_label": {
     "message": "Headings",
     "description": "Label for Headings rule category view"
   },
 
-  "stylesContentLabel": {
+  "styles_content_label": {
     "message": "Color/Content",
     "description": "Label for Color/Content rule category view"
   },
 
-  "imagesLabel": {
+  "images_label": {
     "message": "Images",
     "description": "Label for Images rule category view"
   },
 
-  "formsLabel": {
+  "forms_label": {
     "message": "Forms",
     "description": "Label for Forms rule category view"
   },
 
-  "linksLabel": {
+  "links_label": {
     "message": "Links",
     "description": "Label for Links rule category view"
   },
 
-  "tablesLabel": {
+  "tables_label": {
     "message": "Tables/Layout",
     "description": "Label for Tables/Layout rule category view"
   },
 
-  "widgetsScriptsLabel": {
+  "widgets_scripts_label": {
     "message": "ARIA Widgets",
     "description": "Label for ARIA Widgets rule category view"
   },
 
-  "audioVideoLabel": {
+  "audio_video_label": {
     "message": "Audio/Video",
     "description": "Label for Audio/Video rule category view"
   },
 
-  "keyboardLabel": {
+  "keyboard_label": {
     "message": "Keyboard Support",
     "description": "Label for Keyboard Support rule category view"
   },
 
-  "timingLabel": {
+  "timing_label": {
     "message": "Timing/Live Regions",
     "description": "Label for Timing rule category view"
   },
 
-  "siteNavigationLabel": {
+  "site_navigation_label": {
     "message": "Site Navigation",
     "description": "Label for Site Navigation rule category view"
   },
 
-  "allRulesLabel": {
+  "all_rules_label": {
     "message": "All Rules",
     "description": "Label for all rules view"
   },
 
-  "summaryLabel": {
+  "summary_label": {
     "message": "Summary",
     "description": "Label for Summary view"
   },
@@ -214,17 +214,17 @@
     "description": "Label for WCAG Guideline 4.1 view"
   },
 
-  "scopeLabel": {
+  "scope_label": {
     "message": "Scope",
     "description": "Label for rule scope"
   },
 
-  "pageLabel": {
+  "page_label": {
     "message": "Page",
     "description": "Label for page scope"
   },
 
-  "websiteLabel": {
+  "website_label": {
     "message": "Website",
     "description": "Label for website scope"
   },
@@ -304,7 +304,7 @@
     "description": "Label for not applicable results"
   },
 
-  "ruleCategoriesLabel": {
+  "rule_categories_label": {
     "message": "Rule Categories",
     "description": "Label for the rule category group"
   },
@@ -314,7 +314,7 @@
     "description": "Label for the rule category group"
   },
 
-  "guidelinesLabel": {
+  "guidelines_label": {
     "message": "WCAG Guidelines",
     "description": "Label for the guidelines group"
   },
@@ -525,7 +525,7 @@
     "description": "Element results label in rule results CSV"
   },
 
-  "elementLabel": {
+  "element_label": {
     "message": "Element",
     "description": "Element column label in grid for rule results view"
   },
@@ -580,7 +580,7 @@
     "description": "Selected element, page or website details label for rule information"
   },
 
-  "viewsMenuButtonLabel": {
+  "views_menu_button_label": {
     "message": "Views",
     "description": "Label for button in views menu button"
   },
@@ -831,7 +831,7 @@
     "description": "CSV label for Images rule category for number of rules with"
   },
 
-  "csvSummary_formsLabel": {
+  "csvSummary_forms_label": {
     "message": "Number of Form rules with",
     "description": "CSV label for Forms rule category for number of rules with"
   },

@@ -241,11 +241,6 @@ class OptionsRuleset extends HTMLElement {
 
   constructor() {
 
-    // Helper function
-    function getNode (id) {
-      return optionsRuleset.shadowRoot.querySelector(`#${id}`);
-    }
-
     super();
 
     this.attachShadow({ mode: 'open' });
@@ -270,7 +265,7 @@ class OptionsRuleset extends HTMLElement {
 
     this.updateOptions();
 
-    getNode('button-reset').addEventListener('click', () => {
+    this.shadowRoot.querySelector('#button-reset').addEventListener('click', () => {
       resetRulesetOptions().then(this.updateOptions.bind(this));
     });
 

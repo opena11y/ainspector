@@ -87,11 +87,6 @@ class OptionsGeneral extends HTMLElement {
 
   constructor() {
 
-    // Helper function
-    function getNode (id) {
-      return optionsGeneral.shadowRoot.querySelector(`#${id}`);
-    }
-
     super();
 
     this.attachShadow({ mode: 'open' });
@@ -116,7 +111,7 @@ class OptionsGeneral extends HTMLElement {
 
     this.updateOptions();
 
-    getNode('button-reset').addEventListener('click', () => {
+    this.shadowRoot.querySelector('#button-reset').addEventListener('click', () => {
       resetGeneralOptions().then(this.updateOptions.bind(this));
     });
 
