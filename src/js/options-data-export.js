@@ -139,8 +139,13 @@ class OptionsDataExport extends HTMLElement {
     const optionsDataExportClone = optionsDataExportTemplate.content.cloneNode(true);
     this.shadowRoot.appendChild(optionsDataExportClone);
 
-    // Add stylesheet
-    const linkNode = document.createElement('link');
+     // Use external CSS stylesheets
+    let link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', 'base.css');
+    this.shadowRoot.appendChild(link);
+
+   const linkNode = document.createElement('link');
     linkNode.rel = 'stylesheet';
     linkNode.href = 'options.css';
     this.shadowRoot.appendChild(linkNode);

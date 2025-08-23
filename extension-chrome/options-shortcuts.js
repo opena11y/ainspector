@@ -166,11 +166,6 @@ class OptionsShortcuts extends HTMLElement {
 
   constructor() {
 
-    // Helper function
-    function getNode (id) {
-      return optionsShortcuts.shadowRoot.querySelector(`#${id}`);
-    }
-
     super();
 
     this.attachShadow({ mode: 'open' });
@@ -181,7 +176,12 @@ class OptionsShortcuts extends HTMLElement {
     const optionsShortcutsClone = optionsShortcutsTemplate.content.cloneNode(true);
     this.shadowRoot.appendChild(optionsShortcutsClone);
 
-    // Add stylesheet
+    // Use external CSS stylesheets
+    let link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', 'base.css');
+    this.shadowRoot.appendChild(link);
+
     const linkNode = document.createElement('link');
     linkNode.rel = 'stylesheet';
     linkNode.href = 'options.css';
@@ -195,7 +195,7 @@ class OptionsShortcuts extends HTMLElement {
 
     this.updateOptions();
 
-    getNode('button-reset').addEventListener('click', () => {
+    this.shadowRoot.querySelector('#button-reset').addEventListener('click', () => {
       resetShortcutOptions().then(this.updateOptions.bind(this));
     });
 

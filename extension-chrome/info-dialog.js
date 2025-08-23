@@ -50,8 +50,13 @@ export default class InfoDialog extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
 
-    // Use external CSS stylesheet
+    // Use external CSS stylesheets
     let link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', 'base.css');
+    this.shadowRoot.appendChild(link);
+
+    link = document.createElement('link');
     link.setAttribute('rel', 'stylesheet');
     link.setAttribute('href', 'info-dialog.css');
     this.shadowRoot.appendChild(link);

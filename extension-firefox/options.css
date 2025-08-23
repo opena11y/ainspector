@@ -90,12 +90,11 @@ p.note {
 
 button[type=reset] {
   margin-top:  2em;
-  font-size: var(--input-font-size);
 }
 
 select {
   display: block;
-  font-size: var(--input-font-size);
+  font-size: var(--button-font-size);
 }
 
 .feedback {
@@ -145,45 +144,4 @@ table.shortcuts td {
   padding-bottom: 0.125em;
 }
 
-input[type=text]:focus,
-input[type=number]:focus {
-  outline-offset: var(--input-outline-offset);
-  outline-width: var(--input-outline-width);
-  outline-style:  var(--input-outline-style);
-  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
-  background: light-dark(var(--input-background-light), var(--input-background-dark));
-}
-
-tr input[type=text]:focus {
-  outline: none;
-}
-
-label:has(input[type=radio]):hover,
-label:has(input[type=checkbox]):hover,
-tr:has(input):hover {
-  background: light-dark(var(--input-background-light), var(--input-background-dark));
-}
-
-tr:has(input:focus),
-label.focus {
-  outline-offset: 1px;
-  outline-width: var(--input-outline-width);
-  outline-style:  var(--input-outline-style);
-  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
-  background: light-dark(var(--input-background-light), var(--input-background-dark));
-}
-
-label.focus {
-  outline-offset: var(--input-outline-offset);
-  outline-width: var(--input-outline-width);
-  outline-style:  var(--input-outline-style);
-  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
-}
-
-button:focus {
-  outline-offset: var(--input-outline-offset);
-  outline-width: var(--input-outline-width);
-  outline-style:  var(--input-outline-style);
-  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
-}
 

@@ -115,8 +115,13 @@ class AISidePanel extends HTMLElement {
     // Add DOM tree from template
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-    // Use external CSS stylesheet
+    // Use external CSS style sheets
     let link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', 'base.css');
+    this.shadowRoot.appendChild(link);
+
+    link = document.createElement('link');
     link.setAttribute('rel', 'stylesheet');
     link.setAttribute('href', 'ai-sidepanel.css');
     this.shadowRoot.appendChild(link);

@@ -17,6 +17,17 @@ a[href]:visited {
   color: light-dark(var(--link-color-light), var(--link-color-dark));
 }
 
+button {
+  font-size: var(--button-font-size);
+  color: light-dark(var(--button-color-light), var(--button-color-dark));
+  border: var(--button-border) solid light-dark(var(--button-color-light), var(--button-color-dark));
+  background-color: light-dark(var(--button-background-light), var(--button-background-dark));
+  border-radius: var(--button-radius);
+  margin: var(--button-margin);
+}
+
+/* focus styling */
+
 a[href]:focus {
   color: light-dark(var(--link-outline-color-light), var(--link-outline-color-dark));
   outline-style: var(--link-outline-style);
@@ -24,3 +35,57 @@ a[href]:focus {
   outline-width: var(--link-outline-width);
   outline-color: light-dark(var(--link-outline-color-light), var(--link-outline-color-dark));
 }
+
+button:focus {
+  outline-offset: var(--input-outline-offset);
+  outline-width: var( --input-outline-width);
+  outline-style: var( --input-outline-style);
+  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+input[type=text]:focus,
+input[type=number]:focus {
+  outline-offset: var(--input-outline-offset);
+  outline-width: var(--input-outline-width);
+  outline-style:  var(--input-outline-style);
+  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+  background: light-dark(var(--input-background-light), var(--input-background-dark));
+}
+
+tr input[type=text]:focus {
+  outline: none;
+}
+
+label:has(input[type=radio]):hover,
+label:has(input[type=checkbox]):hover,
+tr:has(input):hover {
+  background: light-dark(var(--input-background-light), var(--input-background-dark));
+}
+
+tr:has(input:focus),
+label.focus {
+  outline-offset: 1px;
+  outline-width: var(--input-outline-width);
+  outline-style:  var(--input-outline-style);
+  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+  background: light-dark(var(--input-background-light), var(--input-background-dark));
+}
+
+label.focus {
+  outline-offset: var(--input-outline-offset);
+  outline-width: var(--input-outline-width);
+  outline-style:  var(--input-outline-style);
+  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+}
+
+button:focus {
+  outline-offset: var(--input-outline-offset);
+  outline-width: var(--input-outline-width);
+  outline-style:  var(--input-outline-style);
+  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+}
+

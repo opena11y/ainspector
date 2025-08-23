@@ -176,7 +176,12 @@ class OptionsShortcuts extends HTMLElement {
     const optionsShortcutsClone = optionsShortcutsTemplate.content.cloneNode(true);
     this.shadowRoot.appendChild(optionsShortcutsClone);
 
-    // Add stylesheet
+    // Use external CSS stylesheets
+    let link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', 'base.css');
+    this.shadowRoot.appendChild(link);
+
     const linkNode = document.createElement('link');
     linkNode.rel = 'stylesheet';
     linkNode.href = 'options.css';
