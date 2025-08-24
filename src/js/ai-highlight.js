@@ -1,7 +1,5 @@
 /* ai-highlight.js */
 
-const debug = false;
-
 const minWidth = 68;
 const minHeight = 27;
 
@@ -71,7 +69,6 @@ const colorDarkHiddenText       = '#ffcc00';
 const colorDarkHiddenBackground = '#000000';
 
 const zIndexHighlight = '1999900';
-const scrollBehavior = 'instant';
 
 const styleHighlightTemplate = document.createElement('template');
 styleHighlightTemplate.textContent = `
@@ -191,17 +188,6 @@ styleHighlightTemplate.textContent = `
 `;
 
 /*
- * Helper functions
- */
-
-function consoleRect (label, rect) {
-  console.log(`${label} Left: ${rect.left} Top: ${rect.top} Width: ${rect.width} height: ${rect.height}`);
-}
-
-function isOdd(x) { return x & 1; };
-
-
-/*
  *   @class HighlightElement
  *
  */
@@ -260,6 +246,13 @@ class AIHighlightELement extends HTMLElement {
 
 
   attributeChangedCallback(name, oldValue, newValue) {
+    const parts = newValue.split(';');
+    const pos   = parts[0].trim();
+    const info  = parts.length === 2 ? parts[1].trim() : '';
+    const values = newValue.split(' ');
+
+    let newSize  = this.highlightSize;
+    let newStyle = this.highlightStyle;
 
     switch (name) {
       case "data-attr":
@@ -279,9 +272,6 @@ class AIHighlightELement extends HTMLElement {
         return;
 
       case "highlight-position":
-        const parts = newValue.split(';');
-        const pos   = parts[0].trim();
-        const info  = parts.length === 2 ? parts[1].trim() : '';
         if (pos) {
           const node = this.queryDOMForAttrValue(this.dataAttr, pos);
           if (node) {
@@ -297,11 +287,6 @@ class AIHighlightELement extends HTMLElement {
         return;
 
       case "highlight-config":
-
-        const values = newValue.split(' ');
-
-        let newSize  = this.highlightSize;
-        let newStyle = this.highlightStyle;
 
         values.forEach( (v) => {
           const value = v.toLowerCase().trim();
@@ -801,7 +786,7 @@ class AIHighlightELement extends HTMLElement {
 }
 
 // Create highlight element
-window.customElements.define(HIGHLIGHT_ELEMENT_NAME, AIHighlightElement);
+window.customElements.define(HIGHLIGHT_ELEMENT_NAME, AIHighlightELement);
 document.body.appendChild(document.createElement(HIGHLIGHT_ELEMENT_NAME));
 
 

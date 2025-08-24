@@ -1,8 +1,22 @@
 /* info-dialog.js */
 
+// Imports
+
+import DebugLogging  from './debug.js';
+
+import {
+  getMessage,
+  setI18nLabels
+} from './utils.js';
+
+// Constants
+
 const browserTabs = typeof browser === 'object' ?
             browser.tabs :
             chrome.tabs;
+
+const debug = new DebugLogging('[info-dialog]', false);
+debug.flag = false;
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -27,8 +41,8 @@ template.innerHTML = `
 
   <dialog id="info-dialog">
     <div class="header">
-      <h2>Ruleset Options Information</h2>
-      <button id="close-button-1" aria-label="Close">✕</button>
+      <h2 data-i18n="options_info_dialog_title">Ruleset Options Information</h2>
+      <button id="close-button-1" data-i18n-aria-label="close_button_label">✕</button>
     </div>
 
     <div class="content">
@@ -39,7 +53,10 @@ template.innerHTML = `
       <button id="more-info-button">
         <slot name="more-button"></slot>
       </button>
-      <button id="close-button-2">Close</button>
+      <button id="close-button-2"
+              data-i18n="close_button_label">
+        Close
+      </button>
     </div>
   </dialog>
 `;
@@ -64,7 +81,7 @@ export default class InfoDialog extends HTMLElement {
     // Add DOM tree from template
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-    // Get references
+    setI18nLabels(this.shadowRoot, debug.flag);
 
     const openButtonLabel = this.getAttribute('data-open-button-label');
     const moreButtonLabel = this.getAttribute('data-more-button-label');
@@ -107,10 +124,9 @@ export default class InfoDialog extends HTMLElement {
   onMoreInfoClick () {
     const moreInfoButton = this.moreinfoButton;
 
-    function onCreated(tab) {
+    function onCreated() {
       moreInfoButton.disabled = true;
-      moreInfoButton.title = msg.moreButtonDisabled;
-      console.log(`Created new tab: ${tab.id}`)
+      moreInfoButton.title = getMessage('more_button_disabled');
     }
 
     function onError(error) {

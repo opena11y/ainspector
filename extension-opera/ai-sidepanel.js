@@ -6,8 +6,8 @@ import DebugLogging  from './debug.js';
 import {
   getMessage,
   setI18nLabels,
-  updateContent,
-  updateHighlightConfig
+//  updateContent,
+//  updateHighlightConfig
 } from './utils.js';
 
 import {
@@ -154,7 +154,7 @@ class AISidePanel extends HTMLElement {
   }
 
   clearContent(message = '') {
-//    this.tocTablistNode.clearContent(message);
+    debug.flag && debug.log(`[clearContent]: ${message}`);
   }
 
   highlightOrdinalPosition(ordinalPosition, info='') {
@@ -172,6 +172,7 @@ class AISidePanel extends HTMLElement {
                                     info: info
                                   }
                                 });
+        debug.log(`[myResult]: ${myResult}`);
       }
     }
 
@@ -194,6 +195,7 @@ class AISidePanel extends HTMLElement {
                                     style: options.highlightStyle
                                   }
                                 });
+        debug.log(`[myResult]: ${myResult}`);
       }
     }
 
@@ -212,6 +214,7 @@ class AISidePanel extends HTMLElement {
       for (const tab of tabs) {
         const myResult = await myBrowser.tabs
           .sendMessage(tab.id, { focusPosition : ordinalPosition });
+        debug.log(`[myResult]: ${myResult}`);
       }
     }
 
@@ -232,7 +235,7 @@ class AISidePanel extends HTMLElement {
 
     function onUpdateContentError() {
       spObj.clearContent(getMessage('protocol_not_supported'));
-      onError()
+      onError();
     }
     myBrowser.tabs
       .query({
@@ -263,6 +266,7 @@ class AISidePanel extends HTMLElement {
       const myResult = await myBrowser.tabs
         .sendMessage(tab.id, { runEvaluation : true });
 
+        debug.log(`[myResult]: ${myResult} ${aiSidePanelObj}`);
 //      aiSidePanelObj.aiTablistNode.updateContent(myResult);
     }
   }

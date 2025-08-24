@@ -22,7 +22,8 @@ export function validatePrefix (value, max) {
     if (isCharacterAllowed(c)) {
       v += c;
     }
-  };
+  }
+
   v = v.substring(0, max);
   return v;
 }

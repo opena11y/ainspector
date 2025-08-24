@@ -59,6 +59,11 @@
     "description": "Label for scope filter value"
   },
 
+  "options_info_dialog_title": {
+    "message": "Ruleset Options Information",
+    "description": "Title for options information dialog box"
+  },
+
   "options_button_label": {
     "message": "Options",
     "description": "Label for options button"
@@ -585,7 +590,7 @@
     "description": "Label for button in views menu button"
   },
 
-  "exportDataButtonLabel": {
+  "export_data_button_label": {
     "message": "Export Data",
     "description": "Label for export data button in the footer of the main panel"
   },
@@ -615,32 +620,32 @@
     "description": "Label for checkbox input in rerun evaluation dialog box"
   },
 
-  "cancelButtonLabel": {
+  "cancel_button_label": {
     "message": "Cancel",
     "description": "Label for Cancel button in a dialog box"
   },
 
-  "okButtonLabel": {
+  "ok_button_label": {
     "message": "OK",
     "description": "Label for OK button in a dialog box"
   },
 
-  "closeButtonLabel": {
+  "close_button_label": {
     "message": "Close",
     "description": "Label for Close button in a dialog box"
   },
 
-  "rerunButtonLabel": {
+  "rerun_button_label": {
     "message": "Rerun",
     "description": "Label for Rerun button in a dialog box"
   },
 
-  "exportButtonLabel": {
+  "export_button_label": {
     "message": "Export",
     "description": "Label for Export button in a dialog box"
   },
 
-  "moreButtonLabel": {
+  "more_button_label": {
     "message": "Concepts and Terms",
     "description": "Label for Concepts and Terms button in a dialog box"
   },
@@ -1024,7 +1029,7 @@
 
   },
 
-  "moreButtonDisabled": {
+  "more_button_disabled": {
     "message": "Tab already opened in browser window",
     "description": "Provides help on why more information button is disabled"
   },

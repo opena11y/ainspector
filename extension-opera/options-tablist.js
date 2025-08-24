@@ -5,16 +5,13 @@
 import DebugLogging from './debug.js';
 
 import {
-  getMessage,
-  removeChildContent,
   setI18nLabels
 } from './utils.js';
 
 import {
   getOptions,
-  saveOptions,
   saveOption
-} from './storage.js'
+} from './storage.js';
 
 /* Constants */
 

@@ -6,6 +6,8 @@
 *  sidebar.
 */
 
+export const MAX_PREFIX_LENGTH = 32;
+
 export const GUIDELINES =  {
   G_1_1: 0x000010,
   G_1_2: 0x000020,
@@ -136,7 +138,7 @@ export function getRuleCategoryLabelId (id) {
   default:
     return '';
   }
-};
+}
 
 export function getRuleCategoryFilenameId (id) {
   switch (id) {
@@ -163,13 +165,13 @@ export function getRuleCategoryFilenameId (id) {
   case RULE_CATEGORIES.TIMING:
     return 'timing';
   case RULE_CATEGORIES.SITE_NAVIGATION:
-    return 'site-navigation'
+    return 'site-navigation';
   case RULE_CATEGORIES.ALL:
     return 'all-rules';
   default:
     return 'undefined';
   }
-};
+}
 
 
 export function getGuidelineLabelId (id) {
@@ -208,7 +210,7 @@ export function getGuidelineLabelId (id) {
     return GUIDELINES.UNDEFINED;
 
   }
-};
+}
 
 export function getGuidelineFilenameId (id) {
 
@@ -246,4 +248,4 @@ export function getGuidelineFilenameId (id) {
     return 'undefined';
 
   }
-};
+}

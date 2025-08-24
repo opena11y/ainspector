@@ -11,24 +11,23 @@ import {
 } from './storage.js';
 
 import {
+  getMessage,
   setI18nLabels
 } from './utils.js';
 
 import {
   isCharacterAllowed,
   validatePrefix
-} from './options-validate.js'
+} from './options-validate.js';
+
+import {
+  MAX_PREFIX_LENGTH
+} from './constants.js';
 
 // Constants
 
-const browserI18n = typeof browser === 'object' ?
-            browser.i18n :
-            chrome.i18n;
-
 const debug = new DebugLogging('[options-export]', false);
 debug.flag = false;
-
-const MAX_PREFIX_LENGTH = 32;
 
 const optionsDataExportTemplate = document.createElement('template');
 optionsDataExportTemplate.innerHTML = `
@@ -99,7 +98,7 @@ optionsDataExportTemplate.innerHTML = `
         <span data-i18n="options_data_export_prefix_note_desc">
           Note: Prefix cannot contain spaces or the following characters
         </span>
-        : <code>&lt;&gt;:"/\|?*[]</code>.
+        : <code>&lt;&gt;:"/|?*[]</code>.
       </div>
 
       <label for="options-export-index"
@@ -145,7 +144,7 @@ class OptionsDataExport extends HTMLElement {
     link.setAttribute('href', 'base.css');
     this.shadowRoot.appendChild(link);
 
-   const linkNode = document.createElement('link');
+    const linkNode = document.createElement('link');
     linkNode.rel = 'stylesheet';
     linkNode.href = 'options.css';
     this.shadowRoot.appendChild(linkNode);
@@ -158,11 +157,11 @@ class OptionsDataExport extends HTMLElement {
 
     this.updateOptions();
 
-    getNode('button-reset').addEventListener('click', () => {
+    this.shadowRoot.querySelectorAll('#button-reset').addEventListener('click', () => {
       resetExportOptions().then(this.updateOptions.bind(this));
     });
 
-    optionsDataExport.shadowRoot.querySelectorAll('input').forEach( input => {
+    this.shadowRoot.querySelectorAll('input').forEach( input => {
       if (input.type === 'checkbox' || input.type === 'radio') {
         input.addEventListener('focus',  optionsDataExport.onFocus);
         input.addEventListener('blur',   optionsDataExport.onBlur);
@@ -171,11 +170,11 @@ class OptionsDataExport extends HTMLElement {
       input.addEventListener('change', optionsDataExport.onChange.bind(optionsDataExport));
     });
 
-    this.exportPrefixInput = getNode('options-export-prefix');
+    this.exportPrefixInput = this.shadowRoot.querySelectorAll('#options-export-prefix');
     this.exportPrefixInput.addEventListener('keydown', this.onKeydownValidatePrefix.bind(this));
     this.exportPrefixInput.addEventListener('keyup', this.onKeyupValidatePrefix.bind(this));
 
-    this.exportPrefixError = getNode('options-export-prefix-error');
+    this.exportPrefixError = this.shadowRoot.querySelectorAll('#options-export-prefix-error');
 
     this.onResize();
     window.addEventListener('resize', this.onResize.bind(this));
@@ -275,13 +274,13 @@ class OptionsDataExport extends HTMLElement {
     this.hidePrefixError();
     const key = event.key;
     if (!isCharacterAllowed(key)) {
-      this.showPrefixError(browserI18n.getMessage('options_data_export_prefix_error_char_not_allowed', key));
+      this.showPrefixError(getMessage('options_data_export_prefix_error_char_not_allowed', key));
       event.stopPropagation();
       event.preventDefault();
     } else {
       if ((key.length === 1) &&
           (this.exportPrefixInput.value.length === MAX_PREFIX_LENGTH)) {
-        this.showPrefixError(browserI18n.getMessage('options_data_export_prefix_error_to_long', MAX_PREFIX_LENGTH.toString()));
+        this.showPrefixError(getMessage('options_data_export_prefix_error_to_long', MAX_PREFIX_LENGTH.toString()));
         event.stopPropagation();
         event.preventDefault();
       }
@@ -292,7 +291,7 @@ class OptionsDataExport extends HTMLElement {
     const value = validatePrefix(this.exportPrefixInput.value, MAX_PREFIX_LENGTH);
     if (value !== this.exportPrefixInput.value) {
       if (this.exportPrefixInput.value.length >= MAX_PREFIX_LENGTH) {
-        this.showPrefixError(browserI18n.getMessage('options_data_export_prefix_error_to_long', MAX_PREFIX_LENGTH.toString()));
+        this.showPrefixError(getMessage('options_data_export_prefix_error_to_long', MAX_PREFIX_LENGTH.toString()));
       }
     }
     this.exportPrefixInput.value = value;

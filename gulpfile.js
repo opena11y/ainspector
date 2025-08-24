@@ -9,7 +9,7 @@ const concat       = require("gulp-concat");
 const sass         = require('gulp-dart-sass');
  
 gulp.task('linting', () => {
-    return src(['src/*.js'])
+    return src(['src/js/*.js'])
         // eslint() attaches the lint output to the "eslint" property
         // of the file object so it can be used by other modules.
         .pipe(eslint())
@@ -22,7 +22,6 @@ gulp.task('linting', () => {
 });
 
 // Update extension common code
-
  gulp.task('extensionsCode', () => {
   return src([
     'src/js/*.js',

@@ -7,7 +7,7 @@ debug && console.log(`[chrome ][    sidePanel]: ${typeof chrome} ${ chrome ? typ
 debug && console.log(`[opr    ]: ${typeof opr}`);
 debug && console.log(`[browser]: ${typeof browser}`);
 
-
+/*
 const myBrowser = typeof browser === 'object' ?
               browser :
               chrome;
@@ -19,7 +19,7 @@ const browserRuntime = typeof browser === 'object' ?
 const browserTabs = typeof browser === 'object' ?
             browser.tabs :
             chrome.tabs;
-
+*/
 
 /*
  * Toggle sidebar from toolbar icon for Chrome

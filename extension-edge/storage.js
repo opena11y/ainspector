@@ -52,12 +52,13 @@ export const exportOptions = {
   projectTitle: '',
   evaluatorName: '',
   exportFormat: 'CSV',  // other option is JSON
-  filenamePrefix: 'ainspector',
-  filenameAllRules: 'all-rules{date}{time}{index}',
-  filenameRuleGroup: 'rule-group-{group}-{index}',
-  filenameRuleResult: 'rule-result-{rule}-{index}',
-  includeDate: true,
-  includeTime: true,
+  filenamePrefix: 'ainspector-{index}',
+  filenameAllRules: 'all-rules',
+  filenameRuleGroup: 'rule-group-{group}-{rg}',
+  filenameRuleResult: 'rule-result-{rule}-{rule}',
+  includeDate: false,
+  includeTime: false,
+  includeIndex: true,
   filenameIndex: 1,
   promptForExportOptions: true,
 };
@@ -72,7 +73,7 @@ export const shortcutOptions = {
 };
 
 
-const defaultOptions = Object.assign(rulesetOptions, generalOptions, exportOptions, shortcutOptions)
+const defaultOptions = Object.assign(rulesetOptions, generalOptions, exportOptions, shortcutOptions);
 
 /*
 **  getOptions
@@ -91,7 +92,7 @@ export function getOptions () {
           resolve(optionsWithDefaults);
         }
       },
-      message => { reject(new Error(`getOptions: ${message}`)) }
+      message => { reject(new Error(`getOptions: ${message}`)); }
     );
   });
 }
@@ -103,8 +104,8 @@ export function saveOptions (options) {
   return new Promise (function (resolve, reject) {
     let promise = browserStorage.set(options);
     promise.then(
-      () => { resolve() },
-      message => { reject(new Error(`saveOptions: ${message}`)) }
+      () => { resolve(); },
+      message => { reject(new Error(`saveOptions: ${message}`)); }
     );
   });
 }
@@ -129,9 +130,9 @@ export function saveOption (option, value) {
 ** resetDefaultOptions
 */
 export function resetDefaultOptions () {
-  return new Promise (function (resolve, reject) {
+  return new Promise (function (resolve) {
     browserStorage.set(defaultOptions, function () {
-      if (notLastError()) { resolve() }
+      if (notLastError()) { resolve(); }
     });
   });
 }
@@ -140,9 +141,9 @@ export function resetDefaultOptions () {
 ** resetRulesetOptions
 */
 export function resetRulesetOptions () {
-  return new Promise (function (resolve, reject) {
+  return new Promise (function (resolve) {
     browserStorage.set(rulesetOptions, function () {
-      if (notLastError()) { resolve() }
+      if (notLastError()) { resolve(); }
     });
   });
 }
@@ -151,9 +152,9 @@ export function resetRulesetOptions () {
 ** resetGeneralOptions
 */
 export function resetGeneralOptions () {
-  return new Promise (function (resolve, reject) {
+  return new Promise (function (resolve) {
     browserStorage.set(generalOptions, function () {
-      if (notLastError()) { resolve() }
+      if (notLastError()) { resolve(); }
     });
   });
 }
@@ -162,9 +163,9 @@ export function resetGeneralOptions () {
 ** resetExportOptions
 */
 export function resetExportOptions () {
-  return new Promise (function (resolve, reject) {
+  return new Promise (function (resolve) {
     browserStorage.set(exportOptions, function () {
-      if (notLastError()) { resolve() }
+      if (notLastError()) { resolve(); }
     });
   });
 }
@@ -173,9 +174,9 @@ export function resetExportOptions () {
 ** resetShortcutOptions
 */
 export function resetShortcutOptions () {
-  return new Promise (function (resolve, reject) {
+  return new Promise (function (resolve) {
     browserStorage.set(shortcutOptions, function () {
-      if (notLastError()) { resolve() }
+      if (notLastError()) { resolve(); }
     });
   });
 }
@@ -187,7 +188,7 @@ export function setScopeFilterToAll (options) {
   return new Promise (function (resolve, reject) {
     options.scopeFilter = 'ALL';
     () => { resolve(options); },
-    message => { reject(new Error(`resetScopeFilterToAll: ${message}`)) }
+    message => { reject(new Error(`resetScopeFilterToAll: ${message}`)); };
   });
 }
 
@@ -196,7 +197,7 @@ export function setScopeFilterToAll (options) {
 */
 function hasAllProperties (refObj, srcObj) {
   for (const key of Object.keys(refObj)) {
-    if (!srcObj.hasOwnProperty(key)) {
+    if (!Object.hasOwn(srcObj, key)) {
       return false;
     }
   }
@@ -214,7 +215,7 @@ function isComplete (obj) {
 function addDefaultValues (options) {
   const copy = Object.assign({}, defaultOptions);
   for (let [key, value] of Object.entries(options)) {
-    if (copy.hasOwnProperty(key)) {
+    if (Object.hasOwn(copy, key)) {
       copy[key] = value;
     }
   }
