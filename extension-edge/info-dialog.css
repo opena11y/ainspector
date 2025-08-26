@@ -10,7 +10,7 @@ button#open-button svg path {
   fill: light-dark(var(--info-border-light), var(--info-border-dark));
 }
 
-dialog#info-dialog {
+dialog {
   max-width: 70%;
   padding: 0;
   background-color: light-dark(var(--main-background-light), var(--main-background-dark));
@@ -19,7 +19,7 @@ dialog#info-dialog {
   color: black;
 }
 
-dialog#info-dialog .header {
+dialog .header {
   margin-bottom: 0.5em;
   padding: 4px;
   padding-left: 1em;
@@ -30,13 +30,13 @@ dialog#info-dialog .header {
   font-size: 1em;
 }
 
-dialog#info-dialog .header h2 {
+dialog .header h2 {
   margin: 0;
   padding: 0;
   font-size: 1em;
 }
 
-dialog#info-dialog .header button {
+dialog .header button {
   position: absolute;
   top: -0.25em;
   right: 0;
@@ -46,21 +46,21 @@ dialog#info-dialog .header button {
   color: light-dark(var(--info-color-light), var(--info-color-dark));
 }
 
-dialog#info-dialog .content {
+dialog .content {
   margin: 2em 1.5em 2em 1.5em;
 }
 
-dialog#info-dialog .buttons {
+dialog .buttons {
   float: right;
   margin-right: 0.5em;
   margin-bottom: 0.5em;
 }
 
-dialog#info-dialog button {
+dialog button {
   margin: 6px;
 }
 
-dialog#info-dialog .buttons button {
+dialog .buttons button {
   min-width: 5em;
 }
 

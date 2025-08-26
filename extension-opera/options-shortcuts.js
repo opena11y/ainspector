@@ -294,8 +294,6 @@ class OptionsShortcuts extends HTMLElement {
       const node = input.parentNode;
       if (node) {
         node.style.width = 'auto';
-        const rect = node.querySelector('span').getBoundingClientRect();
-        node.style.width = (rect.width + 40) + 'px';
       }
     });
   }

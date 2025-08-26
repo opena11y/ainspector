@@ -31,7 +31,7 @@ template.innerHTML = `
   </div>
 `;
 
-export default class InfoAriaVersions extends HTMLElement {
+export default class InfoDialogAriaVersions extends HTMLElement {
   constructor () {
 
     super();
@@ -53,5 +53,5 @@ export default class InfoAriaVersions extends HTMLElement {
   }
 }
 
-window.customElements.define("info-aria-versions", InfoAriaVersions);
+window.customElements.define("info-dialog-aria-versions", InfoDialogAriaVersions);
 

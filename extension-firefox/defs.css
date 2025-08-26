@@ -34,7 +34,18 @@
 /* Error Colors */
 
   --error-red: #ed2939;
-
+  --violations-color-light:     hsl(0, 100%, 84%);
+  --violations-color-dark:      hsl(0, 100%, 84%);
+  --warnings-color-light:       hsl(49, 100%, 79%);
+  --warnings-color-dark:        hsl(49, 100%, 79%);
+  --manual-checks-color-light:  hsl(198, 52%, 81%);
+  --manual-checks-color-dark:   hsl(198, 52%, 81%);
+  --passed-color-light:         hsl(90, 67%, 69%);
+  --passed-color-dark:          hsl(90, 67%, 69%);
+  --hidden-color-light:         hsl(0, 0%, 87%);
+  --hidden-color-dark:          hsl(0, 0%, 87%);
+  --not-applicable-color-light: hsl(0, 0%, 87%);
+  --not-applicable-color-dark:  hsl(0, 0%, 87%);
 /* Setting Content Variables */
 
 
@@ -53,7 +64,7 @@
   --link-outline-color-light: var(--primary-focus-light);
   --link-outline-color-dark: var(--primary-focus-dark);
 
-  --button-font-size: 12pt;
+  --button-font-size: 11pt;
   --button-border: 1px;
   --button-radius: 4px;
   --button-padding: 3px;
@@ -73,7 +84,7 @@
 
   --code-font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
 
-  --title-font-size: 12pt;
+  --title-font-size: 14pt;
   --buttons-font-size: 12pt;
   --legend-font-size: 14pt;
   --options-font-size: 14pt;

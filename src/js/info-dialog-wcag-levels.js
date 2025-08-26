@@ -35,11 +35,11 @@ template.innerHTML = `
           </tr>
         </tbody>
       </table>
-  </content>
+  </div>
 
 `;
 
-export default class InfoWCAGLevels extends HTMLElement {
+export default class InfoDialogWCAGLevels extends HTMLElement {
   constructor () {
 
     super();
@@ -61,6 +61,6 @@ export default class InfoWCAGLevels extends HTMLElement {
   }
 }
 
-window.customElements.define("info-wcag-levels", InfoWCAGLevels);
+window.customElements.define("info-dialog-wcag-levels", InfoDialogWCAGLevels);
 
 

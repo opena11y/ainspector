@@ -39,7 +39,7 @@ template.innerHTML = `
     <span>
   </button>
 
-  <dialog id="info-dialog">
+  <dialog>
     <div class="header">
       <h2 data-i18n="options_info_dialog_title">Ruleset Options Information</h2>
       <button id="close-button-1" data-i18n-aria-label="close_button_label">✕</button>
@@ -87,7 +87,7 @@ export default class InfoDialog extends HTMLElement {
     const moreButtonLabel = this.getAttribute('data-more-button-label');
     this.moreInfoURL = this.getAttribute('data-more-info-url');
 
-    this.infoDialog  = this.shadowRoot.querySelector('#info-dialog');
+    this.infoDialog  = this.shadowRoot.querySelector('dialog');
 
     this.openButton  = this.shadowRoot.querySelector('#open-button');
     this.openButton.addEventListener('click', this.onOpenButtonClick.bind(this));

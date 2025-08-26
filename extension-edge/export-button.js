@@ -1,4 +1,6 @@
-/* exportButton.js */
+/* export-button.js */
+
+// Imports
 
 import DebugLogging  from './debug.js';
 
@@ -14,6 +16,7 @@ import {
 
 import {
   getMessage,
+  isOverElement,
   setI18nLabels
 } from './utils.js';
 
@@ -44,7 +47,7 @@ template.innerHTML = `
         aria-labelledby="title">
         <div class="header">
           <div id="title"
-               data-i18n="export_data_button_label">
+               data-i18n="export_data_dialog_title">
           </div>
           <button id="close-button"
                   data-i18n-aria-label="cancel_button_label"
@@ -204,8 +207,8 @@ export default class ExportButton extends HTMLElement {
     this.okButton.addEventListener('keydown', this.onOkButtonKeydown.bind(this));
 
     window.addEventListener(
-      'mousedown',
-      this.onBackgroundMousedown.bind(this),
+      'pointerdown',
+      this.onBackgroundPointerdown.bind(this),
       true
     );
 
@@ -365,12 +368,10 @@ export default class ExportButton extends HTMLElement {
       }
   }
 
-  onBackgroundMousedown(event) {
-    if (this.isOpen()) {
-      if (!this.contains(event.target)) {
-        if (this.isOpen()) {
-          this.closeDialog();
-        }
+  onBackgroundPointerdown(event) {
+    if (!isOverElement(this.dialogDiv, event.clientX, event.clientY)) {
+      if (this.isOpen()) {
+        this.closeDialog();
       }
     }
   }

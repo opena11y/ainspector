@@ -1,0 +1,42 @@
+/* summary.css */
+
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary .left,
+.summary .right {
+  width: 3em;
+}
+
+table {
+  margin: 0;
+}
+
+th, td {
+  padding: 0.25em;
+  width: 40px;
+  text-align: center;
+}
+
+#violations-value {
+  background-color: light-dark(var(--violations-color-light), var(--violations-color-dark));
+}
+
+#warnings-value {
+  background-color: light-dark(var(--warnings-color-light), var(--warnings-color-dark));
+}
+
+#manual-checks-value {
+  background-color: light-dark(var(--manual-checks-color-light), var(--manual-checks-color-dark));
+}
+
+#passed-value {
+  background-color: light-dark(var(--passed-color-light), var(--passed-color-dark));
+}
+
+#hidden-value {
+  background-color: light-dark(var(--hidden-color-light), var(--hidden-color-dark));
+}

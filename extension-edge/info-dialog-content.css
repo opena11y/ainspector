@@ -21,6 +21,14 @@ a[href]:focus {
   outline-color: light-dark(var(--link-outline-color-light), var(--link-outline-color-dark));
 }
 
+h2 {
+   margin: 0;
+   padding: 0;
+   margin-top: 1em;
+   margin-bottom: 0.5em;
+   font-size: 1em;
+}
+
 h3 {
   margin: 0;
   padding: 0;
@@ -70,3 +78,58 @@ table.table .text-top {
 table.table .term {
   font-isze: 1.1em;
 }
+
+table.info {
+  margin: 0;
+  margin-top: 0.25em;
+  margin-bottom: 2em;
+  width: 80%;
+  border-collapse: collapse;
+  font-size: 1em;
+}
+
+table.info th.symbol {
+  padding: 0.25em;
+  width: 5em;
+  text-align: center;
+  vertical-align: top;
+  font-weight: normal;
+}
+
+table.info th.symbol span {
+  display: inline-block;
+  width: 3em;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+}
+
+#numerical-desc  {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 2em;
+}
+
+table.result-types .violation span {
+  background-color: light-dark(var(--violations-color-light), var(--violations-color-dark));
+}
+
+table.result-types .warning span {
+  background-color: light-dark(var(--warnings-color-light), var(--warnings-color-dark));
+}
+
+table.result-types .manual-check span {
+  background-color: light-dark(var(--manual-checks-color-light), var(--manual-checks-color-dark));;
+}
+
+table.result-types .passed span {
+  background-color: light-dark(var(--passed-color-light), var(--passed-color-dark));;
+}
+
+table.result-types .not-applicable span {
+  background-color: light-dark(var(--not-applicable-color-light), var(--not-applicable-color-dark));;
+}
+
+table.result-types .hidden span {
+  background-color: light-dark(var(--hidden-color-light), var(--hidden-color-dark));;
+}
+

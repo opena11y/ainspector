@@ -34,10 +34,10 @@ template.innerHTML = `
         </tr>
       </tbody>
     </table>
-  </content>
+  </div>
 `;
 
-export default class InfoScopes extends HTMLElement {
+export default class InfoDialogScopes extends HTMLElement {
   constructor () {
 
     super();
@@ -59,6 +59,6 @@ export default class InfoScopes extends HTMLElement {
   }
 }
 
-window.customElements.define("info-scopes", InfoScopes);
+window.customElements.define("info-dialog-scopes", InfoDialogScopes);
 
 

@@ -54,11 +54,11 @@ template.innerHTML = `
         </tr>
       </tbody>
     </table>
-  </content>
+  </div>
 
 `;
 
-export default class InfoRulesets extends HTMLElement {
+export default class InfoDialogRulesets extends HTMLElement {
   constructor () {
 
     super();
@@ -80,5 +80,5 @@ export default class InfoRulesets extends HTMLElement {
   }
 }
 
-window.customElements.define("info-ruleset", InfoRulesets);
+window.customElements.define("info-dialog-ruleset", InfoDialogRulesets);
 

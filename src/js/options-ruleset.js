@@ -30,7 +30,7 @@ optionsRulesetTemplate.innerHTML = `
         <info-dialog
           data-more-info-url="https://opena11y.github.io/evaluation-library/rulesets.html">
           <div slot="content">
-            <info-ruleset></info-ruleset>
+            <info-dialog-ruleset></info-dialog-ruleset>
           </div>
           <span slot="open-button"
                data-i18n="info_dialog_ruleset_info_button">
@@ -92,7 +92,7 @@ optionsRulesetTemplate.innerHTML = `
         <info-dialog
           data-more-info-url="https://www.w3.org/WAI/WCAG22/Understanding/conformance#levels">
           <div slot="content">
-            <info-wcag-levels></info-wcag-levels>
+            <info-dialog-wcag-levels></info-dialog-wcag-levels>
           </div>
           <span slot="open-button"
                data-i18n="info_dialog_wcag_level_info_button">
@@ -145,7 +145,7 @@ optionsRulesetTemplate.innerHTML = `
         <info-dialog
           data-more-info-url="https://ainspector.disability.illinois.edu/concepts-and-terms/#scope">
           <div slot="content">
-            <info-scopes></info-scopes>
+            <info-dialog-scopes></info-dialog-scopes>
           </div>
           <span slot="open-button"
                data-i18n="info_dialog_rule_scope_info_button">
@@ -198,7 +198,7 @@ optionsRulesetTemplate.innerHTML = `
         <info-dialog
           data-more-info-url="https://ainspector.disability.illinois.edu/concepts-and-terms/#aria">
           <div slot="content">
-            <info-aria-versions></info-aria-versions>
+            <info-dialog-aria-versions></info-dialog-aria-versions>
           </div>
           <span slot="open-button"
                 data-i18n="info_dialog_aria_version_info_button">
@@ -361,8 +361,6 @@ class OptionsRuleset extends HTMLElement {
       const node = input.parentNode;
       if (node) {
         node.style.width = 'auto';
-        const rect = node.querySelector('span').getBoundingClientRect();
-        node.style.width = (rect.width + 40) + 'px';
       }
     });
   }

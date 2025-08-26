@@ -234,81 +234,84 @@
     "description": "Label for website scope"
   },
 
-  "violationsAbbrev": {
+  "violations_abbrev": {
     "message": "V",
     "description": "Abbreviation for violations"
   },
 
-  "violationLabel": {
+  "violation_label": {
     "message": "Violation",
     "description": "Label for one violation results"
   },
 
-  "violationsLabel": {
+  "violations_label": {
     "message": "Violations",
     "description": "Label for violation results"
   },
 
-  "warningsAbbrev": {
+  "warnings_abbrev": {
     "message": "W",
     "description": "Abbreviation for warnings"
   },
 
-  "warningLabel": {
+  "warning_label": {
     "message": "Warning",
     "description": "Label for one warning results"
   },
 
-  "warningsLabel": {
+  "warnings_label": {
     "message": "Warnings",
     "description": "Label for warning results"
   },
 
-  "manualChecksAbbrev": {
+  "manual_checks_abbrev": {
     "message": "MC",
     "description": "Abbreviation for manual checks"
   },
 
-  "manualCheckLabel": {
+  "manual_check_label": {
     "message": "Manual Check",
     "description": "Label for one manual check results"
   },
 
-  "manualChecksLabel": {
+  "manual_checks_label": {
     "message": "Manual Checks",
     "description": "Label for manual check results"
   },
 
-  "passedAbbrev": {
+  "passed_abbrev": {
     "message": "P",
     "description": "Abbreviation for passed"
   },
 
-  "passedLabel": {
+  "passed_label": {
     "message": "Passed",
     "description": "Label for pass results"
   },
 
-  "hiddenAbbrev": {
+  "hidden_abbrev": {
     "message": "H",
     "description": "Abbreviation for hidden"
   },
 
-  "hiddenLabel": {
+  "hidden_label": {
     "message": "Hidden",
     "description": "Label for hidden results"
   },
 
-  "notApplicableAbbrev": {
+  "not_applicable_abbrev": {
     "message": "N/A",
     "description": "Abbreviation for not applicable"
   },
 
-  "notApplicableLabel": {
+  "not_applicable_label": {
     "message": "Not Applicable",
     "description": "Label for not applicable results"
   },
-
+  "summary_rule_results": {
+    "message": "Summary of rule results",
+    "description": "Label for the rule category group"
+  },
   "rule_categories_label": {
     "message": "Rule Categories",
     "description": "Label for the rule category group"
@@ -595,27 +598,27 @@
     "description": "Label for export data button in the footer of the main panel"
   },
 
-  "exportDialogTitle": {
-    "message": "Data Export Options",
+  "export_data_dialog_title": {
+    "message": "Export Data Options",
     "description": "Title for data export options dialog box"
   },
 
-  "rerunEvalButtonLabel": {
+  "rerun_eval_button_label": {
     "message": "Rerun Evaluation",
     "description": "Label for rerun evaluation button in the footer of the main panel"
   },
 
-  "rerunEvalDialogTitle": {
+  "rerun_eval_dialog_title": {
     "message": "Rerun Evaluation: Specify Delay",
     "description": "Title for rerun evaluation dialog box"
   },
 
-  "rerunEvalSelectLabel": {
+  "rerun_eval_select_label": {
     "message": "Rerun evaluation in ",
     "description": "Label for select input in rerun evaluation dialog box"
   },
 
-  "rerunEvalPromptForDelayLabel": {
+  "rerun_eval_prompt_for_delay_label": {
     "message": "Do not prompt for delay setting",
     "description": "Label for checkbox input in rerun evaluation dialog box"
   },
@@ -1006,18 +1009,18 @@
     "description": "Results information button label"
   },
 
-  "infoDialogTitle": {
+  "info_dialog_summary_title": {
     "message": "Results Legend",
     "description": "Info dialog title for all views"
   },
 
-  "numericalResultsLabel": {
+  "numerical_results_label": {
     "message": "Numerical Results",
     "description": "Label for Numerical Results headingin result information dialog"
 
   },
 
-  "ruleResultTypesLabel": {
+  "rule_result_types_label": {
     "message": "Rule Result Types",
     "description": "Label for Result Types heading in result information dialog"
 
@@ -1034,7 +1037,7 @@
     "description": "Provides help on why more information button is disabled"
   },
 
-  "ruleNumberDesc": {
+  "rule_number_desc": {
     "message": "Number of rules with corresponding result type",
     "description": "Provides information on the meaning of numbers in rule group all all rules view"
   },

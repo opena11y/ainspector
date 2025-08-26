@@ -55,53 +55,65 @@ template.innerHTML = `
   <header>
     <h1 id="view-title"
         aria-live="polite">
-      Some title content
+      Summary: All Rules
     </h1>
-    <button id="back-button"
-             data-i18n="back_button_label">
-    </button>
-    <views-menu-button></views-menu-button>
+    <div class="buttons">
+      <button id="back-button">
+          <svg xmlns='http://www.w3.org/2000/svg'
+               class='down'
+               width='12'
+               height='12'
+               viewBox='0 0 12 12'>
+            <polygon points='1 6, 11 1, 11 11' fill='currentColor'/>
+          </svg>
+          <span data-i18n="back_button_label">
+          </span>
+      </button>
+      <views-menu-button></views-menu-button>
+    </div>
   </header>
 
   <main>
-    <!-- The ids for each view must be synchronized with the viewId
-      constant defined in panel.js -->
-    <div id="all-rules" class="view">
-      <p>All Rules</p>
-    </div>
-    <div id="rule-group" class="view" hidden>
-      <p>Rule Group</p>
-    </div>
-    <div id="rule-result" class="view" hidden>
-      <p>Rule Result</p>
-    </div>
+    <summary-rule-group></summary-rule-group>
   </main>
 
   <footer>
-    <div id="info-title" class="info">
-      <span class="label" data-i18n="info_title_label"></span>
-      <span class="value" aria-live="polite"></span>
+
+    <div class="info">
+      <div>
+        <span class="label"
+              data-i18n="info_title_label">
+        </span>:
+        <span id="info-title"
+              class="value"
+              aria-live="polite">
+        </span>
+      </div>
+
+      <div>
+        <span class="label"
+              data-i18n="info_location_label">
+        </span>:
+        <span  id="info-location"
+               class="value">
+        </span>
+      </div>
+
+      <div>
+        <span class="label"
+              data-i18n="info_ruleset_label">
+        </span>:
+        <span id="info-ruleset"
+              class="value">
+        </span>
+      </div>
     </div>
 
-    <div id="info-location" class="info">
-      <span class="label" data-i18n="info_location_label"></span>
-      <span class="value"></span>
-    </div>
-
-    <div id="info-ruleset" class="info">
-      <span class="label" data-i18n="info_ruleset_label"></span>
-      <span class="value"></span>
-    </div>
-
-    <div class="footer-buttons">
-      <button id="preferences-button"
-              data-i18n="options_button_label">
-      </button>
-      <rerun-evaluation-button>
-      </rerun-evaluation-button>
-      <export-button>
-      </export-button>
-    </div>
+    <button id="preferences-button"
+            data-i18n="options_button_label">
+    </button>
+    <rerun-evaluation-button></rerun-evaluation-button>
+    <export-button></export-button>
 
   </footer>
 </div>
@@ -127,6 +139,8 @@ class AISidePanel extends HTMLElement {
     this.shadowRoot.appendChild(link);
 
     this.lastStatus = '';
+
+
 
     // Update side panel title
 
