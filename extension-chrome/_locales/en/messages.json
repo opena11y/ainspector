@@ -1308,6 +1308,10 @@
     "message": "Note: Leaving the shortcut key value empty disables the shortcut.",
     "description": "Note related to how to disable a shortcut"
   },
+  "info_dialog_results_legend": {
+    "message": "Results Legend",
+    "description": "Title for info dialog box on rule results"
+  },
   "info_dialog_ruleset_info_button": {
     "message": "Ruleset Information",
     "description": "Label ruleset information info dialog box button"

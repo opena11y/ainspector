@@ -29,6 +29,9 @@ optionsRulesetTemplate.innerHTML = `
         </span>
         <info-dialog
           data-more-info-url="https://opena11y.github.io/evaluation-library/rulesets.html">
+          <span slot="title"
+                data-i18n="options_info_dialog_title">
+          </span>
           <div slot="content">
             <info-dialog-ruleset></info-dialog-ruleset>
           </div>
@@ -91,6 +94,9 @@ optionsRulesetTemplate.innerHTML = `
         </span>
         <info-dialog
           data-more-info-url="https://www.w3.org/WAI/WCAG22/Understanding/conformance#levels">
+          <span slot="title"
+                data-i18n="options_info_dialog_title">
+          </span>
           <div slot="content">
             <info-dialog-wcag-levels></info-dialog-wcag-levels>
           </div>
@@ -144,6 +150,9 @@ optionsRulesetTemplate.innerHTML = `
         </span>
         <info-dialog
           data-more-info-url="https://ainspector.disability.illinois.edu/concepts-and-terms/#scope">
+          <span slot="title"
+                data-i18n="options_info_dialog_title">
+          </span>
           <div slot="content">
             <info-dialog-scopes></info-dialog-scopes>
           </div>
@@ -197,6 +206,9 @@ optionsRulesetTemplate.innerHTML = `
         </span>
         <info-dialog
           data-more-info-url="https://ainspector.disability.illinois.edu/concepts-and-terms/#aria">
+          <span slot="title"
+                data-i18n="options_info_dialog_title">
+          </span>
           <div slot="content">
             <info-dialog-aria-versions></info-dialog-aria-versions>
           </div>

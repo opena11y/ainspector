@@ -41,7 +41,9 @@ template.innerHTML = `
 
   <dialog>
     <div class="header">
-      <h2 data-i18n="options_info_dialog_title">Ruleset Options Information</h2>
+      <h2>
+        <slot name="title"></slot>
+      </h2>
       <button id="close-button-1" data-i18n-aria-label="close_button_label">✕</button>
     </div>
 

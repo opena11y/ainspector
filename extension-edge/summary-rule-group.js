@@ -55,6 +55,9 @@ template.innerHTML = `
     <div class="right">
         <info-dialog
           data-more-info-url="https://opena11y.github.io/evaluation-library/concepts.html">
+          <span slot="title"
+                data-i18n="info_dialog_results_legend">
+          </span>
           <div slot="content">
             <info-dialog-summary-rule-group></info-dialog-summary-rule-group>
           </div>
