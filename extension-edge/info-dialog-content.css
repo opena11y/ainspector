@@ -133,3 +133,71 @@ table.result-types .hidden span {
   background-color: light-dark(var(--hidden-color-light), var(--hidden-color-dark));;
 }
 
+dialog .select {
+  width: 15em;
+}
+
+dialog label
+dialog .desc {
+  padding: 4px;
+  font-size: 90%;
+}
+
+dialog .desc {
+  margin:  0;
+  padding: 0;
+  margin-bottom: 1em;
+  font-style: italic;
+}
+
+dialog fieldset {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 1em;
+  border: none;
+}
+
+dialog legend {
+  font-weight:  bold;
+}
+
+dialog div.select,
+dialog label.checkbox,
+dialog label.radio {
+  display:  block;
+  padding: 4px;
+}
+
+dialog input[type="checkbox"] {
+  margin: 4px;
+}
+
+dialog .note code {
+  font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+  font-style: normal !important;
+  font-weight:  bold;
+}
+
+dialog .feedback {
+  color: black;
+  border: 2px solid red;
+  background:  white;
+  padding: 2px;
+  border-radius:  5px;
+}
+
+dialog .feedback img {
+  height: 12px !important;
+}
+
+dialog .feedback.prefix {
+  margin-left:  0.75em;
+  display:  none;
+}
+
+dialog .feedback.prefix.show {
+  display:  block;
+}
+
+
+

@@ -153,11 +153,9 @@ class OptionsDataExport extends HTMLElement {
 
     this.formControls =  Array.from(this.shadowRoot.querySelectorAll('[data-option]'));
 
-    debug.flag && debug.log(`[formControls]: ${this.formControls.length}`);
-
     this.updateOptions();
 
-    this.shadowRoot.querySelectorAll('#button-reset').addEventListener('click', () => {
+    this.shadowRoot.querySelector('#button-reset').addEventListener('click', () => {
       resetExportOptions().then(this.updateOptions.bind(this));
     });
 
@@ -170,11 +168,11 @@ class OptionsDataExport extends HTMLElement {
       input.addEventListener('change', optionsDataExport.onChange.bind(optionsDataExport));
     });
 
-    this.exportPrefixInput = this.shadowRoot.querySelectorAll('#options-export-prefix');
+    this.exportPrefixInput = this.shadowRoot.querySelector('#options-export-prefix');
     this.exportPrefixInput.addEventListener('keydown', this.onKeydownValidatePrefix.bind(this));
     this.exportPrefixInput.addEventListener('keyup', this.onKeyupValidatePrefix.bind(this));
 
-    this.exportPrefixError = this.shadowRoot.querySelectorAll('#options-export-prefix-error');
+    this.exportPrefixError = this.shadowRoot.querySelector('#options-export-prefix-error');
 
     this.onResize();
     window.addEventListener('resize', this.onResize.bind(this));
@@ -223,7 +221,6 @@ class OptionsDataExport extends HTMLElement {
           }
           else {
            if (option === 'filenameIndex') {
-              debug.log(`[index]: ${input.value} (${typeof input.value})`);
               const value = parseInt(input.value);
               if (!value || value < 1) {
                 input.value = 1;

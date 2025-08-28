@@ -14,7 +14,7 @@ dialog {
   max-width: 70%;
   padding: 0;
   background-color: light-dark(var(--main-background-light), var(--main-background-dark));
-  border: 2px solid light-dark(var(--info-border-light), var(--info-border-dark));
+  border: 2px solid light-dark(var(--primary-color-light), var(--primary-color-dark));
   border-radius: 5px;
   color: black;
 }
@@ -23,8 +23,8 @@ dialog .header {
   margin-bottom: 0.5em;
   padding: 4px;
   padding-left: 1em;
-  background-color: light-dark(var(--info-border-light), var(--info-border-dark));
-  color: light-dark(var(--info-color-light), var(--info-color-dark));;
+  background-color: light-dark(var(--primary-color-light), var(--primary-color-dark));
+  color: light-dark(var(--primary-color-text-light), var(--primary-color-text-dark));;
   font-weight:  bold;
   position: relative;
   font-size: 1em;
@@ -43,7 +43,7 @@ dialog .header button {
   border: none;
   background: transparent;
   font-weight: bold;
-  color: light-dark(var(--info-color-light), var(--info-color-dark));
+  color: light-dark(var(--main-background-light), var(--main-background-dark));
 }
 
 dialog .content {

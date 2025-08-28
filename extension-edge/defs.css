@@ -12,6 +12,8 @@
 
   --primary-color-light: var(--blue);
   --primary-color-dark: var(--blue-dark);
+  --primary-color-text-light: #FFF;
+  --primary-color-text-dark: #222;
   --primary-focus-light: var(--orange);
   --primary-focus-dark: var(--orange-dark);
 

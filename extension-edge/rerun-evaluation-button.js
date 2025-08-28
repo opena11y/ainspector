@@ -31,15 +31,13 @@ template.innerHTML = `
         Rerun Evaluation
       </button>
 
-      <div role="dialog"
+      <dialog
         class="rerun"
-        tabindex="-1"
-        id="dialog"
         aria-labelledby="title">
         <div class="header">
-          <div id="title"
+          <h2 id="title"
               data-i18n="rerun_eval_dialog_title">
-          </div>
+          </h2>
           <button id="close-button"
                   data-i18n-aria-label="close_button_label"
                   tabindex="-1">
@@ -75,7 +73,7 @@ template.innerHTML = `
             Ok
           </button>
         </div>
-      </div>
+      </dialog>
     </div>
 `;
 
@@ -97,6 +95,11 @@ export default class RerunEvaluationButton extends HTMLElement {
     link.setAttribute('href', './dialog.css');
     this.shadowRoot.appendChild(link);
 
+    link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', './dialog-content.css');
+    this.shadowRoot.appendChild(link);
+
     // Add DOM tree from template
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
@@ -110,8 +113,8 @@ export default class RerunEvaluationButton extends HTMLElement {
     this.rerunButton  = this.shadowRoot.querySelector('#rerun-button');
     this.rerunButton.addEventListener('click', this.onRerunButtonClick.bind(this));
 
-    this.dialogDiv = this.shadowRoot.querySelector('[role="dialog"]');
-    this.dialogDiv.addEventListener('keydown', this.onDialogKeydown.bind(this));
+    this.dialog = this.shadowRoot.querySelector('dialog');
+    this.dialog.addEventListener('keydown', this.onDialogKeydown.bind(this));
 
     this.select = this.shadowRoot.querySelector('select');
     this.select.addEventListener('keydown', this.onSelectKeydown.bind(this));
@@ -152,11 +155,8 @@ export default class RerunEvaluationButton extends HTMLElement {
     this.callback = callback;
   }
 
-  isOpen() {
-    return this.rerunButton.getAttribute('aria-expanded') === 'true';
-  }
-
   openDialog () {
+    debug.log(`[openDialog]`);
     getOptions().then( (options) => {
       this.checkbox.checked = !options.rerunDelayEnabled;
       for (let i = 0; i < this.select.options.length; i += 1) {
@@ -165,18 +165,15 @@ export default class RerunEvaluationButton extends HTMLElement {
           option.selected = true;
         }
       }
-      this.dialogDiv.style.display = 'block';
+      debug.log(`[openDialog]: showModal`);
+      this.dialog.showModal();
+      this.okButton.focus();
       this.rerunButton.setAttribute('aria-expanded', 'true');
-      this.dialogDiv.focus();
     });
   }
 
   closeDialog () {
-    if (this.isOpen()) {
-      this.rerunButton.removeAttribute('aria-expanded');
-      this.dialogDiv.style.display = 'none';
-      this.rerunButton.focus();
-    }
+    this.dialog.close();
   }
 
   checkTimeout() {
@@ -270,10 +267,8 @@ export default class RerunEvaluationButton extends HTMLElement {
   }
 
   onBackgroundPointerdown(event) {
-    if (!isOverElement(this.dialogDiv, event.clientX, event.clientY)) {
-      if (this.isOpen()) {
-        this.closeDialog();
-      }
+    if (!isOverElement(this.dialog, event.clientX, event.clientY)) {
+      this.closeDialog();
     }
   }
 

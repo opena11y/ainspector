@@ -51,7 +51,7 @@ export default class InfoDialogScopes extends HTMLElement {
 
     link = document.createElement('link');
     link.setAttribute('rel', 'stylesheet');
-    link.setAttribute('href', 'info-dialog-content.css');
+    link.setAttribute('href', 'dialog-content.css');
     this.shadowRoot.appendChild(link);
 
     // Add DOM tree from template

@@ -40,10 +40,8 @@ template.innerHTML = `
         Export
       </button>
 
-      <div role="dialog"
+      <dialog
         class="export"
-        tabindex="-1"
-        id="dialog"
         aria-labelledby="title">
         <div class="header">
           <div id="title"
@@ -134,7 +132,7 @@ template.innerHTML = `
             OK
           </button>
         </div>
-      </div>
+      </dialog>
     </div>
 `;
 
@@ -155,6 +153,11 @@ export default class ExportButton extends HTMLElement {
     link.setAttribute('href', './dialog.css');
     this.shadowRoot.appendChild(link);
 
+    link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', './dialog-content.css');
+    this.shadowRoot.appendChild(link);
+
     // Add DOM tree from template
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
@@ -168,8 +171,8 @@ export default class ExportButton extends HTMLElement {
     this.exportButton  = this.shadowRoot.querySelector('#export-button');
     this.exportButton.addEventListener('click', this.onExportButtonClick.bind(this));
 
-    this.dialogDiv = this.shadowRoot.querySelector('[role="dialog"]');
-    this.dialogDiv.addEventListener('keydown', this.onDialogKeydown.bind(this));
+    this.dialog = this.shadowRoot.querySelector('dialog');
+    this.dialog.addEventListener('keydown', this.onDialogKeydown.bind(this));
 
     this.exportCSV      = this.shadowRoot.querySelector('input[id="options-export-csv"]');
     this.exportCSV.addEventListener('keydown', this.onFirstControlKeydown.bind(this));
@@ -242,22 +245,14 @@ export default class ExportButton extends HTMLElement {
     }
   }
 
-  isOpen() {
-    return this.exportButton.getAttribute('aria-expanded') === 'true';
-  }
-
   openDialog () {
-    this.dialogDiv.style.display = 'block';
-    this.exportButton.setAttribute('aria-expanded', 'true');
-    this.dialogDiv.focus();
+    this.dialog.showModal();
+    this.okButton.focus();
   }
 
   closeDialog () {
-    if (this.isOpen()) {
-      this.exportButton.removeAttribute('aria-expanded');
-      this.dialogDiv.style.display = 'none';
-      this.exportButton.focus();
-    }
+    this.dialog.close();
+    this.exportButton.focus();
   }
 
   hidePrefixError () {
@@ -369,10 +364,8 @@ export default class ExportButton extends HTMLElement {
   }
 
   onBackgroundPointerdown(event) {
-    if (!isOverElement(this.dialogDiv, event.clientX, event.clientY)) {
-      if (this.isOpen()) {
-        this.closeDialog();
-      }
+    if (!isOverElement(this.dialog, event.clientX, event.clientY)) {
+      this.closeDialog();
     }
   }
 

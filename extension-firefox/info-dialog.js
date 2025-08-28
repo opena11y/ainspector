@@ -6,6 +6,7 @@ import DebugLogging  from './debug.js';
 
 import {
   getMessage,
+  isOverElement,
   setI18nLabels
 } from './utils.js';
 
@@ -77,7 +78,7 @@ export default class InfoDialog extends HTMLElement {
 
     link = document.createElement('link');
     link.setAttribute('rel', 'stylesheet');
-    link.setAttribute('href', 'info-dialog.css');
+    link.setAttribute('href', 'dialog.css');
     this.shadowRoot.appendChild(link);
 
     // Add DOM tree from template
@@ -89,7 +90,7 @@ export default class InfoDialog extends HTMLElement {
     const moreButtonLabel = this.getAttribute('data-more-button-label');
     this.moreInfoURL = this.getAttribute('data-more-info-url');
 
-    this.infoDialog  = this.shadowRoot.querySelector('dialog');
+    this.dialog  = this.shadowRoot.querySelector('dialog');
 
     this.openButton  = this.shadowRoot.querySelector('#open-button');
     this.openButton.addEventListener('click', this.onOpenButtonClick.bind(this));
@@ -112,14 +113,20 @@ export default class InfoDialog extends HTMLElement {
     }
     this.moreInfoButton.addEventListener('click', this.onMoreInfoClick.bind(this));
 
+    window.addEventListener(
+      'pointerdown',
+      this.onBackgroundPointerdown.bind(this),
+      true
+    );
+
   }
 
   onCloseButtonClick () {
-    this.infoDialog.close();
+    this.dialog.close();
   }
 
   onOpenButtonClick () {
-    this.infoDialog.showModal();
+    this.dialog.showModal();
     this.closeButton2.focus();
   }
 
@@ -165,6 +172,11 @@ export default class InfoDialog extends HTMLElement {
     }
   }
 
+  onBackgroundPointerdown(event) {
+    if (!isOverElement(this.dialog, event.clientX, event.clientY)) {
+      this.dialog.close();
+    }
+  }
 }
 
 window.customElements.define("info-dialog", InfoDialog);
