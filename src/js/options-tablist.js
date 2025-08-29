@@ -25,30 +25,30 @@ template.innerHTML = `
       <div role="tablist">
         <div class="tab"
              role="tab"
-             aria-controls="tabpanel-ruleset-options">
+             aria-controls="tabpanel-ruleset-options"
+             id="tab-ruleset-options">
           <span class="focus">
-            <span id="tab-ruleset-options"
-                  data-i18n="options_tab_ruleset_label">
+            <span data-i18n="options_tab_ruleset_label">
                Ruleset Options
             </span>
           </span>
         </div>
         <div class="tab"
              role="tab"
-             aria-controls="tabpanel-general-options">
+             aria-controls="tabpanel-general-options"
+             id="tab-general-options">
           <span class="focus">
-            <span id="tab-general-options"
-                  data-i18n="options_tab_general_label">
+            <span data-i18n="options_tab_general_label">
                General
             </span>
           </span>
         </div>
         <div class="tab"
              role="tab"
-             aria-controls="tabpanel-export-options">
+             aria-controls="tabpanel-export-options"
+             id="tab-export-options">
              <span class="focus">
-               <span id="tab-export-options"
-                     data-i18n="options_tab_export_label">
+               <span data-i18n="options_tab_export_label">
                 Data Export
                </span>
             </span>
@@ -58,8 +58,7 @@ template.innerHTML = `
              id="tab-shortcut-keys"
              aria-controls="tabpanel-shortcut-keys">
              <span class="focus">
-               <span id="tab-shortcut-options"
-                     data-i18n="options_tab_shortcuts_label">
+               <span data-i18n="options_tab_shortcuts_label">
                  Shortcut Keys
               </span>
             </span>
@@ -118,7 +117,6 @@ class OptionsTablist extends HTMLElement {
 
     this.divTitle        = this.shadowRoot.querySelector('#id-div-title');
     this.divTablist      = this.shadowRoot.querySelector('[role="tablist"]');
-    this.divTabpanels    = this.shadowRoot.querySelector('#tabpanels');
 
     this.optionsRuleset    = this.shadowRoot.querySelector('options-ruleset');
     this.optionsGeneral    = this.shadowRoot.querySelector('options-general');
@@ -194,8 +192,8 @@ class OptionsTablist extends HTMLElement {
         } else {
           tab.setAttribute('aria-selected', 'false');
           tab.tabIndex = -1;
-          this.tabpanels[i].node.classList.add('is-hidden');
-          this.tabpanels[i].contentNode.setAttribute('visible', 'false');
+          tabListObj.tabpanels[i].node.classList.add('is-hidden');
+          tabListObj.tabpanels[i].contentNode.setAttribute('visible', 'false');
         }
       }
     });

@@ -45,7 +45,8 @@ export const generalOptions = {
   isSidebarOpen: false,
   highlight: 'selected',
   documentationURL: 'https://opena11y.github.io/evaluation-library/concepts.html',
-  lastTabId: ''
+  lastTabId: '',
+  lastAllRulesTabId: ''
 };
 
 export const exportOptions = {

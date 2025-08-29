@@ -1,4 +1,4 @@
-/* info-dialog-scopes.js */
+/* info-dialog-summary-rules.js */
 
 // Imports
 
@@ -76,17 +76,13 @@ template.innerHTML = `
       </body>
     </table>
 
-    <h2 id="h2-numerical-results"
-        data-i18n="numerical_results_label">
-    </h2>
-    <div id="numerical-desc"
-        data-i18n="rule_number_desc">
-    </div>
+    <h2 data-i18n="numerical_results_label"></h2>
+    <div data-i18n="rule_number_desc"></div>
   </div>
 
 `;
 
-export default class InfoDialogSummaryRuleGroup extends HTMLElement {
+export default class InfoDialogSummaryRules extends HTMLElement {
   constructor () {
 
     super();
@@ -110,6 +106,6 @@ export default class InfoDialogSummaryRuleGroup extends HTMLElement {
   }
 }
 
-window.customElements.define("info-dialog-summary-rule-group", InfoDialogSummaryRuleGroup);
+window.customElements.define("info-dialog-summary-rules", InfoDialogSummaryRules);
 
 

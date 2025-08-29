@@ -1,4 +1,9 @@
-/* infoDialog.css */
+/* dialog.css */
+
+button#rerun,
+button#export-data {
+  display: block;
+}
 
 button#open-button {
   display: inline;

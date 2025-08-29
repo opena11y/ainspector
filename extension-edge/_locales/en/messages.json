@@ -29,7 +29,7 @@
     "description": "Label for back button"
   },
 
-  "detailsLabel": {
+  "details_label": {
     "message": "Details",
     "description": "Label for details button"
   },
@@ -317,7 +317,7 @@
     "description": "Label for the rule category group"
   },
 
-  "ruleCategoryLabel": {
+  "rule_category_label": {
     "message": "Category",
     "description": "Label for the rule category group"
   },
@@ -1042,7 +1042,7 @@
     "description": "Provides information on the meaning of numbers in rule group all all rules view"
   },
 
-  "elementNumberDesc": {
+  "element_number_desc": {
     "message": "Number of target elements with corresponding result type",
     "description": "Provides information on the meaning of numbers in rule view"
   },

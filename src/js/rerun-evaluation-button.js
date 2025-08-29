@@ -23,7 +23,7 @@ debug.flag = false;
 const template = document.createElement('template');
 template.innerHTML = `
     <div class="rerun-evaluation-button">
-      <button id="rerun-button"
+      <button id="rerun"
         aria-haspop="true"
         aria-controls="dialog"
         aria-live="off"
@@ -110,7 +110,7 @@ export default class RerunEvaluationButton extends HTMLElement {
 
     setI18nLabels(this.shadowRoot, debug.flag);
 
-    this.rerunButton  = this.shadowRoot.querySelector('#rerun-button');
+    this.rerunButton  = this.shadowRoot.querySelector('#rerun');
     this.rerunButton.addEventListener('click', this.onRerunButtonClick.bind(this));
 
     this.dialog = this.shadowRoot.querySelector('dialog');

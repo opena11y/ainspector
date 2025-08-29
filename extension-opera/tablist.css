@@ -61,7 +61,7 @@
   color: light-dark(#000, #fff);
   background-color: light-dark(var(--tab-selected-background-light), var(--tab-selected-background-dark));
   border-bottom-color: light-dark(var(--tab-selected-background-light), var(--tab-selected-background-dark));;
-  border-top-color: light-dark(var(--orange), var(--orange-dark));
+  border-top-color: light-dark(var(--tab-border-color-light), var(--tab-border-color-dark));
 }
 
 [role=tab][aria-selected=false] {

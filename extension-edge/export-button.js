@@ -32,7 +32,7 @@ debug.flag = false;
 const template = document.createElement('template');
 template.innerHTML = `
     <div class="export-button">
-      <button id="export-button"
+      <button id="export-data"
         aria-haspop="true"
         aria-controls="dialog"
         aria-live="off"
@@ -168,7 +168,7 @@ export default class ExportButton extends HTMLElement {
     this.delayValue = 5;
     this.timerValue = 0;
 
-    this.exportButton  = this.shadowRoot.querySelector('#export-button');
+    this.exportButton  = this.shadowRoot.querySelector('#export-data');
     this.exportButton.addEventListener('click', this.onExportButtonClick.bind(this));
 
     this.dialog = this.shadowRoot.querySelector('dialog');

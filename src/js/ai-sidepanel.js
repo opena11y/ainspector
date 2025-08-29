@@ -74,46 +74,52 @@ template.innerHTML = `
   </header>
 
   <main>
-    <summary-rule-group></summary-rule-group>
+    <result-all-rules></result-all-rules>
   </main>
 
   <footer>
 
     <div class="info">
-      <div>
-        <span class="label"
-              data-i18n="info_title_label">
-        </span>:
-        <span id="info-title"
-              class="value"
-              aria-live="polite">
-        </span>
-      </div>
-
-      <div>
-        <span class="label"
-              data-i18n="info_location_label">
-        </span>:
-        <span  id="info-location"
-               class="value">
-        </span>
-      </div>
-
-      <div>
-        <span class="label"
-              data-i18n="info_ruleset_label">
-        </span>:
-        <span id="info-ruleset"
-              class="value">
-        </span>
-      </div>
+      <span class="label"
+            data-i18n="info_title_label">
+      </span>:
+      <span id="info-title"
+            class="value"
+            aria-live="polite">
+      </span>
     </div>
 
-    <button id="preferences-button"
-            data-i18n="options_button_label">
-    </button>
-    <rerun-evaluation-button></rerun-evaluation-button>
-    <export-button></export-button>
+    <div class="info">
+      <span class="label"
+            data-i18n="info_location_label">
+      </span>:
+      <span  id="info-location"
+             class="value">
+      </span>
+    </div>
+
+    <div class="info">
+      <span class="label"
+            data-i18n="info_ruleset_label">
+      </span>:
+      <span id="info-ruleset"
+            class="value">
+      </span>
+    </div>
+
+    <div class="buttons">
+      <div class="first">
+        <button id="options-button"
+                data-i18n="options_button_label">
+        </button>
+      </div>
+      <div class="second">
+        <rerun-evaluation-button></rerun-evaluation-button>
+      </div>
+      <div class="third">
+        <export-button></export-button>
+      </div>
+    </div>
 
   </footer>
 </div>
@@ -139,7 +145,6 @@ class AISidePanel extends HTMLElement {
     this.shadowRoot.appendChild(link);
 
     this.lastStatus = '';
-
 
 
     // Update side panel title

@@ -1,4 +1,4 @@
-/* summary-rule-group.js */
+/* summary-rules.js */
 
 // Imports
 
@@ -10,7 +10,7 @@ import {
 
 // Constants
 
-const debug = new DebugLogging('[summary-rule-group]', false);
+const debug = new DebugLogging('[summary-rules]', false);
 debug.flag = false;
 
 const template = document.createElement('template');
@@ -20,11 +20,11 @@ template.innerHTML = `
     </div>
     <div class="center">
       <table data-i18n-aria-label="summary_rule_results">
-        <tbody>
+        <thead>
           <tr>
             <th data-i18n="violations_abbrev"
                 data-i18n-aria-label="violations_label"
-                data-i18n-ttile="violations_label">
+                data-i18n-title="violations_label">
               V
             </th>
             <th data-i18n="warnings_abbrev"
@@ -43,6 +43,8 @@ template.innerHTML = `
               MC
             </th>
           </tr>
+        </thead>
+        <tbody>
           <tr>
             <td id="violations-value">-</td>
             <td id="warnings-value">-</td>
@@ -59,7 +61,7 @@ template.innerHTML = `
                 data-i18n="info_dialog_results_legend">
           </span>
           <div slot="content">
-            <info-dialog-summary-rule-group></info-dialog-summary-rule-group>
+            <info-dialog-summary-rules></info-dialog-summary-rules>
           </div>
           <span slot="open-button"
                data-i18n="info_dialog_summary_title">
@@ -74,7 +76,7 @@ template.innerHTML = `
   </div>
 `;
 
-export default class SummaryRuleGroup extends HTMLElement {
+export default class SummaryRules extends HTMLElement {
   constructor () {
     super();
     this.attachShadow({ mode: 'open' });
@@ -135,11 +137,18 @@ export default class SummaryRuleGroup extends HTMLElement {
 
   clear () {
     this.violationsTd.textContent   = '-';
+    this.violationsTd.title         = '';
+
     this.warningsTd.textContent     = '-';
+    this.warningsTd.title           = '';
+
     this.manualChecksTd.textContent = '-';
+    this.manualChecksTd.title       = '';
+
     this.passedTd.textContent       = '-';
+    this.passedTd.title             = '';
   }
 }
 
-window.customElements.define("summary-rule-group", SummaryRuleGroup);
+window.customElements.define("summary-rules", SummaryRules);
 

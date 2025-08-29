@@ -1,0 +1,170 @@
+/* summary-rule.js */
+
+// Imports
+
+import DebugLogging  from './debug.js';
+
+import {
+  setI18nLabels
+} from './utils.js';
+
+// Constants
+
+const debug = new DebugLogging('[summary-rule]', false);
+debug.flag = false;
+
+const template = document.createElement('template');
+template.innerHTML = `
+  <div class="summary">
+    <div class="left">
+    </div>
+    <div class="center">
+      <table aria-label="Summary of rule results">
+        <thead>
+          <tr>
+            <th data-i18n="violations_abbrev"
+                data-i18n-aria-label="violations_label"
+                data-i18n-title="violations_label">
+              V
+            </th>
+            <th data-i18n="warnings_abbrev"
+                data-i18n-aria-label="warnings_label"
+                data-i18n-title="warnings_label">
+              W
+            </th>
+            <th data-i18n="manual_checks_abbrev"
+                data-i18n-aria-label="manual_checks_label"
+                data-i18n-title="manual_checks_label">
+              MC
+            </th>
+            <th data-i18n="passed_abbrev"
+                data-i18n-aria-label="passed_label"
+                data-i18n-title="passed_label">
+              MC
+            </th>
+            <th data-i18n="hidden_abbrev"
+                data-i18n-aria-label="hidden_label"
+                data-i18n-title="hidden_label">
+              MC
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td id="violations-value">-</td>
+            <td id="warnings-value">-</td>
+            <td id="manual-checks-value">-</td>
+            <td id="passed-value">-</td>
+            <td id="hidden-value">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="right">
+        <info-dialog
+          data-more-info-url="https://opena11y.github.io/evaluation-library/concepts.html">
+          <span slot="title"
+                data-i18n="info_dialog_results_legend">
+          </span>
+          <div slot="content">
+            <info-dialog-summary-rule></info-dialog-summary-rule>
+          </div>
+          <span slot="open-button"
+               data-i18n="info_dialog_summary_title">
+            Results Legend
+          </span>
+          <span slot="more-button"
+               data-i18n="more_button_label">
+            Terms and Concepts
+          </span>
+        </info-dialog>
+    </div>
+  <div>
+`;
+
+export default class SummaryRule extends HTMLElement {
+  constructor () {
+    super();
+    this.attachShadow({ mode: 'open' });
+
+    // Use external CSS stylesheet
+    const link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', 'summary.css');
+    this.shadowRoot.appendChild(link);
+
+    // Add DOM tree from template
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+    setI18nLabels(this.shadowRoot, debug.flag);
+
+    // Initialize references
+    this.violationsTd   = this.shadowRoot.querySelector('#violations-value');
+    this.warningsTd     = this.shadowRoot.querySelector('#warnings-value');
+    this.manualChecksTd = this.shadowRoot.querySelector('#manual-checks-value');
+    this.passedTd       = this.shadowRoot.querySelector('#passed-value');
+    this.hiddenTd       = this.shadowRoot.querySelector('#hidden-value');
+
+  }
+
+  set violations (value) {
+    this.violationsTd.textContent = value;
+  }
+
+  set warnings (value) {
+    this.warningsTd.textContent = value;
+  }
+
+  set manualChecks (value) {
+    this.manualChecksTd.textContent = value;
+  }
+
+  set passed (value) {
+    this.passedTd.textContent = value;
+  }
+
+  set hidden (value) {
+    this.hiddenTd.textContent = value;
+  }
+
+  get violations () {
+    return this.violationsTd.textContent;
+  }
+
+  get warnings () {
+    return this.warningsTd.textContent;
+  }
+
+  get manualChecks () {
+    return this.manualChecksTd.textContent;
+  }
+
+  get passed () {
+    return this.passedTd.textContent;
+  }
+
+  get hidden () {
+    return this.hiddenTd.textContent;
+  }
+
+  clear () {
+    this.violationsTd.textContent   = '-';
+    this.violationsTd.title         = '';
+
+    this.warningsTd.textContent     = '-';
+    this.warningsTd.title           = '';
+
+    this.manualChecksTd.textContent = '-';
+    this.manualChecksTd.title       = '';
+
+    this.passedTd.textContent       = '-';
+    this.passedTd.title             = '';
+
+    this.hiddenTd.textContent       = '-';
+    this.hiddenTd.title             = '';
+  }
+
+}
+
+window.customElements.define("summary-rule", SummaryRule);
+

@@ -1,0 +1,189 @@
+/* resultGrid.css */
+
+.sr-only {
+  position: absolute;
+  top: -30em;
+}
+
+.message {
+  font-style: italic;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.group,
+table.rule {
+  display: block;
+  border: 1px solid #aaa;
+  overflow-y: auto;
+  height: 35vh;
+  min-height: 150px;
+}
+
+table.summary {
+  border-left: 1px solid #aaa;
+  border-right: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+}
+
+table thead,
+table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+table thead {
+  background-color: white;
+  position: sticky;
+  top: 0;
+}
+
+table tbody tr:nth-child(even) {
+  background: #eee;
+}
+
+table.summary tbody tr:last-child {
+  border-top: 1px solid #aaa;
+}
+
+table thead th {
+  border-bottom: 1px solid #ddd;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table thead th span.icon {
+  display:  none;
+}
+
+table thead th[aria-sort] span.icon {
+  display:  inline;
+  padding-left: 2px;
+}
+
+table tr th:first-child,
+table tr td:first-child {
+  padding-left: 8px;
+}
+
+table tr[aria-selected] {
+  outline-offset:  -2px;
+  outline: currentColor 2px dotted;
+}
+
+table th,
+table td {
+  padding-top:  4px;
+  padding-bottom:  4px;
+}
+
+
+table th.summ,
+table td.summ {
+  width: 10%;
+  padding-right: 5%;
+}
+
+table td.text,
+table th.text {
+  text-align: left;
+}
+
+table td.num,
+table th.num {
+  text-align: right;
+}
+
+table th.sc,
+table td.sc,
+table th.level,
+table td.level,
+table th.required,
+table td.required,
+table th.result,
+table td.result {
+  width: 50px;
+  text-align: center;
+}
+
+table th.rule,
+table td.rule {
+  text-align: left;
+}
+
+table td.rule {
+  white-space:  nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table th.position,
+table td.position {
+  width: 9%;
+  text-align: right;
+  padding-right: 8px;
+}
+
+table th.element-info,
+table td.element-info {
+  width: 20%;
+  padding-left: 4px;
+  text-align: left;
+}
+
+table td.element-info {
+  white-space:  nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: lowercase;
+}
+
+table td.action {
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+}
+
+table td.message {
+  font-style: italic;
+}
+
+/* Result backkground colors */
+
+table td.not-applicable {
+  background-color: transparent;
+}
+
+table td.manual-check {
+  background-color: hsl(198, 52%, 81%);
+}
+
+table td.passed {
+  background-color: hsl(90, 67%, 69%);
+}
+
+table td.violation {
+  background-color: hsl(0, 100%, 84%);
+}
+
+table td.warning {
+  background-color: hsl(49, 100%, 79%);
+}
+
+table th:focus,
+table td:focus,
+table tr:focus,
+table.show-selection tr:focus {
+  outline-offset:  -2px;
+  outline: currentColor 2px solid;
+}
+
+table code {
+  color: rgb(214, 51, 132);
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+

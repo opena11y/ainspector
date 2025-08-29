@@ -136,4 +136,78 @@ export function isOverElement(elem, x, y) {
          (rect.bottom >= y);
 }
 
+/**
+ * @function addContentToElement
+ *
+ * @desc Parses a text string for the code element and adds the content
+ *       to an element node
+ *
+ * @param {Object}  elem     elem    - Node of element to add content
+ * @param {String or number} content - Content to add to node
+ * @param {Boolen} clear     clear   - Flag to remove any content from the node before adding
+ */
 
+export function addContentToElement (elem, content, clear=false) {
+
+  if (clear) {
+    while(elem.hasChildNodes()) {
+      elem.removeChild(elem.firstChild);
+    }
+  }
+
+  let n, i, j, k;
+
+  if (typeof content !== 'string') {
+    try {
+      content = content.toString();
+    }
+    catch (error) {
+      content = "[error]: " + error;
+    }
+  }
+
+  i = content.indexOf('@');
+  k = content.indexOf('^');
+  j = 0;
+
+  while ((i >= 0) || (k >= 0)) {
+    if (i > k) {
+      n = document.createTextNode(content.substring(j,i));
+      elem.appendChild(n);
+
+      j = content.indexOf('@', i+1);
+      if (j < 0) {
+        j = content.length - 1;
+      }
+
+      n = document.createElement('code');
+      addContentToElement(n, content.substring((i+1),j));
+      elem.appendChild(n);
+      j += 1;
+
+      i = content.indexOf('@', j);
+    }
+    else {
+      n = document.createTextNode(content.substring(j,k));
+      elem.appendChild(n);
+
+      j = content.indexOf('^', k+1);
+      if (j < 0) {
+        j = content.length - 1;
+      }
+
+      n = document.createElement('b');
+      addContentToElement(n, content.substring((k+1),j));
+      elem.appendChild(n);
+      j += 1;
+
+      k = content.indexOf('^', j);
+    }
+  }
+
+  if (j < content.length) {
+    n = document.createTextNode(content.substring(j));
+    elem.appendChild(n);
+  }
+
+}

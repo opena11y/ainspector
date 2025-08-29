@@ -28,6 +28,7 @@ header h1 {
 }
 
 header .buttons {
+  display: block;
   margin: 0;
   padding: 0;
   top: 0;
@@ -36,18 +37,34 @@ header .buttons {
 }
 
 footer {
+  margin: 0;
+  padding: 0;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
   position: absolute;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: minmax(100px, auto);
   bottom: 0;
+  width: 97%;
 }
 
 footer .info {
-  grid-column-start: 1;
-  grid-column-end: 4;
+  margin: 0;
+  padding: 0;
+  margin-top: 0.125em;
+  margin-bottom: 0.125em;
+  display: block;
 }
 
 footer .label {
-  font-wight: bold;
+  display: inline-block;
+  width: 4em;
+  text-align: right;
+  font-weight: bold;
 }
+
+footer .buttons {
+  margin-top: 0.375em;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
