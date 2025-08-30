@@ -5,9 +5,7 @@ import DebugLogging  from './debug.js';
 
 import {
   getMessage,
-  setI18nLabels,
-//  updateContent,
-//  updateHighlightConfig
+  setI18nLabels
 } from './utils.js';
 
 import {
@@ -17,7 +15,7 @@ import {
 /* Constants */
 
 const debug = new DebugLogging('ai-sidepanel', false);
-debug.flag = false;
+debug.flag = true;
 
 // Browser Constants
 
@@ -82,7 +80,7 @@ template.innerHTML = `
     <div class="info">
       <span class="label"
             data-i18n="info_title_label">
-      </span>:
+      </span>
       <span id="info-title"
             class="value"
             aria-live="polite">
@@ -92,7 +90,7 @@ template.innerHTML = `
     <div class="info">
       <span class="label"
             data-i18n="info_location_label">
-      </span>:
+      </span>
       <span  id="info-location"
              class="value">
       </span>
@@ -101,7 +99,7 @@ template.innerHTML = `
     <div class="info">
       <span class="label"
             data-i18n="info_ruleset_label">
-      </span>:
+      </span>
       <span id="info-ruleset"
             class="value">
       </span>
@@ -144,7 +142,25 @@ class AISidePanel extends HTMLElement {
     link.setAttribute('href', 'ai-sidepanel.css');
     this.shadowRoot.appendChild(link);
 
-    this.lastStatus = '';
+    // Options button
+    const optionsButton = this.shadowRoot.querySelector(`#options-button`);
+    optionsButton.addEventListener('click', this.handleOptionsClick.bind(this));
+
+    // Rerun button
+    const rerunButton = this.shadowRoot.querySelector(`rerun-evaluation-button`);
+    rerunButton.setActivationCallback(this.runEvaluation.bind(this));
+
+    // Node references
+
+    this.viewTitleElem    = this.shadowRoot.querySelector(`#view-title`);
+    this.infoTitleElem    = this.shadowRoot.querySelector(`#info-title`);
+    this.infoLocationElem = this.shadowRoot.querySelector(`#info-location`);
+    this.infoRulesetElem  = this.shadowRoot.querySelector(`#info-ruleset`);
+
+    // Side panel states
+    this.resultView = 'rules-all';
+
+
 
 
     // Update side panel title
@@ -154,7 +170,7 @@ class AISidePanel extends HTMLElement {
     const version = browserRuntime.getManifest().version;
     this.setAttribute('version', version);
 
-    setI18nLabels(this.shadowRoot, debug.flag);
+    setI18nLabels(this.shadowRoot);
 
     /*
     *   Add Window event listeners
@@ -172,8 +188,58 @@ class AISidePanel extends HTMLElement {
     });
   }
 
-  clearContent(message = '') {
-    debug.flag && debug.log(`[clearContent]: ${message}`);
+  clearView(message = '') {
+    debug.flag && debug.log(`[clearView]: ${message}`);
+    this.infoTitleElem.textContent    = message;
+    this.infoLocationElem.textContent = '';
+    this.infoRulesetElem.textContent  = '';
+  }
+
+  updateView(result) {
+    debug.flag && debug.log(`[updateView][       title]: ${result.title}`);
+    debug.flag && debug.log(`[updateView][         url]: ${result.url}`);
+    debug.flag && debug.log(`[updateView][rulesetLabel]: ${result.rulesetLabel}`);
+
+    this.infoTitleElem.textContent    = result.title;
+    this.infoLocationElem.textContent = result.url;
+    this.infoRulesetElem.textContent  = result.rulesetLabel;
+  }
+
+  runEvaluation() {
+    debug.flag && debug.log(`[runEvaluation]`);
+    this.clearView(getMessage('loading_content'));
+
+    const spObj = this;
+
+    function onUpdateContentError() {
+      spObj.clearView(getMessage('protocol_not_supported'));
+      onError();
+    }
+
+    const aiSidePanelObj = this;
+
+    getOptions().then( (options) => {
+
+      aiSidePanelObj.request = {
+        aiRunEvaluation: {
+          ruleset:      options.ruleset,
+          level :       options.level,
+          scopeFilter:  options.scopeFilter,
+          ariaVersion:  options.ariaVersion,
+          resultView:   aiSidePanelObj.resultView
+        }
+      };
+
+      myBrowser.tabs
+        .query({
+          currentWindow: true,
+          active: true,
+        })
+        .then(this.sendMessageToTabs.bind(this))
+        .catch(onUpdateContentError);
+
+    });
+
   }
 
   highlightOrdinalPosition(ordinalPosition, info='') {
@@ -247,26 +313,8 @@ class AISidePanel extends HTMLElement {
   }
 
 
-  updateContent() {
-    this.clearContent(getMessage('loading_content'));
-
-    const spObj = this;
-
-    function onUpdateContentError() {
-      spObj.clearContent(getMessage('protocol_not_supported'));
-      onError();
-    }
-    myBrowser.tabs
-      .query({
-        currentWindow: true,
-        active: true,
-      })
-      .then(this.sendMessageToTabs.bind(this))
-      .catch(onUpdateContentError);
-  }
-
   handleGetInformationClick () {
-    this.clearContent(getMessage('loading_content'));
+    this.clearView(getMessage('loading_content'));
 
     myBrowser.tabs
       .query({
@@ -279,15 +327,17 @@ class AISidePanel extends HTMLElement {
   }
 
   async sendMessageToTabs(tabs) {
+    debug.flag && debug.log(`[sendMessageToTabs]`);
+
     const aiSidePanelObj = this;
 
     for (const tab of tabs) {
       const myResult = await myBrowser.tabs
-        .sendMessage(tab.id, { runEvaluation : true });
-
+        .sendMessage(tab.id, aiSidePanelObj.request);
         debug.log(`[myResult]: ${myResult} ${aiSidePanelObj}`);
-//      aiSidePanelObj.aiTablistNode.updateContent(myResult);
+        aiSidePanelObj.updateView(myResult);
     }
+
   }
 
   //-----------------------------------------------
@@ -295,6 +345,7 @@ class AISidePanel extends HTMLElement {
   //-----------------------------------------------
 
   handleWindowLoad () {
+    debug.flag && debug.log(`[handleWindowLoad]`);
     browserTabs.onUpdated.addListener(this.handleTabUpdated.bind(this));
     browserTabs.onActivated.addListener(this.handleTabActivated.bind(this));
     myBrowser.windows.onFocusChanged.addListener(this.handleWindowFocusChanged.bind(this));
@@ -302,24 +353,26 @@ class AISidePanel extends HTMLElement {
     getOptions().then( (options) => {
       this.updateHighlightConfig(options);
     });
-    this.updateContent();
+    this.runEvaluation();
   }
 
   /*
   **  Handle tabs.onUpdated event when status is 'complete'
   */
   handleTabUpdated (tabId, changeInfo, tab) {
+    debug.flag && debug.log(`[handleTabUpdated]: ${tabId}`);
+
     // Skip content update when new page is loaded in background tab
     if (!tab.active) return;
 
     if (changeInfo.status === "complete") {
       this.lastStatus = changeInfo.status;
-      this.updateContent();
+      this.runEvaluation();
     }
     else {
       if (changeInfo.status !== this.lastStatus) {
         this.lastStatus = changeInfo.status;
-        this.clearContent(getMessage('loading_content'));
+        this.clearView(getMessage('loading_content'));
       }
     }
   }
@@ -328,12 +381,14 @@ class AISidePanel extends HTMLElement {
   **  Handle tabs.onActivated event
   */
   handleTabActivated (activeInfo) {
+    debug.flag && debug.log(`[handleTabActivated]`);
+
     this.logTabUrl(activeInfo);
 
     const that = this;
 
     function onErrorPotocol(error) {
-      that.clearContent(getMessage('protocol_not_supported'));
+      that.clearView(getMessage('protocol_not_supported'));
       onError(error);
     }
 
@@ -370,6 +425,8 @@ class AISidePanel extends HTMLElement {
   **  focused window, save the new window ID and update the sidebar content.
   */
   handleWindowFocusChanged (windowId) {
+    debug.flag && debug.log(`[handleWindowFocusChanged]: ${windowId}`);
+
     if (windowId !== myWindowId) {
       if (isMozilla) {
         let checkingOpenStatus = myBrowser.sidebarAction.isOpen({ windowId });
@@ -380,7 +437,7 @@ class AISidePanel extends HTMLElement {
     function onGotStatus (result) {
       if (result) {
         myWindowId = windowId;
-        this.updateContent();
+        this.runEvaluation();
       }
     }
 
@@ -390,7 +447,11 @@ class AISidePanel extends HTMLElement {
   }
 
   handleResize () {
-//    this.tocTablistNode.resize();
+    debug.flag && debug.log(`[handleResize]`);
+  }
+
+  handleOptionsClick () {
+     chrome.runtime.openOptionsPage();
   }
 
 }

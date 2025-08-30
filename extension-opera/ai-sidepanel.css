@@ -51,18 +51,32 @@ footer .info {
   padding: 0;
   margin-top: 0.125em;
   margin-bottom: 0.125em;
-  display: block;
+  display: grid;
+  grid-template-columns: 9ch auto;
 }
 
-footer .label {
+footer .info .label {
+  margin: 0;
+  padding: 0;
+  margin-right: 0.25em;
   display: inline-block;
-  width: 4em;
   text-align: right;
   font-weight: bold;
+  grid-column: 1;
+}
+
+footer .info .value {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  grid-column: 2;
 }
 
 footer .buttons {
-  margin-top: 0.375em;
+  margin-top: 0.75em;
   width: 100%;
   display: flex;
   justify-content: space-between;

@@ -35,6 +35,7 @@ export const rulesetOptions = {
   level : 'AA',
   scopeFilter: 'ALL',
   ariaVersion: 'ARIA12',
+  lastView: 'rules-all'   // rules-all, rules-group, rule
 };
 
 export const generalOptions = {

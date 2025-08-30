@@ -77,7 +77,6 @@ template.innerHTML = `
          viewBox='0 0 12 12'>
       <polygon points='1 1, 1 11, 11 6' fill='currentColor'/>
     </svg>
-
   </button>
 `;
 

@@ -19,6 +19,16 @@
     "description": "Tooltip on SkipTo.js toolbar icon"
   },
 
+  "loading_content" : {
+    "message": "Loading content",
+    "description": "Message when content is be updated"
+  },
+
+  "protocol_not_supported" : {
+    "message": "Protocol is not supported",
+    "description": "Message when content cannot be evaluated"
+  },
+
   "viewTitleSummaryLabel": {
     "message": "Summary: ",
     "description": "Label for summary view"
@@ -40,17 +50,17 @@
   },
 
   "info_location_label": {
-    "message": "Location",
+    "message": "Location: ",
     "description": "Label for location value"
   },
 
   "info_title_label": {
-    "message": "Title",
+    "message": "Title: ",
     "description": "Label for title value"
   },
 
   "info_ruleset_label": {
-    "message": "Ruleset",
+    "message": "Ruleset: ",
     "description": "Label for ruleset value"
   },
 

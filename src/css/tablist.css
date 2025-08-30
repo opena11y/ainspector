@@ -18,7 +18,6 @@
   --tab-selected-background-light: white;
   --tab-selected-background-dark: black;
 
-
   padding: 0;
   padding-left: 6px;
   padding-right: 6px;
@@ -101,6 +100,10 @@
   border-width: 2px;
   border-style: solid;
   border-color:  light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+}
+
+#details {
+
 }
 
 @media (forced-colors: active) {

@@ -83,7 +83,6 @@ export default class ResultGridWCAGGuidelines extends ResultGrid {
 
     guidelineIds.forEach( (id) => {
       const label = getMessage(getGuidelineLabelId(id));
-      debug.log(`${id} ${getGuidelineLabelId(id)} ${label}`);
       // The row ID identifies the row as a rule category rule group and
       // includes which category using its numerical constant
       const row = this.addRow('gl' + id);
