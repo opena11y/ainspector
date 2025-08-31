@@ -191,6 +191,8 @@ class AISidePanel extends HTMLElement {
     this.infoTitleElem.textContent    = message;
     this.infoLocationElem.textContent = '';
     this.infoRulesetElem.textContent  = '';
+
+    this.resultRulesAllElem.clear();
   }
 
   updateView(result) {
@@ -198,13 +200,21 @@ class AISidePanel extends HTMLElement {
     this.infoLocationElem.textContent = result.location;
     this.infoRulesetElem.textContent  = result.ruleset_label;
 
+    debug.log(`[result][. rc_rule_results_group]: ${result.rc_rule_results_group.length}`);
+    debug.log(`[result][  gl_rule_results_group]: ${result.gl_rule_results_group.length}`);
+
+    debug.log(`[result][ setRuleCateogryResults]: ${this.resultRulesAllElem.setRuleCateogryResults}`);
+    debug.log(`[result][setWcagGuidelineResults]: ${this.resultRulesAllElem.setWcagGuidelineResults}`);
 
     switch (result.result_view) {
       case 'rules-all':
+        this.resultRulesAllElem.removeAttribute('hidden');
         this.resultRulesAllElem.setSummary(result.summary);
+        this.resultRulesAllElem.setRuleCateogryResults(result.rc_rule_results_group);
+        this.resultRulesAllElem.setWcagGuidelineResults(result.gl_rule_results_group);
         break;
 
-      case 'rules-group':
+      case 'rule-group':
         break;
 
       case 'rule':

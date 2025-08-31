@@ -34,8 +34,7 @@ export const rulesetOptions = {
   ruleset: 'WCAG21',
   level : 'AA',
   scopeFilter: 'ALL',
-  ariaVersion: 'ARIA12',
-  lastView: 'rules-all'   // rules-all, rules-group, rule
+  ariaVersion: 'ARIA12'
 };
 
 export const generalOptions = {
@@ -47,7 +46,13 @@ export const generalOptions = {
   highlight: 'selected',
   documentationURL: 'https://opena11y.github.io/evaluation-library/concepts.html',
   lastTabId: '',
-  lastAllRulesTabId: ''
+  lastAllRulesTabId: '',
+
+  // used for remembering state of sidebar
+  viewId: 'rules-all',   // rules-all, rule-group, rule
+  rcId: '',
+  glId: '',
+  ruleId: ''
 };
 
 export const exportOptions = {

@@ -57,8 +57,8 @@ export default class ViewsMenuButton extends HTMLElement {
     this.button  = this.shadowRoot.querySelector('button');
     this.labelSpan = this.button.querySelector('.label');
     this.labelSpan.textContent = getMessage('views_menu_button_label');
-    this.button.addEventListener('click', this.onButtonClick.bind(this));
-    this.button.addEventListener('keydown', this.onButtonKeydown.bind(this));
+    this.button.addEventListener('click', this.handleButtonClick.bind(this));
+    this.button.addEventListener('keydown', this.handleButtonKeydown.bind(this));
 
     this.menuDiv = this.shadowRoot.querySelector('[role="menu"]');
 
@@ -72,7 +72,7 @@ export default class ViewsMenuButton extends HTMLElement {
     this.closePopup();
     window.addEventListener(
       'pointerdown',
-      this.onBackgroundPointerdown.bind(this),
+      this.handleBackgroundPointerdown.bind(this),
       true
     );
 
@@ -108,7 +108,7 @@ export default class ViewsMenuButton extends HTMLElement {
     menuitemDiv.id = optionId;
     menuitemDiv.tabIndex = -1;
     menuitemDiv.setAttribute('role', 'menuitem');
-    menuitemDiv.addEventListener('keydown', this.onMenuitemKeydown.bind(this));
+    menuitemDiv.addEventListener('keydown', this.handleMenuitemKeydown.bind(this));
     menuitemDiv.textContent = message;
 
     node.appendChild(menuitemDiv);
@@ -123,11 +123,11 @@ export default class ViewsMenuButton extends HTMLElement {
 
     menuitemDiv.addEventListener(
       'keydown',
-      this.onMenuitemKeydown.bind(this)
+      this.handleMenuitemKeydown.bind(this)
     );
     menuitemDiv.addEventListener(
       'click',
-      this.onMenuitemClick.bind(this)
+      this.handleMenuitemClick.bind(this)
     );
   }
 
@@ -274,7 +274,7 @@ export default class ViewsMenuButton extends HTMLElement {
 
   // Menu event onrs
 
-  onButtonKeydown(event) {
+  handleButtonKeydown(event) {
     var key = event.key,
       flag = false;
 
@@ -306,7 +306,7 @@ export default class ViewsMenuButton extends HTMLElement {
     }
   }
 
-  onButtonClick(event) {
+  handleButtonClick(event) {
     if (this.isOpen()) {
       this.closePopup();
     } else {
@@ -324,7 +324,7 @@ export default class ViewsMenuButton extends HTMLElement {
     }
   }
 
-  onMenuitemKeydown(event) {
+  handleMenuitemKeydown(event) {
     var tgt = event.currentTarget,
       key = event.key,
       flag = false;
@@ -405,14 +405,14 @@ export default class ViewsMenuButton extends HTMLElement {
     }
   }
 
-  onMenuitemClick(event) {
+  handleMenuitemClick(event) {
     var tgt = event.currentTarget;
     this.closePopup();
     this.button.focus();
     this.performMenuAction(tgt);
   }
 
-  onBackgroundPointerdown(event) {
+  handleBackgroundPointerdown(event) {
     if (!isOverElement(this.containerDiv, event.clientX, event.clientY)) {
       if (this.isOpen()) {
         this.closePopup();

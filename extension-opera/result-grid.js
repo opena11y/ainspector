@@ -13,16 +13,7 @@ import {
 const debug = new DebugLogging('[result-grid]', false);
 debug.flag = false;
 
-const template = document.createElement('template');
-template.innerHTML = `
-  <table role="grid"
-         aria-label="none">
-    <thead>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
-`;
+
 
 export class ResultGrid extends HTMLElement {
   constructor () {
@@ -40,6 +31,13 @@ export class ResultGrid extends HTMLElement {
     link.setAttribute('href', './result-grid.css');
     this.shadowRoot.appendChild(link);
 
+    // reference to associated details button
+    this.detailsButton = this.shadowRoot.querySelector('#details');
+
+    // Save handle functions
+    this.onRowActivation = null;
+    this.onRowSelection = null;
+
   }
 
   set disabled (value) {
@@ -54,6 +52,16 @@ export class ResultGrid extends HTMLElement {
     let elem = this.table.querySelector('[tabindex="0"]');
     if (elem) {
       elem.focus();
+    }
+  }
+
+  setDetailsButtonDisabled (value) {
+    if (typeof value !== 'boolean') {
+      value = true;
+    }
+    value = this.disabled ? true : value;
+    if (this.detailsButton) {
+      this.detailsButton.disabled = value;
     }
   }
 
@@ -73,27 +81,15 @@ export class ResultGrid extends HTMLElement {
   disable () {
     this.table.setAttribute('aria-disabled', 'true');
     this.disabled = true;
-    this.setDetailsButtonDisabled (true);
+    if (this.detailsButton) {
+      this.setDetailsButtonDisabled (true);
+    }
   }
 
   enable () {
     this.table.setAttribute('aria-disabled', 'false');
     this.disabled = false;
     this.setDetailsButtonDisabled (false);
-  }
-
-  setDetailsButton (button) {
-    this.detailsButton = button;
-  }
-
-  setDetailsButtonDisabled (value) {
-    if (typeof value !== 'boolean') {
-      value = true;
-    }
-    value = this.disabled ? true : value;
-    if (this.detailsButton) {
-      this.detailsButton.disabled = value;
-    }
   }
 
   getRowCount () {
@@ -200,9 +196,9 @@ export class ResultGrid extends HTMLElement {
     tr.id = id;
     this.tbody.appendChild(tr);
 
-    tr.addEventListener('keydown', this.onRowKeydown.bind(this));
-    tr.addEventListener('click', this.onRowClick.bind(this));
-    tr.addEventListener('dblclick', this.onRowDoubleClick.bind(this));
+    tr.addEventListener('keydown', this.handleRowKeydown.bind(this));
+    tr.addEventListener('click', this.handleRowClick.bind(this));
+    tr.addEventListener('dblclick', this.handleRowDoubleClick.bind(this));
     return tr;
   }
 
@@ -465,7 +461,7 @@ export class ResultGrid extends HTMLElement {
 
   // event handlers
 
-  onRowClick (event) {
+  handleRowClick (event) {
     const tgt = event.currentTarget;
     this.setSelectedRow(tgt);
     tgt.focus();
@@ -475,7 +471,7 @@ export class ResultGrid extends HTMLElement {
     event.stopPropagation();
   }
 
-  onRowDoubleClick (event) {
+  handleRowDoubleClick (event) {
     const tgt = event.currentTarget;
     tgt.focus();
     this.setSelectedRow(tgt);
@@ -485,7 +481,7 @@ export class ResultGrid extends HTMLElement {
     event.stopPropagation();
   }
 
-  onRowKeydown (event) {
+  handleRowKeydown (event) {
     let nextItem = null;
     let flag = false;
 

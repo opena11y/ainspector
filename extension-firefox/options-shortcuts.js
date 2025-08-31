@@ -200,14 +200,14 @@ class OptionsShortcuts extends HTMLElement {
     });
 
     optionsShortcuts.shadowRoot.querySelectorAll('input[type=checkbox], input[type=radio]').forEach( input => {
-      input.addEventListener('focus',  optionsShortcuts.onFocus);
-      input.addEventListener('blur',   optionsShortcuts.onBlur);
-      input.addEventListener('change', optionsShortcuts.onChange.bind(optionsShortcuts));
-      input.parentNode.addEventListener('pointerover',   optionsShortcuts.onPointerover);
+      input.addEventListener('focus',  optionsShortcuts.handleFocus);
+      input.addEventListener('blur',   optionsShortcuts.handleBlur);
+      input.addEventListener('change', optionsShortcuts.handleChange.bind(optionsShortcuts));
+      input.parentNode.addEventListener('pointerover',   optionsShortcuts.handlePointerover);
     });
 
-    this.onResize();
-    window.addEventListener('resize', this.onResize.bind(this));
+    this.handleResize();
+    window.addEventListener('resize', this.handleResize.bind(this));
   }
 
   updateOptions () {
@@ -267,29 +267,29 @@ class OptionsShortcuts extends HTMLElement {
 
   // Event handlers
 
-  onFocus (event) {
+  handleFocus (event) {
     const pNode = event.currentTarget.parentNode;
     pNode.classList.add('focus');
     const rect = pNode.querySelector('span').getBoundingClientRect();
     pNode.style.width = (rect.width + 40) + 'px';
   }
 
-  onPointerover (event) {
+  handlePointerover (event) {
     const pNode = event.currentTarget;
     const rect = pNode.querySelector('span').getBoundingClientRect();
     pNode.style.width = (rect.width + 40) + 'px';
   }
 
-  onBlur (event) {
+  handleBlur (event) {
     event.currentTarget.parentNode.classList.remove('focus');
   }
 
-  onChange () {
+  handleChange () {
     debug.flag && debug.log(`[saveOptions]`);
     this.saveShortcutsOptions();
   }
 
-  onResize() {
+  handleResize() {
     this.shadowRoot.querySelectorAll('input[type=radio], input[type=checkbox]').forEach( input => {
       const node = input.parentNode;
       if (node) {

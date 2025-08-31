@@ -23,12 +23,6 @@ table.rule {
   min-height: 150px;
 }
 
-table.summary {
-  border-left: 1px solid #aaa;
-  border-right: 1px solid #aaa;
-  border-bottom: 1px solid #aaa;
-}
-
 table thead,
 table tbody tr {
   display: table;
@@ -43,17 +37,17 @@ table thead {
 }
 
 table tbody tr:nth-child(even) {
-  background: light-dark(#eee, #333);
-}
-
-table.summary tbody tr:last-child {
-  border-top: 1px solid light-dark(#aaa, #666);;
+  background: light-dark(#eeeeee, #333333);
 }
 
 table thead th {
   border-bottom: 1px solid light-dark(#ddd, #444);
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+table.summary tbody tr:last-child {
+  border-top: 1px solid light-dark(var(--tab-border-color-light), var(--tab-border-color-dark));
 }
 
 table thead th span.icon {
@@ -74,6 +68,7 @@ table tr[aria-selected] {
   outline-offset:  -2px;
   outline: currentColor 2px dotted;
 }
+
 
 table th,
 table td {
@@ -185,5 +180,13 @@ table.show-selection tr:focus {
 table code {
   color: rgb(214, 51, 132);
   font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+div.details {
+  margin: 0;
+  padding: 0;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+  text-align: right;
 }
 

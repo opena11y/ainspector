@@ -169,49 +169,49 @@ export default class ExportButton extends HTMLElement {
     this.timerValue = 0;
 
     this.exportButton  = this.shadowRoot.querySelector('#export-data');
-    this.exportButton.addEventListener('click', this.onExportButtonClick.bind(this));
+    this.exportButton.addEventListener('click', this.handleExportButtonClick.bind(this));
 
     this.dialog = this.shadowRoot.querySelector('dialog');
-    this.dialog.addEventListener('keydown', this.onDialogKeydown.bind(this));
+    this.dialog.addEventListener('keydown', this.handleDialogKeydown.bind(this));
 
     this.exportCSV      = this.shadowRoot.querySelector('input[id="options-export-csv"]');
-    this.exportCSV.addEventListener('keydown', this.onFirstControlKeydown.bind(this));
-    this.exportCSV.addEventListener('focus', this.onFocus.bind(this));
-    this.exportCSV.addEventListener('blur', this.onBlur.bind(this));
+    this.exportCSV.addEventListener('keydown', this.handleFirstControlKeydown.bind(this));
+    this.exportCSV.addEventListener('focus', this.handleFocus.bind(this));
+    this.exportCSV.addEventListener('blur', this.handleBlur.bind(this));
 
     this.exportJSON     = this.shadowRoot.querySelector('input[id="options-export-json"]');
-    this.exportJSON.addEventListener('keydown', this.onFirstControlKeydown.bind(this));
-    this.exportJSON.addEventListener('focus', this.onFocus.bind(this));
-    this.exportJSON.addEventListener('blur', this.onBlur.bind(this));
+    this.exportJSON.addEventListener('keydown', this.handleFirstControlKeydown.bind(this));
+    this.exportJSON.addEventListener('focus', this.handleFocus.bind(this));
+    this.exportJSON.addEventListener('blur', this.handleBlur.bind(this));
 
     this.exportPrefix   = this.shadowRoot.querySelector('#options-export-prefix');
-    this.exportPrefix.addEventListener('keydown', this.onKeydownValidatePrefix.bind(this));
-    this.exportPrefix.addEventListener('keyup', this.onKeyupValidatePrefix.bind(this));
+    this.exportPrefix.addEventListener('keydown', this.handleKeydownValidatePrefix.bind(this));
+    this.exportPrefix.addEventListener('keyup', this.handleKeyupValidatePrefix.bind(this));
     this.exportPrefix.addEventListener('blur', this.hidePrefixError.bind(this));
 
     this.exportPrefixDesc = this.shadowRoot.querySelector('#options-export-prefix-desc');
 
     this.exportIndex = this.shadowRoot.querySelector('#options-export-index');
-    this.exportIndex.addEventListener('focus', this.onFocus.bind(this));
-    this.exportIndex.addEventListener('blur', this.onBlur.bind(this));
+    this.exportIndex.addEventListener('focus', this.handleFocus.bind(this));
+    this.exportIndex.addEventListener('blur', this.handleBlur.bind(this));
 
     this.exportPrompt   = this.shadowRoot.querySelector('#options-export-prompt');
-    this.exportPrompt.addEventListener('focus', this.onFocus.bind(this));
-    this.exportPrompt.addEventListener('blur', this.onBlur.bind(this));
+    this.exportPrompt.addEventListener('focus', this.handleFocus.bind(this));
+    this.exportPrompt.addEventListener('blur', this.handleBlur.bind(this));
 
     this.closeButton = this.shadowRoot.querySelector('#close-button');
-    this.closeButton.addEventListener('click', this.onCancelButtonClick.bind(this));
+    this.closeButton.addEventListener('click', this.handleCancelButtonClick.bind(this));
 
     this.cancelButton = this.shadowRoot.querySelector('#cancel-button');
-    this.cancelButton.addEventListener('click', this.onCancelButtonClick.bind(this));
+    this.cancelButton.addEventListener('click', this.handleCancelButtonClick.bind(this));
 
     this.okButton = this.shadowRoot.querySelector('#ok-button');
-    this.okButton.addEventListener('click', this.onOkButtonClick.bind(this));
-    this.okButton.addEventListener('keydown', this.onOkButtonKeydown.bind(this));
+    this.okButton.addEventListener('click', this.handleOkButtonClick.bind(this));
+    this.okButton.addEventListener('keydown', this.handleOkButtonKeydown.bind(this));
 
     window.addEventListener(
       'pointerdown',
-      this.onBackgroundPointerdown.bind(this),
+      this.handleBackgroundPointerdown.bind(this),
       true
     );
 
@@ -265,7 +265,7 @@ export default class ExportButton extends HTMLElement {
     this.exportPrefixDesc.parentNode.classList.add('show');
   }
 
-  onKeydownValidatePrefix (event) {
+  handleKeydownValidatePrefix (event) {
     this.hidePrefixError();
     const key = event.key;
     if (!isCharacterAllowed(key)) {
@@ -282,7 +282,7 @@ export default class ExportButton extends HTMLElement {
     }
   }
 
-  onKeyupValidatePrefix () {
+  handleKeyupValidatePrefix () {
     const value = validatePrefix(this.exportPrefix.value);
     if (value !== this.exportPrefix.value) {
       if (this.exportPrefix.value.length >= MAX_PREFIX_LENGTH) {
@@ -292,7 +292,7 @@ export default class ExportButton extends HTMLElement {
     this.exportPrefix.value = value;
   }
 
-  onExportButtonClick () {
+  handleExportButtonClick () {
     getOptions().then( (options) => {
       if (options.promptForExportOptions) {
         this.openDialog();
@@ -302,11 +302,11 @@ export default class ExportButton extends HTMLElement {
     });
   }
 
-  onCancelButtonClick () {
+  handleCancelButtonClick () {
     this.closeDialog();
   }
 
-  onOkButtonClick () {
+  handleOkButtonClick () {
     this.closeDialog();
     const options = {
       exportFormat: (this.exportCSV.checked ? 'CSV' :    'JSON'),
@@ -317,7 +317,7 @@ export default class ExportButton extends HTMLElement {
     saveOptions(options).then(this.tryActivationCallback());
   }
 
-  onDialogKeydown(event) {
+  handleDialogKeydown(event) {
     if (event.ctrlKey || event.altKey || event.metaKey) {
       return;
     }
@@ -335,7 +335,7 @@ export default class ExportButton extends HTMLElement {
     }
   }
 
-  onFirstControlKeydown(event) {
+  handleFirstControlKeydown(event) {
       if (event.ctrlKey || event.altKey || event.metaKey) {
         return;
       }
@@ -347,7 +347,7 @@ export default class ExportButton extends HTMLElement {
       }
   }
 
-  onOkButtonKeydown(event) {
+  handleOkButtonKeydown(event) {
       if (event.ctrlKey || event.altKey || event.metaKey) {
         return;
       }
@@ -363,18 +363,18 @@ export default class ExportButton extends HTMLElement {
       }
   }
 
-  onBackgroundPointerdown(event) {
+  handleBackgroundPointerdown(event) {
     if (!isOverElement(this.dialog, event.clientX, event.clientY)) {
       this.closeDialog();
     }
   }
 
-  onFocus (event) {
+  handleFocus (event) {
     const tgt = event.currentTarget;
     tgt.parentNode.classList.add('focus');
   }
 
-  onBlur (event) {
+  handleBlur (event) {
     const tgt = event.currentTarget;
     tgt.parentNode.classList.remove('focus');
   }

@@ -93,44 +93,44 @@ export default class InfoDialog extends HTMLElement {
     this.dialog  = this.shadowRoot.querySelector('dialog');
 
     this.openButton  = this.shadowRoot.querySelector('#open-button');
-    this.openButton.addEventListener('click', this.onOpenButtonClick.bind(this));
+    this.openButton.addEventListener('click', this.handleOpenButtonClick.bind(this));
     if (openButtonLabel) {
       this.openButton.setAttribute('aria-label', openButtonLabel);
       this.openButton.title = openButtonLabel;
     }
 
     this.closeButton1  = this.shadowRoot.querySelector('#close-button-1');
-    this.closeButton1.addEventListener('click', this.onCloseButtonClick.bind(this));
-    this.closeButton1.addEventListener('keydown', this.onKeyDown.bind(this));
+    this.closeButton1.addEventListener('click', this.handleCloseButtonClick.bind(this));
+    this.closeButton1.addEventListener('keydown', this.handleKeyDown.bind(this));
 
     this.closeButton2  = this.shadowRoot.querySelector('#close-button-2');
-    this.closeButton2.addEventListener('click', this.onCloseButtonClick.bind(this));
-    this.closeButton2.addEventListener('keydown', this.onKeyDown.bind(this));
+    this.closeButton2.addEventListener('click', this.handleCloseButtonClick.bind(this));
+    this.closeButton2.addEventListener('keydown', this.handleKeyDown.bind(this));
 
     this.moreInfoButton  = this.shadowRoot.querySelector('#more-info-button');
     if (moreButtonLabel) {
       this.moreInfoButton.textContent = moreButtonLabel;
     }
-    this.moreInfoButton.addEventListener('click', this.onMoreInfoClick.bind(this));
+    this.moreInfoButton.addEventListener('click', this.handleMoreInfoClick.bind(this));
 
     window.addEventListener(
       'pointerdown',
-      this.onBackgroundPointerdown.bind(this),
+      this.handleBackgroundPointerdown.bind(this),
       true
     );
 
   }
 
-  onCloseButtonClick () {
+  handleCloseButtonClick () {
     this.dialog.close();
   }
 
-  onOpenButtonClick () {
+  handleOpenButtonClick () {
     this.dialog.showModal();
     this.closeButton2.focus();
   }
 
-  onMoreInfoClick () {
+  handleMoreInfoClick () {
     const moreInfoButton = this.moreinfoButton;
 
     function onCreated() {
@@ -149,7 +149,7 @@ export default class InfoDialog extends HTMLElement {
     newTab.then(onCreated, onError);
   }
 
-  onKeyDown (event) {
+  handleKeyDown (event) {
 
     if ((event.key === "Tab") &&
         !event.altKey &&
@@ -172,7 +172,7 @@ export default class InfoDialog extends HTMLElement {
     }
   }
 
-  onBackgroundPointerdown(event) {
+  handleBackgroundPointerdown(event) {
     if (!isOverElement(this.dialog, event.clientX, event.clientY)) {
       this.dialog.close();
     }

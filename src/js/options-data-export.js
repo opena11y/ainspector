@@ -161,21 +161,21 @@ class OptionsDataExport extends HTMLElement {
 
     this.shadowRoot.querySelectorAll('input').forEach( input => {
       if (input.type === 'checkbox' || input.type === 'radio') {
-        input.addEventListener('focus',  optionsDataExport.onFocus);
-        input.addEventListener('blur',   optionsDataExport.onBlur);
-        input.parentNode.addEventListener('poiinterover',   optionsDataExport.onPointerover);
+        input.addEventListener('focus',  optionsDataExport.handleFocus);
+        input.addEventListener('blur',   optionsDataExport.handleBlur);
+        input.parentNode.addEventListener('pointerover',   optionsDataExport.handlePointerover);
       }
-      input.addEventListener('change', optionsDataExport.onChange.bind(optionsDataExport));
+      input.addEventListener('change', optionsDataExport.handleChange.bind(optionsDataExport));
     });
 
     this.exportPrefixInput = this.shadowRoot.querySelector('#options-export-prefix');
-    this.exportPrefixInput.addEventListener('keydown', this.onKeydownValidatePrefix.bind(this));
-    this.exportPrefixInput.addEventListener('keyup', this.onKeyupValidatePrefix.bind(this));
+    this.exportPrefixInput.addEventListener('keydown', this.handleKeydownValidatePrefix.bind(this));
+    this.exportPrefixInput.addEventListener('keyup', this.handleKeyupValidatePrefix.bind(this));
 
     this.exportPrefixError = this.shadowRoot.querySelector('#options-export-prefix-error');
 
-    this.onResize();
-    window.addEventListener('resize', this.onResize.bind(this));
+    this.handleResize();
+    window.addEventListener('resize', this.handleResize.bind(this));
   }
 
   updateOptions () {
@@ -245,29 +245,29 @@ class OptionsDataExport extends HTMLElement {
 
   // Event handlers
 
-  onFocus (event) {
+  handleFocus (event) {
     const pNode = event.currentTarget.parentNode;
     pNode.classList.add('focus');
     const rect = pNode.querySelector('span').getBoundingClientRect();
     pNode.style.width = (rect.width + 40) + 'px';
   }
 
-  onPointerover (event) {
+  handlePointerover (event) {
     const pNode = event.currentTarget;
     const rect = pNode.querySelector('span').getBoundingClientRect();
     pNode.style.width = (rect.width + 40) + 'px';
   }
 
-  onBlur (event) {
+  handleBlur (event) {
     event.currentTarget.parentNode.classList.remove('focus');
   }
 
-  onChange () {
+  handleChange () {
     debug.flag && debug.log(`[saveOptions]`);
     this.saveDataExportOptions();
   }
 
-  onKeydownValidatePrefix (event) {
+  handleKeydownValidatePrefix (event) {
     this.hidePrefixError();
     const key = event.key;
     if (!isCharacterAllowed(key)) {
@@ -284,7 +284,7 @@ class OptionsDataExport extends HTMLElement {
     }
   }
 
-  onKeyupValidatePrefix () {
+  handleKeyupValidatePrefix () {
     const value = validatePrefix(this.exportPrefixInput.value, MAX_PREFIX_LENGTH);
     if (value !== this.exportPrefixInput.value) {
       if (this.exportPrefixInput.value.length >= MAX_PREFIX_LENGTH) {
@@ -294,7 +294,7 @@ class OptionsDataExport extends HTMLElement {
     this.exportPrefixInput.value = value;
   }
 
-  onResize() {
+  handleResize() {
     this.shadowRoot.querySelectorAll('input[type=radio], input[type=checkbox]').forEach( input => {
       const node = input.parentNode;
       if (node) {

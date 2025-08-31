@@ -112,4 +112,18 @@
   --info-border-light: #1D58A7;
   --info-border-dark: #009FD4;
 
+  // tablist
+
+  --tab-color-light: var(--primary-color-light);
+  --tab-color-dark: var(--primary-color-dark);
+  --tab-background-light: #eee;
+  --tab-background-dark: #333;
+  --tab-border-color-light: var(--light-gray);
+  --tab-border-color-dark:  var(--light-gray);
+
+  --tab-selected-color-light: var(--primary-color-light);
+  --tab-selected-color-dark: var(--primary-color-dark);
+  --tab-selected-background-light: var(--main-background-light);
+  --tab-selected-background-dark: var(--main-background-dark);
+
 }

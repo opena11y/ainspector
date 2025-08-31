@@ -10,7 +10,7 @@
 header {
   display: grid;
   grid-template-columns: auto 160px;
-  border-bottom: 1px solid light-dark(var(--primary-color-light), var(--primary-color-dark));
+  border-bottom: 1px solid light-dark(var(--tab-border-color-light), var(--tab-border-color-dark));
 }
 
 header h1 {

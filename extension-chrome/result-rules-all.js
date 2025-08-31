@@ -67,17 +67,6 @@ template.innerHTML = `
 
     </div>
   </div>
-  <button id="details">
-    <span data-i18n="details_label">
-    </span>
-    <svg xmlns='http://www.w3.org/2000/svg'
-         class='down'
-         width='12'
-         height='12'
-         viewBox='0 0 12 12'>
-      <polygon points='1 1, 1 11, 11 6' fill='currentColor'/>
-    </svg>
-  </button>
 `;
 
 export default class ResultRulesAll extends HTMLElement {
@@ -138,6 +127,8 @@ export default class ResultRulesAll extends HTMLElement {
     setI18nLabels(this.shadowRoot, debug.flag);
 
     this.summaryRulesElem = this.shadowRoot.querySelector('summary-rules');
+    this.rcGridElem = this.shadowRoot.querySelector('result-grid-rule-categories');
+    this.glGridElem = this.shadowRoot.querySelector('result-grid-wcag-guidelines');
 
     getOptions().then((options) => {
 
@@ -172,6 +163,18 @@ export default class ResultRulesAll extends HTMLElement {
     this.summaryRulesElem.warnings      = summary.warnings;
     this.summaryRulesElem.manual_checks = summary.manual_checks;
     this.summaryRulesElem.passed        = summary.passed;
+  }
+
+  setRuleCateogryResults (results) {
+    debug.log(`[setRuleCateogryResults][rcGridElem]: ${this.rcGridElem}`);
+    debug.log(`[setRuleCateogryResults][    update]: ${this.rcGridElem.update}`);
+    this.rcGridElem.update(results);
+  }
+
+  setWcagGuidelineResults (results) {
+    debug.log(`[setWcagGuidelineResults][glGridElem]: ${this.glGridElem}`);
+    debug.log(`[setWcagGuidelineResults][.   update]: ${this.glGridElem.update}`);
+    this.glGridElem.update(results);
   }
 
   // Tablist support functions and handlers

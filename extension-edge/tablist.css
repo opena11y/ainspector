@@ -5,19 +5,6 @@
 }
 
 .tablist {
-
-  --tab-color-light: var(--primary-color);
-  --tab-color-dark: var(--primary-color-dark);
-  --tab-background-light: #eee;
-  --tab-background-dark: #333;
-  --tab-border-color-light: var(--primary-color);
-  --tab-border-color-dark:  var(--primary-color-dark);
-
-  --tab-selected-color-light: var(--primary-color);
-  --tab-selected-color-dark: var(--primary-color-dark);
-  --tab-selected-background-light: white;
-  --tab-selected-background-dark: black;
-
   padding: 0;
   padding-left: 6px;
   padding-right: 6px;
@@ -47,7 +34,7 @@
   cursor: pointer;
   border-color: light-dark(var(--tab-border-color-light), var(--tab-border-color-dark));
   color: light-dark(var(--tab-color-light), var(--tab-color-dark));
-  background-color: light-dark(var(--tab-background-light), var(--tab-background-dark));;
+  background-color: light-dark(var(--tab-background-light), var(--tab-background-dark));
 }
 
 [role=tab][aria-selected=true] {
@@ -60,7 +47,7 @@
   color: light-dark(#000, #fff);
   background-color: light-dark(var(--tab-selected-background-light), var(--tab-selected-background-dark));
   border-bottom-color: light-dark(var(--tab-selected-background-light), var(--tab-selected-background-dark));;
-  border-top-color: light-dark(var(--tab-border-color-light), var(--tab-border-color-dark));
+  border-top-color: light-dark(var(--tab-selected-color-light), var(--tab-selected-color-light));
 }
 
 [role=tab][aria-selected=false] {
@@ -70,12 +57,13 @@
 }
 
 [role=tabpanel] {
-  padding: 5px;
+  margin: 0;
+  padding: 0;
   border-width: 2px;
   border-style: solid;
   overflow: hidden;
   border-color: light-dark(var(--tab-border-color-light), var(--tab-border-color-dark));
-  background: light-dark(var(--tab-background-color-light), var(--widget-background-color-dark));;
+  background-color: light-dark(var(--tab-background-color-light), var(--widget-background-color-dark));;
 }
 
 [role=tabpanel].is-hidden {

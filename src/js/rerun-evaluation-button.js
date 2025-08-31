@@ -114,30 +114,30 @@ export default class RerunEvaluationButton extends HTMLElement {
     this.rerunButton.addEventListener('click', this.onRerunButtonClick.bind(this));
 
     this.dialog = this.shadowRoot.querySelector('dialog');
-    this.dialog.addEventListener('keydown', this.onDialogKeydown.bind(this));
+    this.dialog.addEventListener('keydown', this.handleDialogKeydown.bind(this));
 
     this.select = this.shadowRoot.querySelector('select');
-    this.select.addEventListener('keydown', this.onSelectKeydown.bind(this));
-    this.select.addEventListener('focus', this.onFocus.bind(this));
-    this.select.addEventListener('blur', this.onBlur.bind(this));
+    this.select.addEventListener('keydown', this.handleSelectKeydown.bind(this));
+    this.select.addEventListener('focus', this.handleFocus.bind(this));
+    this.select.addEventListener('blur', this.handleBlur.bind(this));
 
     this.checkbox = this.shadowRoot.querySelector('#prompt-for-delay');
-    this.checkbox.addEventListener('focus', this.onFocus.bind(this));
-    this.checkbox.addEventListener('blur', this.onBlur.bind(this));
+    this.checkbox.addEventListener('focus', this.handleFocus.bind(this));
+    this.checkbox.addEventListener('blur', this.handleBlur.bind(this));
 
     this.closeButton = this.shadowRoot.querySelector('#close-button');
-    this.closeButton.addEventListener('click', this.onCancelButtonClick.bind(this));
+    this.closeButton.addEventListener('click', this.handleCancelButtonClick.bind(this));
 
     this.cancelButton = this.shadowRoot.querySelector('#cancel-button');
-    this.cancelButton.addEventListener('click', this.onCancelButtonClick.bind(this));
+    this.cancelButton.addEventListener('click', this.handleCancelButtonClick.bind(this));
 
     this.okButton = this.shadowRoot.querySelector('#ok-button');
-    this.okButton.addEventListener('click', this.onOkButtonClick.bind(this));
-    this.okButton.addEventListener('keydown', this.onOkButtonKeydown.bind(this));
+    this.okButton.addEventListener('click', this.handleOkButtonClick.bind(this));
+    this.okButton.addEventListener('keydown', this.handleOkButtonKeydown.bind(this));
 
     window.addEventListener(
       'pointerdown',
-      this.onBackgroundPointerdown.bind(this),
+      this.handleBackgroundPointerdown.bind(this),
       true
     );
 
@@ -207,11 +207,11 @@ export default class RerunEvaluationButton extends HTMLElement {
     });
   }
 
-  onCancelButtonClick () {
+  handleCancelButtonClick () {
     this.closeDialog();
   }
 
-  onOkButtonClick () {
+  handleOkButtonClick () {
     getOptions().then( (options) => {
       options.rerunDelayValue = this.select.value;
       options.rerunDelayEnabled = !this.checkbox.checked;
@@ -222,7 +222,7 @@ export default class RerunEvaluationButton extends HTMLElement {
     });
   }
 
-  onSelectKeydown(event) {
+  handleSelectKeydown(event) {
     if (event.ctrlKey || event.altKey || event.metaKey) {
       return;
     }
@@ -236,7 +236,7 @@ export default class RerunEvaluationButton extends HTMLElement {
     }
   }
 
-  onDialogKeydown(event) {
+  handleDialogKeydown(event) {
     if (event.ctrlKey || event.altKey || event.metaKey) {
       return;
     }
@@ -254,7 +254,7 @@ export default class RerunEvaluationButton extends HTMLElement {
     }
   }
 
-  onOkButtonKeydown(event) {
+  handleOkButtonKeydown(event) {
       if (event.ctrlKey || event.altKey || event.metaKey) {
         return;
       }
@@ -266,18 +266,18 @@ export default class RerunEvaluationButton extends HTMLElement {
       }
   }
 
-  onBackgroundPointerdown(event) {
+  handleBackgroundPointerdown(event) {
     if (!isOverElement(this.dialog, event.clientX, event.clientY)) {
       this.closeDialog();
     }
   }
 
-  onFocus (event) {
+  handleFocus (event) {
     const tgt = event.currentTarget;
     tgt.parentNode.classList.add('focus');
   }
 
-  onBlur (event) {
+  handleBlur (event) {
     const tgt = event.currentTarget;
     tgt.parentNode.classList.remove('focus');
   }

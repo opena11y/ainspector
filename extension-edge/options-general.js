@@ -121,14 +121,14 @@ class OptionsGeneral extends HTMLElement {
     });
 
     optionsGeneral.shadowRoot.querySelectorAll('input[type=checkbox], input[type=radio]').forEach( input => {
-      input.addEventListener('focus',  optionsGeneral.onFocus);
-      input.addEventListener('blur',   optionsGeneral.onBlur);
-      input.addEventListener('change', optionsGeneral.onChange.bind(optionsGeneral));
-      input.parentNode.addEventListener('blur',   optionsGeneral.onPointerover);
+      input.addEventListener('focus',  optionsGeneral.handleFocus);
+      input.addEventListener('blur',   optionsGeneral.handleBlur);
+      input.addEventListener('change', optionsGeneral.handleChange.bind(optionsGeneral));
+      input.parentNode.addEventListener('blur',   optionsGeneral.handlePointerover);
     });
 
-    this.onResize();
-    window.addEventListener('resize', this.onResize.bind(this));
+    this.handleResize();
+    window.addEventListener('resize', this.handleResize.bind(this));
   }
 
   updateOptions () {
@@ -188,29 +188,29 @@ class OptionsGeneral extends HTMLElement {
 
   // Event handlers
 
-  onFocus (event) {
+  handleFocus (event) {
     const pNode = event.currentTarget.parentNode;
     pNode.classList.add('focus');
     const rect = pNode.querySelector('span').getBoundingClientRect();
     pNode.style.width = (rect.width + 40) + 'px';
   }
 
-  onPointerover (event) {
+  handlePointerover (event) {
     const pNode = event.currentTarget;
     const rect = pNode.querySelector('span').getBoundingClientRect();
     pNode.style.width = (rect.width + 40) + 'px';
   }
 
-  onBlur (event) {
+  handleBlur (event) {
     event.currentTarget.parentNode.classList.remove('focus');
   }
 
-  onChange () {
+  handleChange () {
     debug && console.log(`[saveOptions]`);
     this.saveGeneralOptions();
   }
 
-  onResize() {
+  handleResize() {
     this.shadowRoot.querySelectorAll('input[type=radio], input[type=checkbox]').forEach( input => {
       const node = input.parentNode;
       if (node) {
