@@ -37,21 +37,21 @@ table tbody tr {
 }
 
 table thead {
-  background-color: white;
+  background-color: light-dark(var(--main-background-light), var(--main-background-dark));
   position: sticky;
   top: 0;
 }
 
 table tbody tr:nth-child(even) {
-  background: #eee;
+  background: light-dark(#eee, #333);
 }
 
 table.summary tbody tr:last-child {
-  border-top: 1px solid #aaa;
+  border-top: 1px solid light-dark(#aaa, #666);;
 }
 
 table thead th {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid light-dark(#ddd, #444);
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -152,26 +152,26 @@ table td.message {
   font-style: italic;
 }
 
-/* Result backkground colors */
+/* Result background colors */
 
 table td.not-applicable {
-  background-color: transparent;
+  background-color: light-dark(var(--not-applicable-color-light), var(--not-applicable-color-dark));;;
 }
 
 table td.manual-check {
-  background-color: hsl(198, 52%, 81%);
+  background-color: light-dark(var(--manual-checks-color-light), var(--manual-checks-color-dark));
 }
 
 table td.passed {
-  background-color: hsl(90, 67%, 69%);
+  background-color: light-dark(var(--passed-color-light), var(--passed-color-dark));
 }
 
 table td.violation {
-  background-color: hsl(0, 100%, 84%);
+  background-color: light-dark(var(--violations-color-light), var(--violations-color-dark));
 }
 
 table td.warning {
-  background-color: hsl(49, 100%, 79%);
+  background-color: light-dark(var(--warnings-color-light), var(--warnings-color-dark));
 }
 
 table th:focus,

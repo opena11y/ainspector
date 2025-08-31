@@ -20,7 +20,7 @@
   },
 
   "loading_content" : {
-    "message": "Loading content",
+    "message": "Loading content ...",
     "description": "Message when content is be updated"
   },
 

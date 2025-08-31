@@ -37,17 +37,17 @@
 
   --error-red: #ed2939;
   --violations-color-light:     hsl(0, 100%, 84%);
-  --violations-color-dark:      hsl(0, 100%, 84%);
+  --violations-color-dark:      hsl(0, 100%, 16%);
   --warnings-color-light:       hsl(49, 100%, 79%);
-  --warnings-color-dark:        hsl(49, 100%, 79%);
+  --warnings-color-dark:        hsl(49, 100%, 21%);
   --manual-checks-color-light:  hsl(198, 52%, 81%);
-  --manual-checks-color-dark:   hsl(198, 52%, 81%);
+  --manual-checks-color-dark:   hsl(198, 52%, 19%);
   --passed-color-light:         hsl(90, 67%, 69%);
-  --passed-color-dark:          hsl(90, 67%, 69%);
+  --passed-color-dark:          hsl(90, 67%, 31%);
   --hidden-color-light:         hsl(0, 0%, 87%);
-  --hidden-color-dark:          hsl(0, 0%, 87%);
+  --hidden-color-dark:          hsl(0, 0%, 13%);
   --not-applicable-color-light: hsl(0, 0%, 87%);
-  --not-applicable-color-dark:  hsl(0, 0%, 87%);
+  --not-applicable-color-dark:  hsl(0, 0%, 13%);
 /* Setting Content Variables */
 
 

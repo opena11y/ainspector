@@ -80,7 +80,7 @@ template.innerHTML = `
   </button>
 `;
 
-export default class ResultAllRules extends HTMLElement {
+export default class ResultRulesAll extends HTMLElement {
   constructor () {
     super();
     this.attachShadow({ mode: 'open' });
@@ -137,6 +137,8 @@ export default class ResultAllRules extends HTMLElement {
 
     setI18nLabels(this.shadowRoot, debug.flag);
 
+    this.summaryRulesElem = this.shadowRoot.querySelector('summary-rules');
+
     getOptions().then((options) => {
 
       const lastAllRulesTabId = options.lastAllRulesTabId ?
@@ -159,11 +161,18 @@ export default class ResultAllRules extends HTMLElement {
   }
 
   clear () {
+    this.summaryRulesElem.clear();
   }
 
   resize () {
   }
 
+  setSummary (summary) {
+    this.summaryRulesElem.violations    = summary.violations;
+    this.summaryRulesElem.warnings      = summary.warnings;
+    this.summaryRulesElem.manual_checks = summary.manual_checks;
+    this.summaryRulesElem.passed        = summary.passed;
+  }
 
   // Tablist support functions and handlers
 
@@ -260,5 +269,5 @@ export default class ResultAllRules extends HTMLElement {
 
 }
 
-window.customElements.define("result-all-rules", ResultAllRules);
+window.customElements.define("result-rules-all", ResultRulesAll);
 

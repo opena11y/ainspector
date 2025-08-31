@@ -137,6 +137,8 @@ export default class ResultAllRules extends HTMLElement {
 
     setI18nLabels(this.shadowRoot, debug.flag);
 
+    this.summaryRulesElem = this.shadowRoot.querySelector('summary-rules');
+
     getOptions().then((options) => {
 
       const lastAllRulesTabId = options.lastAllRulesTabId ?
@@ -159,11 +161,22 @@ export default class ResultAllRules extends HTMLElement {
   }
 
   clear () {
+    this.summaryRulesElem.clear();
   }
 
   resize () {
   }
 
+  setSummary (summary) {
+    debug.log(`[   violations]: ${summary.violations}`);
+    debug.log(`[.    warnings]: ${summary.warnings}`);
+    debug.log(`[manual_checks]: ${summary.manual_checks}`);
+    debug.log(`[       passed]: ${summary.passed}`);
+    this.summaryRulesElem.violations    = summary.violations;
+    this.summaryRulesElem.warnings      = summary.warnings;
+    this.summaryRulesElem.manual_checks = summary.manual_checks;
+    this.summaryRulesElem.passed        = summary.passed;
+  }
 
   // Tablist support functions and handlers
 

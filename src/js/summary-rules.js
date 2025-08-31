@@ -110,7 +110,7 @@ export default class SummaryRules extends HTMLElement {
     this.warningsTd.textContent = value;
   }
 
-  set manualChecks (value) {
+  set manual_checks (value) {
     this.manualChecksTd.textContent = value;
   }
 

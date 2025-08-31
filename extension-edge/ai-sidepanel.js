@@ -72,7 +72,7 @@ template.innerHTML = `
   </header>
 
   <main>
-    <result-all-rules></result-all-rules>
+    <result-rules-all></result-rules-all>
   </main>
 
   <footer>
@@ -150,18 +150,17 @@ class AISidePanel extends HTMLElement {
     const rerunButton = this.shadowRoot.querySelector(`rerun-evaluation-button`);
     rerunButton.setActivationCallback(this.runEvaluation.bind(this));
 
-    // Node references
+    // Element references
 
     this.viewTitleElem    = this.shadowRoot.querySelector(`#view-title`);
     this.infoTitleElem    = this.shadowRoot.querySelector(`#info-title`);
     this.infoLocationElem = this.shadowRoot.querySelector(`#info-location`);
     this.infoRulesetElem  = this.shadowRoot.querySelector(`#info-ruleset`);
 
+    this.resultRulesAllElem = this.shadowRoot.querySelector(`result-rules-all`);
+
     // Side panel states
     this.resultView = 'rules-all';
-
-
-
 
     // Update side panel title
 
@@ -189,34 +188,41 @@ class AISidePanel extends HTMLElement {
   }
 
   clearView(message = '') {
-    debug.flag && debug.log(`[clearView]: ${message}`);
     this.infoTitleElem.textContent    = message;
     this.infoLocationElem.textContent = '';
     this.infoRulesetElem.textContent  = '';
   }
 
   updateView(result) {
-    debug.flag && debug.log(`[updateView][       title]: ${result.title}`);
-    debug.flag && debug.log(`[updateView][         url]: ${result.url}`);
-    debug.flag && debug.log(`[updateView][rulesetLabel]: ${result.rulesetLabel}`);
-
     this.infoTitleElem.textContent    = result.title;
-    this.infoLocationElem.textContent = result.url;
-    this.infoRulesetElem.textContent  = result.rulesetLabel;
+    this.infoLocationElem.textContent = result.location;
+    this.infoRulesetElem.textContent  = result.ruleset_label;
+
+
+    switch (result.result_view) {
+      case 'rules-all':
+        this.resultRulesAllElem.setSummary(result.summary);
+        break;
+
+      case 'rules-group':
+        break;
+
+      case 'rule':
+        break;
+    }
+
   }
 
   runEvaluation() {
     debug.flag && debug.log(`[runEvaluation]`);
     this.clearView(getMessage('loading_content'));
 
-    const spObj = this;
+    const aiSidePanelObj = this;
 
-    function onUpdateContentError() {
-      spObj.clearView(getMessage('protocol_not_supported'));
+    function onRunEvaluationError() {
+      aiSidePanelObj.clearView(getMessage('protocol_not_supported'));
       onError();
     }
-
-    const aiSidePanelObj = this;
 
     getOptions().then( (options) => {
 
@@ -224,9 +230,9 @@ class AISidePanel extends HTMLElement {
         aiRunEvaluation: {
           ruleset:      options.ruleset,
           level :       options.level,
-          scopeFilter:  options.scopeFilter,
-          ariaVersion:  options.ariaVersion,
-          resultView:   aiSidePanelObj.resultView
+          scope_filter: options.scopeFilter,
+          aria_version: options.ariaVersion,
+          result_view:    aiSidePanelObj.resultView
         }
       };
 
@@ -236,7 +242,7 @@ class AISidePanel extends HTMLElement {
           active: true,
         })
         .then(this.sendMessageToTabs.bind(this))
-        .catch(onUpdateContentError);
+        .catch(onRunEvaluationError);
 
     });
 
@@ -451,7 +457,7 @@ class AISidePanel extends HTMLElement {
   }
 
   handleOptionsClick () {
-     chrome.runtime.openOptionsPage();
+     browserRuntime.openOptionsPage();
   }
 
 }

@@ -80,7 +80,7 @@ template.innerHTML = `
   </button>
 `;
 
-export default class ResultAllRules extends HTMLElement {
+export default class ResultRulesAll extends HTMLElement {
   constructor () {
     super();
     this.attachShadow({ mode: 'open' });
@@ -168,10 +168,6 @@ export default class ResultAllRules extends HTMLElement {
   }
 
   setSummary (summary) {
-    debug.log(`[   violations]: ${summary.violations}`);
-    debug.log(`[.    warnings]: ${summary.warnings}`);
-    debug.log(`[manual_checks]: ${summary.manual_checks}`);
-    debug.log(`[       passed]: ${summary.passed}`);
     this.summaryRulesElem.violations    = summary.violations;
     this.summaryRulesElem.warnings      = summary.warnings;
     this.summaryRulesElem.manual_checks = summary.manual_checks;
@@ -273,5 +269,5 @@ export default class ResultAllRules extends HTMLElement {
 
 }
 
-window.customElements.define("result-all-rules", ResultAllRules);
+window.customElements.define("result-rules-all", ResultRulesAll);
 
