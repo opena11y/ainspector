@@ -63,7 +63,7 @@ export default class ResultRuleGroup extends HTMLElement {
   resize (height) {
     const summaryHeight = this.summaryRulesElem.getBoundingClientRect().height;
 
-    const h = (height - summaryHeight - 36) / 2;
+    const h = (height - summaryHeight - 38) / 2;
 
     debug.log(`height: ${height} sumH: ${summaryHeight} h: ${h}`);
 

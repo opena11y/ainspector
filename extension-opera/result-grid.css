@@ -66,7 +66,7 @@ table tr td:first-child {
 
 table tr[aria-selected] {
   outline-offset:  -2px;
-  outline: currentColor 2px dotted;
+  outline: 2px dotted light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
 }
 
 
@@ -174,7 +174,7 @@ table td:focus,
 table tr:focus,
 table.show-selection tr:focus {
   outline-offset:  -2px;
-  outline: currentColor 2px solid;
+  outline: 2px solid light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));;
 }
 
 table code {

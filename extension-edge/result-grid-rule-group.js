@@ -69,6 +69,56 @@ template.innerHTML = `
   </div>
 `;
 
+  /* Helper functions */
+
+  function getResultAccessibleName (result) {
+    let accName = getMessage('not_applicable_label');
+
+    switch (result){
+      case 'MC':
+        accName = getMessage('manual_check_label');
+        break;
+
+      case 'P':
+        accName = getMessage('passed_label');
+        break;
+
+      case 'V':
+        accName = getMessage('violationLabel');
+        break;
+
+      case 'W':
+        accName = getMessage('warning_label');
+        break;
+
+      default:
+        break;
+    }
+    return accName;
+  }
+
+  function getLevelAccessibleName (level) {
+    let accName;
+
+    switch (level){
+      case 'A':
+        accName = getMessage('single_a_label');
+        break;
+
+      case 'AA':
+        accName = getMessage('double_a_label');
+        break;
+
+      case 'AAA':
+        accName = getMessage('triple_a_label');
+        break;
+
+      default:
+        break;
+    }
+    return accName;
+  }
+
   /* Sorting Helper Functions */
 
   // returns a number for the sorting the result value
@@ -187,7 +237,7 @@ export default class ResultGridRuleGroup extends ResultGrid {
             rowAccName += rr.summary;
             this.addDataCell(row, rr.summary, rr.summary, 'rule');
 
-            cellAccName = this.getResultAccessibleName(rr.result);
+            cellAccName = getResultAccessibleName(rr.result);
             sortValue = getResultSortingValue(rr.result);
             rowAccName += ', ' + cellAccName;
             this.addDataCell(row, rr.result, cellAccName, `result ${rr.result}`, sortValue);
@@ -197,7 +247,7 @@ export default class ResultGridRuleGroup extends ResultGrid {
             rowAccName += ', ' + cellAccName;
             this.addDataCell(row, rr.sc, '', 'sc', cellAccName, sortValue);
 
-            cellAccName = this.getLevelAccessibleName(rr.level);
+            cellAccName = getLevelAccessibleName(rr.level);
             sortValue = getLevelSortingValue(rr.level);
             rowAccName += ', ' + cellAccName;
             this.addDataCell(row, rr.level, '', 'level');
@@ -217,6 +267,8 @@ export default class ResultGridRuleGroup extends ResultGrid {
           this.addMessageRow(getMessage('no_violations_warnings_mc_results_msg'));
         }
 
+        this.tbody.firstElementChild.tabIndex = 0;
+
       });
 
     }
@@ -225,53 +277,6 @@ export default class ResultGridRuleGroup extends ResultGrid {
     }
   }
 
-  getResultAccessibleName (result) {
-    let accName = getMessage('not_applicable_label');
-
-    switch (result){
-      case 'MC':
-        accName = getMessage('manual_check_label');
-        break;
-
-      case 'P':
-        accName = getMessage('passed_label');
-        break;
-
-      case 'V':
-        accName = getMessage('violationLabel');
-        break;
-
-      case 'W':
-        accName = getMessage('warning_label');
-        break;
-
-      default:
-        break;
-    }
-    return accName;
-  }
-
-  getLevelAccessibleName (level) {
-    let accName;
-
-    switch (level){
-      case 'A':
-        accName = getMessage('single_a_label');
-        break;
-
-      case 'AA':
-        accName = getMessage('double_a_label');
-        break;
-
-      case 'AAA':
-        accName = getMessage('triple_a_label');
-        break;
-
-      default:
-        break;
-    }
-    return accName;
-  }
 
   handleRowSelection (id) {
     if (id) {
