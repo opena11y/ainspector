@@ -14,6 +14,11 @@ import {
   ResultGrid
 } from './result-grid.js';
 
+import {
+  getOptions
+} from './storage.js';
+
+
 // Constants
 
 const debug = new DebugLogging('[result-grid-rule-group]', false);
@@ -64,6 +69,54 @@ template.innerHTML = `
   </div>
 `;
 
+  /* Sorting Helper Functions */
+
+  // returns a number for the sorting the result value
+  function getResultSortingValue (result) {
+    return ['', 'N/A', 'P', 'MC', 'W', 'V'].indexOf(result);
+  }
+
+  // returns a number used for representing SC for sorting
+  function getSCSortingValue (sc) {
+    let parts = sc.split('.');
+    let p = parseInt(parts[0], 10);
+    let g = parseInt(parts[1], 10);
+    let s = parseInt(parts[2], 10);
+    return (p * 10000 + g * 100 + s) * -1;
+  }
+
+  // returns a number used for representing level value for sorting
+  function getLevelSortingValue (level) {
+    return ['', 'AAA', 'AA', 'A'].indexOf(level);
+  }
+
+  // returns a number used for representing required value for sorting
+  function getRequiredSortingValue (required) {
+    return required ? 2 : 1;
+  }
+
+  function sortRuleResults(rule_results) {
+    return rule_results.sort((a, b) => {
+      let valueA = a.result_value;
+      let valueB = b.result_value;
+      if (valueA === valueB) {
+        valueA = getLevelSortingValue(a.level);
+        valueB = getLevelSortingValue(b.level);
+        if (valueA === valueB) {
+          valueA = getSCSortingValue(a.sc);
+          valueB = getSCSortingValue(b.sc);
+        } else {
+          if (valueA === valueB) {
+            valueA = getRequiredSortingValue(a.required);
+            valueB = getRequiredSortingValue(b.required);
+          }
+        }
+      }
+      return valueB - valueA;
+    });
+  }
+
+
 export default class ResultGridRuleGroup extends ResultGrid {
 
   constructor() {
@@ -104,20 +157,71 @@ export default class ResultGridRuleGroup extends ResultGrid {
   }
 
   update (rule_results) {
+    debug.log(`[update]`);
+    let count = 0;
+
     removeChildContent(this.tbody);
     if (rule_results.length) {
-      rule_results.forEach( (rr) => {
-        const row = this.addRow(rr.id);
-        this.addDataCell(row, rr.summary, '', 'text');
-        this.addDataCell(row, rr.result, '', `result ${rr.result}`);
-        this.addDataCell(row, rr.sc, '', 'sc');
-        this.addDataCell(row, rr.level, '', 'level');
-        this.addDataCell(row, rr.required ? 'Y' : '', '', 'required');
-        this.tbody.appendChild(row);
+
+      getOptions().then( (options) => {
+
+        rule_results = sortRuleResults(rule_results);
+
+        rule_results.forEach( (rr) => {
+
+          if (options.resultsIncludePassNa ||
+              rr.result === 'V' ||
+              rr.result === 'W' ||
+              rr.result === 'MC'
+            ) {
+
+            count += 1;
+            debug.log(`[update][id]: ${rr.id}`);
+
+            let rowAccName = '';
+            let cellAccName;
+            let sortValue;
+
+            const row = this.addRow(rr.id);
+
+            rowAccName += rr.summary;
+            this.addDataCell(row, rr.summary, rr.summary, 'rule');
+
+            cellAccName = this.getResultAccessibleName(rr.result);
+            sortValue = getResultSortingValue(rr.result);
+            rowAccName += ', ' + cellAccName;
+            this.addDataCell(row, rr.result, cellAccName, `result ${rr.result}`, sortValue);
+
+            cellAccName = getMessage('success_criteria_label') + ' ' + rr.sc;
+            sortValue = getSCSortingValue(rr.sc);
+            rowAccName += ', ' + cellAccName;
+            this.addDataCell(row, rr.sc, '', 'sc', cellAccName, sortValue);
+
+            cellAccName = this.getLevelAccessibleName(rr.level);
+            sortValue = getLevelSortingValue(rr.level);
+            rowAccName += ', ' + cellAccName;
+            this.addDataCell(row, rr.level, '', 'level');
+
+            cellAccName = rr.required ? getMessage('required_label') : '';
+            sortValue = getRequiredSortingValue(rr.required);
+            rowAccName += rr.required ? ', ' + cellAccName : '';
+            this.addDataCell(row, rr.required ? 'Y' : '', '', 'required');
+
+            row.setAttribute('aria-label', rowAccName);
+
+            this.tbody.appendChild(row);
+          }
+        });
+
+        if (count === 0) {
+          this.addMessageRow(getMessage('no_violations_warnings_mc_results_msg'));
+        }
+
       });
+
     }
     else {
-      debug.log(`No rule group results`);
+      this.addMessageRow(getMessage('no_results_msg'));
     }
   }
 
@@ -139,6 +243,28 @@ export default class ResultGridRuleGroup extends ResultGrid {
 
       case 'W':
         accName = getMessage('warning_label');
+        break;
+
+      default:
+        break;
+    }
+    return accName;
+  }
+
+  getLevelAccessibleName (level) {
+    let accName;
+
+    switch (level){
+      case 'A':
+        accName = getMessage('single_a_label');
+        break;
+
+      case 'AA':
+        accName = getMessage('double_a_label');
+        break;
+
+      case 'AAA':
+        accName = getMessage('triple_a_label');
         break;
 
       default:

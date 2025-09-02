@@ -200,7 +200,7 @@ class AISidePanel extends HTMLElement {
       }
     });
 
-    this.handleSize();
+    this.handleResize();
   }
 
   setRuleGroup(id) {

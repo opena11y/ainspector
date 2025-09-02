@@ -55,6 +55,7 @@ export default class ResultRuleGroup extends HTMLElement {
   }
 
   update (result) {
+    debug.log(`[update]`);
     this.summaryRulesElem.update(result.summary);
     this.resultGridRuleGroupElem.update(result.rule_results);
   }

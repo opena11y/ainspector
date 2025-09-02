@@ -18086,12 +18086,13 @@
     recommended: 'Recommended',
     tableType: ['undefined', 'Unknown', 'Layout', 'Simple Data', 'Complex Data', 'ARIA Table', 'Grid', 'Tree Grid'],
 
-    elementViolationLabel:   'V',
-    elementWarningLabel:     'W',
-    elementPassLabel:        'P',
-    elementManualCheckLabel: 'MC',
-    elementHiddenLabel:      'H',
-    elementInertLabel:       'I',
+    elementViolationLabel:     'V',
+    elementWarningLabel:       'W',
+    elementPassLabel:          'P',
+    elementManualCheckLabel:   'MC',
+    elementHiddenLabel:        'H',
+    elementInertLabel:         'I',
+    elementNotApplicableLabel: 'NA',
 
     pageViolationLabel:   'Page Violation',
     pageWarningLabel:     'Page Warning',
@@ -30776,7 +30777,7 @@
           }
         }
       }
-      return '-';
+      return getCommonMessage('elementNotAppliableLabel');
     }
 
 
@@ -39793,15 +39794,7 @@
 
       this.allRuleResults.forEach( rr => {
         if (rr.getRule().getCategory() & guidelineId) {
-          const result = {
-            id: rr.rule.getId(),
-            summary: rr.rule.getSummary(),
-            result: rr.results_summary.getRuleResultValueNLS(),
-            sc: rr.rule.getPrimarySuccessCriterionId(),
-            level: rr.rule.getWCAGLevel(),
-            required: rr.rule.rule_required
-          };
-
+          const result = this.getRuleResultInfo (rr);
           rule_results.push(result);
           summary.update(rr);
         }
@@ -39832,6 +39825,17 @@
       return rgr;
     }
 
+    getRuleResultInfo (rule_result) {
+      return {      id: rule_result.rule.getId(),
+               summary: rule_result.rule.getSummary(),
+                result: rule_result.getResultValueNLS(),
+          result_value: rule_result.getResultValue(),
+                    sc: rule_result.rule.getPrimarySuccessCriterionId(),
+                 level: rule_result.rule.getWCAGLevel(),
+              required: rule_result.isRuleRequired()
+          };
+    }
+
     /**
      * @method getRuleResultsByCategoryWithSummary
      *
@@ -39848,20 +39852,9 @@
       const summary = new ruleResultsSummary();
       const rule_results = [];
 
-      debug$2.log(`[.     results_summary]: ${this.allRuleResults[0].results_summary}`);
-      debug$2.log(`[getRuleResultValueNLS]: ${this.allRuleResults[0].results_summary.getRuleResultValueNLS}`);
-
       this.allRuleResults.forEach( rr => {
         if (rr.getRule().getCategory() & categoryId) {
-          const result = {
-            id: rr.rule.getId(),
-            summary: rr.rule.getSummary(),
-            result: rr.results_summary.getRuleResultValueNLS(),
-            sc: rr.rule.getPrimarySuccessCriterionId(),
-            level: rr.rule.getWCAGLevel(),
-            required: rr.rule.rule_required
-          };
-
+          const result = this.getRuleResultInfo (rr);
           rule_results.push(result);
           summary.update(rr);
         }

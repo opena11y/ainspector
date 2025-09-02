@@ -362,22 +362,27 @@
     "description": "WCAG Success Criteria"
   },
 
-  "singleALabel": {
+  "single_a_label": {
     "message": "Single A",
     "description": "WCAG Single A Success Criteria"
   },
 
-  "doubleALabel": {
+  "double_a_abel": {
     "message": "Double A",
     "description": "WCAG Double A Success Criteria"
   },
 
-  "noResultsMsg": {
+  "triple_a_abel": {
+    "message": "Triple A",
+    "description": "WCAG Triple A Success Criteria"
+  },
+
+  "no_results_msg": {
     "message": "No results",
     "description": "Message for no results"
   },
 
-  "noViolationsWarningsMCResultsMsg": {
+  "no_violations_warnings_mc_results_msg": {
     "message": "No violations, warnings or manual check results",
     "description": "Message when there are no violation, warning or manual check results"
   },
