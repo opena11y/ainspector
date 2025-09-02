@@ -269,10 +269,10 @@ class OptionsRuleset extends HTMLElement {
     link.setAttribute('href', 'base.css');
     this.shadowRoot.appendChild(link);
 
-    const linkNode = document.createElement('link');
-    linkNode.rel = 'stylesheet';
-    linkNode.href = 'options.css';
-    this.shadowRoot.appendChild(linkNode);
+    link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', 'options.css');
+    this.shadowRoot.appendChild(link);
 
     setI18nLabels(this.shadowRoot, debug.flag);
 

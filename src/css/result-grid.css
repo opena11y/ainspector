@@ -14,7 +14,7 @@ table {
   border-collapse: collapse;
 }
 
-table.group,
+table.rule-group,
 table.rule {
   display: block;
   border: 1px solid #aaa;
@@ -46,7 +46,7 @@ table thead th {
   text-overflow: ellipsis;
 }
 
-table.summary tbody tr:last-child {
+table.all-rules tbody tr:last-child {
   border-top: 1px solid light-dark(var(--tab-border-color-light), var(--tab-border-color-dark));
 }
 
@@ -149,23 +149,23 @@ table td.message {
 
 /* Result background colors */
 
-table td.not-applicable {
+table td.NA {
   background-color: light-dark(var(--not-applicable-color-light), var(--not-applicable-color-dark));;;
 }
 
-table td.manual-check {
+table td.MC {
   background-color: light-dark(var(--manual-checks-color-light), var(--manual-checks-color-dark));
 }
 
-table td.passed {
+table td.P {
   background-color: light-dark(var(--passed-color-light), var(--passed-color-dark));
 }
 
-table td.violation {
+table td.V {
   background-color: light-dark(var(--violations-color-light), var(--violations-color-dark));
 }
 
-table td.warning {
+table td.W {
   background-color: light-dark(var(--warnings-color-light), var(--warnings-color-dark));
 }
 

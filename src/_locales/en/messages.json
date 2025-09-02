@@ -29,9 +29,9 @@
     "description": "Message when content cannot be evaluated"
   },
 
-  "viewTitleSummaryLabel": {
-    "message": "Summary: ",
-    "description": "Label for summary view"
+  "view_title_all_rules_Label": {
+    "message": "Summary: All Rules",
+    "description": "Label for all rules view"
   },
 
   "back_button_label": {
@@ -337,27 +337,27 @@
     "description": "Label for the guidelines group"
   },
 
-  "guidelineLabel": {
+  "guideline_label": {
     "message": "Guideline",
     "description": "Label for the guideline group"
   },
 
-  "ruleLabel": {
+  "rule_label": {
     "message": "Rule",
     "description": "Rule column header for rule group view grid"
   },
 
-  "resultLabel": {
+  "result_label": {
     "message": "Result",
     "description": "Result column header for rule group view grid"
   },
 
-  "successCriteriaAbbrev": {
+  "success_criteria_abbrev": {
     "message": "SC",
     "description": "Abbreviation for WCAG Success Criteria"
   },
 
-  "successCriteriaLabel": {
+  "success_criteria_label": {
     "message": "Success Criteria",
     "description": "WCAG Success Criteria"
   },
@@ -382,17 +382,17 @@
     "description": "Message when there are no violation, warning or manual check results"
   },
 
-  "levelLabel": {
+  "level_label": {
     "message": "Level",
     "description": "Level column header for rule group view grid"
   },
 
-  "requiredAbbrev": {
+  "required_abbrev": {
     "message": "Req",
     "description": "Abbreviation for required column header for rule group view grid"
   },
 
-  "requiredLabel": {
+  "required_label": {
     "message": "Required",
     "description": "Required column header for rule group view grid"
   },
@@ -432,7 +432,7 @@
     "description": "Label for rule results grid"
   },
 
-  "ruleSelectedLabel": {
+  "rule_selected_label": {
     "message": "Selected Rule",
     "description": "Selected rule label for rule information"
   },

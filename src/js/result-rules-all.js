@@ -1,4 +1,4 @@
-/* result-all-rules.js */
+/* result-rules-all.js */
 
 // Imports
 
@@ -15,7 +15,7 @@ import {
 
 // Constants
 
-const debug = new DebugLogging('[result-all-rules]', false);
+const debug = new DebugLogging('[result-rules-all]', false);
 debug.flag = false;
 
 
@@ -83,10 +83,10 @@ export default class ResultRulesAll extends HTMLElement {
     link.setAttribute('href', './base.css');
     this.shadowRoot.appendChild(link);
 
-    const linkFocus = document.createElement('link');
-    linkFocus.setAttribute('rel', 'stylesheet');
-    linkFocus.setAttribute('href', './tablist.css');
-    this.shadowRoot.appendChild(linkFocus);
+    link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', './tablist.css');
+    this.shadowRoot.appendChild(link);
 
     this.divTablist      = this.shadowRoot.querySelector('[role="tablist"]');
     this.divTabpanels    = this.shadowRoot.querySelector('#tabpanels');
@@ -128,7 +128,9 @@ export default class ResultRulesAll extends HTMLElement {
 
     this.summaryRulesElem = this.shadowRoot.querySelector('summary-rules');
     this.rcGridElem = this.shadowRoot.querySelector('result-grid-rule-categories');
+    this.rcGridElem.setSidepanel(this);
     this.glGridElem = this.shadowRoot.querySelector('result-grid-wcag-guidelines');
+    this.glGridElem.setSidepanel(this);
 
     getOptions().then((options) => {
 
@@ -146,35 +148,27 @@ export default class ResultRulesAll extends HTMLElement {
 
   }
 
+  setSidepanel (sidepanelElem) {
+    this.rcGridElem.setSidepanel(sidepanelElem);
+    this.glGridElem.setSidepanel(sidepanelElem);
+  }
+
   // Result content functions
 
-  update () {
+  update (result) {
+    this.summaryRulesElem.update(result.summary);
+    this.rcGridElem.update(result.rc_rule_results_group);
+    this.glGridElem.update(result.gl_rule_results_group);
   }
 
   clear () {
     this.summaryRulesElem.clear();
+    this.rcGridElem.clear();
+    this.glGridElem.clear();
   }
 
-  resize () {
-  }
-
-  setSummary (summary) {
-    this.summaryRulesElem.violations    = summary.violations;
-    this.summaryRulesElem.warnings      = summary.warnings;
-    this.summaryRulesElem.manual_checks = summary.manual_checks;
-    this.summaryRulesElem.passed        = summary.passed;
-  }
-
-  setRuleCateogryResults (results) {
-    debug.log(`[setRuleCateogryResults][rcGridElem]: ${this.rcGridElem}`);
-    debug.log(`[setRuleCateogryResults][    update]: ${this.rcGridElem.update}`);
-    this.rcGridElem.update(results);
-  }
-
-  setWcagGuidelineResults (results) {
-    debug.log(`[setWcagGuidelineResults][glGridElem]: ${this.glGridElem}`);
-    debug.log(`[setWcagGuidelineResults][.   update]: ${this.glGridElem.update}`);
-    this.glGridElem.update(results);
+  resize (height) {
+    debug.log(`[height]: ${height}`);
   }
 
   // Tablist support functions and handlers
@@ -267,9 +261,6 @@ export default class ResultRulesAll extends HTMLElement {
   handleTabClick(event) {
     this.setSelectedTab(event.currentTarget);
   }
-
-
-
 }
 
 window.customElements.define("result-rules-all", ResultRulesAll);

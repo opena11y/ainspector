@@ -7,15 +7,6 @@
   display: inline-block;
 }
 
-.views-menu-button button {
-  font-size: var(--button-font-size);
-  color: light-dark(var(--button-color-light), var(--button-color-dark));
-  border: var(--button-border) solid light-dark(var(--button-color-light), var(--button-color-dark));
-  background-color: light-dark(var(--button-background-light), var(--button-background-dark));
-  border-radius: var(--button-radius);
-  margin: var(--button-margin);
-}
-
 .views-menu-button button svg.down {
   padding-left: 0.125em;
   fill: light-dark(var(--button-color-light), var(--button-color-dark));

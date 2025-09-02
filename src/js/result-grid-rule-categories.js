@@ -25,7 +25,7 @@ debug.flag = false;
 
 const template = document.createElement('template');
 template.innerHTML = `
-  <table class="summary"
+  <table class="rules-all"
          role="grid"
          aria-label="none">
     <thead>
@@ -93,6 +93,7 @@ export default class ResultGridRuleCategories extends ResultGrid {
     this.thead   = this.table.querySelector('thead');
     this.tbody   = this.table.querySelector('tbody');
 
+    this.sidepanelElem = false;
     this.lastSelectedRowId = '';
     this.activationDisabled = false;
 
@@ -112,6 +113,17 @@ export default class ResultGridRuleCategories extends ResultGrid {
     });
     this.rows = rows;
     this.rows[0].tabIndex = 0;
+
+    const detailsButtonElem = this.shadowRoot.querySelector('#details');
+    detailsButtonElem.addEventListener('click', this.handleDetailsButtonClick.bind(this));
+
+    this.setRowSelectionEventHandler(this.handleRowSelection.bind(this));
+    this.setRowActivationEventHandler(this.handleRowActivation.bind(this));
+
+  }
+
+  setSidepanel (sidepanelElem) {
+    this.sidepanelElem = sidepanelElem;
   }
 
   clear () {
@@ -136,6 +148,24 @@ export default class ResultGridRuleCategories extends ResultGrid {
         rg.updateDataCell(row, 5, result.passed, '');
       }
     });
+  }
+
+  // Event handlers
+
+  handleRowSelection(id) {
+    debug.log(`[handleRowSelection][id]: ${id}`);
+    this.sidepanelElem.setRuleGroup(id);
+  }
+
+  handleRowActivation(id) {
+    debug.log(`[handleRowActivation][id]: ${id}`);
+    this.sidepanelElem.setView('rule-group', id);
+  }
+
+  handleDetailsButtonClick () {
+    if (this.sidepanelElem) {
+      this.sidepanelElem.setView('rule-group', this.lastSelectedRowId);
+    }
   }
 
 }

@@ -17,15 +17,6 @@ a[href]:visited {
   color: light-dark(var(--link-color-light), var(--link-color-dark));
 }
 
-button {
-  font-size: var(--button-font-size);
-  color: light-dark(var(--button-color-light), var(--button-color-dark));
-  border: var(--button-border) solid light-dark(var(--button-color-light), var(--button-color-dark));
-  background-color: light-dark(var(--button-background-light), var(--button-background-dark));
-  border-radius: var(--button-radius);
-  margin: var(--button-margin);
-}
-
 /* focus styling */
 
 a[href]:focus {

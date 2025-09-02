@@ -52,7 +52,14 @@
 
 
   --main-font-family: arial, verdana, tahoma, "trebuchet MS", sans-serif;
-  --main-font-size: 11pt;
+  --code-font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+
+  --title-font-size: 12pt;
+  --buttons-font-size: 10pt;
+  --legend-font-size: 12pt;
+  --options-font-size: 10pt;
+  --main-font-size: 10pt;
+
   --main-color-light: black;
   --main-color-dark: white;
   --main-background-light: white;
@@ -66,7 +73,6 @@
   --link-outline-color-light: var(--primary-focus-light);
   --link-outline-color-dark: var(--primary-focus-dark);
 
-  --button-font-size: 11pt;
   --button-border: 1px;
   --button-radius: 4px;
   --button-padding: 3px;
@@ -84,12 +90,6 @@
   --input-background-light: #eee;
   --input-background-dark: #222;
 
-  --code-font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
-
-  --title-font-size: 14pt;
-  --buttons-font-size: 12pt;
-  --legend-font-size: 14pt;
-  --options-font-size: 14pt;
 
   --error-color-light: var(--main-background-light);
   --error-color-dark: var(--main-background-dark);

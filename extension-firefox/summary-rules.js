@@ -102,38 +102,19 @@ export default class SummaryRules extends HTMLElement {
 
   }
 
-  set violations (value) {
-    this.violationsTd.textContent = value;
-  }
+  update (summary) {
+    this.violationsTd.textContent   = summary.violations;
+    this.violationsTd.title         = '';
 
-  set warnings (value) {
-    this.warningsTd.textContent = value;
-  }
+    this.warningsTd.textContent     = summary.warnings;
+    this.warningsTd.title           = '';
 
-  set manual_checks (value) {
-    this.manualChecksTd.textContent = value;
-  }
+    this.manualChecksTd.textContent = summary.manual_checks;
+    this.manualChecksTd.title       = '';
 
-  set passed (value) {
-    this.passedTd.textContent = value;
+    this.passedTd.textContent       = summary.passed;
+    this.passedTd.title             = '';
   }
-
-  get violations () {
-    return this.violationsTd.textContent;
-  }
-
-  get warnings () {
-    return this.warningsTd.textContent;
-  }
-
-  get manual_checks () {
-    return this.manualChecksTd.textContent;
-  }
-
-  get passed () {
-    return this.passedTd.textContent;
-  }
-
 
   clear () {
     this.violationsTd.textContent   = '-';

@@ -486,7 +486,7 @@ export class ResultGrid extends HTMLElement {
     let flag = false;
 
     const tgt = event.target;
-    let rowPos = this.getRowCurrentPosition(tgt);
+    const rowPos = this.getRowCurrentPosition(tgt);
 
     switch(event.key) {
       case 'Enter':

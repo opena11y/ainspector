@@ -52,8 +52,8 @@ template.innerHTML = `
 <div id="container">
   <header>
     <h1 id="view-title"
-        aria-live="polite">
-      Summary: All Rules
+        aria-live="polite"
+        data-i18n="view_title_all_rules_Label">
     </h1>
     <div class="buttons">
       <button id="back-button">
@@ -73,6 +73,7 @@ template.innerHTML = `
 
   <main>
     <result-rules-all></result-rules-all>
+    <result-rule-group hidden></result-rule-group>
   </main>
 
   <footer>
@@ -152,15 +153,25 @@ class AISidePanel extends HTMLElement {
 
     // Element references
 
+    this.containerElem  = this.shadowRoot.querySelector(`#container`);
+    this.headerElem     = this.shadowRoot.querySelector(`header`);
+    this.mainElem       = this.shadowRoot.querySelector(`main`);
+    this.footerElem     = this.shadowRoot.querySelector(`footer`);
+
     this.viewTitleElem    = this.shadowRoot.querySelector(`#view-title`);
     this.infoTitleElem    = this.shadowRoot.querySelector(`#info-title`);
     this.infoLocationElem = this.shadowRoot.querySelector(`#info-location`);
     this.infoRulesetElem  = this.shadowRoot.querySelector(`#info-ruleset`);
 
-    this.resultRulesAllElem = this.shadowRoot.querySelector(`result-rules-all`);
+    this.resultRulesAllElem  = this.shadowRoot.querySelector(`result-rules-all`);
+    this.resultRulesAllElem.setSidepanel(this);
+    this.resultRuleGroupElem = this.shadowRoot.querySelector(`result-rule-group`);
+    this.resultRuleGroupElem.setSidepanel(this);
 
     // Side panel states
     this.resultView = 'rules-all';
+    this.ruleGroupId = '';
+    this.ruleId = '';
 
     // Update side panel title
 
@@ -170,6 +181,9 @@ class AISidePanel extends HTMLElement {
     this.setAttribute('version', version);
 
     setI18nLabels(this.shadowRoot);
+
+    this.backButtonElem   = this.shadowRoot.querySelector(`#back-button`);
+    this.backButtonElem.addEventListener('click', this.handleBackButtonClick.bind(this));
 
     /*
     *   Add Window event listeners
@@ -185,6 +199,12 @@ class AISidePanel extends HTMLElement {
         sendResponse(true);
       }
     });
+
+    this.handleSize();
+  }
+
+  setRuleGroup(id) {
+    this.ruleGroupId = id;
   }
 
   clearView(message = '') {
@@ -193,6 +213,7 @@ class AISidePanel extends HTMLElement {
     this.infoRulesetElem.textContent  = '';
 
     this.resultRulesAllElem.clear();
+    this.resultRuleGroupElem.clear();
   }
 
   updateView(result) {
@@ -200,31 +221,53 @@ class AISidePanel extends HTMLElement {
     this.infoLocationElem.textContent = result.location;
     this.infoRulesetElem.textContent  = result.ruleset_label;
 
-    debug.log(`[result][. rc_rule_results_group]: ${result.rc_rule_results_group.length}`);
-    debug.log(`[result][  gl_rule_results_group]: ${result.gl_rule_results_group.length}`);
-
-    debug.log(`[result][ setRuleCateogryResults]: ${this.resultRulesAllElem.setRuleCateogryResults}`);
-    debug.log(`[result][setWcagGuidelineResults]: ${this.resultRulesAllElem.setWcagGuidelineResults}`);
-
     switch (result.result_view) {
       case 'rules-all':
+        this.viewTitleElem.textContent = getMessage('view_title_all_rules_Label');
+        this.backButtonElem.disabled = true;
+        this.resultRuleGroupElem.setAttribute('hidden', '');
         this.resultRulesAllElem.removeAttribute('hidden');
-        this.resultRulesAllElem.setSummary(result.summary);
-        this.resultRulesAllElem.setRuleCateogryResults(result.rc_rule_results_group);
-        this.resultRulesAllElem.setWcagGuidelineResults(result.gl_rule_results_group);
+        this.resultRulesAllElem.update(result);
         break;
 
       case 'rule-group':
+        debug.log(`[result_view]: rule-group`);
+        this.viewTitleElem.textContent = result.groupTitle;
+        this.backButtonElem.disabled = false;
+        this.resultRulesAllElem.setAttribute('hidden', '');
+        this.resultRuleGroupElem.removeAttribute('hidden');
+        this.resultRuleGroupElem.update(result);
+        this.handleResize();
         break;
 
       case 'rule':
+        this.viewTitleElem.textContent = this.groupId;
+        this.backButtonElem.disabled = false;
         break;
+
+      default:
+        break;
+
     }
 
   }
 
+  setView (view, id) {
+    this.resultView = view;
+
+    switch (view) {
+      case 'rule-group':
+        this.ruleGroupId = id;
+        break;
+
+      case 'rule':
+        this.ruleId = id;
+        break;
+    }
+    this.runEvaluation();
+  }
+
   runEvaluation() {
-    debug.flag && debug.log(`[runEvaluation]`);
     this.clearView(getMessage('loading_content'));
 
     const aiSidePanelObj = this;
@@ -238,11 +281,13 @@ class AISidePanel extends HTMLElement {
 
       aiSidePanelObj.request = {
         aiRunEvaluation: {
-          ruleset:      options.ruleset,
-          level :       options.level,
-          scope_filter: options.scopeFilter,
-          aria_version: options.ariaVersion,
-          result_view:    aiSidePanelObj.resultView
+          ruleset:       options.ruleset,
+          level :        options.level,
+          scope_filter:  options.scopeFilter,
+          aria_version:  options.ariaVersion,
+          result_view:   aiSidePanelObj.resultView,
+          rule_group_id: aiSidePanelObj.ruleGroupId,
+          rule_id:       aiSidePanelObj.ruleId
         }
       };
 
@@ -356,6 +401,13 @@ class AISidePanel extends HTMLElement {
 
   }
 
+  // UI Event handlers
+
+  handleBackButtonClick () {
+    this.resultView = this.resultView === 'rule' ? 'rule-group' : 'rules-all';
+    this.runEvaluation();
+  }
+
   //-----------------------------------------------
   //  Methods that handle tab and window events
   //-----------------------------------------------
@@ -463,7 +515,25 @@ class AISidePanel extends HTMLElement {
   }
 
   handleResize () {
-    debug.flag && debug.log(`[handleResize]`);
+    const screenHeight = window.innerHeight;
+    const screenWidth  = window.innerWidth;
+    const adjHeight = Math.max(610, screenHeight);
+    const adjWidth  = screenWidth - 15;
+    this.containerElem.style.height = adjHeight + 'px';
+    this.containerElem.style.width  = adjWidth + 'px';
+
+    const headerHeight    = this.headerElem.getBoundingClientRect().height;
+    const mainHeight      = this.mainElem.getBoundingClientRect().height;
+    const footerHeight    = this.footerElem.getBoundingClientRect().height;
+
+    const height = adjHeight - headerHeight - footerHeight;
+
+    debug.log(`sH: ${screenHeight} hH: ${headerHeight} mH: ${mainHeight} fH: ${footerHeight}`);
+    debug.log(`[height]: ${height} total: ${headerHeight+mainHeight+footerHeight}`);
+
+    this.resultRulesAllElem.resize(height);
+    this.resultRuleGroupElem.resize(height);
+
   }
 
   handleOptionsClick () {

@@ -1,15 +1,13 @@
 /* ai-sidepanel.css */
 
-.ai-sidepanel {
-  font-family: var(--main-font-family);
-  font-size: var(--main-font-size);
-  color: light-dark(var(--main-color-light), var(--main-color-dark));
-  background: light-dark(var(--main-background-light), var(--main-background-dark));
+#container {
+  outline-offset: 2px;
+  position: absolute;
 }
 
 header {
   display: grid;
-  grid-template-columns: auto 160px;
+  grid-template-columns: auto 140px;
   border-bottom: 1px solid light-dark(var(--tab-border-color-light), var(--tab-border-color-dark));
 }
 
@@ -33,17 +31,19 @@ header .buttons {
   padding: 0;
   top: 0;
   right: 0;
-  width: 160px;
+  width: 140px;
+}
+
+header .buttons button {
+  margin-right: 0.5em;
 }
 
 footer {
+  position: absolute;
+  bottom: 15px;
+  width: 100%;
   margin: 0;
   padding: 0;
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
-  position: absolute;
-  bottom: 0;
-  width: 97%;
 }
 
 footer .info {

@@ -106,10 +106,10 @@ class OptionsTablist extends HTMLElement {
     link.setAttribute('href', 'base.css');
     this.shadowRoot.appendChild(link);
 
-    const linkFocus = document.createElement('link');
-    linkFocus.setAttribute('rel', 'stylesheet');
-    linkFocus.setAttribute('href', './tablist.css');
-    this.shadowRoot.appendChild(linkFocus);
+    link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', './tablist.css');
+    this.shadowRoot.appendChild(link);
 
 
     // Add DOM tree from template
