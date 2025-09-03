@@ -32,7 +32,6 @@ table tbody tr {
 
 table thead {
   background-color: light-dark(var(--main-background-light), var(--main-background-dark));
-  position: sticky;
   top: 0;
 }
 

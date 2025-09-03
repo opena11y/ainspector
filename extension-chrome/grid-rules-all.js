@@ -166,7 +166,7 @@ export default class GridRulesAll extends Grid {
 
   handleRowSelection(id) {
     debug.log(`[handleRowSelection][id]: ${id}`);
-    this.sidepanelElem.setRuleGroup(id);
+    this.lastSelectedRowId = id;
   }
 
   handleRowActivation(id) {

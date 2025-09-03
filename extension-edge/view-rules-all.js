@@ -168,7 +168,7 @@ export default class ViewRulesAll extends HTMLElement {
   }
 
   resize (height) {
-    debug.log(`[height]: ${height}`);
+    debug.flag && debug.log(`[height]: ${height}`);
   }
 
   // Tablist support functions and handlers

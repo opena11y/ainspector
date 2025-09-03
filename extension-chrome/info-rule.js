@@ -1,4 +1,4 @@
-/* rule-info.js */
+/* info-rule.js */
 
 // Imports
 
@@ -10,7 +10,7 @@ import {
 
 // Constants
 
-const debug = new DebugLogging('[rule-info]', false);
+const debug = new DebugLogging('[info-rule]', false);
 debug.flag = false;
 
 const template = document.createElement('template');
@@ -28,7 +28,7 @@ template.innerHTML = `
   </div>
 `;
 
-export default class RuleInfo extends HTMLElement {
+export default class InfoRule extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -51,6 +51,14 @@ export default class RuleInfo extends HTMLElement {
 
   }
 
+  clear () {
+
+  }
+
+  update (id) {
+    debug.log(`[udpate][id]: ${id}`);
+  }
+
   setHeight (height) {
 
     const h2Elem = this.shadowRoot.querySelector('h2');
@@ -64,5 +72,5 @@ export default class RuleInfo extends HTMLElement {
 
 }
 
-window.customElements.define("rule-info", RuleInfo);
+window.customElements.define("info-rule", InfoRule);
 

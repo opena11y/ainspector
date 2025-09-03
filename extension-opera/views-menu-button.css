@@ -18,15 +18,16 @@
 }
 
 .views-menu-button [role="menu"] {
+  position: relative;
+  left: -8em;
   display: none;
   margin: 0;
   padding: 6px 4px;
   border: 2px solid light-dark(var(--button-color-light), var(--button-color-dark));
   border-radius: var(--button-radius);
   background-color: light-dark(var(--main-background-light), var(--main-background-dark));
-  right: 0;
-  height: 300px;
   overflow-y: scroll;
+  z-index: 5;
 }
 
 .views-menu-button [role="menuitem"],

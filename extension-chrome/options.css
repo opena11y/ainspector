@@ -99,7 +99,6 @@ select {
   left:  1em;
   top: 1em;
   width:  18em;
-  z-index: 10;
 }
 
 .feedback.shortcut.show {

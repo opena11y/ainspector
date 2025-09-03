@@ -16,8 +16,8 @@ template.innerHTML = `
   <grid-rule-group>
   </grid-rule-group>
 
-  <rule-info>
-  <rule-info>
+  <info-rule>
+  <info-rule>
 `;
 
 export default class ViewRuleGroup extends HTMLElement {
@@ -39,9 +39,10 @@ export default class ViewRuleGroup extends HTMLElement {
     link.setAttribute('href', './tablist.css');
     this.shadowRoot.appendChild(link);
 
-    this.summaryRulesElem = this.shadowRoot.querySelector(`summary-rules`);
+    this.summaryRulesElem  = this.shadowRoot.querySelector(`summary-rules`);
     this.gridRuleGroupElem = this.shadowRoot.querySelector(`grid-rule-group`);
-    this.ruleInfoElem = this.shadowRoot.querySelector(`rule-info`);
+    this.infoRuleElem      = this.shadowRoot.querySelector(`info-rule`);
+    this.gridRuleGroupElem.setInfoRule(this.infoRuleElem);
 
   }
 
@@ -50,12 +51,14 @@ export default class ViewRuleGroup extends HTMLElement {
   }
 
   clear () {
+    debug.flag && debug.log(`[clear]`);
     this.summaryRulesElem.clear();
     this.gridRuleGroupElem.clear();
+    this.infoRuleElem.clear();
   }
 
   update (result) {
-    debug.log(`[update]`);
+    debug.flag && debug.log(`[update]`);
     this.summaryRulesElem.update(result.summary);
     this.gridRuleGroupElem.update(result.rule_results);
   }
@@ -65,10 +68,8 @@ export default class ViewRuleGroup extends HTMLElement {
 
     const h = (height - summaryHeight - 38) / 2;
 
-    debug.log(`height: ${height} sumH: ${summaryHeight} h: ${h}`);
-
     this.gridRuleGroupElem.setHeight(h);
-    this.ruleInfoElem.setHeight(h);
+    this.infoRuleElem.setHeight(h);
   }
 
 }

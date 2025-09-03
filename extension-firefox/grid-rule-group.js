@@ -184,6 +184,8 @@ export default class GridRuleGroup extends Grid {
     this.tbody   = this.table.querySelector('tbody');
 
     this.sidepanelElem = false;
+    this.infoRuleElem = false;
+
     this.lastSelectedRowId = '';
     this.activationDisabled = false;
 
@@ -192,22 +194,25 @@ export default class GridRuleGroup extends Grid {
   setSidepanel (sidepanelElem) {
     this.sidepanelElem = sidepanelElem;
   }
+  setInfoRule (infoRuleElem) {
+    this.infoRuleElem = infoRuleElem;
+  }
+
 
   clear (message1="", message2="") {
     removeChildContent(this.tbody);
 
     if (message1) {
-      debug.log(`[clear][message1]: ${message1}`);
+      debug.flag && debug.log(`[clear][message1]: ${message1}`);
     }
 
     if (message2) {
-      debug.log(`[clear][message2]: ${message2}`);
+      debug.flag && debug.log(`[clear][message2]: ${message2}`);
     }
 
   }
 
   update (rule_results) {
-    debug.log(`[update]`);
     let count = 0;
 
     removeChildContent(this.tbody);
@@ -226,7 +231,6 @@ export default class GridRuleGroup extends Grid {
             ) {
 
             count += 1;
-            debug.log(`[update][id]: ${rr.id}`);
 
             let rowAccName = '';
             let cellAccName;

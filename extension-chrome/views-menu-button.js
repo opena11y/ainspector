@@ -1,12 +1,17 @@
 /* views-menu-button.js */
 
+// Imports
+
+import DebugLogging  from './debug.js';
+
 import {
   getOptions
 } from './storage.js';
 
 import {
   getMessage,
-  isOverElement
+  isOverElement,
+  removeChildContent
 } from './utils.js';
 
 import {
@@ -15,6 +20,11 @@ import {
   getGuidelineLabelId,
   getRuleCategoryLabelId
 } from './constants.js';
+
+// Constants
+
+const debug = new DebugLogging('[views-menu-button]', false);
+debug.flag = true;
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -70,6 +80,7 @@ export default class ViewsMenuButton extends HTMLElement {
     this.firstChars = [];
 
     this.closePopup();
+
     window.addEventListener(
       'pointerdown',
       this.handleBackgroundPointerdown.bind(this),
@@ -134,7 +145,7 @@ export default class ViewsMenuButton extends HTMLElement {
   initMenu (options) {
     let msgId;
 
-    this.menuDiv.innerHTML = '';
+    removeChildContent(this.menuDiv);
     this.menuitems = [];
     this.firstMenuitem = false;
     this.lastMenuitem = false;
@@ -146,7 +157,7 @@ export default class ViewsMenuButton extends HTMLElement {
     for (let i = 0; i < ruleCategoryIds.length; i += 1 ) {
       const rcId = ruleCategoryIds[i];
       msgId = getRuleCategoryLabelId(rcId);
-      this.addMenuitem(rcGroupDiv, 'rc' + rcId, getMessage(msgId));
+      this.addMenuitem(rcGroupDiv, `rc-${rcId}`, getMessage(msgId));
     }
 
     if (options.viewsMenuIncludeGuidelines) {
@@ -155,7 +166,7 @@ export default class ViewsMenuButton extends HTMLElement {
         const glId = guidelineIds[i];
         // cannot have periods in the msgId, so converted to underscore character
         msgId = getGuidelineLabelId(glId);
-        this.addMenuitem(glGroupDiv, 'gl' + glId, getMessage(msgId));
+        this.addMenuitem(glGroupDiv, `gl-${glId}`, getMessage(msgId));
       }
     }
   }
@@ -319,8 +330,14 @@ export default class ViewsMenuButton extends HTMLElement {
 
   performMenuAction(tgt) {
     const id = tgt.id;
+    debug.flag && debug.log(`[performMenuAction][id]: ${id}`);
     if (this.callback) {
-      this.callback(id);
+      if (id === 'summary') {
+        this.callback('rules-all', '');
+      }
+      else {
+        this.callback('rule-group', id);
+      }
     }
   }
 

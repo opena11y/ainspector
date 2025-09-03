@@ -15,7 +15,7 @@ import {
 /* Constants */
 
 const debug = new DebugLogging('ai-sidepanel', false);
-debug.flag = true;
+debug.flag = false;
 
 // Browser Constants
 
@@ -185,6 +185,9 @@ class AISidePanel extends HTMLElement {
     this.backButtonElem   = this.shadowRoot.querySelector(`#back-button`);
     this.backButtonElem.addEventListener('click', this.handleBackButtonClick.bind(this));
 
+    const viewsMenuButton = this.shadowRoot.querySelector(`views-menu-button`);
+    viewsMenuButton.setActivationCallback(this.setView.bind(this));
+
     /*
     *   Add Window event listeners
     */
@@ -231,7 +234,6 @@ class AISidePanel extends HTMLElement {
         break;
 
       case 'rule-group':
-        debug.log(`[result_view]: rule-group`);
         this.viewTitleElem.textContent = result.groupTitle;
         this.backButtonElem.disabled = false;
         this.viewRulesAllElem.setAttribute('hidden', '');
@@ -395,7 +397,7 @@ class AISidePanel extends HTMLElement {
     for (const tab of tabs) {
       const myResult = await myBrowser.tabs
         .sendMessage(tab.id, aiSidePanelObj.request);
-        debug.log(`[myResult]: ${myResult} ${aiSidePanelObj}`);
+        debug.flag && debug.log(`[myResult]: ${myResult} ${aiSidePanelObj}`);
         aiSidePanelObj.updateView(myResult);
     }
 
@@ -523,13 +525,9 @@ class AISidePanel extends HTMLElement {
     this.containerElem.style.width  = adjWidth + 'px';
 
     const headerHeight    = this.headerElem.getBoundingClientRect().height;
-    const mainHeight      = this.mainElem.getBoundingClientRect().height;
     const footerHeight    = this.footerElem.getBoundingClientRect().height;
 
     const height = adjHeight - headerHeight - footerHeight;
-
-    debug.log(`sH: ${screenHeight} hH: ${headerHeight} mH: ${mainHeight} fH: ${footerHeight}`);
-    debug.log(`[height]: ${height} total: ${headerHeight+mainHeight+footerHeight}`);
 
     this.viewRulesAllElem.resize(height);
     this.viewRuleGroupElem.resize(height);
