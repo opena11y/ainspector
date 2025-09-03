@@ -72,8 +72,8 @@ template.innerHTML = `
   </header>
 
   <main>
-    <result-rules-all></result-rules-all>
-    <result-rule-group hidden></result-rule-group>
+    <view-rules-all></view-rules-all>
+    <view-rule-group hidden></view-rule-group>
   </main>
 
   <footer>
@@ -163,10 +163,10 @@ class AISidePanel extends HTMLElement {
     this.infoLocationElem = this.shadowRoot.querySelector(`#info-location`);
     this.infoRulesetElem  = this.shadowRoot.querySelector(`#info-ruleset`);
 
-    this.resultRulesAllElem  = this.shadowRoot.querySelector(`result-rules-all`);
-    this.resultRulesAllElem.setSidepanel(this);
-    this.resultRuleGroupElem = this.shadowRoot.querySelector(`result-rule-group`);
-    this.resultRuleGroupElem.setSidepanel(this);
+    this.viewRulesAllElem  = this.shadowRoot.querySelector(`view-rules-all`);
+    this.viewRulesAllElem.setSidepanel(this);
+    this.viewRuleGroupElem = this.shadowRoot.querySelector(`view-rule-group`);
+    this.viewRuleGroupElem.setSidepanel(this);
 
     // Side panel states
     this.resultView = 'rules-all';
@@ -212,8 +212,8 @@ class AISidePanel extends HTMLElement {
     this.infoLocationElem.textContent = '';
     this.infoRulesetElem.textContent  = '';
 
-    this.resultRulesAllElem.clear();
-    this.resultRuleGroupElem.clear();
+    this.viewRulesAllElem.clear();
+    this.viewRuleGroupElem.clear();
   }
 
   updateView(result) {
@@ -225,18 +225,18 @@ class AISidePanel extends HTMLElement {
       case 'rules-all':
         this.viewTitleElem.textContent = getMessage('view_title_all_rules_Label');
         this.backButtonElem.disabled = true;
-        this.resultRuleGroupElem.setAttribute('hidden', '');
-        this.resultRulesAllElem.removeAttribute('hidden');
-        this.resultRulesAllElem.update(result);
+        this.viewRuleGroupElem.setAttribute('hidden', '');
+        this.viewRulesAllElem.removeAttribute('hidden');
+        this.viewRulesAllElem.update(result);
         break;
 
       case 'rule-group':
         debug.log(`[result_view]: rule-group`);
         this.viewTitleElem.textContent = result.groupTitle;
         this.backButtonElem.disabled = false;
-        this.resultRulesAllElem.setAttribute('hidden', '');
-        this.resultRuleGroupElem.removeAttribute('hidden');
-        this.resultRuleGroupElem.update(result);
+        this.viewRulesAllElem.setAttribute('hidden', '');
+        this.viewRuleGroupElem.removeAttribute('hidden');
+        this.viewRuleGroupElem.update(result);
         this.handleResize();
         break;
 
@@ -531,8 +531,8 @@ class AISidePanel extends HTMLElement {
     debug.log(`sH: ${screenHeight} hH: ${headerHeight} mH: ${mainHeight} fH: ${footerHeight}`);
     debug.log(`[height]: ${height} total: ${headerHeight+mainHeight+footerHeight}`);
 
-    this.resultRulesAllElem.resize(height);
-    this.resultRuleGroupElem.resize(height);
+    this.viewRulesAllElem.resize(height);
+    this.viewRuleGroupElem.resize(height);
 
   }
 

@@ -1,4 +1,4 @@
-/* result-rules-all.js */
+/* view-rules-all.js */
 
 // Imports
 
@@ -15,7 +15,7 @@ import {
 
 // Constants
 
-const debug = new DebugLogging('[result-rules-all]', false);
+const debug = new DebugLogging('[view-rules-all]', false);
 debug.flag = false;
 
 
@@ -69,7 +69,7 @@ template.innerHTML = `
   </div>
 `;
 
-export default class ResultRulesAll extends HTMLElement {
+export default class ViewRulesAll extends HTMLElement {
   constructor () {
     super();
     this.attachShadow({ mode: 'open' });
@@ -263,5 +263,5 @@ export default class ResultRulesAll extends HTMLElement {
   }
 }
 
-window.customElements.define("result-rules-all", ResultRulesAll);
+window.customElements.define("view-rules-all", ViewRulesAll);
 

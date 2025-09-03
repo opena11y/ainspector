@@ -1,4 +1,4 @@
-/* result-rule-group.js */
+/* view-rule-group.js */
 
 // Imports
 
@@ -6,7 +6,7 @@ import DebugLogging  from './debug.js';
 
 // Constants
 
-const debug = new DebugLogging('[result-rule-group]', false);
+const debug = new DebugLogging('[view-rule-group]', false);
 debug.flag = false;
 
 const template = document.createElement('template');
@@ -20,7 +20,7 @@ template.innerHTML = `
   <rule-info>
 `;
 
-export default class ResultRuleGroup extends HTMLElement {
+export default class ViewRuleGroup extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -73,5 +73,5 @@ export default class ResultRuleGroup extends HTMLElement {
 
 }
 
-window.customElements.define("result-rule-group", ResultRuleGroup);
+window.customElements.define("view-rule-group", ViewRuleGroup);
 
