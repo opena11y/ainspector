@@ -1,4 +1,4 @@
-/* result-grid.js */
+/* grid.js */
 
 // Imports
 
@@ -15,7 +15,7 @@ debug.flag = false;
 
 
 
-export class ResultGrid extends HTMLElement {
+export class Grid extends HTMLElement {
   constructor () {
     super();
     this.attachShadow({ mode: 'open' });

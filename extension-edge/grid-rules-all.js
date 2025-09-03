@@ -1,10 +1,12 @@
-/* result-grid-wcag-guidelines.js */
+/* grid-wcag-guidelines.js */
 
 // Imports
 
 import DebugLogging  from './debug.js';
 
 import {
+  ruleCategoryIds,
+  getRuleCategoryLabelId,
   guidelineIds,
   getGuidelineLabelId
 } from './constants.js';
@@ -16,23 +18,22 @@ import {
 } from './utils.js';
 
 import {
-  ResultGrid
-} from './result-grid.js';
+  Grid
+} from './grid.js';
 
 // Constants
 
-const debug = new DebugLogging('[result-grid-wcag-guidelines]', false);
+const debug = new DebugLogging('[grid-wcag-guidelines]', false);
 debug.flag = false;
 
 const template = document.createElement('template');
 template.innerHTML = `
   <table class="rules-all"
-         role="grid"
-         aria-label="none">
+         role="grid">
     <thead>
       <tr>
         <th class="group text"
-            data-i18n="guideline_label">
+            data-i18n="rule_category_label">
         </th>
         <th class="summ num"
             data-i18n-title="violations_label"
@@ -71,7 +72,7 @@ template.innerHTML = `
   </div>
 `;
 
-export default class ResultGridWCAGGuidelines extends ResultGrid {
+export default class GridRulesAll extends Grid {
   constructor () {
     super();
 
@@ -80,6 +81,19 @@ export default class ResultGridWCAGGuidelines extends ResultGrid {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     setI18nLabels(this.shadowRoot, debug.flag);
+
+    let rowIds, rowLabelIdFunct;
+
+    if (this.getAttribute('id') === 'gl') {
+      this.groupId = 'gl';
+      rowIds = guidelineIds;
+      rowLabelIdFunct = getGuidelineLabelId;
+    }
+    else {
+      this.groupId = 'rc';
+      rowIds = ruleCategoryIds;
+      rowLabelIdFunct = getRuleCategoryLabelId;
+    }
 
     // Initialize references
     this.table   = this.shadowRoot.querySelector('table');
@@ -93,11 +107,11 @@ export default class ResultGridWCAGGuidelines extends ResultGrid {
 
     const rows = [];
 
-    guidelineIds.forEach( (id) => {
-      const label = getMessage(getGuidelineLabelId(id));
+    rowIds.forEach( (id) => {
+      const label = getMessage(rowLabelIdFunct(id));
       // The row ID identifies the row as a rule category rule group and
       // includes which category using its numerical constant
-      const row = this.addRow('gl-' + id);
+      const row = this.addRow(`${this.groupId}-${id}`);
       this.addDataCell(row, label, '', 'text');
       this.addDataCell(row, '-', '', 'summ num');
       this.addDataCell(row, '-', '', 'summ num');
@@ -113,6 +127,11 @@ export default class ResultGridWCAGGuidelines extends ResultGrid {
 
     this.setRowSelectionEventHandler(this.handleRowSelection.bind(this));
     this.setRowActivationEventHandler(this.handleRowActivation.bind(this));
+
+    if (this.groupId === 'gl') {
+      this.thead.firstElementChild.textContent = getMessage('guideline_label');
+    }
+
 
   }
 
@@ -131,15 +150,14 @@ export default class ResultGridWCAGGuidelines extends ResultGrid {
   }
 
   update (results) {
-    const rg = this;
     results.forEach( (result) => {
-      const row = rg.rows.find( (row) => row.id === ('gl-' + result.id));
+      const row = this.rows.find( (row) => row.id === (`${this.groupId}-${result.id}`));
 
       if (row) {
-        rg.updateDataCell(row, 2, result.violations, '');
-        rg.updateDataCell(row, 3, result.warnings, '');
-        rg.updateDataCell(row, 4, result.manual_checks, '');
-        rg.updateDataCell(row, 5, result.passed, '');
+        this.updateDataCell(row, 2, result.violations, '');
+        this.updateDataCell(row, 3, result.warnings, '');
+        this.updateDataCell(row, 4, result.manual_checks, '');
+        this.updateDataCell(row, 5, result.passed, '');
       }
     });
   }
@@ -164,5 +182,5 @@ export default class ResultGridWCAGGuidelines extends ResultGrid {
 
 }
 
-window.customElements.define("result-grid-wcag-guidelines", ResultGridWCAGGuidelines);
+window.customElements.define("grid-rules-all", GridRulesAll);
 

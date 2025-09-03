@@ -1,4 +1,4 @@
-/* result-grid-rule-categories.js */
+/* grid-wcag-guidelines.js */
 
 // Imports
 
@@ -6,8 +6,11 @@ import DebugLogging  from './debug.js';
 
 import {
   ruleCategoryIds,
-  getRuleCategoryLabelId
+  getRuleCategoryLabelId,
+  guidelineIds,
+  getGuidelineLabelId
 } from './constants.js';
+
 
 import {
   getMessage,
@@ -15,19 +18,18 @@ import {
 } from './utils.js';
 
 import {
-  ResultGrid
-} from './result-grid.js';
+  Grid
+} from './grid.js';
 
 // Constants
 
-const debug = new DebugLogging('[result-grid-rule-categories]', false);
+const debug = new DebugLogging('[grid-wcag-guidelines]', false);
 debug.flag = false;
 
 const template = document.createElement('template');
 template.innerHTML = `
   <table class="rules-all"
-         role="grid"
-         aria-label="none">
+         role="grid">
     <thead>
       <tr>
         <th class="group text"
@@ -70,22 +72,28 @@ template.innerHTML = `
   </div>
 `;
 
-// Helper functions
-
-/*
-function showRuleResult(result) {
-  debug.log(`[showResult] id:${result.id} v:${result.violations}  w:${result.warnings}  mc:${result.manual_checks} p:${result.passed}`);
-}
-*/
-
-export default class ResultGridRuleCategories extends ResultGrid {
+export default class GridRulesAll extends Grid {
   constructor () {
     super();
+
 
     // Add DOM tree from template
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     setI18nLabels(this.shadowRoot, debug.flag);
+
+    let rowIds, rowLabelIdFunct;
+
+    if (this.getAttribute('id') === 'gl') {
+      this.groupId = 'gl';
+      rowIds = guidelineIds;
+      rowLabelIdFunct = getGuidelineLabelId;
+    }
+    else {
+      this.groupId = 'rc';
+      rowIds = ruleCategoryIds;
+      rowLabelIdFunct = getRuleCategoryLabelId;
+    }
 
     // Initialize references
     this.table   = this.shadowRoot.querySelector('table');
@@ -97,13 +105,13 @@ export default class ResultGridRuleCategories extends ResultGrid {
     this.lastSelectedRowId = '';
     this.activationDisabled = false;
 
-    // Initialize Grid
     const rows = [];
-    ruleCategoryIds.forEach( (id) => {
-      const label = getMessage(getRuleCategoryLabelId(id));
+
+    rowIds.forEach( (id) => {
+      const label = getMessage(rowLabelIdFunct(id));
       // The row ID identifies the row as a rule category rule group and
       // includes which category using its numerical constant
-      const row = this.addRow('rc-' + id);
+      const row = this.addRow(`${this.groupId}-${id}`);
       this.addDataCell(row, label, '', 'text');
       this.addDataCell(row, '-', '', 'summ num');
       this.addDataCell(row, '-', '', 'summ num');
@@ -119,6 +127,11 @@ export default class ResultGridRuleCategories extends ResultGrid {
 
     this.setRowSelectionEventHandler(this.handleRowSelection.bind(this));
     this.setRowActivationEventHandler(this.handleRowActivation.bind(this));
+
+    if (this.groupId === 'gl') {
+      this.thead.firstElementChild.textContent = getMessage('guideline_label');
+    }
+
 
   }
 
@@ -137,15 +150,14 @@ export default class ResultGridRuleCategories extends ResultGrid {
   }
 
   update (results) {
-    const rg = this;
     results.forEach( (result) => {
-      const row = rg.rows.find( (row) => row.id === ('rc-' + result.id));
+      const row = this.rows.find( (row) => row.id === (`${this.groupId}-${result.id}`));
 
       if (row) {
-        rg.updateDataCell(row, 2, result.violations, '');
-        rg.updateDataCell(row, 3, result.warnings, '');
-        rg.updateDataCell(row, 4, result.manual_checks, '');
-        rg.updateDataCell(row, 5, result.passed, '');
+        this.updateDataCell(row, 2, result.violations, '');
+        this.updateDataCell(row, 3, result.warnings, '');
+        this.updateDataCell(row, 4, result.manual_checks, '');
+        this.updateDataCell(row, 5, result.passed, '');
       }
     });
   }
@@ -170,5 +182,5 @@ export default class ResultGridRuleCategories extends ResultGrid {
 
 }
 
-window.customElements.define("result-grid-rule-categories", ResultGridRuleCategories);
+window.customElements.define("grid-rules-all", GridRulesAll);
 

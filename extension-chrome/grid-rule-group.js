@@ -1,4 +1,4 @@
-/* result-grid-rule-group.js */
+/* grid-rule-group.js */
 
 // Imports
 
@@ -11,8 +11,8 @@ import {
 }  from './utils.js';
 
 import {
-  ResultGrid
-} from './result-grid.js';
+  Grid
+} from './grid.js';
 
 import {
   getOptions
@@ -21,7 +21,7 @@ import {
 
 // Constants
 
-const debug = new DebugLogging('[result-grid-rule-group]', false);
+const debug = new DebugLogging('[grid-rule-group]', false);
 debug.flag = false;
 
 const template = document.createElement('template');
@@ -167,7 +167,7 @@ template.innerHTML = `
   }
 
 
-export default class ResultGridRuleGroup extends ResultGrid {
+export default class GridRuleGroup extends Grid {
 
   constructor() {
     super();
@@ -297,5 +297,5 @@ export default class ResultGridRuleGroup extends ResultGrid {
 
 }
 
-window.customElements.define("result-grid-rule-group", ResultGridRuleGroup);
+window.customElements.define("grid-rule-group", GridRuleGroup);
 

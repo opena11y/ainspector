@@ -13,8 +13,8 @@ const template = document.createElement('template');
 template.innerHTML = `
   <summary-rules></summary-rules>
 
-  <result-grid-rule-group>
-  </result-grid-rule-group>
+  <grid-rule-group>
+  </grid-rule-group>
 
   <rule-info>
   <rule-info>
@@ -40,24 +40,24 @@ export default class ResultRuleGroup extends HTMLElement {
     this.shadowRoot.appendChild(link);
 
     this.summaryRulesElem = this.shadowRoot.querySelector(`summary-rules`);
-    this.resultGridRuleGroupElem = this.shadowRoot.querySelector(`result-grid-rule-group`);
+    this.gridRuleGroupElem = this.shadowRoot.querySelector(`grid-rule-group`);
     this.ruleInfoElem = this.shadowRoot.querySelector(`rule-info`);
 
   }
 
   setSidepanel (sidepanelElem) {
-    this.resultGridRuleGroupElem.setSidepanel(sidepanelElem);
+    this.gridRuleGroupElem.setSidepanel(sidepanelElem);
   }
 
   clear () {
     this.summaryRulesElem.clear();
-    this.resultGridRuleGroupElem.clear();
+    this.gridRuleGroupElem.clear();
   }
 
   update (result) {
     debug.log(`[update]`);
     this.summaryRulesElem.update(result.summary);
-    this.resultGridRuleGroupElem.update(result.rule_results);
+    this.gridRuleGroupElem.update(result.rule_results);
   }
 
   resize (height) {
@@ -67,7 +67,7 @@ export default class ResultRuleGroup extends HTMLElement {
 
     debug.log(`height: ${height} sumH: ${summaryHeight} h: ${h}`);
 
-    this.resultGridRuleGroupElem.setHeight(h);
+    this.gridRuleGroupElem.setHeight(h);
     this.ruleInfoElem.setHeight(h);
   }
 

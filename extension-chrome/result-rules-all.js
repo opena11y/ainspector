@@ -52,8 +52,8 @@ template.innerHTML = `
          id="tabpanel-rule-categories"
          aria-labelledby="tab-rule-categories">
 
-         <result-grid-rule-categories>
-         </result-grid-rule-categories>
+         <grid-rules-all id="rc">
+         </grid-rules-all>
 
     </div>
 
@@ -62,8 +62,8 @@ template.innerHTML = `
          id="tabpanel-wcag-guidelines"
          aria-labelledby="tab-wcag-guidelines">
 
-         <result-grid-wcag-guidelines>
-         </result-grid-wcag-guidelines>
+         <grid-rules-all id="gl">
+         </grid-rules-all>
 
     </div>
   </div>
@@ -127,9 +127,9 @@ export default class ResultRulesAll extends HTMLElement {
     setI18nLabels(this.shadowRoot, debug.flag);
 
     this.summaryRulesElem = this.shadowRoot.querySelector('summary-rules');
-    this.rcGridElem = this.shadowRoot.querySelector('result-grid-rule-categories');
+    this.rcGridElem = this.shadowRoot.querySelector('#rc');
     this.rcGridElem.setSidepanel(this);
-    this.glGridElem = this.shadowRoot.querySelector('result-grid-wcag-guidelines');
+    this.glGridElem = this.shadowRoot.querySelector('#gl');
     this.glGridElem.setSidepanel(this);
 
     getOptions().then((options) => {
