@@ -1,6 +1,15 @@
 /* utils.js */
 
-/* Utility functions */
+// Imports
+
+import DebugLogging  from './debug.js';
+
+
+// Constants
+
+const debug = new DebugLogging('[util]', false);
+debug.flag = false;
+
 
 const browserI18n = typeof browser === 'object' ?
             browser.i18n :
@@ -136,6 +145,55 @@ export function isOverElement(elem, x, y) {
          (rect.bottom >= y);
 }
 
+  // if the info is a string just use textContent
+  // if the info is an array, create a list of items
+  // Some items maybe an object containing a 'url' and 'title' properties
+export function renderContent(elem, info) {
+  let i, div, ul, li, a, item;
+  if (!info) return;
+  if (typeof info === 'string') {
+    div = document.createElement('div');
+    addContentToElement(div, info);
+    elem.appendChild(div);
+  } else {
+    if (info.url) {
+      debug.log(`[url]: ${info.title} ${info.url}`);
+      div = document.createElement('div');
+      a = document.createElement('a');
+      a.href = info.url;
+      addContentToElement(a, info.title);
+      a.target = "_ai_reference";
+      div.appendChild(a);
+      elem.appendChild(div);
+    }
+    else {
+      if (info.length) {
+        ul = document.createElement('ul');
+        for (i = 0; i < info.length; i += 1) {
+          li = document.createElement('li');
+          item = info[i];
+          if (typeof item === 'string') {
+            addContentToElement(li, item);
+          } else {
+            if (item.url) {
+              a = document.createElement('a');
+              a.href = item.url;
+              addContentToElement(a, item.title);
+              a.target="_ai_reference";
+              li.appendChild(a);
+            } else {
+              addContentToElement(li, item.title);
+            }
+          }
+          ul.appendChild(li);
+        }
+        elem.appendChild(ul);
+      }
+    }
+  }
+}
+
+
 /**
  * @function addContentToElement
  *
@@ -211,3 +269,30 @@ export function addContentToElement (elem, content, clear=false) {
   }
 
 }
+
+
+export function getResultAccessibleName (result) {
+    let accName = getMessage('not_applicable_label');
+
+    switch (result){
+      case 'MC':
+        accName = getMessage('manual_check_label');
+        break;
+
+      case 'P':
+        accName = getMessage('passed_label');
+        break;
+
+      case 'V':
+        accName = getMessage('violationLabel');
+        break;
+
+      case 'W':
+        accName = getMessage('warning_label');
+        break;
+
+      default:
+        break;
+    }
+    return accName;
+  }

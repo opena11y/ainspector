@@ -1,8 +1,8 @@
-/* rule-info.css */
+/* info-rules.css */
 
 #container {
   position: relative;
-  top: -17px;
+  top: 9px;
 }
 
 h2 {
@@ -11,16 +11,17 @@ h2 {
   font-size: 1.2em;
 }
 
-.rule-info {
+.info-rules,
+.info-elements {
   margin: 0;
-  padding: 0.25em;
+  padding: 0.5em;
   border: 1px solid light-dark(#aaa, #333);
   display: block;
   overflow: auto;
   user-select:  text;
 }
 
-.rule-info h3 {
+h3 {
   margin: 0;
   padding: 0;
   margin-top: 1em;
@@ -28,16 +29,16 @@ h2 {
   font-weight: bold;
 }
 
-.rule-info h3:first-child {
+h3:first-child {
   margin-top: 0;
 }
 
-.rule-info ul {
+ul {
   margin: 0;
   padding: 0;
 }
 
-.rule-info li {
+li {
   margin:  0;
   padding: 0;
   margin-left:  1em;

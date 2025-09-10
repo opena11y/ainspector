@@ -2,19 +2,12 @@
 
 .content {
   font-family: var(--main-font-family);
-  font-size: var(--main-font-size);
+  font-size: var(--input-font-size);
   color: light-dark(var(--main-color-light), var(--main-color-dark));
   background: light-dark(var(--main-background-light), var(--main-background-dark));
 }
 
-a[href],
-a[href]:link,
-a[href]:visited {
-  color: light-dark(var(--link-color-light), var(--link-color-dark));
-}
-
 a[href]:focus {
-  color: light-dark(var(--link-color-light), var(--link-color-dark));
   outline-style: var(--link-outline-style);
   outline-offset: var(--link-outline-offset);
   outline-width: var(--link-outline-width);
@@ -173,7 +166,7 @@ dialog input[type="checkbox"] {
 }
 
 dialog .note code {
-  font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+  font-family: var(--code-font-family);
   font-style: normal !important;
   font-weight:  bold;
 }

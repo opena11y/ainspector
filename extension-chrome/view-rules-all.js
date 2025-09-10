@@ -156,7 +156,7 @@ export default class ViewRulesAll extends HTMLElement {
   // Result content functions
 
   update (result) {
-    this.summaryRulesElem.update(result.summary);
+    this.summaryRulesElem.update(result.rule_summary);
     this.rcGridElem.update(result.rc_rule_results_group);
     this.glGridElem.update(result.gl_rule_results_group);
   }

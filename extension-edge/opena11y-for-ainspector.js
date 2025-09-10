@@ -16595,6 +16595,10 @@
                      elementNode.getAttribute('role') :
                      defaultRole;
 
+      this.roleDescription = elementNode.hasAttribute('aria-roledescription') ?
+                                elementNode.getAttribute('aria-roledescription') :
+                                '';
+
       this.accesskey = elementNode.hasAttribute('accesskey') ? elementNode.getAttribute('accesskey') : '';
 
       // used for button and form control related rules
@@ -16618,6 +16622,7 @@
       this.accName        = getAccessibleName(accNameDoc, elementNode);
       this.accDescription = getAccessibleDesc(accNameDoc, elementNode, (this.accName.source !== 'title'));
       this.errMessage     = getErrMessage(accNameDoc, elementNode);
+
 
       this.colorContrast = new ColorContrast(parentDomElement, elementNode);
       this.visibility    = new Visibility(parentDomElement, elementNode);
@@ -38909,7 +38914,7 @@
       this.manual_checks         = getManualChecks(this.rule_id);  // Array of strings
       this.informational_links   = getInformationLinks(this.rule_id);  // Array of objects with keys to strings
 
-      // Localized messsages for evaluation results
+      // Localized messages for evaluation results
       this.rule_result_msgs = getRuleResultMessages(this.rule_id); // Object with keys to strings
       this.base_result_msgs = getBaseResultMessages(this.rule_id); // Object with keys to strings
 
@@ -39710,6 +39715,145 @@
       return this.allRuleResults.find( rr => rr.rule.rule_id === rule_id);
     }
 
+    /**
+     * @method getRuleResultWithSummary
+     *
+     * @desc Gets rule result object with the associated id and
+     *
+     * @param {String}  rule_id  - id of the rule associated with the rule result
+     *
+     * @return array [String, {RuleResultSummary}, {array}, {array}]  see description
+     */
+    getRuleResultWithSummary (rule_id) {
+      debug$1.log(`[getRuleResultWithSummary][rule_id]: ${rule_id}`);
+      const rule_result = this.allRuleResults.find( rr => rr.rule.rule_id === rule_id);
+
+      const ruleTitle       = rule_result.rule.getSummary();
+
+      const s = rule_result.getResultsSummary();
+      const element_summary = {
+              violations:    s.violations,
+              warnings:      s.warnings,
+              manual_checks: s.manual_checks,
+              passed:        s.passed,
+              hidden:        s.hidden
+            };
+
+      const element_results = [];
+
+      rule_result.getAllResultsArray().forEach( (er) => {
+        if (er.isElementResult) {
+          const de = er.domElement;
+          const element_result = {
+            id:                     er.getResultId(),
+            element:                er.getResultIdentifier(),
+            result_value:           er.getResultValue(),
+            result_abbrev:          er.getResultValueNLS(),
+            result_long:            er.getResultValueLongNLS(),
+            position:               er.getOrdinalPosition(),
+            action:                 er.getResultMessage(),
+            definition:             getRuleDefinition(rule_id),
+            implied_role:           !de.hasRole,
+            role:                   de.role,
+            role_description:       de.roleDescription,
+            tag_name:               de.elemName.includes('#') ?
+                                    de.elemName.split('#')[0] :
+                                    de.elemName,
+
+            accessible_name_required:   de.ariaInfo.isNameRequired,
+            accessible_name_prohibited: de.ariaInfo.isNameProhibited,
+
+            accessible_name:            de.accName,
+            accessible_description:     de.accDescription,
+            error_message:              de.errMessage,
+
+            html_attributes:            de.html_attrs,
+            aria_attributes:            de.aria_attrs
+          };
+
+          // For color contrast rules add color contrast information
+          if ((rule_id === 'COLOR_1') || (rule_id === 'COLOR_3')) {
+            const cc = de.colorContrast;
+            const cc_result = element_result.color_contrast = {};
+
+            cc_result.has_text_nodes         = cc.hasTextNodes;
+            cc_result.opacity                = cc.opacity;
+            cc_result.background_color_elem  = cc.backgroundColorElem;
+            cc_result.background_color       = cc.backgroundColorHex;
+            cc_result.color                  = cc.color;
+            cc_result.colorHex               = cc.colorHex;
+
+            cc_result.has_background_image   = cc.hasBackgroundImage;
+            cc_result.background_image       = cc.backgroundImage;
+            cc_result.background_repeat      = cc.backgroundRepeat;
+            cc_result.background_position    = cc.backgroundPosition;
+
+            cc_result.font_family            = cc.fontFamily;
+            cc_result.font_size              = cc.fontSize;
+            cc_result.font_weight            = cc.fontWeight;
+            cc_result.is_large_font          = cc.is_large_font;
+
+            cc_result.ccr                    = cc.colorContrastRatio;
+
+            cc_result.is_positioned          = cc.isPositioned;
+            cc_result.is_transparent         = cc.isTransparent;
+          }
+
+          // For table cell header rule add table cell information
+          if (rule_id === 'TABLE_1') {
+            const tc = de.tableCell;
+            const tc_result = element_result.table_cell = {};
+
+            tc_result.is_header       = tc.isHeader;
+
+            tc_result.start_row       = tc.startRow;
+            tc_result.start_column    = tc.startColumn;
+            tc_result.end_row         = tc.endRow;
+            tc_result.end_column      = tc.endColumn;
+
+            tc_result.headers         = tc.headers;
+            tc_result.headers_source  = tc.headersSource;
+
+            tc_result.has_content     = tc.hasContent;
+          }
+
+          // For table rules related to purpose, naming and size information
+          if ((rule_id.indexOf('TABLE') === 0) && (rule_id !== 'TABLE_1')){
+            const te = de.tableElement;
+            const te_result = element_result.table = {};
+            te_result.table_type         = te.tableType;
+
+            te_result.rows               = te.rowCount;
+            te_result.columns            = te.colCount;
+            te_result.spanned_data_cells = te.spannedDataCells;
+
+            te_result.cell_count         = te.cellCoount;
+            te_result.header_cell_count  = te.headerCellCoount;
+          }
+
+          element_results.push(element_result);
+        }
+
+        if (er.isPageResult || er.isWebsiteResult) {
+          const other_result = {
+            id:            er.getResultId(),
+            element:       er.getResultIdentifier(),
+            result_value:  er.getResultValue(),
+            result_abbrev: er.getResultValueNLS(),
+            result_long:   er.getResultValueLongNLS(),
+            action:        er.getResultMessage(),
+            definition:    getRuleDefinition(rule_id),
+            position:      '',
+          };
+          element_results.unshift(other_result);
+        }
+      });
+
+      return [ruleTitle, element_summary, element_results];
+
+    }
+
+
 
     /**
      * @method getDomElementById
@@ -39782,7 +39926,7 @@
      *
      * @param {Integer}  guidelineId  - Number representing the guideline id
      *
-     * @return array [{RuleResultsSummary}, {RuleGroupResult}]  see description
+     * @return array [String, {RuleResultsSummary}, {array}, {array}]  see description
      */
 
     getRuleResultsByGuidelineWithSummary (guidelineId) {
@@ -39791,15 +39935,20 @@
 
       const summary = new ruleResultsSummary();
       const rule_results = [];
+      const info_rules = [];
 
       this.allRuleResults.forEach( rr => {
         if (rr.getRule().getGuideline() & guidelineId) {
           const result = this.getRuleResultInfo (rr);
           rule_results.push(result);
+
+          const info = this.getRuleInfo(rr);
+          info_rules.push(info);
+
           summary.update(rr);
         }
       });
-      return [glTitle, summary, rule_results];
+      return [glTitle, summary, rule_results, info_rules];
     }
     /**
      * @method getRuleResultsByCategory
@@ -39836,6 +39985,32 @@
           };
     }
 
+    getRuleInfo (rule_result) {
+      const rule = rule_result.rule;
+      const id = rule.getId();
+      return {
+          id: id,
+          rule_category_info:    getRuleCategoryInfo(rule.rule_category_id), // Object with keys to strings
+          guideline_info:        getGuidelineInfo(rule.wcag_guideline_id), // Object with keys to strings
+          rule_scope:            getScope(rule.rule_scope_id), // String
+          wcag_primary:          getSuccessCriterionInfo(rule.wcag_primary_id),
+          wcag_related:          getSuccessCriteriaInfo(rule.wcag_related_ids),
+          wcag_level:            getCommonMessage('level', rule.wcag_primary.level),
+          wcag_version:          getWCAGVersion(rule.wcag_primary_id),
+
+          rule_nls_id:           getRuleId(id), // String
+          summary:               getRuleSummary(id), // String
+          definition:            getRuleDefinition(id), // String
+          targets:               getTargetResourcesDesc(id), // String
+          purposes:              getPurposes(id),  // Array of strings
+          techniques:            getTechniques(id),  // Array of strings
+          manual_checks:         getManualChecks(id),  // Array of strings
+          informational_links:   getInformationLinks(id),  // Array of objects with keys to strings
+
+          actions:       rule_result.getResultMessagesArray()
+        };
+    }
+
     /**
      * @method getRuleResultsByCategoryWithSummary
      *
@@ -39844,22 +40019,28 @@
      *
      * @param {Integer}  categoryId  -  Number of the rule category
      *
-     * @return array [{RuleResultsSummary}, {array}, {object}]  see description
+     * @return array [String, {RuleResultsSummary}, {array}, {array}]  see description
      */
 
     getRuleResultsByCategoryWithSummary (categoryId) {
       const rcInfo = getRuleCategoryInfo(categoryId);
       const summary = new ruleResultsSummary();
       const rule_results = [];
+      const info_rules = [];
 
       this.allRuleResults.forEach( rr => {
         if (rr.getRule().getCategory() & categoryId) {
+
           const result = this.getRuleResultInfo (rr);
           rule_results.push(result);
+
+          const info = this.getRuleInfo(rr);
+          info_rules.push(info);
+
           summary.update(rr);
         }
       });
-      return [rcInfo.title, summary, rule_results];
+      return [rcInfo.title, summary, rule_results, info_rules];
     }
 
     /**
@@ -40262,38 +40443,54 @@
         console.log(`[response][   location]: ${response.location}`);
         console.log(`[response][result_view]: ${response.result_view}`);
 
-        let groupTitle, summary, rule_results;
+        let groupTitle, rule_summary, rule_results, info_rules;
+        let ruleTitle, element_summary, element_results, info_elements;
 
         const parts = r.rule_group_id.split('-');
-        const id = parseInt(parts[1]);
+        const group_id = parseInt(parts[1]);
 
         switch (response.result_view) {
           case 'rules-all':
-            response.summary               = er.ruleResultSummary.data;
+            response.rule_summary          = er.ruleResultSummary.data;
             response.rc_rule_results_group = er.rcRuleGroupResults.data;
             response.gl_rule_results_group = er.glRuleGroupResults.data;
-            console.log(`[response][    summary]: ${response.summary}`);
-            console.log(`[response][     rcData]: ${response.rc_rule_results_group}`);
-            console.log(`[response][     glData]: ${response.gl_rule_results_group}`);
+            console.log(`[response][rule_summary]: ${response.rule_summary}`);
+            console.log(`[response][      rcData]: ${response.rc_rule_results_group}`);
+            console.log(`[response][      glData]: ${response.gl_rule_results_group}`);
             break;
 
           case 'rule-group':
-            console.log(`group: ${parts[0]} id: ${id}`);
-
             if (parts[0] === 'rc') {
-              [groupTitle, summary, rule_results] = er.getRuleResultsByCategoryWithSummary(id);
+              [groupTitle, rule_summary, rule_results, info_rules] = er.getRuleResultsByCategoryWithSummary(group_id);
             }
             else {
-              [groupTitle, summary, rule_results] = er.getRuleResultsByGuidelineWithSummary(id);
+              [groupTitle, rule_summary, rule_results, info_rules] = er.getRuleResultsByGuidelineWithSummary(group_id);
             }
 
             response.groupTitle   = groupTitle;
-            response.summary      = summary.data;
+            response.rule_summary = rule_summary.data;
             response.rule_results = rule_results;
+            response.info_rules   = info_rules;
 
-            console.log(`[response][gl][  groupTitle]: ${response.groupTitle}`);
-            console.log(`[response][gl][     summary]: ${response.summary}`);
-            console.log(`[response][gl][rule_results]: ${response.rule_results}`);
+            console.log(`[response][${parts[0]}][  groupTitle]: ${response.groupTitle}`);
+            console.log(`[response][${parts[0]}][rule_summary]: ${response.rule_summary}`);
+            console.log(`[response][${parts[0]}][rule_results]: ${response.rule_results}`);
+            console.log(`[response][${parts[0]}][  info_rules]: ${response.info_rules}`);
+
+            break;
+
+          case 'rule':
+            [ruleTitle, element_summary, element_results, info_elements] = er.getRuleResultWithSummary(r.rule_id);
+
+            response.ruleTitle       = ruleTitle;
+            response.element_summary = element_summary;
+            response.element_results = element_results;
+            response.info_elements   = info_elements;
+
+            console.log(`[response][      ruleTitle]: ${response.ruleTitle}`);
+            console.log(`[response][element_summary]: ${response.element_summary.violations}`);
+            console.log(`[response][element_results]: ${response.element_results}`);
+            console.log(`[response][. info_elements]: ${response.info_elements}`);
 
             break;
 

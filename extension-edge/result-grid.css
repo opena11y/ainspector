@@ -19,8 +19,6 @@ table.rule {
   display: block;
   border: 1px solid #aaa;
   overflow-y: auto;
-  height: 35vh;
-  min-height: 150px;
 }
 
 table thead,
@@ -32,7 +30,6 @@ table tbody tr {
 
 table thead {
   background-color: light-dark(var(--main-background-light), var(--main-background-dark));
-  top: 0;
 }
 
 table tbody tr:nth-child(even) {
@@ -43,6 +40,7 @@ table thead th {
   border-bottom: 1px solid light-dark(#ddd, #444);
   overflow: hidden;
   text-overflow: ellipsis;
+
 }
 
 table.all-rules tbody tr:last-child {
@@ -122,14 +120,14 @@ table td.position {
   padding-right: 8px;
 }
 
-table th.element-info,
-table td.element-info {
+table th.element,
+table td.element {
   width: 20%;
   padding-left: 4px;
   text-align: left;
 }
 
-table td.element-info {
+table td.element {
   white-space:  nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -177,15 +175,31 @@ table.show-selection tr:focus {
 }
 
 table code {
-  color: rgb(214, 51, 132);
-  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  color: light-dark(var(--code-color-light), var(--code-color-dark));
+  font-family: var(--code-font-family);
+  font-weight: var(--code-font-weight);
 }
 
-div.details {
+.details,
+.highlight-select {
+  position: absolute;
+  right: 0;
   margin: 0;
   padding: 0;
   padding-top: 0.25em;
   padding-bottom: 0.25em;
-  text-align: right;
+  z-index: 5;
+  width: 100%;
+}
+
+.details button,
+.highlight-select .highlight-group {
+  position: absolute;
+  right: 0;
+}
+
+.highlight-select label,
+.highlight-select select {
+  display: inline-block;
 }
 

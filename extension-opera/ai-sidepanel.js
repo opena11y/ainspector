@@ -4,6 +4,7 @@
 import DebugLogging  from './debug.js';
 
 import {
+  addContentToElement,
   getMessage,
   setI18nLabels
 } from './utils.js';
@@ -74,6 +75,7 @@ template.innerHTML = `
   <main>
     <view-rules-all></view-rules-all>
     <view-rule-group hidden></view-rule-group>
+    <view-rule hidden></view-rule>
   </main>
 
   <footer>
@@ -167,6 +169,7 @@ class AISidePanel extends HTMLElement {
     this.viewRulesAllElem.setSidepanel(this);
     this.viewRuleGroupElem = this.shadowRoot.querySelector(`view-rule-group`);
     this.viewRuleGroupElem.setSidepanel(this);
+    this.viewRuleElem      = this.shadowRoot.querySelector(`view-rule`);
 
     // Side panel states
     this.resultView = 'rules-all';
@@ -206,8 +209,12 @@ class AISidePanel extends HTMLElement {
     this.handleResize();
   }
 
-  setRuleGroup(id) {
-    this.ruleGroupId = id;
+  setRuleGroup(group_id) {
+    this.ruleGroupId = group_id;
+  }
+
+  setRule(rule_id) {
+    this.ruleId = rule_id;
   }
 
   clearView(message = '') {
@@ -229,22 +236,29 @@ class AISidePanel extends HTMLElement {
         this.viewTitleElem.textContent = getMessage('view_title_all_rules_Label');
         this.backButtonElem.disabled = true;
         this.viewRuleGroupElem.setAttribute('hidden', '');
+        this.viewRuleElem.setAttribute('hidden', '');
         this.viewRulesAllElem.removeAttribute('hidden');
         this.viewRulesAllElem.update(result);
         break;
 
       case 'rule-group':
-        this.viewTitleElem.textContent = result.groupTitle;
+        addContentToElement(this.viewTitleElem, result.groupTitle, true);
         this.backButtonElem.disabled = false;
         this.viewRulesAllElem.setAttribute('hidden', '');
+        this.viewRuleElem.setAttribute('hidden', '');
         this.viewRuleGroupElem.removeAttribute('hidden');
         this.viewRuleGroupElem.update(result);
         this.handleResize();
         break;
 
       case 'rule':
-        this.viewTitleElem.textContent = this.groupId;
+        addContentToElement(this.viewTitleElem, result.ruleTitle, true);
         this.backButtonElem.disabled = false;
+        this.viewRulesAllElem.setAttribute('hidden', '');
+        this.viewRuleGroupElem.setAttribute('hidden', '');
+        this.viewRuleElem.removeAttribute('hidden');
+        this.viewRuleElem.update(result);
+        this.handleResize();
         break;
 
       default:
@@ -531,6 +545,7 @@ class AISidePanel extends HTMLElement {
 
     this.viewRulesAllElem.resize(height);
     this.viewRuleGroupElem.resize(height);
+    this.viewRuleElem.resize(height);
 
   }
 

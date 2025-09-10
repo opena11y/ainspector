@@ -1,0 +1,69 @@
+/* info-rules.css */
+
+#container {
+  position: relative;
+  top: 9px;
+}
+
+h2 {
+  margin: 0;
+  padding: 0;
+  font-size: 1.2em;
+}
+
+.info-rules,
+.info-elements {
+  margin: 0;
+  padding: 0.5em;
+  border: 1px solid light-dark(#aaa, #333);
+  display: block;
+  overflow: auto;
+  user-select:  text;
+}
+
+h3 {
+  margin: 0;
+  padding: 0;
+  margin-top: 1em;
+  margin-bottom: 0.125em;
+  font-size: 110%;
+  font-weight: bold;
+}
+
+h3:first-child {
+  margin-top: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  margin:  0;
+  padding: 0;
+  margin-left:  1em;
+  line-spacing: 1.25em;
+}
+
+.prop-value {
+  margin:  0;
+  padding: 0;
+  line-spacing: 1.25em;
+}
+
+.prop-value .prop {
+  font-style: italics;
+}
+
+.prop-value.missing .value,
+.prop-value.prohibited .value {
+  color: light-dark(var(--error-red-light), var(--error-red-dark));
+}
+
+code {
+  color: light-dark(var(--code-color-light), var(--code-color-dark));
+  font-family: var(--code-font-family);
+  font-weight: var(--code-font-weight);
+}
+

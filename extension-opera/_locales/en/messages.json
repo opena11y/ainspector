@@ -64,7 +64,7 @@
     "description": "Label for ruleset value"
   },
 
-  "infoScopeLabel": {
+  "info_scope_label": {
     "message": "Scope",
     "description": "Label for scope filter value"
   },
@@ -472,7 +472,7 @@
     "description": "Rule ID label for rule information"
   },
 
-  "ruleSummaryLabel": {
+  "rule_summary_label": {
     "message": "Summary",
     "description": "Summary section label for rule information"
   },
@@ -482,7 +482,7 @@
     "description": "Rule Scope section label for rule information"
   },
 
-  "ruleDefinitionLabel": {
+  "rule_definition_label": {
     "message": "Definition",
     "description": "Definition section label for rule information"
   },
@@ -493,37 +493,37 @@
   },
 
 
-  "ruleActionLabel": {
+  "rule_action_label": {
     "message": "Action",
     "description": "Action section label for rule information"
   },
 
-  "rulePurposeLabel": {
+  "rule_purpose_label": {
     "message": "Purpose",
     "description": "Purpose section label for rule information"
   },
 
-  "ruleTechniquesLabel": {
+  "rule_techniques_label": {
     "message": "Techniques",
     "description": "Techniques section label for rule information"
   },
 
-  "ruleTargetLabel": {
+  "rule_target_label": {
     "message": "Target Elements",
     "description": "Target elements section label for rule information"
   },
 
-  "ruleComplianceLabel": {
+  "rule_compliance_label": {
     "message": "Compliance",
     "description": "Compliance section label for rule information"
   },
 
-  "ruleSCLabel": {
+  "rule_sc_Label": {
     "message": "WCAG Success Criteria",
     "description": "WCAG Success Criteria section label for rule information"
   },
 
-  "ruleAdditionalLabel": {
+  "rule_additional_label": {
     "message": "Additional Information",
     "description": "Additional information section label for rule information"
   },
@@ -553,42 +553,42 @@
     "description": "Element column label in grid for rule results view"
   },
 
-  "positionAbbrev": {
+  "position_abbrev": {
     "message": "Pos",
     "description": "Position column abbreviation in grid for rule results view"
   },
 
-  "positionLabel": {
+  "position_label": {
     "message": "Position",
     "description": "Position column label in grid for rule results view"
   },
 
-  "actionLabel": {
+  "action_label": {
     "message": "Action",
     "description": "Action column label in grid for rule results view"
   },
 
-  "highlightLabel": {
+  "highlight_label": {
     "message": "Highlight",
     "description": "Label text for the highlight select box"
   },
 
-  "highlightOptionNone": {
+  "highlight_option_none": {
     "message": "None",
     "description": "None option in the highlight select box"
   },
 
-  "highlightOptionSelected": {
+  "highlight_option_selected": {
     "message": "Selected",
     "description": "Selected option in the highlight select box"
   },
 
-  "highlightOptionVW": {
+  "highlight_option_vw": {
     "message": "V/W",
     "description": "Violations/Warning option in the highlight select box"
   },
 
-  "highlightOptionAll": {
+  "highlight_option_all": {
     "message": "All",
     "description": "All option in the highlight select box"
   },
@@ -598,7 +598,7 @@
     "description": "Label for Rule/Element results grid"
   },
 
-  "elementSelectedLabel": {
+  "element_selected_label": {
     "message": "Selected Result",
     "description": "Selected element, page or website details label for rule information"
   },
@@ -684,37 +684,52 @@
     "description": "Message heading in element, page or website results view."
   },
 
-  "elementResultRole": {
+  "element_result_role": {
     "message": "Role",
     "description": "Role heading in element results view."
   },
 
-  "elementResultTagName": {
+  "element_result_tag_name": {
     "message": "Tag Name",
     "description": "Tag name heading in element results view."
   },
 
-  "elementResultAccName": {
+  "element_result_acc_name": {
     "message": "Accessible Name",
     "description": "Accessible name heading in element results view."
   },
 
-  "elementResultAccNameRequired": {
-    "message": "(Required)",
+  "element_result_acc_name_required": {
+    "message": "Accessible Name (Required)",
     "description": "Required for accessible name heading in element results view."
   },
 
-  "elementResultAccNameProhibited": {
-    "message": "(Prohibited)",
+  "element_result_prop_text": {
+    "message": "Text",
+    "description": "Used in property/values"
+  },
+
+  "element_result_prop_source": {
+    "message": "Source",
+    "description": "Used in property/values"
+  },
+
+  "element_result_value_none": {
+    "message": "none",
+    "description": "Used in property/values"
+  },
+
+  "element_result_acc_name_prohibited": {
+    "message": "Accessible Name (Prohibited)",
     "description": "Prohibited for accessible name heading in element results view."
   },
 
-  "elementResultAccDesc": {
+  "element_result_acc_desc": {
     "message": "Accessible Description",
     "description": "Accessible name heading in element results view."
   },
 
-  "elementResultErrorDesc": {
+  "element_result_error_desc": {
     "message": "Error Message",
     "description": "Error Message heading in element results view."
   },

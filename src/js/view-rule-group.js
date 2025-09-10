@@ -59,14 +59,15 @@ export default class ViewRuleGroup extends HTMLElement {
 
   update (result) {
     debug.flag && debug.log(`[update]`);
-    this.summaryRulesElem.update(result.summary);
+    this.summaryRulesElem.update(result.rule_summary);
     this.gridRuleGroupElem.update(result.rule_results);
+    this.infoRuleElem.update(result.info_rules);
   }
 
   resize (height) {
     const summaryHeight = this.summaryRulesElem.getBoundingClientRect().height;
 
-    const h = (height - summaryHeight - 38) / 2;
+    const h = (height - summaryHeight - 50) / 2;
 
     this.gridRuleGroupElem.setHeight(h);
     this.infoRuleElem.setHeight(h);

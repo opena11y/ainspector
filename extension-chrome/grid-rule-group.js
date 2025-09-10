@@ -6,6 +6,7 @@ import DebugLogging  from './debug.js';
 
 import {
   getMessage,
+  getResultAccessibleName,
   removeChildContent,
   setI18nLabels
 }  from './utils.js';
@@ -71,31 +72,6 @@ template.innerHTML = `
 
   /* Helper functions */
 
-  function getResultAccessibleName (result) {
-    let accName = getMessage('not_applicable_label');
-
-    switch (result){
-      case 'MC':
-        accName = getMessage('manual_check_label');
-        break;
-
-      case 'P':
-        accName = getMessage('passed_label');
-        break;
-
-      case 'V':
-        accName = getMessage('violationLabel');
-        break;
-
-      case 'W':
-        accName = getMessage('warning_label');
-        break;
-
-      default:
-        break;
-    }
-    return accName;
-  }
 
   function getLevelAccessibleName (level) {
     let accName;
@@ -189,15 +165,21 @@ export default class GridRuleGroup extends Grid {
     this.lastSelectedRowId = '';
     this.activationDisabled = false;
 
+    const detailsButtonElem = this.shadowRoot.querySelector('#details');
+    detailsButtonElem.addEventListener('click', this.handleDetailsButtonClick.bind(this));
+
+    this.setRowSelectionEventHandler(this.handleRowSelection.bind(this));
+    this.setRowActivationEventHandler(this.handleRowActivation.bind(this));
+
   }
 
   setSidepanel (sidepanelElem) {
     this.sidepanelElem = sidepanelElem;
   }
+
   setInfoRule (infoRuleElem) {
     this.infoRuleElem = infoRuleElem;
   }
-
 
   clear (message1="", message2="") {
     removeChildContent(this.tbody);
@@ -213,6 +195,8 @@ export default class GridRuleGroup extends Grid {
   }
 
   update (rule_results) {
+    debug.log(`[update]: ${rule_results}`);
+
     let count = 0;
 
     removeChildContent(this.tbody);
@@ -271,7 +255,11 @@ export default class GridRuleGroup extends Grid {
           this.addMessageRow(getMessage('no_violations_warnings_mc_results_msg'));
         }
 
-        this.tbody.firstElementChild.tabIndex = 0;
+        const tr = this.tbody.firstElementChild;
+        if (tr) {
+          this.setSelectedRow(tr);
+          this.handleRowSelection(tr.id);
+        }
 
       });
 
@@ -281,23 +269,29 @@ export default class GridRuleGroup extends Grid {
     }
   }
 
-
-  handleRowSelection (id) {
-    if (id) {
-      this.ruleResultInfo.update(this.detailsActions[id]);
-    }
-  }
-
-  onDetailsButtonClick () {
-    const rowId = this.ruleResultGrid.getSelectedRowId();
-    if (this.handleRowActivation && rowId) {
-      this.handleRowActivation(rowId);
-    }
-  }
-
   setHeight (height) {
     this.table.style.height = height + 'px';
   }
+
+  // Event handlers
+
+  handleRowSelection(id) {
+    debug.log(`[handleRowSelection][id]: ${id}`);
+    this.lastSelectedRowId = id;
+    this.infoRuleElem.show(id);
+  }
+
+  handleRowActivation(id) {
+    debug.log(`[handleRowActivation][id]: ${id}`);
+    this.sidepanelElem.setView('rule', id);
+  }
+
+  handleDetailsButtonClick () {
+    if (this.sidepanelElem) {
+      this.sidepanelElem.setView('rule', this.lastSelectedRowId);
+    }
+  }
+
 
 }
 

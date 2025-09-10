@@ -82,3 +82,7 @@ footer .buttons {
   justify-content: space-between;
 }
 
+code {
+  color: light-dark(var(--code-color-light), var(--code-color-dark));
+  font-family: var(--code-font-family);
+}

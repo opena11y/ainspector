@@ -387,10 +387,7 @@ export class Grid extends HTMLElement {
   }
 
   // The flag is used to udpate the last user selected item
-  setSelectedRow (node, flag) {
-    if (typeof flag !== 'boolean') {
-      flag = true;
-    }
+  setSelectedRow (node, flag=true) {
     let n = node;
     this.setDetailsButtonDisabled(true);
     if (node.tagName !== 'TR') {
@@ -443,7 +440,7 @@ export class Grid extends HTMLElement {
 
   tryHandleRowSelection (id) {
     if (this.onRowSelection) {
-      this.onRowSelection(id);
+      this.handleRowSelection(id);
       return true;
     }
     return false;

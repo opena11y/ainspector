@@ -164,6 +164,28 @@ export default class SummaryRule extends HTMLElement {
     this.hiddenTd.title             = '';
   }
 
+  update (summary) {
+    debug.log(`[update][violations]: ${summary.violations}`);
+    debug.log(`[update][    hidden]: ${summary.hidden}`);
+
+    this.violationsTd.textContent   = summary.violations;
+    this.violationsTd.title         = '';
+
+    this.warningsTd.textContent     = summary.warnings;
+    this.warningsTd.title           = '';
+
+    this.manualChecksTd.textContent = summary.manual_checks;
+    this.manualChecksTd.title       = '';
+
+    this.passedTd.textContent       = summary.passed;
+    this.passedTd.title             = '';
+
+    this.hiddenTd.textContent       = summary.hidden;
+    this.hiddenTd.title             = '';
+
+  }
+
+
 }
 
 window.customElements.define("summary-rule", SummaryRule);

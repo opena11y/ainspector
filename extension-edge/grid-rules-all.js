@@ -1,4 +1,4 @@
-/* grid-wcag-guidelines.js */
+/* grid-wcag-rule-all.js */
 
 // Imports
 
@@ -129,7 +129,7 @@ export default class GridRulesAll extends Grid {
     this.setRowActivationEventHandler(this.handleRowActivation.bind(this));
 
     if (this.groupId === 'gl') {
-      this.thead.firstElementChild.textContent = getMessage('guideline_label');
+      this.thead.querySelector('th').textContent = getMessage('guideline_label');
     }
 
 

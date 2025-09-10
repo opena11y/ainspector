@@ -27,7 +27,7 @@
   border-radius: var(--button-radius);
   background-color: light-dark(var(--main-background-light), var(--main-background-dark));
   overflow-y: scroll;
-  z-index: 5;
+  z-index: 20;
 }
 
 .views-menu-button [role="menuitem"],
