@@ -148,17 +148,19 @@ export function isOverElement(elem, x, y) {
   // if the info is a string just use textContent
   // if the info is an array, create a list of items
   // Some items maybe an object containing a 'url' and 'title' properties
-export function renderContent(elem, info) {
+export function renderContent(elem, info, style='') {
   let i, div, ul, li, a, item;
   if (!info) return;
   if (typeof info === 'string') {
     div = document.createElement('div');
+    div.className = style;
     addContentToElement(div, info);
     elem.appendChild(div);
   } else {
     if (info.url) {
       debug.log(`[url]: ${info.title} ${info.url}`);
       div = document.createElement('div');
+      div.className = style;
       a = document.createElement('a');
       a.href = info.url;
       addContentToElement(a, info.title);
@@ -169,6 +171,7 @@ export function renderContent(elem, info) {
     else {
       if (info.length) {
         ul = document.createElement('ul');
+        ul.className = style;
         for (i = 0; i < info.length; i += 1) {
           li = document.createElement('li');
           item = info[i];

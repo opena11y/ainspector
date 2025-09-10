@@ -75,17 +75,65 @@ template.innerHTML = `
 
   /* Helper functions */
 
-  function sortElementResults(element_results) {
-    return element_results.sort((a, b) => {
-      let valueA = a.result_value;
-      let valueB = b.result_value;
-      if (valueA === valueB) {
-        valueA = a.position;
-        valueB = b.position;
-      }
-      return valueB - valueA;
-    });
+function sortElementResults(element_results) {
+  return element_results.sort((a, b) => {
+    let valueA = a.result_value;
+    let valueB = b.result_value;
+    if (valueA === valueB) {
+      // sort by ascending position
+      valueA = b.position;
+      valueB = a.position;
+    }
+    return valueB - valueA;
+  });
+}
+
+function renderResult (gridObj, count, options, result) {
+
+  if (options.resultsIncludePassNa ||
+      result.result === 'V' ||
+      result.result === 'W' ||
+      result.result === 'MC') {
+
+    count += 1;
+
+    let rowAccName = '';
+    let cellAccName;
+
+    const row = gridObj.addRow(result.id);
+
+    if (result.is_page) {
+      row.classList.add('page');
+    }
+
+    if (result.is_website) {
+      row.classList.add('website');
+    }
+
+    rowAccName += result.element;
+    gridObj.addDataCell(row, result.element, '', 'element');
+
+    cellAccName = getResultAccessibleName(result.result);
+    rowAccName += ', ' + cellAccName;
+    gridObj.addDataCell(row, result.result_abbrev, cellAccName, `result ${result.result_abbrev}`);
+
+
+    cellAccName = `position ${result.position}`;
+    rowAccName += ', ' + cellAccName;
+    gridObj.addDataCell(row, result.position, cellAccName, `position`);
+
+    cellAccName = result.action;
+    rowAccName += ', ' + cellAccName;
+    gridObj.addDataCell(row, result.action, '', 'action');
+
+    gridObj.tbody.appendChild(row);
+    debug.log(`${count}: ${result.position} ${result.id} `);
+    row.setAttribute('aria-label', rowAccName);
+
   }
+
+  return count;
+}
 
 export default class GridRule extends Grid {
 
@@ -113,7 +161,6 @@ export default class GridRule extends Grid {
 
   }
 
-
   setSidepanel (sidepanelElem) {
     this.sidepanelElem = sidepanelElem;
   }
@@ -127,60 +174,38 @@ export default class GridRule extends Grid {
 
     if (message1) {
       debug.flag && debug.log(`[clear][message1]: ${message1}`);
+      this.addMessageRow(message1);
     }
 
     if (message2) {
       debug.flag && debug.log(`[clear][message2]: ${message2}`);
+      this.addMessageRow(message2);
     }
 
   }
 
-  update (element_results) {
+  update (website_result, page_result, element_results) {
     debug.log(`[update]: ${element_results}`);
 
     let count = 0;
     removeChildContent(this.tbody);
 
-    if (element_results.length) {
+    if (website_result || page_result || element_results.length) {
 
       getOptions().then( (options) => {
+
+        if (website_result) {
+          count = renderResult(this, count, options, website_result);
+        }
+
+        if (page_result) {
+          count = renderResult(this, count, options, page_result);
+        }
 
         element_results = sortElementResults(element_results);
 
         element_results.forEach( (er) => {
-
-          if (options.resultsIncludePassNa ||
-              er.result === 'V' ||
-              er.result === 'W' ||
-              er.result === 'MC'
-            ) {
-
-            count += 1;
-
-            let rowAccName = '';
-            let cellAccName;
-
-            const row = this.addRow(er.id);
-
-            rowAccName += er.element;
-            this.addDataCell(row, er.element, '', 'element');
-
-            cellAccName = getResultAccessibleName(er.result);
-            rowAccName += ', ' + cellAccName;
-            this.addDataCell(row, er.result_abbrev, cellAccName, `result ${er.result_abbrev}`);
-
-
-            cellAccName = `position ${er.position}`;
-            rowAccName += ', ' + cellAccName;
-            this.addDataCell(row, er.position, cellAccName, `position`);
-
-            cellAccName = er.action;
-            rowAccName += ', ' + cellAccName;
-            this.addDataCell(row, er.action, '', 'action');
-
-            this.tbody.appendChild(row);
-            row.setAttribute('aria-label', rowAccName);
-          }
+          count = renderResult(this, count, options, er);
         });
 
         if (count === 0) {

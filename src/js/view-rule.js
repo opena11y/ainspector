@@ -16,8 +16,8 @@ template.innerHTML = `
   <grid-rule>
   </grid-rule>
 
-  <info-element>
-  <info-element>
+  <info-result>
+  <info-result>
 `;
 
 export default class ViewRule extends HTMLElement {
@@ -41,8 +41,8 @@ export default class ViewRule extends HTMLElement {
 
     this.summaryRuleElem  = this.shadowRoot.querySelector(`summary-rule`);
     this.gridRuleElem     = this.shadowRoot.querySelector(`grid-rule`);
-    this.infoElementElem  = this.shadowRoot.querySelector(`info-element`);
-    this.gridRuleElem.setInfoElement(this.infoElementElem);
+    this.infoResultElem  = this.shadowRoot.querySelector(`info-result`);
+    this.gridRuleElem.setInfoElement(this.infoResultElem);
 
   }
 
@@ -54,7 +54,7 @@ export default class ViewRule extends HTMLElement {
     debug.flag && debug.log(`[clear]`);
     this.summaryRuleElem.clear();
     this.gridRuleElem.clear();
-    this.infoElementElem.clear();
+    this.infoResultElem.clear();
   }
 
   update (result) {
@@ -62,8 +62,8 @@ export default class ViewRule extends HTMLElement {
     debug.flag && debug.log(`[update][element_summary]: ${result.element_summary}`);
     debug.flag && debug.log(`[update][violations]: ${result.element_summary.violations}`);
     this.summaryRuleElem.update(result.element_summary);
-    this.gridRuleElem.update(result.element_results);
-    this.infoElementElem.update(result.element_results);
+    this.gridRuleElem.update(result.website_result, result.page_result, result.element_results);
+    this.infoResultElem.update(result.website_result, result.page_result, result.element_results);
   }
 
   resize (height) {
@@ -72,7 +72,7 @@ export default class ViewRule extends HTMLElement {
     const h = (height - summaryHeight - 50) / 2;
 
     this.gridRuleElem.setHeight(h);
-    this.infoElementElem.setHeight(h);
+    this.infoResultElem.setHeight(h);
   }
 
 }

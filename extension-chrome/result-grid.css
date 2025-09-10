@@ -134,6 +134,11 @@ table td.element {
   text-transform: lowercase;
 }
 
+table tr.page td.element,
+table tr.website td.element {
+  text-transform: uppercase;
+}
+
 table td.action {
  overflow: hidden;
  text-overflow: ellipsis;

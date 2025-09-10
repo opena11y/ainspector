@@ -1,4 +1,4 @@
-/* info-element.js */
+/* info-result.js */
 
 // Imports
 
@@ -14,7 +14,7 @@ import {
 
 // Constants
 
-const debug = new DebugLogging('[info-element]', false);
+const debug = new DebugLogging('[info-result]', false);
 debug.flag = false;
 
 // Helper functions
@@ -135,18 +135,12 @@ const template = document.createElement('template');
 template.innerHTML = `
   <div id="container">
     <h2 data-i18n="element_selected_label"></h2>
-    <div class="info-elements">
-      <h3>Topic 1</h3>
-      <ul>
-        <li>Item #1</li>
-        <li>Item #2</li>
-        <li>Item #3</li>
-      </ul>
+    <div class="info-results">
     </div>
   </div>
 `;
 
-export default class InfoElement extends HTMLElement {
+export default class InfoResult extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -167,7 +161,7 @@ export default class InfoElement extends HTMLElement {
 
     setI18nLabels(this.shadowRoot, debug.flag);
 
-    this.infoElementsElem = this.shadowRoot.querySelector('.info-elements');
+    this.infoElementsElem = this.shadowRoot.querySelector('.info-results');
 
     this.website_result = false;
     this.page_result = false;
@@ -225,5 +219,5 @@ export default class InfoElement extends HTMLElement {
 
 }
 
-window.customElements.define("info-element", InfoElement);
+window.customElements.define("info-result", InfoResult);
 

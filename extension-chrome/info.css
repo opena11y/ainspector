@@ -12,7 +12,7 @@ h2 {
 }
 
 .info-rules,
-.info-elements {
+.info-results {
   margin: 0;
   padding: 0.5em;
   border: 1px solid light-dark(#aaa, #333);
@@ -44,6 +44,10 @@ li {
   padding: 0;
   margin-left:  1em;
   line-spacing: 1.25em;
+}
+
+.scope {
+  text-transform: capitalize;
 }
 
 .prop-value {
