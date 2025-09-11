@@ -16,7 +16,7 @@ import {
 /* Constants */
 
 const debug = new DebugLogging('ai-sidepanel', false);
-debug.flag = false;
+debug.flag = true;
 
 // Browser Constants
 
@@ -231,6 +231,11 @@ class AISidePanel extends HTMLElement {
     this.infoLocationElem.textContent = result.location;
     this.infoRulesetElem.textContent  = result.ruleset_label;
 
+    debug.flag && debug.log(`[result][        title]: ${result.title}`);
+    debug.flag && debug.log(`[result][     location]: ${result.location}`);
+    debug.flag && debug.log(`[result][ruleset_label]: ${result.ruleset_label}`);
+    debug.flag && debug.log(`[result][. result_view]: ${result.result_view}`);
+
     switch (result.result_view) {
       case 'rules-all':
         this.viewTitleElem.textContent = getMessage('view_title_all_rules_Label');
@@ -242,7 +247,7 @@ class AISidePanel extends HTMLElement {
         break;
 
       case 'rule-group':
-        addContentToElement(this.viewTitleElem, result.groupTitle, true);
+        addContentToElement(this.viewTitleElem, result.group_title, true);
         this.backButtonElem.disabled = false;
         this.viewRulesAllElem.setAttribute('hidden', '');
         this.viewRuleElem.setAttribute('hidden', '');
@@ -252,7 +257,7 @@ class AISidePanel extends HTMLElement {
         break;
 
       case 'rule':
-        addContentToElement(this.viewTitleElem, result.ruleTitle, true);
+        addContentToElement(this.viewTitleElem, result.rule_title, true);
         this.backButtonElem.disabled = false;
         this.viewRulesAllElem.setAttribute('hidden', '');
         this.viewRuleGroupElem.setAttribute('hidden', '');
