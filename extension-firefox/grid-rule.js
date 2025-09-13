@@ -38,10 +38,6 @@ template.innerHTML = `
         <th class="result"
             data-i18n="result_label">
         </th>
-        <th class="position"
-            data-i18n-title="position_label"
-            data-i18n="position_abbrev">
-        </th>
         <th class="action"
             data-i18n="action_label">
         </th>
@@ -77,8 +73,8 @@ template.innerHTML = `
 
 function sortElementResults(element_results) {
   return element_results.sort((a, b) => {
-    let valueA = a.result_value;
-    let valueB = b.result_value;
+    let valueA = a.result_value === 2 ? 0.5 : a.result_value;
+    let valueB = b.result_value === 2 ? 0.5 : b.result_value;
     if (valueA === valueB) {
       // sort by ascending position
       valueA = b.position;
@@ -118,9 +114,11 @@ function renderResult (gridObj, count, options, result) {
     gridObj.addDataCell(row, result.result_abbrev, cellAccName, `result ${result.result_abbrev}`);
 
 
+/*
     cellAccName = `position ${result.position}`;
     rowAccName += ', ' + cellAccName;
     gridObj.addDataCell(row, result.position, cellAccName, `position`);
+*/
 
     cellAccName = result.action;
     rowAccName += ', ' + cellAccName;

@@ -668,7 +668,7 @@
     "description": "Label for Concepts and Terms button in a dialog box"
   },
 
-  "elementResultType": {
+  "element_result_type": {
     "message": "Result Type",
     "description": "Result type heading in element, page or website results view."
   },
@@ -734,7 +734,7 @@
     "description": "Error Message heading in element results view."
   },
 
-  "elementResultCCR": {
+  "element_result_ccr": {
     "message": "Color Contrast Ratio",
     "description": "Color Contrast Ratio heading in element results view."
   },
@@ -1373,7 +1373,69 @@
   "info_dialog_more_rule_scope_info_button": {
     "message": "More ARIA Version Information",
     "description": "Label more ARIA Version information info button"
+  },
+  "header_property": {
+    "message": "Property",
+    "description": "Column header in results information"
+  },
+  "header_attribute": {
+    "message": "Attribute",
+    "description": "Column header in results information"
+  },
+  "header_value": {
+    "message": "Value",
+    "description": "Column header in results information"
+  },
+  "color_ccr": {
+    "message": "Color Cotrast Ratio",
+    "description": "Property name in color contrast information"
+  },
+  "color_background_color": {
+    "message": "Background color",
+    "description": "Property name in color contrast information"
+  },
+  "color_background_color_hex": {
+    "message": "Background color (hex)",
+    "description": "Property name in color contrast information"
+  },
+  "color_color": {
+    "message": "Color",
+    "description": "Property name in color contrast information"
+  },
+  "color_color_hex": {
+    "message": "Color (hex)",
+    "description": "Property name in color contrast information"
+  },
+  "color_is_positioned": {
+    "message": "Is positioned",
+    "description": "Property name in color contrast information"
+  },
+  "color_font_family": {
+    "message": "Font family",
+    "description": "Property name in color contrast information"
+  },
+  "color_font_size": {
+    "message": "Font size",
+    "description": "Property name in color contrast information"
+  },
+  "color_font_weight": {
+    "message": "Font weight",
+    "description": "Property name in color contrast information"
+  },
+  "color_is_large_font": {
+    "message": "Is large font",
+    "description": "Property name in color contrast information"
+  },
+  "color_background_image": {
+    "message": "Background image",
+    "description": "Property name in color contrast information"
+  },
+  "color_background_repeat": {
+    "message": "Background repeat",
+    "description": "Property name in color contrast information"
+  },
+  "color_background_position": {
+    "message": "Background position",
+    "description": "Property name in color contrast information"
   }
-
-
 }

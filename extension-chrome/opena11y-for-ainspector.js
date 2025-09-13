@@ -1001,6 +1001,20 @@
     return newName;
   }
 
+  /**
+   * @function isHex
+   *
+   * @desc Tests if string a 6 digit hex number
+   *
+   * @param {String}  test    - String to test for hex representation of a color value
+   *
+   * @return {Boolean}  True if a hex number, otherwise false
+   */
+
+  function isHex (test) {
+    return typeof test === 'string' && test.length == 6;
+  }
+
   /* headingResults.js */
 
   /* constants */
@@ -12744,5323 +12758,6 @@
 
   }
 
-  /* colorContrast.js */
-
-  /* Constants */
-  const debug$10 = new DebugLogging('colorContrast', false);
-  debug$10.flag = false;
-
-  const defaultFontSize = 16;    // In pixels (px)
-  const biggerFontSize  = 18.66; // In pixels (px)
-  const largeFontSize   = 24;    // In pixels (px)
-  const fontWeightBold  = 300;
-
-    /**
-     * @function getLuminance
-     *
-     * @desc Get the luminance value of a hex encoded color
-     *
-     * @param {String}  color    - Hex representation of a color value
-     *
-     * @return {Number}  Returns a number representing the limnance value
-     */
-
-    function getLuminance (color) {
-
-      // Get decimal values
-      const R8bit = parseInt(color.substring(0,2),16);
-      const G8bit = parseInt(color.substring(2,4),16);
-      const B8bit = parseInt(color.substring(4,6),16);
-
-      // Get sRGB values
-      const RsRGB = R8bit/255;
-      const GsRGB = G8bit/255;
-      const BsRGB = B8bit/255;
-      // Calculate luminance
-      const R = (RsRGB <= 0.03928) ? RsRGB/12.92 : Math.pow(((RsRGB + 0.055)/1.055), 2.4);
-      const G = (GsRGB <= 0.03928) ? GsRGB/12.92 : Math.pow(((GsRGB + 0.055)/1.055), 2.4);
-      const B = (BsRGB <= 0.03928) ? BsRGB/12.92 : Math.pow(((BsRGB + 0.055)/1.055), 2.4);
-
-      return (0.2126 * R + 0.7152 * G + 0.0722 * B);
-    }
-
-  function computeCCR (hex1, hex2) {
-      const L1 = getLuminance(hex1);
-      const L2 = getLuminance(hex2);
-      return Math.round((Math.max(L1, L2) + 0.05)/(Math.min(L1, L2) + 0.05)*10)/10;
-  }
-
-  /*
-   * @class ColorContrast
-   *
-   * @desc Identifies the text properties used to determine WCAG color contrast 
-   *       requirements including computing the color contrast ratio based on 
-   *       text and background colors
-   *
-   * @param  {Object}  parentDomElement - Parent DomElement containing ancestor style information
-   * @param  {Object}  elementNode      - dom element node 
-   */
-
-  class ColorContrast {
-    constructor (parentDomElement, elementNode) {
-      let parentColorContrast = parentDomElement ? parentDomElement.colorContrast : false;
-      let style = window.getComputedStyle(elementNode, null);
-
-      if (debug$10.flag) {
-        debug$10.separator();
-        debug$10.tag(elementNode);
-      }
-
-      this.hasTextNodes = this.getHasTextNodes(elementNode);
-
-      this.opacity            = this.normalizeOpacity(style, parentColorContrast);
-
-      this.backgroundColorElem = style.getPropertyValue("background-color");
-      this.backgroundColor     = this.normalizeBackgroundColor(style, parentColorContrast);
-      this.backgroundColorHex  = this.rgbToHex(this.backgroundColor, parentColorContrast.backgroundColorHex);
-      this.color               = style.getPropertyValue("color");
-      this.colorHex            = this.rgbToHex(this.color, this.backgroundColorHex, this.opacity);
-
-      this.backgroundImage    = this.normalizeBackgroundImage(style, parentColorContrast);
-      this.backgroundRepeat   = style.getPropertyValue("background-repeat");
-      this.backgroundPosition = style.getPropertyValue("background-position");
-      this.hasBackgroundImage = this.backgroundImage !== 'none';
-
-      this.fontFamily = style.getPropertyValue("font-family");
-      this.fontSize   = this.normalizeFontSize(style, parentColorContrast);
-      this.fontWeight = this.normalizeFontWeight(style, parentColorContrast);
-      this.isLargeFont = this.getLargeFont(this.fontSize, this.fontWeight);
-
-      this.colorContrastRatio = computeCCR(this.colorHex, this.backgroundColorHex);
-
-      this.isPositioned  = this.isPositioned(style, parentColorContrast);
-      this.isTransparent = this.isTransparent(this.backgroundColor);
-
-      if (debug$10.flag) {
-
-        debug$10.log(`[               parent color]: ${parentColorContrast.color}`);
-        debug$10.log(`[    parent background color]: ${parentColorContrast.backgroundColor}`);
-
-        debug$10.log(`[                      color]: ${this.color}`);
-        debug$10.log(`[           background color]: ${this.backgroundColor}`);
-
-        debug$10.log(`[                    opacity]: ${this.opacity}`);
-        debug$10.log(`[           Background Image]: ${this.backgroundImage} (${this.hasBackgroundImage})`);
-        debug$10.log(`[ Family/Size/Weight/isLarge]: "${this.fontFamily}"/${this.fontSize}/${this.fontWeight}/${this.isLargeFont}`);
-        debug$10.color(`[   CCR for Color/Background]: ${this.colorContrastRatio} for #${this.colorHex}/#${this.backgroundColorHex}`, this.color, this.backgroundColor);
-      }
-    }
-
-    /**
-     * @method getHasTextNodes
-     *
-     * @desc Returns true if the element node has text content, otherwise false
-     *       Analyzes node for text nodes
-     *
-     * @param {Object}  elemNode  - DOM element node
-     *
-     * @return {Number}  see @desc
-     */
-
-    getHasTextNodes (elemNode) {
-      let text = '';
-      let childNodes = elemNode.childNodes;
-
-      for (let i = 0; i < childNodes.length; i++) {
-        let node = childNodes[i];
-        if (node.nodeType === Node.TEXT_NODE) {
-          text += node.textContent.trim().replace(' ', '');
-        }
-      }
-      return text.length > 0;
-    }
-
-    /**
-     * @method normalizeOpacity
-     *
-     * @desc Normalizes opacity to a number 
-     *
-     * @param {Object}  style                - Computed style object for an element node 
-     * @param {Object}  parentColorContrast  - Computed color contrast information for parent
-     *                                         DomElement
-     *
-     * @return {Number}  Returns a number representing the opacity
-     */
-
-    normalizeOpacity (style, parentColorContrast) {
-      let opacity = style.getPropertyValue("opacity");
-      let parentOpacity = 1.0;
-
-      if (parentColorContrast) {
-        parentOpacity = parentColorContrast.opacity;
-      }
-
-      if (isNaN(opacity)) {
-        opacity = opacity.toLowerCase();
-
-        switch (opacity) {
-          case 'inherit':
-          case 'unset':
-            opacity = parentOpacity;
-            break;
-
-          case 'initial':
-          case 'revert':
-            opacity = 1.0;
-            break;
-
-          default:
-            if (opacity.indexOf('%')) {
-              opacity = parseInt(opacity.split('%')[0]);
-              if (isNaN(opacity)) {
-                opacity = parentOpacity;
-              } else {
-                opacity = parentOpacity * (opacity / 100);
-              }
-            }
-            else {
-              opacity = parseFloat(opacity) * parentOpacity;
-              if (isNaN(opacity)) {
-                opacity = 1.0;
-              }
-            }
-            break;
-        }  // end switch
-      } else {
-        opacity = parseFloat(opacity) * parentOpacity;
-        if (isNaN(opacity)) {
-          opacity = 1.0;
-        }
-
-      }
-
-      // Make sure opacity is between 0 and 1
-      opacity = Math.max(Math.min(opacity, 1.0), 0.0);
-
-      return opacity;
-    }  
-
-    /**
-     * @method normalizeBackgroundColor
-     *
-     * @desc Normalizes background color
-     *
-     * @param {Object}  style                - Computed style object for an element node 
-     * @param {Object}  parentColorContrast  - Computed color contrast information for parent
-     *                                         DomElement
-     *
-     * @return {String}  Returns the background color
-     */
-
-    normalizeBackgroundColor (style, parentColorContrast) {
-      let backgroundColor = style.getPropertyValue("background-color");
-      if ((backgroundColor == 'rgba(0, 0, 0, 0)') ||
-          (backgroundColor == 'transparent') ||
-          (backgroundColor == 'inherit')) {
-
-        debug$10.flag && debug$10.log(`[normalizeBackgroundColor][parentColorContrast]: ${parentColorContrast}`);
-
-        if (parentColorContrast) {
-          debug$10.flag && debug$10.log(`[normalizeBackgroundColor][backgroundColor]: ${parentColorContrast.backgroundColor}`);
-          backgroundColor   = parentColorContrast.backgroundColor;
-        }
-      }
-      return backgroundColor;
-    }
-
-    /**
-     * @method normalizeBackgroundImage
-     *
-     * @desc Normalizes background image 
-     *
-     * @param {Object}  style                - Computed style object for an element node 
-     * @param {Object}  parentColorContrast  - Computed color contrast information for parent
-     *                                         DomElement
-     *
-     * @return {String}  Returns a reference to a background image URL or none
-     */
-
-    normalizeBackgroundImage (style, parentColorContrast) {
-      let backgroundImage = style.getPropertyValue("background-image").toLowerCase();
-
-      if ((backgroundImage === 'inherit') ||
-          (backgroundImage === 'none') ||
-          (backgroundImage === '')) {
-        if (parentColorContrast) {
-          backgroundImage = parentColorContrast.backgroundImage;
-        }
-        else {
-          backgroundImage = 'none';
-        }
-      }
-      return backgroundImage;
-    }
-
-    /*
-     * @method normalizeFontSize
-     *
-     * @desc Normalizes font size to a number 
-     *
-     * @param {Object}  style                - Computed style object for an element node 
-     * @param {Object}  parentColorContrast  - Computed color contrast information for parent
-     *                                         DomElement
-     *
-     * @return {Number}  Returns a number representing font size value in pixels (px)
-     */
-
-    normalizeFontSize (style, parentColorContrast) {
-      let fontSize = style.getPropertyValue("font-size");
-      if (isNaN(fontSize)) {
-        if (fontSize.toLowerCase() == 'inherit') {
-          if (parentColorContrast) {
-            fontSize = parentColorContrast.fontSize;
-          }
-          else {
-            fontSize = defaultFontSize;
-          }
-        } else {
-          fontSize = parseInt(fontSize, 10);
-          if (isNaN(fontSize)) {
-            fontSize = defaultFontSize;
-          }
-        }
-      } 
-      return fontSize;
-    }
-
-    /*
-     * @method normalizeFontWeight
-     *
-     * @desc Normalizes font weight to a number 
-     *
-     * @param {Object}  style                - Computed style object for an element node 
-     * @param {Object}  parentColorContrast  - Computed color contrast information for parent
-     *                                         DomElement
-     *
-     * @return {Number}  Returns a number representing font weight value
-     */
-
-    normalizeFontWeight (style, parentColorContrast) {
-      let fontWeight = style.getPropertyValue("font-weight");
-
-      if (isNaN(fontWeight)) {
-        switch (fontWeight.toLowerCase()) {
-        case 'bold':
-          fontWeight = 700;
-          break;
-
-        case 'normal':
-          fontWeight = 400;
-          break;
-
-        case 'inherit':
-          if (parentColorContrast) {
-            fontWeight = parentColorContrast.fontWeight;
-          }
-          else {
-            fontWeight = 400;
-          }
-          break;
-
-        case 'bolder':
-          fontWeight = 700;
-          break;
-
-        default:
-          fontWeight = 400;
-          break;
-
-        }
-      }
-      else {
-        fontWeight = parseInt(fontWeight, 10);
-      }    
-      return fontWeight;
-    }
-
-    /**
-    * @function rgbToHex
-    *
-    * @desc Converts an RGB color to Hex values
-    *
-    * @param {String} colorRGB       - RGB Color rgb(rr, gg, bb) or rgb(rr, gg, bb, aa)
-    * @param {String} backgroundHex  - Background color as a hex value
-    * @param {Number}  opacity       - A number between 0 and 1 representing CSS value
-    *                                  default value is 1.0
-    *
-    * @return  {String}  - Hex version of the RGB color
-    */
-
-    rgbToHex ( colorRGB, backgroundHex, opacity=1.0 ) {
-
-      function hexToString(d) {
-        let hex = Number(d).toString(16);
-        return hex.length === 1 ? '0' + hex : hex;
-      }
-
-      if (!colorRGB) return "000000";
-
-      colorRGB = colorRGB.replace('"', '');
-      colorRGB = colorRGB.split(')')[0];
-      colorRGB = colorRGB.split('(')[1];
-      const parts = colorRGB.split(',');
-      let r1 = parseFloat(parts[0]);
-      let g1 = parseFloat(parts[1]);
-      let b1 = parseFloat(parts[2]);
-      const o1 = parts.length === 4 ? parseFloat(parts[3]) : 1.0;
-
-      if (typeof backgroundHex !== 'string' || backgroundHex.length !== 6) {
-        backgroundHex = 'FFFFFF';
-      }
-
-      const r2 = parseInt(backgroundHex.substring(0,2), 16);
-      const g2 = parseInt(backgroundHex.substring(2,4), 16);
-      const b2 = parseInt(backgroundHex.substring(4,6), 16);
-
-      const min = 0.0001;
-
-      if (o1 < min) {
-        return backgroundHex;
-      }
-      else {
-        if (o1 < 1.0) {
-          r1 = Math.round(r1 * o1 + r2 * (1 - o1));
-          g1 = Math.round(g1 * o1 + g2 * (1 - o1));
-          b1 = Math.round(b1 * o1 + b2 * (1 - o1));
-        }
-      }
-
-      if (typeof opacity === 'string') {
-        opacity = parseFloat(opacity);
-      }
-
-      if ((opacity === Number.NaN) || (opacity < 0.0) || (opacity > 1.0)) {
-        opacity = 1.0;
-      }
-
-      if (opacity < 1.0) {
-        r1 = Math.round(r1 * opacity + r2 * (1 - opacity));
-        g1 = Math.round(g1 * opacity + g2 * (1 - opacity));
-        b1 = Math.round(b1 * opacity + b2 * (1 - opacity));
-      }
-
-      return hexToString(r1) + hexToString(g1) + hexToString(b1);
-    }
-
-    /**
-     * @method getLargeFont
-     *
-     * @desc Returns a boolean indiciating if the fontis considered large
-     *
-     * @param {Number}  fontSize    - font size of the element in pixels
-     * @param {Number}  fontWeight  - Numberical value of the font wieght (100-900)
-     *
-     * @return {Boolean}  Returns true if considered a large font, otherwise fals
-     */
-
-    getLargeFont (fontSize, fontWeight) {
-      const isSizeLarge   = fontSize >= largeFontSize;
-      const isSizeBigger  = fontSize >= biggerFontSize;
-      const isBold        = fontWeight >= fontWeightBold;
-
-
-      return isSizeLarge || (isSizeBigger && isBold);
-    }
-
-    /**
-     * @method isPositioned
-     *
-      * @desc Returns true if element or it's ancestor is absolute positioning
-     *
-     * @param {Object}  style                - Computed style object for an element node
-     * @param {Object}  parentColorContrast  - Computed color contrast information for parent
-     *                                         DomElement
-     *
-     * @return {Boolean}  Returns a number representing font weight value
-     */
-
-    isPositioned (style, parentColorContrast) {
-      const position = style.getPropertyValue("position");
-
-      return parentColorContrast.isPositioned || (position === 'absolute');
-
-    }
-
-    /**
-     * @function isTransparent
-     *
-     * @desc Returns true if RGBA is transparent
-     *
-     * @return {Boolean}  see @desc
-     */
-
-     isTransparent (colorRGB) {
-
-      if (!colorRGB) {
-        return false;
-      }
-
-      colorRGB = colorRGB.replace('"', '');
-      colorRGB = colorRGB.split(')')[0];
-      colorRGB = colorRGB.split('(')[1];
-      const parts = colorRGB.split(',');
-      const opacity = parts.length === 4 ? parseFloat(parts[3]) : 1.0;
-
-      return opacity < .001;
-    }
-
-  }
-
-  /* eventInfo.js */
-
-  /* Constants */
-  const debug$$ = new DebugLogging('EventInfo', false);
-
-  /**
-   * @class EventInfo
-   *
-   * @desc Collects information on the links in a web page
-   */
-
-  class EventInfo {
-    constructor (node) {
-      this.hasClick  = node.hasAttribute('onclick');
-      this.hasChange = node.hasAttribute('onchange');
-
-      if (debug$$.flag) {
-        console.log(`[hasClick ]: ${this.hasClick}`);
-        console.log(`[hasChange]: ${this.hasChange}`);
-      }
-    }
-  }
-
-  /* generated file, see https://github.com/opena11y/aria-in-html-to-code */
-  const ariaInHTMLInfo = {
-    title: 'ARIA in HTML',
-    status: 'W3C Recommendation 05 July 2023',
-    reference: 'https://www.w3.org/TR/html-aria/',
-    elementInfo: {
-      'a[href]': {
-        tagName: 'a',
-        defaultRole: 'link',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'button',
-          'checkbox',
-          'menuitem',
-          'menuitemcheckbox',
-          'menuitemradio',
-          'option',
-          'radio',
-          'switch',
-          'tab',
-          'treeitem',
-          'link'
-        ],
-        attr1: 'href',
-        id: 'a[href]'
-      },
-      a: {
-        tagName: 'a',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'a'
-      },
-      abbr: {
-        tagName: 'abbr',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'abbr'
-      },
-      address: {
-        tagName: 'address',
-        defaultRole: 'group',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'address'
-      },
-      'area[href]': {
-        tagName: 'area',
-        defaultRole: 'link',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'href',
-        id: 'area[href]'
-      },
-      area: {
-        tagName: 'area',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'button',
-          'link',
-          'generic'
-        ],
-        id: 'area'
-      },
-      article: {
-        tagName: 'article',
-        defaultRole: 'article',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'application',
-          'document',
-          'feed',
-          'main',
-          'none',
-          'presentation',
-          'region',
-          'article'
-        ],
-        id: 'article'
-      },
-      aside: {
-        tagName: 'aside',
-        defaultRole: 'complementary',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'feed',
-          'none',
-          'note',
-          'presentation',
-          'region',
-          'search',
-          'complementary'
-        ],
-        id: 'aside'
-      },
-      audio: {
-        tagName: 'audio',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'application'
-        ],
-        id: 'audio'
-      },
-      b: {
-        tagName: 'b',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'b'
-      },
-      base: {
-        tagName: 'base',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'base'
-      },
-      bdi: {
-        tagName: 'bdi',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'bdi'
-      },
-      bdo: {
-        tagName: 'bdo',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'bdo'
-      },
-      blockquote: {
-        tagName: 'blockquote',
-        defaultRole: 'blockquote',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'blockquote'
-      },
-      body: {
-        tagName: 'body',
-        defaultRole: 'generic',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'body'
-      },
-      br: {
-        tagName: 'br',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'none',
-          'presentation'
-        ],
-        id: 'br'
-      },
-      button: {
-        tagName: 'button',
-        defaultRole: 'button',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'checkbox',
-          'combobox',
-          'gridcell',
-          'link',
-          'menuitem',
-          'menuitemcheckbox',
-          'menuitemradio',
-          'option',
-          'radio',
-          'slider',
-          'switch',
-          'tab',
-          'treeitem',
-          'button'
-        ],
-        id: 'button'
-      },
-      canvas: {
-        tagName: 'canvas',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'canvas'
-      },
-      caption: {
-        tagName: 'caption',
-        defaultRole: 'caption',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'caption'
-      },
-      cite: {
-        tagName: 'cite',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'cite'
-      },
-      code: {
-        tagName: 'code',
-        defaultRole: 'code',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'code'
-      },
-      col: {
-        tagName: 'col',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'col'
-      },
-      colgroup: {
-        tagName: 'colgroup',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'colgroup'
-      },
-      data: {
-        tagName: 'data',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'data'
-      },
-      datalist: {
-        tagName: 'datalist',
-        defaultRole: 'listbox',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'datalist'
-      },
-      dd: {
-        tagName: 'dd',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'dd'
-      },
-      del: {
-        tagName: 'del',
-        defaultRole: 'deletion',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'del'
-      },
-      details: {
-        tagName: 'details',
-        defaultRole: 'group',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'details'
-      },
-      dfn: {
-        tagName: 'dfn',
-        defaultRole: 'term',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'dfn'
-      },
-      dialog: {
-        tagName: 'dialog',
-        defaultRole: 'dialog',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'alertdialog',
-          'dialog'
-        ],
-        id: 'dialog'
-      },
-      div: {
-        tagName: 'div',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'div'
-      },
-      dl: {
-        tagName: 'dl',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'group',
-          'list',
-          'none',
-          'presentation'
-        ],
-        id: 'dl'
-      },
-      dt: {
-        tagName: 'dt',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'listitem'
-        ],
-        id: 'dt'
-      },
-      em: {
-        tagName: 'em',
-        defaultRole: 'emphasis',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'em'
-      },
-      embed: {
-        tagName: 'embed',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'application',
-          'document',
-          'img',
-          'none',
-          'presentation'
-        ],
-        id: 'embed'
-      },
-      fieldset: {
-        tagName: 'fieldset',
-        defaultRole: 'group',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'none',
-          'presentation',
-          'radiogroup',
-          'group'
-        ],
-        id: 'fieldset'
-      },
-      figcaption: {
-        tagName: 'figcaption',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'group',
-          'none',
-          'presentation'
-        ],
-        id: 'figcaption'
-      },
-      'figure[figcaption]': {
-        tagName: 'figure',
-        defaultRole: 'figure',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        hasFigcaption: true,
-        id: 'figure[figcaption]'
-      },
-      figure: {
-        tagName: 'figure',
-        defaultRole: 'figure',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'figure'
-      },
-      'footer[contentinfo]': {
-        tagName: 'footer',
-        defaultRole: 'contentinfo',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'group',
-          'presentation',
-          'none',
-          'article',
-          'aside',
-          'main',
-          'nav',
-          'section',
-          'role=article',
-          'complementary',
-          'main',
-          'navigation',
-          'region',
-          'role=contentinfo',
-          'role=generic'
-        ],
-        isLandmark: true,
-        id: 'footer[contentinfo]'
-      },
-      footer: {
-        tagName: 'footer',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'group',
-          'presentation',
-          'none',
-          'article',
-          'aside',
-          'main',
-          'nav',
-          'section',
-          'role=article',
-          'complementary',
-          'main',
-          'navigation',
-          'region',
-          'role=contentinfo',
-          'role=generic'
-        ],
-        id: 'footer'
-      },
-      form: {
-        tagName: 'form',
-        defaultRole: 'form',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'none',
-          'presentation',
-          'search',
-          'form'
-        ],
-        id: 'form'
-      },
-      h1: {
-        tagName: 'h1',
-        defaultRole: 'heading',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'none',
-          'presentation',
-          'tab',
-          'heading'
-        ],
-        id: 'h1'
-      },
-      h2: {
-        tagName: 'h2',
-        defaultRole: 'heading',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'none',
-          'presentation',
-          'tab',
-          'heading'
-        ],
-        id: 'h2'
-      },
-      h3: {
-        tagName: 'h3',
-        defaultRole: 'heading',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'none',
-          'presentation',
-          'tab',
-          'heading'
-        ],
-        id: 'h3'
-      },
-      h4: {
-        tagName: 'h4',
-        defaultRole: 'heading',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'none',
-          'presentation',
-          'tab',
-          'heading'
-        ],
-        id: 'h4'
-      },
-      h5: {
-        tagName: 'h5',
-        defaultRole: 'heading',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'none',
-          'presentation',
-          'tab',
-          'heading'
-        ],
-        id: 'h5'
-      },
-      h6: {
-        tagName: 'h6',
-        defaultRole: 'heading',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'none',
-          'presentation',
-          'tab',
-          'heading'
-        ],
-        id: 'h6'
-      },
-      head: {
-        tagName: 'head',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'head'
-      },
-      'header[banner]': {
-        tagName: 'header',
-        defaultRole: 'banner',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'group',
-          'none',
-          'presentation',
-          'article',
-          'aside',
-          'main',
-          'nav',
-          'section',
-          'role=article',
-          'complementary',
-          'main',
-          'navigation',
-          'region',
-          'role=contentinfo',
-          'role=generic'
-        ],
-        isLandmark: true,
-        id: 'header[banner]'
-      },
-      header: {
-        tagName: 'header',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'group',
-          'none',
-          'presentation',
-          'article',
-          'aside',
-          'main',
-          'nav',
-          'section',
-          'role=article',
-          'complementary',
-          'main',
-          'navigation',
-          'region',
-          'role=contentinfo',
-          'role=generic'
-        ],
-        id: 'header'
-      },
-      hgroup: {
-        tagName: 'hgroup',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'hgroup'
-      },
-      hr: {
-        tagName: 'hr',
-        defaultRole: 'separator',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'none',
-          'presentation',
-          'separator'
-        ],
-        id: 'hr'
-      },
-      html: {
-        tagName: 'html',
-        defaultRole: 'document',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'html'
-      },
-      i: {
-        tagName: 'i',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'i'
-      },
-      iframe: {
-        tagName: 'iframe',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'application',
-          'document',
-          'img',
-          'none',
-          'presentation'
-        ],
-        id: 'iframe'
-      },
-      'img[accname]': {
-        tagName: 'img',
-        defaultRole: 'img',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'button',
-          'checkbox',
-          'link',
-          'menuitem',
-          'menuitemcheckbox',
-          'menuitemradio',
-          'option',
-          'progressbar',
-          'radio',
-          'scrollbar',
-          'separator',
-          'slider',
-          'switch',
-          'tab',
-          'treeitem',
-          'img'
-        ],
-        hasAccname: true,
-        id: 'img[accname]'
-      },
-      'img[alt]': {
-        tagName: 'img',
-        defaultRole: 'img',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'button',
-          'checkbox',
-          'link',
-          'menuitem',
-          'menuitemcheckbox',
-          'menuitemradio',
-          'option',
-          'progressbar',
-          'radio',
-          'scrollbar',
-          'separator',
-          'slider',
-          'switch',
-          'tab',
-          'treeitem',
-          'img'
-        ],
-        attr1: 'alt',
-        id: 'img[alt]'
-      },
-      'img[emptyalt]': {
-        tagName: 'img',
-        defaultRole: 'presentation',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'alt=""',
-        id: 'img[emptyalt]'
-      },
-      img: {
-        tagName: 'img',
-        defaultRole: 'img',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'img'
-      },
-      'input[type=button]': {
-        tagName: 'input',
-        defaultRole: 'button',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'checkbox',
-          'combobox',
-          'gridcell',
-          'link',
-          'menuitem',
-          'menuitemcheckbox',
-          'menuitemradio',
-          'option',
-          'radio',
-          'slider',
-          'switch',
-          'tab',
-          'treeitem',
-          'button'
-        ],
-        attr1: 'type=button',
-        id: 'input[type=button]'
-      },
-      'input[type=checkbox]': {
-        tagName: 'input',
-        defaultRole: 'checkbox',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'menuitemcheckbox',
-          'option',
-          'switch',
-          'button',
-          'checkbox'
-        ],
-        attr1: 'type=checkbox',
-        id: 'input[type=checkbox]'
-      },
-      'input[type=color]': {
-        tagName: 'input',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=color',
-        id: 'input[type=color]'
-      },
-      'input[type=date]': {
-        tagName: 'input',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=date',
-        id: 'input[type=date]'
-      },
-      'input[type=datetime-local]': {
-        tagName: 'input',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=datetime-local',
-        id: 'input[type=datetime-local]'
-      },
-      'input[type=email][list]': {
-        tagName: 'input',
-        defaultRole: 'combobox',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=email',
-        attr2: 'list',
-        id: 'input[type=email][list]'
-      },
-      'input[type=email]': {
-        tagName: 'input',
-        defaultRole: 'textbox',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=email',
-        id: 'input[type=email]'
-      },
-      'input[type=file]': {
-        tagName: 'input',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=file',
-        id: 'input[type=file]'
-      },
-      'input[type=hidden]': {
-        tagName: 'input',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=hidden',
-        id: 'input[type=hidden]'
-      },
-      'input[type=image]': {
-        tagName: 'input',
-        defaultRole: 'button',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'button',
-          'checkbox',
-          'gridcell',
-          'link',
-          'menuitem',
-          'menuitemcheckbox',
-          'menuitemradio',
-          'option',
-          'radio',
-          'slider',
-          'switch',
-          'tab',
-          'treeitem'
-        ],
-        attr1: 'type=image',
-        id: 'input[type=image]'
-      },
-      'input[type=month]': {
-        tagName: 'input',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=month',
-        id: 'input[type=month]'
-      },
-      'input[type=number]': {
-        tagName: 'input',
-        defaultRole: 'spinbutton',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=number',
-        id: 'input[type=number]'
-      },
-      'input[type=password]': {
-        tagName: 'input',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=password',
-        id: 'input[type=password]'
-      },
-      'input[type=radio]': {
-        tagName: 'input',
-        defaultRole: 'radio',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'menuitemradio',
-          'radio'
-        ],
-        attr1: 'type=radio',
-        id: 'input[type=radio]'
-      },
-      'input[type=range]': {
-        tagName: 'input',
-        defaultRole: 'slider',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=range',
-        id: 'input[type=range]'
-      },
-      'input[type=reset]': {
-        tagName: 'input',
-        defaultRole: 'button',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [],
-        attr1: 'type=reset',
-        id: 'input[type=reset]'
-      },
-      'input[type=search][list]': {
-        tagName: 'input',
-        defaultRole: 'combobox',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=search',
-        attr2: 'list',
-        id: 'input[type=search][list]'
-      },
-      'input[type=search]': {
-        tagName: 'input',
-        defaultRole: 'searchbox',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=search',
-        id: 'input[type=search]'
-      },
-      'input[type=submit]': {
-        tagName: 'input',
-        defaultRole: 'button',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [],
-        attr1: 'type=submit',
-        id: 'input[type=submit]'
-      },
-      'input[type=tel][list]': {
-        tagName: 'input',
-        defaultRole: 'combobox',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=tel',
-        attr2: 'list',
-        id: 'input[type=tel][list]'
-      },
-      'input[type=tel]': {
-        tagName: 'input',
-        defaultRole: 'textbox',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=tel',
-        id: 'input[type=tel]'
-      },
-      'input[type=text][list]': {
-        tagName: 'input',
-        defaultRole: 'combobox',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=text',
-        attr2: 'list',
-        id: 'input[type=text][list]'
-      },
-      'input[type=text]': {
-        tagName: 'input',
-        defaultRole: 'textbox',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'combobox',
-          'searchbox',
-          'spinbutton',
-          'textbox'
-        ],
-        attr1: 'type=text',
-        id: 'input[type=text]'
-      },
-      'input[type=time]': {
-        tagName: 'input',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=time',
-        id: 'input[type=time]'
-      },
-      'input[type=url][list]': {
-        tagName: 'input',
-        defaultRole: 'combobox',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=url',
-        attr2: 'list',
-        id: 'input[type=url][list]'
-      },
-      'input[type=url]': {
-        tagName: 'input',
-        defaultRole: 'textbox',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=url',
-        id: 'input[type=url]'
-      },
-      'input[type=week]': {
-        tagName: 'input',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        attr1: 'type=week',
-        id: 'input[type=week]'
-      },
-      ins: {
-        tagName: 'ins',
-        defaultRole: 'insertion',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'ins'
-      },
-      kbd: {
-        tagName: 'kbd',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'kbd'
-      },
-      label: {
-        tagName: 'label',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'label'
-      },
-      legend: {
-        tagName: 'legend',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'legend'
-      },
-      'li[listitem]': {
-        tagName: 'li',
-        defaultRole: 'listitem',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        ownedbyOL: true,
-        ownedbyUL: true,
-        ownedbyMenu: true,
-        id: 'li[listitem]'
-      },
-      li: {
-        tagName: 'li',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'li'
-      },
-      link: {
-        tagName: 'link',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'link'
-      },
-      main: {
-        tagName: 'main',
-        defaultRole: 'main',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'main'
-      },
-      map: {
-        tagName: 'map',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'map'
-      },
-      mark: {
-        tagName: 'mark',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'mark'
-      },
-      math: {
-        tagName: 'math',
-        defaultRole: 'math',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'math'
-      },
-      menu: {
-        tagName: 'menu',
-        defaultRole: 'list',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'group',
-          'listbox',
-          'menu',
-          'menubar',
-          'none',
-          'presentation',
-          'radiogroup',
-          'tablist',
-          'toolbar',
-          'tree',
-          'list'
-        ],
-        id: 'menu'
-      },
-      meta: {
-        tagName: 'meta',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'meta'
-      },
-      meter: {
-        tagName: 'meter',
-        defaultRole: 'meter',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'meter'
-      },
-      nav: {
-        tagName: 'nav',
-        defaultRole: 'navigation',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'menu',
-          'menubar',
-          'none',
-          'presentation',
-          'tablist',
-          'navigation'
-        ],
-        id: 'nav'
-      },
-      noscript: {
-        tagName: 'noscript',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'noscript'
-      },
-      object: {
-        tagName: 'object',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'application',
-          'document',
-          'img'
-        ],
-        id: 'object'
-      },
-      ol: {
-        tagName: 'ol',
-        defaultRole: 'list',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'group',
-          'listbox',
-          'menu',
-          'menubar',
-          'none',
-          'presentation',
-          'radiogroup',
-          'tablist',
-          'toolbar',
-          'tree',
-          'list'
-        ],
-        id: 'ol'
-      },
-      optgroup: {
-        tagName: 'optgroup',
-        defaultRole: 'group',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'optgroup'
-      },
-      option: {
-        tagName: 'option',
-        defaultRole: 'option',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'option'
-      },
-      output: {
-        tagName: 'output',
-        defaultRole: 'status',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'output'
-      },
-      p: {
-        tagName: 'p',
-        defaultRole: 'paragraph',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'p'
-      },
-      param: {
-        tagName: 'param',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'param'
-      },
-      picture: {
-        tagName: 'picture',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'picture'
-      },
-      pre: {
-        tagName: 'pre',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'pre'
-      },
-      progress: {
-        tagName: 'progress',
-        defaultRole: 'progressbar',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'progress'
-      },
-      q: {
-        tagName: 'q',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'q'
-      },
-      rp: {
-        tagName: 'rp',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'rp'
-      },
-      rt: {
-        tagName: 'rt',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'rt'
-      },
-      ruby: {
-        tagName: 'ruby',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'ruby'
-      },
-      s: {
-        tagName: 's',
-        defaultRole: 'deletion',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 's'
-      },
-      samp: {
-        tagName: 'samp',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'samp'
-      },
-      script: {
-        tagName: 'script',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'script'
-      },
-      search: {
-        tagName: 'search',
-        defaultRole: 'search',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'form',
-          'group',
-          'none',
-          'presentation',
-          'region',
-          'search'
-        ],
-        id: 'search'
-      },
-      'section[accname]': {
-        tagName: 'section',
-        defaultRole: 'region',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'alert',
-          'alertdialog',
-          'application',
-          'banner',
-          'complementary',
-          'contentinfo',
-          'dialog',
-          'document',
-          'feed',
-          'group',
-          'log',
-          'main',
-          'marquee',
-          'navigation',
-          'none',
-          'note',
-          'presentation',
-          'search',
-          'status',
-          'tabpanel',
-          'role=region',
-          'role=generic'
-        ],
-        hasAccname: true,
-        id: 'section[accname]'
-      },
-      section: {
-        tagName: 'section',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'alert',
-          'alertdialog',
-          'application',
-          'banner',
-          'complementary',
-          'contentinfo',
-          'dialog',
-          'document',
-          'feed',
-          'group',
-          'log',
-          'main',
-          'marquee',
-          'navigation',
-          'none',
-          'note',
-          'presentation',
-          'search',
-          'status',
-          'tabpanel',
-          'role=region',
-          'role=generic'
-        ],
-        id: 'section'
-      },
-      select: {
-        tagName: 'select',
-        defaultRole: 'combobox',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'menu',
-          'combobox'
-        ],
-        id: 'select'
-      },
-      'select[size-or-multiple]': {
-        tagName: 'select',
-        defaultRole: 'listbox',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        hasSizeOrMultiple: true,
-        id: 'select[size-or-multiple]'
-      },
-      slot: {
-        tagName: 'slot',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'slot'
-      },
-      small: {
-        tagName: 'small',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'small'
-      },
-      source: {
-        tagName: 'source',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'source'
-      },
-      span: {
-        tagName: 'span',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'span'
-      },
-      strong: {
-        tagName: 'strong',
-        defaultRole: 'strong',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'strong'
-      },
-      style: {
-        tagName: 'style',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'style'
-      },
-      sub: {
-        tagName: 'sub',
-        defaultRole: 'subscript',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'sub'
-      },
-      summary: {
-        tagName: 'summary',
-        defaultRole: 'summary',
-        noRoleAllowed: true,
-        anyRoleAllowed: true,
-        id: 'summary'
-      },
-      sup: {
-        tagName: 'sup',
-        defaultRole: 'superscript',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'sup'
-      },
-      svg: {
-        tagName: 'SVG',
-        defaultRole: 'graphics-document',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'SVG'
-      },
-      table: {
-        tagName: 'table',
-        defaultRole: 'table',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'table'
-      },
-      tbody: {
-        tagName: 'tbody',
-        defaultRole: 'rowgroup',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'tbody'
-      },
-      template: {
-        tagName: 'template',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'template'
-      },
-      textarea: {
-        tagName: 'textarea',
-        defaultRole: 'textbox',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'textarea'
-      },
-      tfoot: {
-        tagName: 'tfoot',
-        defaultRole: 'rowgroup',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'tfoot'
-      },
-      thead: {
-        tagName: 'thead',
-        defaultRole: 'rowgroup',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'thead'
-      },
-      time: {
-        tagName: 'time',
-        defaultRole: 'time',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'time'
-      },
-      title: {
-        tagName: 'title',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'title'
-      },
-      'td[cell]': {
-        tagName: 'td',
-        defaultRole: 'cell',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        ownedbyTable: true,
-        id: 'td[cell]'
-      },
-      'td[gridcell]': {
-        tagName: 'td',
-        defaultRole: 'gridcell',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        ownedbyGrid: true,
-        ownedbyTreegrid: true,
-        id: 'td[gridcell]'
-      },
-      td: {
-        tagName: 'td',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'td'
-      },
-      'th[cell]': {
-        tagName: 'th',
-        defaultRole: 'cell',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        ownedbyTable: true,
-        id: 'th[cell]'
-      },
-      'th[gridcell]': {
-        tagName: 'th',
-        defaultRole: 'gridcell',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        ownedbyGrid: true,
-        ownedbyTreegrid: true,
-        id: 'th[gridcell]'
-      },
-      'th[colheader]': {
-        tagName: 'th',
-        defaultRole: 'colheader',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        ownedbyTable: true,
-        ownedbyGrid: true,
-        ownedbyTreegrid: true,
-        id: 'th[colheader]'
-      },
-      th: {
-        tagName: 'th',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'th'
-      },
-      'tr[table]': {
-        tagName: 'tr',
-        defaultRole: 'row',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        ownedbyTable: true,
-        ownedbyGrid: true,
-        ownedbyTreegrid: true,
-        id: 'tr[table]'
-      },
-      tr: {
-        tagName: 'tr',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'tr'
-      },
-      track: {
-        tagName: 'track',
-        defaultRole: '',
-        noRoleAllowed: true,
-        anyRoleAllowed: false,
-        id: 'track'
-      },
-      u: {
-        tagName: 'u',
-        defaultRole: 'generic',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'u'
-      },
-      ul: {
-        tagName: 'ul',
-        defaultRole: 'list',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'group',
-          'listbox',
-          'menu',
-          'menubar',
-          'none',
-          'presentation',
-          'radiogroup',
-          'tablist',
-          'toolbar',
-          'tree',
-          'list'
-        ],
-        id: 'ul'
-      },
-      var: {
-        tagName: 'var',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: true,
-        id: 'var'
-      },
-      video: {
-        tagName: 'video',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'application'
-        ],
-        id: 'video'
-      },
-      wbr: {
-        tagName: 'wbr',
-        defaultRole: '',
-        noRoleAllowed: false,
-        anyRoleAllowed: false,
-        allowedRoles: [
-          'none',
-          'presentation'
-        ],
-        id: 'wbr'
-      }
-    }
-  };
-
-  /* ariaInHtml.js */
-
-  /* Constants */
-  const debug$_ = new DebugLogging('ariaInHtml', false);
-  const higherLevelElements = [
-    'article',
-    'aside',
-    'footer',
-    'header',
-    'main',
-    'nav',
-    'region',
-    'section'
-    ];
-
-  const landmarkRoles$1 = [
-    'banner',
-    'complementary',
-    'contentinfo',
-    'form',
-    'main',
-    'navigation',
-    'region',
-    'search'
-    ];
-
-  /**
-  * @function getAriaInHTMLInfo
-  *
-  * @desc Uses the ARIA in HTML specification to identify a default role and provide
-  *       role restriction information
-  *
-  * @param  {Object}  node        - Element node from a browser DOM
-  */
-
-  function getAriaInHTMLInfo (node) {
-    let elemInfo, type, selector;
-
-    let tagName = node.tagName.toLowerCase();
-    const elementInfo = ariaInHTMLInfo.elementInfo;
-
-    switch (tagName) {
-      case 'a':
-        if (node.href) {
-          elemInfo = elementInfo['a[href]'];
-        } else {
-          elemInfo = elementInfo['a'];
-        }
-        break;
-
-      case 'area':
-        if (node.href) {
-          elemInfo = elementInfo['area[href]'];
-        } else {
-          elemInfo = elementInfo['area'];
-        }
-        break;
-
-      case 'header':
-        if (isTopLevel(node)) {
-          elemInfo = elementInfo['header[banner]'];
-        } else {
-          elemInfo = elementInfo['header'];
-        }
-        break;
-
-      case 'figure':
-        if (node.querySelector('figcaption')) {
-          elemInfo = elementInfo['figure[figcaption]'];
-        } else {
-          elemInfo = elementInfo['figure'];
-        }
-        break;
-
-      case 'footer':
-        if (isTopLevel(node)) {
-          elemInfo = elementInfo['footer[contentinfo]'];
-        } else {
-          elemInfo = elementInfo['footer'];
-        }
-        break;
-
-      // This is a fix since you don't always want an accessible name on a form
-      case 'form':
-        if (node.hasAttribute('aria-label') ||
-          node.hasAttribute('aria-labelledby')||
-          node.hasAttribute('title')) {
-          elemInfo = elementInfo['form'];
-        } else {
-          elemInfo = elementInfo['form'];
-          elemInfo.defaultRole = 'generic';
-        }
-        break;
-
-      case 'img':
-        if (node.hasAttribute('aria-label') ||
-            node.hasAttribute('aria-labelledby')) {
-            elemInfo = elementInfo['img[accname]'];
-        } else {
-          if (node.hasAttribute('alt')) {
-            if (node.alt.trim().length) {
-              elemInfo = elementInfo['img[alt]'];
-            } else {
-              elemInfo = elementInfo['img[emptyalt]'];
-            }
-          } else {
-            elemInfo = elementInfo['img'];
-          }
-        }
-        break;
-
-      case 'input':
-        type = node.getAttribute('type');
-        if (!type) {
-          type = 'text';
-        }
-        selector = tagName + '[type=' + type + ']';
-        if (node.hasAttribute('list')) {
-          selector += '[list]';
-        }
-
-        elemInfo = elementInfo[selector];
-
-        switch (type) {
-          case 'color':
-          case 'date':
-          case 'datetime-local':
-          case 'month':
-          case 'password':
-          case 'time':
-          case 'week':
-            elemInfo.defaultRole = 'textbox';
-            break;
-
-          case 'file':
-            elemInfo.defaultRole = 'button';
-            break;
-        }
-
-        break;
-
-      case 'li':
-        if (isListitemInList(node)) {
-          elemInfo = elementInfo[`${tagName}[listitem]`];
-        } else {
-          elemInfo = elementInfo[`${tagName}`];
-        }
-        break;
-
-
-      case 'section':
-        if (node.hasAttribute('aria-label') ||
-          node.hasAttribute('aria-labelledby')||
-          node.hasAttribute('title')) {
-          elemInfo = elementInfo['section[accname]'];
-        } else {
-          elemInfo = elementInfo['section'];
-        }
-        break;
-
-      case 'select':
-        if (node.multiple || (node.size > 1)) {
-          elemInfo = elementInfo['select[size-or-multiple]'];
-        } else {
-          elemInfo = elementInfo['select'];
-        }
-        break;
-
-      case 'td':
-      case 'th':
-        if (isCellInGrid(node)) {
-            elemInfo = elementInfo[`${tagName}[gridcell]`];
-        } else {
-          if (isCellInLayoutTable(node)) {
-            elemInfo = elementInfo[tagName];
-          } else {
-            elemInfo = elementInfo[`${tagName}[cell]`];
-          }
-        }
-        break;
-
-      case 'tr':
-        if (isCellInLayoutTable(node)) {
-          elemInfo = elementInfo['tr'];
-        } else {
-          elemInfo = elementInfo[`tr[table]`];
-        }
-        break;
-
-      default:
-        elemInfo = elementInfo[tagName];
-
-    }
-
-    if (!elemInfo) {
-        elemInfo = {
-        "tagName": node.tagName,
-        "defaultRole": "generic",
-        "noRoleAllowed": false,
-        "anyRoleAllowed": true,
-        "id": "custom"
-      };
-    }
-
-    if (debug$_.flag) {
-      if (tagName === 'h2') {
-        debug$_.tag(node);
-      }
-      debug$_.log(`[elemInfo][id]: ${elemInfo.id} (${tagName})`);
-    }
-
-    return elemInfo;
-  }
-
-
-  /**
-  * @function getString
-  *
-  * @desc Checks if a value is a string, if it is a string convert it to lowercase.
-  *       If not a string, return an empty string
-  *
-  * @param  {String}  value        - value to be checked
-  */
-
-  function getString (value) {
-    if (typeof value === 'string') {
-      return value.trim().toLowerCase();
-    }
-    return '';
-  }
-
-  /**
-  * @function isTopLevel
-  *
-  * @desc Tests the node to see if it is in the content of any other
-  *       elements with default landmark roles or is the descendant
-  *       of an element with a defined landmark role
-  *
-  * @param  {Object}  node        - Element node from a browser DOM
-  */
-
-  function isTopLevel (node) {
-    node = node && node.parentNode;
-    while (node && (node.nodeType === Node.ELEMENT_NODE)) {
-      const tagName = getString(node.tagName);
-      const role = getString(node.getAttribute('role'));
-
-      if (higherLevelElements.includes(tagName) ||
-          landmarkRoles$1.includes(role)) {
-        return false;
-      }
-      node = node.parentNode;
-    }
-    return true;
-  }
-
-
-  /**
-  * @function isListiemInList
-  *
-  * @desc Returns true if the listitem is a descendant of OL, UL or MENU element
-  *
-  * @param  {Object}  node - Element node from a browser DOM
-  *
-  * @return {Boolean} see @desc
-  */
-
-  function isListitemInList  (node) {
-    node = node && node.parentNode;
-    while (node && (node.nodeType === Node.ELEMENT_NODE)) {
-      const tagName = getString(node.tagName);
-      if (['menu', 'ol', 'ul'].includes(tagName)) {
-        return true;
-      }
-      node = node.parentNode;
-    }
-    return false;
-  }
-
-  /**
-  * @function isCellInGrid
-  *
-  * @desc Tests the table cell is part of a grid widget
-  *
-  * @param  {Object}  node - Element node from a browser DOM
-  */
-
-  function isCellInGrid  (node) {
-    node = node && node.parentNode;
-    while (node && (node.nodeType === Node.ELEMENT_NODE)) {
-      const tagName = getString(node.tagName);
-      const role = getString(node.getAttribute('role'));
-
-      if (tagName === 'table') {
-        return role === 'grid' || role === 'treegrid';
-      }
-
-      node = node.parentNode;
-    }
-    return false;
-  }
-
-  /**
-  * @function isCellInLayoutTable
-  *
-  * @desc Tests the table cell is part of a table that
-  *       has been identified as being used for layout
-  *
-  * @param  {Object}  node - Element node from a browser DOM
-  */
-
-  function isCellInLayoutTable  (node) {
-    node = node && node.parentNode;
-    while (node && (node.nodeType === Node.ELEMENT_NODE)) {
-      const tagName = getString(node.tagName);
-      const role = getString(node.getAttribute('role'));
-
-      if (tagName === 'table') {
-        return role === 'none' || role === 'presentation';
-      }
-      node = node.parentNode;
-    }
-    return false;
-  }
-
-  /* visibility.js */
-
-  /* Constants */
-  const debug$Z = new DebugLogging('visibility', false);
-
-  /**
-   * @class Visibility
-   *
-   * @desc Identifies the properties used to determine the visibility of the element
-   *       for both the graphical rendering and assistive technologies
-   *
-   * @param  {Object}  parentDomElement - Parent DomElement containing ancestor style information
-   * @param  {Object}  elementNode      - dom element node 
-   */
-
-  class Visibility {
-    constructor (parentDomElement, elementNode) {
-      let parentVisibility = parentDomElement ? parentDomElement.visibility : false;
-      let style = window.getComputedStyle(elementNode, null);
-      let tagName = elementNode.tagName ? elementNode.tagName : '';
-
-      this.isHidden           = this.normalizeHidden (elementNode, parentVisibility);
-      this.isAriaHidden       = this.normalizeAriaHidden (elementNode, parentVisibility);
-      this.isDisplayNone      = this.normalizeDisplay (style, parentVisibility);
-      this.isVisibilityHidden = this.normalizeVisibility (style, parentVisibility);
-      this.isSmallHeight      = this.normalizeHeight(style, parentVisibility);
-      this.isSmallFont        = this.getFontSize(style);
-      this.isInClosedDetails  = this.normalizeInClosedDetails(elementNode, parentVisibility);
-
-      // Set default values for visibility
-      this.isVisibleOnScreen = true;
-      this.isVisibleToAT     = true; // AT -> Assistive Technology
-
-      if (this.isHidden ||
-          this.isDisplayNone ||
-          this.isVisibilityHidden ||
-          this.isInClosedDetails) {
-
-        if (tagName !== 'area') {
-          this.isVisibleOnScreen = false;
-          this.isVisibleToAT     = false;
-        }
-      }
-
-      if (this.isSmallHeight ||
-          this.isSmallFont) {
-        this.isVisibleOnScreen = false;
-      }
-
-      if (this.isAriaHidden) {
-        this.isVisibleToAT = false;
-      }
-
-      if (debug$Z.flag) {
-        debug$Z.separator();
-        debug$Z.tag(elementNode);
-        debug$Z.log('[          isHidden]: ' + this.isHidden);
-        debug$Z.log('[      isAriaHidden]: ' + this.isAriaHidden);
-        debug$Z.log('[     isDisplayNone]: ' + this.isDisplayNone);
-        debug$Z.log('[isVisibilityHidden]: ' + this.isVisibilityHidden);
-        debug$Z.log('[     isSmallHeight]: ' + this.isSmallHeight);
-        debug$Z.log('[       isSmallFont]: ' + this.isSmallFont);
-        debug$Z.log('[ isInClosedDetails]: ' + this.isInClosedDetails);
-        debug$Z.log('[ isVisibleOnScreen]: ' + this.isVisibleOnScreen);
-        debug$Z.log('[     isVisibleToAT]: ' + this.isVisibleToAT);
-      }
-    }
-
-    /**
-     * @method normalizeInClosedDetails
-     *
-     * @desc Returns true if element is in a closed details eleemnt
-     *
-     * @param {Object}  node              - dom element node
-     * @param {Object}  parentVisibility  - Computed visibility information for parent
-     *                                      DomElement
-     *
-     * @return {Boolean} see @desc
-     */
-
-    normalizeInClosedDetails (node, parentVisibility) {
-      if (node.parentNode.tagName === 'DETAILS' &&
-          node.tagName !== 'SUMMARY' &&
-          !node.parentNode.open) {
-        return true;
-      }
-      return parentVisibility.isInClosedDetails;
-    }
-
-    /**
-     * @method normalizeHidden
-     *
-     * @desc Determine if the hidden attribute is set on this element
-     *       or one of its ancestors 
-     *
-     * @param {Object}  node              - dom element node
-     * @param {Object}  parentVisibility  - Computed visibility information for parent
-     *                                      DomElement
-     *
-     * @return {Boolean}  Returns true if element or one of its ancestors has the 
-     *                    hidden attribute 
-     */
-
-    normalizeHidden (node, parentVisibility) {
-      let hidden = node.getAttribute('hidden');
-      hidden = hidden ? true : false;
-      if (parentVisibility &&
-          parentVisibility.hidden)  {
-        hidden = true;
-      }
-      return hidden;
-    }
-
-    /**
-     * @method normalizeAriaHidden
-     *
-     * @desc Determine if the aria-hidden attribute is set to true on this element
-     *       or one of its ancestors 
-     *
-     * @param {Object}  node              - dom element node
-     * @param {Object}  parentVisibility  - Computed visibility information for parent
-     *                                      DomElement
-     *
-     * @return {Boolean}  Returns true if element or one of its ancestors has the 
-     *                    aria-hidden attribute set to true 
-     */
-
-    normalizeAriaHidden (node, parentVisibility) {
-      let hidden = false;
-      let ariaHidden = node.getAttribute('aria-hidden');
-      if (ariaHidden) {
-        ariaHidden = ariaHidden.trim().toLowerCase();
-        hidden = (ariaHidden === 'true') ? true : false;
-      }
-      if (parentVisibility &&
-          parentVisibility.isAriaHidden)  {
-        hidden = true;
-      }
-      return hidden;
-    }
-
-    /**
-     * @method normalizeDisplay
-     *
-     * @desc Computes a boolean value to indicate whether the content or its
-     *       ancestor that results in content not being displayed based on 
-     *       the CSS display property
-     *
-     * @param {Object}  style             - Computed style object for an element node
-     * @param {Object}  parentVisibility  - Computed visibility information for parent
-     *                                      DomElement
-     *
-     * @return {Boolean}  Returns a true if content is visible
-     */
-
-    normalizeDisplay (style, parentVisibility) {
-      let display = style.getPropertyValue("display");
-      let isDisplayNone = false;
-
-      if ((display === 'none') || 
-          (parentVisibility && parentVisibility.isDisplayNone)) {
-        isDisplayNone = true;
-      }
-
-      return isDisplayNone;
-    }
-
-    /**
-     * @method normalizeVisibility
-     *
-     * @desc Computes a boolean value to indicate whether the content or its
-     *       ancestor that results in content not being displayed based on 
-     *       the CSS visibility property
-     *
-     * @param {Object}  style             - Computed style object for an element node
-     * @param {Object}  parentVisibility  - Computed visibility information for parent
-     *                                      DomElement
-     *
-     * @return {Boolean}  Returns a true if content is visible
-     */
-
-    normalizeVisibility (style, parentVisibility) {
-      let visibility = style.getPropertyValue("visibility");
-      let isVisibilityHidden =  parentVisibility.isVisibilityHidden; 
-
-      if ((visibility === 'collapse') ||
-          (visibility === 'hidden')) {
-          isVisibilityHidden = true;
-      }
-      else {
-        if (visibility === 'visible') {
-          isVisibilityHidden = false;        
-        }
-      }
-      return isVisibilityHidden;
-    }
-
-    /**
-     * @method normalizeHeight
-     *
-     * @desc Computes a boolean value to indicate whether the content or its
-     *       ancestor that results in content not being displayed based on
-     *       the CSS height and overflow properties
-     *
-     * @param {Object}  style             - Computed style object for an element node
-     * @param {Object}  parentVisibility  - Computed visibility information for parent
-     *                                      DomElement
-     *
-     * @return {Boolean}  Returns a true if content is visible
-     */
-
-    normalizeHeight (style, parentVisibility) {
-      const height   = parseFloat(style.getPropertyValue("height"));
-      const overflow = style.getPropertyValue("overflow");
-      return parentVisibility.isSmallHeight || ((height <= 1) && (overflow === 'hidden'));
-    }
-
-    /**
-     * @method getFontSize
-     *
-     * @desc Computes a boolean value to indicate whether the content or its
-     *       ancestor that results in content not being displayed based on
-     *       the CSS height and overflow properties
-     *
-     * @param {Object}  style             - Computed style object for an element node
-     *
-     * @return {Boolean}  Returns a true if content is small
-     */
-
-    getFontSize (style) {
-      const fontSize = parseFloat(style.getPropertyValue("font-size"));
-      return fontSize <= 1;
-    }
-  }
-
-  /*
-  *   embedded.js
-  *
-  *   To calculate the accessible name of a form element from its label, it is
-  *   necessary to aggregate the text nodes in the label along with the values
-  *   of any embedded controls that text content may contain.
-  *
-  *   isEmbeddedControl is used to determine whether or not a form control can
-  *   be embedded within text content.
-  *
-  *   getEmbeddedControlValue is used to get the value of an embedded control
-  *   based on its ARIA role.
-  */
-
-  const rangeRoles = ['slider', 'spinbutton'];
-
-  /*
-  *   @function isEmbeddedControl
-  *
-  *   @desc  Determine whether element is an element or has a role
-  *          that could be embedded within text content of a label.
-  *
-  *   @parm {Object}  element  - DOM node of element
-  *
-  *   @returns {Boolean}  True if element has content, otherwise false
-  */
-  function isEmbeddedControl (element) {
-    return isInputWithValue(element) ||
-           isSelectElement(element) ||
-           rangeRoles.includes(getRole(element));
-  }
-
-  /*
-  *   @function getEmbeddedControlValue
-  *
-  *   @desc Based on the tag name or the role of element,
-  *         value of the embedded control.
-  *
-  *   @parm {Object}  element  - DOM node of input element
-  *
-  *   @returns {String}  Content of the value attribute if defined,
-  *                      else empty string
-  */
-  function getEmbeddedControlValue (element) {
-    if (isInputWithValue(element)) {
-      return getAttributeValue(element, 'value') + ' ';
-    }
-    else {
-      if (isSelectElement(element)) {
-        return getSelectValue(element) + ' ';
-      }
-      else {
-        if (rangeRoles.includes(getRole(element))) {
-          return getRangeValue(element) + ' ';
-        }
-      }
-    }
-
-    return '';
-  }
-
-  // LOW-LEVEL FUNCTIONS
-
-  /*
-  *   @function getRangeValue
-  *
-  *   @desc Get current value of element with role 'slider'
-  *         or 'spinbutton' (i.e., subclass of abstract 'range' role).
-  *
-  *   @parm {Object}  element  - DOM node of select element
-  *
-  *   @returns {String}  @desc
-  */
-  function getRangeValue (element) {
-    let value;
-
-    value = getAttributeValue(element, 'aria-valuetext');
-    if (value.length) return value;
-
-    value = getAttributeValue(element, 'aria-valuenow');
-    if (value.length) return value;
-
-    return '';
-  }
-
-  /*
-  *   @function getSelectValue
-  *
-  *   @desc Returns the content of the selected option elements
-  *         of a select element, if no selected options returns
-  *         empty string
-  *
-  *   @parm {Object}  element  - DOM node of select element
-  *
-  *   @returns {String}  @desc
-  */
-  function getSelectValue (element) {
-    let tagName = element.tagName.toLowerCase();
-
-    if (tagName === 'select') {
-      let arr = [], selectedOptions = element.selectedOptions;
-
-      for (let i = 0; i < selectedOptions.length; i++) {
-        let option = selectedOptions[i];
-        let value = normalize(option.value);
-        if (value.length) arr.push(value);
-      }
-
-      if (arr.length) return arr.join(' ');
-    }
-
-    return '';
-  }
-
-  /*   @function  getRole
-  *
-  *    @desc  If defined return attribbute role
-  *
-  *    @parm {Object}  element  - DOM node of element
-  *
-  *    @returns {String}  see @desc
-  */
-  function getRole (element) {
-    return element.hasAttribute('role') ? element.getAttribute('role').toLowerCase() : '';
-  }
-
-  /*   @function  isInputWithValue
-  *
-  *    @desc  Returns true if an input element can be used in accessible
-  *           name calculation, (e.g. not all types can be included)
-  *
-  *    @parm {Object}  element  - DOM node of element
-  *
-  *    @returns {Boolean}  see @desc
-  */
-  function isInputWithValue (element) {
-    // Included types are based on testing with Chrome browser
-    const includeTypes = ['button', 'email', 'number', 'password', 'range', 'tel', 'text', 'url'];
-    const tagName   = element.tagName.toLowerCase();
-    const typeValue = element.hasAttribute('type') ?
-                      element.getAttribute('type').toLowerCase() :
-                      'text';
-
-    return (tagName === 'input') &&
-          includeTypes.includes(typeValue);
-  }
-
-  /*   @function  isSelectElement
-  *
-  *    @desc  Returns true if a select element, otherwise false
-  *
-  *    @parm {Object}  element  - DOM node of element
-  *
-  *    @returns {Boolean}  see @desc
-  */
-  function isSelectElement (element) {
-    const tagName = element.tagName.toLowerCase();
-    return (tagName === 'select');
-  }
-
-  /*
-  *   namefrom.js
-  */
-  const debug$Y = new DebugLogging('nameFrom', false);
-  debug$Y.flag = false;
-
-  /*
-  *   @function getElementContents
-  *
-  *   @desc  Construct the ARIA text alternative for element by
-  *          processing its element and text node descendants and then adding any CSS-
-  *          generated content if present.
-  *
-  *   @parm {Object}  element     - DOM node of element
-  *   @parm {Object}  forElement  - DOM node of element being labelled
-  *
-  *   @returns {[String, Boolean]}  Returns a string and a boolean indicating
-  *                                 the name includes some image content
-  */
-  function getElementContents (element, forElement) {
-    let result = '';
-    let includesAlt       = false;
-    let includesAriaLabel = false;
-
-    if (element.hasChildNodes()) {
-      let children = element.childNodes,
-          arrayOfStrings = [];
-
-      for (let i = 0; i < children.length; i++) {
-        const [contents, inclAlt, inclAriaLabel] = getNodeContents(children[i], forElement);
-        if (contents && contents.length) arrayOfStrings.push(contents);
-        includesAlt       = includesAlt       || inclAlt;
-        includesAriaLabel = includesAriaLabel || inclAriaLabel;
-      }
-
-      result = (arrayOfStrings.length) ? arrayOfStrings.join('') : '';
-    }
-
-    return [addCssGeneratedContent(element, result), includesAlt, includesAriaLabel];
-  }
-
-  // HIGHER-LEVEL FUNCTIONS THAT RETURN AN OBJECT WITH SOURCE PROPERTY
-
-  /*
-  *   @function nameFromAttribute
-  *
-  *   @desc
-  *
-  *   @parm {Object}  element    - DOM node of element
-  *   @parm {String}  attribute  - name of attribute (e.g. 'alt', 'value')
-  *
-  *   @returns {Object}  @desc
-  */
-  function nameFromAttribute (element, attribute) {
-    let name;
-
-    name = getAttributeValue(element, attribute);
-    if (name.length) return { name: normalize(name),
-                              source: attribute,
-                              includesAlt: false,
-                              includesAriaLabel: attribute === 'aria=label',
-                              nameIsNotVisible: true
-                             };
-    return null;
-  }
-
-  /*
-  *   @function  nameFromAltAttribute
-  *
-  *   @desc
-  *
-  *   @parm {Object}  element - DOM node of element
-  *
-  *   @returns {Object}  @desc
-  */
-  function nameFromAltAttribute (element) {
-    let name = element.getAttribute('alt');
-
-    // Attribute is present
-    if (name !== null) {
-      name = normalize(name);
-      return { name: name,
-               source: 'alt',
-               includesAlt: true,
-               includesAriaLabel: false,
-               nameIsNotVisible: false
-             };
-    }
-
-    // Attribute not present
-    return null;
-  }
-
-  /*
-  *   @function nameFromContents
-  *   @desc
-  *
-  *   @parm {Object}  element - DOM node of element
-  *
-  *   @returns {Object}  @desc
-  */
-  function nameFromContents (element) {
-
-    const [name, inclAlt, inclAriaLabel] = getElementContents(element);
-    if (name.length) return { name: normalize(name),
-                              source: 'contents',
-                              includesAlt: inclAlt,
-                              includesAriaLabel: inclAriaLabel,
-                              nameIsNotVisible: false
-                            };
-    return null;
-  }
-
-  /*
-  *   @function nameFromDefault
-  *   @desc
-  *
-  *   @parm {Object}  element - DOM node of element
-  *
-  *   @returns {Object}  @desc
-  */
-  function nameFromDefault (name) {
-    return name.length ? { name: name,
-                           source: 'default',
-                           includesAlt: false,
-                           includesAriaLabel: false,
-                           nameIsNotVisible: false
-                         } : null;
-  }
-
-  /*
-  *   @function nameFromDescendant
-  *   @desc
-  *
-  *   @parm {Object}  element - DOM node of element
-  *
-  *   @returns {Object}  @desc
-  */
-  function nameFromDescendant (element, tagName) {
-    let descendant = element.querySelector(tagName);
-    if (descendant) {
-      let [name, incAlt, incAriaLabel] = descendant.hasAttribute('aria-label') ?
-                 [descendant.getAttribute('aria-label'), false, true] :
-                 getElementContents(descendant);
-      if (name.length) return { name: normalize(name),
-                                source: tagName + ' element',
-                                includesAlt: incAlt,
-                                includesAriaLabel: incAriaLabel,
-                                nameIsNotVisible: isDisplayNone(descendant) || isVisibilityHidden(descendant)
-                              };
-    }
-
-    return null;
-  }
-
-  /*
-  *   @function nameFromLabelElement
-  *   @desc
-  *
-  *   @parm {Object}  doc     - Parent document of the element
-  *   @parm {Object}  element - DOM node of element
-  *
-  *   @returns {Object}  @desc
-  */
-  function nameFromLabelElement (doc, element) {
-    let label, name, inclAlt, inclAriaLabel, notVisible;
-    // label [for=id]
-    if (element.id) {
-      try {
-        label = doc.querySelector('[for="' + element.id + '"]');
-        if (label) {
-          [name, inclAlt, inclAriaLabel, notVisible] = label.hasAttribute('aria-label') ?
-                 [label.getAttribute('aria-label'), false, true, true] :
-                 getElementContents(label, element);
-          if (name.length) return { name: normalize(name),
-                                    source: 'label reference',
-                                    includeAlt: inclAlt,
-                                    includeAriaLabel: inclAriaLabel,
-                                    nameIsNotVisibile: notVisible
-                                   };
-        }
-      } catch (error) {
-        debug$Y.log(`[nameFromLabelElement][error]: ${error}`);
-      }
-    }
-
-    // label encapsulation
-    if (typeof element.closest === 'function') {
-      label = element.closest('label');
-      if (label) {
-        [name, inclAlt, inclAriaLabel] = label.hasAttribute('aria-label') ?
-               [label.getAttribute('aria-label'), false, true] :
-               getElementContents(label, element);
-        if (name.length) return { name: normalize(name),
-                                  source: 'label encapsulation',
-                                  includesAlt: inclAlt,
-                                  includesAriaLabel: inclAriaLabel
-                              };
-      }
-    }
-
-    return null;
-  }
-
-  /*
-  *   @function nameFromLegendElement
-  *
-  *   @desc
-  *
-  *   @parm {Object}  doc     - Parent document of the element
-  *   @parm {Object}  element - DOM node of element
-  *
-  *   @returns {Object}  @desc
-  */
-  function nameFromLegendElement (doc, element) {
-    let name, legend, inclAlt, inclAriaLabel;
-
-    // legend
-    if (element) {
-      legend = element.querySelector('legend');
-      if (legend) {
-        [name, inclAlt, inclAriaLabel] = legend.hasAttribute('aria-label') ?
-               [legend.getAttribute('aria-label'), false, true] :
-               getElementContents(legend, element);
-      if (name.length) return { name: normalize(name),
-                                source: 'legend',
-                                includesAlt: inclAlt,
-                                includesAriaLabel: inclAriaLabel
-                            };
-      }
-    }
-    return null;
-  }
-
-  /*
-  *   @function nameFromDetailsOrSummary
-  *
-  *   @desc If element is expanded (has open attribute),
-  *         return the contents of the summary element followed
-  *         by the text contents of element and all of its non-summary
-  *         child elements. Otherwise, return only the contents of the
-  *         first summary element descendant.
-  *
-  *   @parm {Object}  element - DOM node of element
-  *
-  *   @returns {Object}  @desc
-  */
-
-  function nameFromDetailsOrSummary (element) {
-    let name, summary, inclAlt = false, inclAriaLabel = false;
-
-    function isExpanded (elem) { return elem.hasAttribute('open'); }
-
-    // At minimum, always use summary contents
-    summary = element.querySelector('summary');
-    if (summary) [name, inclAlt, inclAriaLabel] = getElementContents(summary);
-
-    // Return either summary + details (non-summary) or summary only
-    if (isExpanded(element)) {
-      name += getContentsOfChildNodes(element, function (elem) {
-        return elem.tagName.toLowerCase() !== 'summary';
-      });
-      if (name.length) return { name: normalize(name),
-                                source: 'contents',
-                                includesAlt : inclAlt,
-                                includesAriaLabel: inclAriaLabel
-                              };
-    }
-    else {
-      if (name.length) return { name: normalize(name),
-                                source: 'summary element',
-                                includesAlt : inclAlt,
-                                includesAriaLabel: inclAriaLabel
-                              };
-
-    }
-
-    return null;
-  }
-
-  // LOW-LEVEL HELPER FUNCTIONS (NOT EXPORTED)
-
-  /*
-  *   @function  isDisplayNone
-  *
-  *   @desc Returns true if the element or parent element has set the CSS
-  *         display property to none or has the hidden attribute,
-  *         otherwise false
-  *
-  *   @param  {Object}  node  - a DOM node
-  *
-  *   @returns  {Boolean} see @desc
-  */
-
-  function isDisplayNone (node, psuedo=null) {
-
-    if (!node) {
-      return false;
-    }
-
-    if (node.nodeType === Node.TEXT_NODE) {
-        node = node.parentNode;
-    }
-
-    if (node.nodeType === Node.ELEMENT_NODE) {
-
-      if (node.hasAttribute('hidden')) {
-        return true;
-      }
-
-      // aria-hidden attribute with the value "true" is an same as
-      // setting the hidden attribute for name calculation
-      if (node.hasAttribute('aria-hidden')) {
-        if (node.getAttribute('aria-hidden').toLowerCase()  === 'true') {
-          return true;
-        }
-      }
-
-      const style = window.getComputedStyle(node, psuedo);
-
-      const display = style.getPropertyValue("display");
-
-      if (display) {
-        return display === 'none';
-      }
-    }
-    return false;
-  }
-
-  /*
-  *   @function isVisibilityHidden
-  *
-  *   @desc Returns true if the node (or it's parrent) has the CSS visibility
-  *         property set to "hidden" or "collapse", otherwise false
-  *
-  *   @param  {Object}   node  -  DOM node
-  *
-  *   @return  see @desc
-  */
-
-  function isVisibilityHidden(node, psuedo=null) {
-
-    if (!node) {
-      return false;
-    }
-
-    if (node.nodeType === Node.TEXT_NODE) {
-      node = node.parentNode;
-    }
-
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      const style = window.getComputedStyle(node, psuedo);
-
-      const visibility = style.getPropertyValue("visibility");
-      if (visibility) {
-        return (visibility === 'hidden') || (visibility === 'collapse');
-      }
-    }
-    return false;
-  }
-
-  /*
-  *   @function isAriaHiddenFalse
-  *
-  *   @desc Returns true if the node has the aria-hidden property set to
-  *         "true", otherwise false.
-  *         NOTE: This function is important in the accessible name
-  *               calculation, since content hidden with a CSS technique
-  *               can be included in the accessible name calculation when
-  *               aria-hidden is set to false for the chrome browser
-  *
-  *   @param  {Object}   node  -  DOM node
-  *
-  *   @return  see @desc
-  */
-
-  function isAriaHiddenTrue(node) {
-
-    if (!node) {
-      return false;
-    }
-
-    if (node.nodeType === Node.TEXT_NODE) {
-        node = node.parentNode;
-    }
-
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      return (node.hasAttribute('aria-hidden') &&
-          (node.getAttribute('aria-hidden').toLowerCase() === 'true'));
-    }
-
-    return false;
-  }
-
-  /*
-  *   @function includeContentInName
-  *
-  *   @desc Checks the CSS display and hidden properties, and
-  *         the aria-hidden property to see if the content
-  *         should be included in the accessible name
-  *        calculation.  Returns true if it should be
-  *         included, otherwise false
-  *
-  *   @param  {Object}   node  -  DOM node
-  *
-  *   @return  see @desc
-  */
-
-  function includeContentInName(node) {
-    // NOTE: Chrome is the only major browser using aria-hidden=false in
-    //       accessible name computation
-    const flag = isAriaHiddenTrue(node);
-    return !flag && (!isVisibilityHidden(node) && !isDisplayNone(node));
-  }
-
-  /*
-  *   @function getNodeContents
-  *
-  *   @desc Get text content from a node for a name or description
-  *
-  *   @param  {Object}   node     -  DOM node
-  *   @param  {Object}   forElem  -  DOM node the name is being computed for
-  *
-  *   @returns {[String, Boolean, Boolean]}  Returns a string and two boolean values
-  *                                          indicating the name includes alt text
-  *                                          and content from aria-label
-  */
-
-  function getNodeContents (node, forElem, alwaysInclude=false) {
-    let contents = '';
-    let nc;
-    let arr = [];
-    let includesAlt = false;
-    let includesAriaLabel = false;
-    let nInclAlt, nInclAriaLabel;
-
-    // Cannot recursively use the element
-    // in computing it's accessible name
-    if (node === forElem) {
-      return ['', false, false];
-    }
-
-    switch (node.nodeType) {
-
-        case Node.ELEMENT_NODE:
-        // If aria-label is present, node recursion stops and
-        // aria-label value is returned
-        if (node.hasAttribute('aria-label')) {
-          if (includeContentInName(node) || alwaysInclude ) {
-            contents = node.getAttribute('aria-label');
-            includesAriaLabel = true;
-          }
-        }
-        else {
-          if (node instanceof HTMLSlotElement) {
-            // if no slotted elements, check for default slotted content
-            const assignedNodes = node.assignedNodes().length ? node.assignedNodes() : node.assignedNodes({ flatten: true });
-            assignedNodes.forEach( assignedNode => {
-              [nc, nInclAlt, nInclAriaLabel] = getNodeContents(assignedNode, forElem);
-              if (nc && nc.length) arr.push(nc);
-              includesAlt = includesAlt       || nInclAlt;
-              includesAlt = includesAriaLabel || nInclAriaLabel;
-            });
-            contents = (arr.length) ? arr.join('') : '';
-          } else {
-            if (couldHaveAltText(node) && (includeContentInName(node) || alwaysInclude)) {
-              contents = getAttributeValue(node, 'alt');
-              includesAlt = true;
-            }
-            else {
-              if (isEmbeddedControl(node) && (includeContentInName(node) || alwaysInclude)) {
-                contents = getEmbeddedControlValue(node);
-              }
-              else {
-                if (!isAriaHiddenTrue(node) && node.hasChildNodes()) {
-                  let children = Array.from(node.childNodes);
-                  children.forEach( child => {
-                    [nc, nInclAlt, nInclAriaLabel] = getNodeContents(child, forElem);
-                    if (nc && nc.length) arr.push(nc);
-                    includesAlt = includesAlt       || nInclAlt;
-                    includesAlt = includesAriaLabel || nInclAriaLabel;
-                  });
-                  contents = (arr.length) ? arr.join('') : '';
-                }
-              }
-            }
-            // For all branches of the ELEMENT_NODE case...
-          }
-        }
-        contents = addCssGeneratedContent(node, contents);
-        if (contents.length) {
-          contents = ' ' + contents;
-        }
-        break;
-
-      case Node.TEXT_NODE:
-        if (includeContentInName(node) || alwaysInclude) {
-          contents = normalizeLeadingAndTrailingSpace(node.textContent);
-        }
-        break;
-    }
-
-    return [contents, includesAlt, includesAriaLabel];
-  }
-
-  /*
-  *   couldHaveAltText: Based on HTML5 specification, determine whether
-  *   element could have an 'alt' attribute.
-  */
-  function couldHaveAltText (element) {
-    let tagName = element.tagName.toLowerCase();
-
-    switch (tagName) {
-      case 'img':
-      case 'area':
-        return true;
-      case 'input':
-        return (element.type && element.type === 'image');
-    }
-
-    return false;
-  }
-
-  /*
-  *   addCssGeneratedContent: Add CSS-generated content for pseudo-elements
-  *   :before and :after. According to the CSS spec, test that content value
-  *   is other than the default computed value of 'none'.
-  *
-  *   Note: Even if an author specifies content: 'none', because browsers add
-  *   the double-quote character to the beginning and end of computed string
-  *   values, the result cannot and will not be equal to 'none'.
-  */
-  function addCssGeneratedContent (element, contents) {
-
-    function isVisible (style) {
-
-      let flag = true;
-
-      const display = style.getPropertyValue("display");
-      if (display) {
-        flag = flag && display !== 'none';
-      }
-
-      const visibility = style.getPropertyValue("visibility");
-      if (visibility) {
-        flag = flag && (visibility !== 'hidden') && (visibility !== 'collapse');
-      }
-      return flag;
-    }
-
-    let result = contents;
-    const styleBefore = getComputedStyle(element, ':before');
-    const styleAfter  = getComputedStyle(element, ':after');
-
-    const beforeVisible = isVisible(styleBefore);
-    const afterVisible  = isVisible(styleAfter);
-
-    const prefix = beforeVisible ?
-                   styleBefore.content :
-                   '';
-
-    const suffix = afterVisible ?
-                   styleAfter.content :
-                   '';
-
-    if ((prefix[0] === '"') && !prefix.toLowerCase().includes('moz-')) {
-      result = prefix.substring(1, (prefix.length-1)) + result;
-    }
-
-    if ((suffix[0] === '"') && !suffix.toLowerCase().includes('moz-')) {
-      result = result + suffix.substring(1, (suffix.length-1)) ;
-    }
-
-    return result;
-  }
-
-  /*
-  *   getContentsOfChildNodes: Using predicate function for filtering element
-  *   nodes, collect text content from all child nodes of element.
-  */
-  function getContentsOfChildNodes (element, predicate) {
-    let arr = [], content;
-
-    Array.prototype.forEach.call(element.childNodes, function (node) {
-      switch (node.nodeType) {
-        case (Node.ELEMENT_NODE):
-          if (predicate(node)) {
-            content = getElementContents(node)[0];
-            if (content.length) arr.push(content);
-          }
-          break;
-        case (Node.TEXT_NODE):
-          content = normalizeLeadingAndTrailingSpace(node.textContent);
-          if (content.length) arr.push(content);
-          break;
-      }
-    });
-
-    if (arr.length) return arr.join(' ');
-    return '';
-  }
-
-  /*
-  *   getaccname.js
-  *
-  *   Note: Information in this module is based on the following documents:
-  *   1. HTML Accessibility API Mappings 1.0 (http://rawgit.com/w3c/aria/master/html-aam/html-aam.html)
-  *   2. SVG Accessibility API Mappings (http://rawgit.com/w3c/aria/master/svg-aam/svg-aam.html)
-  */
-
-  const noAccName = {
-    name: '',
-    source: 'none',
-    includesAlt: false,
-    includesAriaLabel: false,
-    nameIsNotVisible: false,
-    cellHeaders: false
-  };
-
-  // These roles are based on the ARAI 1.2 specification
-  const  rolesThatAllowNameFromContents = [
-    'button',
-    'cell',
-    'checkbox',
-    'columnheader',
-    'gridcell',
-    'heading',
-    'link',
-    'menuitem',
-    'menuitemcheckbox',
-    'menuitemradio',
-    'option',
-    'radio',
-    'row',
-    'rowheader',
-    'sectionhead',
-    'switch',
-    'tab',
-    'tooltip',
-    'treeitem'
-  ];
-
-  // These elements that allow name from content
-  const  elementsThatAllowNameFromContents = [
-  'a',
-  'button',
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
-  'summary'
-  ];
-  const debug$X = new DebugLogging('getAccName', false);
-  debug$X.flag = false;
-  function debugAccName (accName) {
-    if (debug$X.flag && accName.name) {
-      debug$X.log(`====================`);
-      debug$X.log(`[             name]: ${accName.name}`);
-      debug$X.log(`[           source]: ${accName.source}`);
-      debug$X.log(`[      includesAlt]: ${accName.includesAlt}`);
-      debug$X.log(`[includesAriaLabel]: ${accName.includesAriaLabel}`);
-      debug$X.log(`[ nameIsNotVisible]: ${accName.nameIsNotVisible}`);
-    }
-  }
-
-  /*
-  *   @function getAccessibleName
-  *
-  *   @desc Use the ARIA Roles Model specification for accessible
-  *         name calculation based on its precedence order:
-  *         (1) Use aria-labelledby, unless a traversal is already underway;
-  *         (2) Use aria-label attribute value;
-  *         (3) Use whatever method is specified by the native semantics of the
-  *             element, which includes, as last resort, use of the title attribute.
-  *
-  *   @desc (Object)  doc              -  Parent document of element
-  *   @desc (Object)  element          -  DOM node of element to compute name
-  *
-  *   @returns {Object} Returns a object with the following properties:
-  *                     'name' {String}
-  *                     'source' {String}
-  *                     'includesAlt' {Boolean}
-  *                     'includesAriaLabel' {Boolean}
-  *                     'nameIsNotVisible' {Boolean}
-  */
-  function getAccessibleName (doc, element) {
-    let accName = nameFromAttributeIdRefs(doc, element, 'aria-labelledby');
-    if (accName === null) accName = nameFromAttribute(element, 'aria-label');
-    if (accName === null) accName = nameFromNativeSemantics(doc, element);
-    if (accName === null) accName = noAccName;
-    debug$X.flag && debugAccName(accName);
-    return accName;
-  }
-
-  /*
-  *   @function getAccessibleDesc
-  *
-  *   @desc Use the ARIA Roles Model specification for accessible
-  *         description calculation based on its precedence order:
-  *         (1) Use aria-describedby, unless a traversal is already underway;
-  *         (2) As last resort, use the title attribute, if not used as accessible name.
-  *
-  *   @desc (Object)  doc         -  Parent document of element
-  *   @desc (Object)  element     -  DOM node of element to compute description
-  *   @desc (Boolean) allowTitle  -  Allow title as accessible description
-  *
-  *   @returns {Object} Returns a object with the following properties:
-  *                     'name' {String}
-  *                     'source' {String}
-  *                     'includesAlt' {Boolean}
-  *                     'includesAriaLabel' {Boolean}
-  *                     'nameIsNotVisible' {Boolean}
-  */
-  function getAccessibleDesc (doc, element, allowTitle=true) {
-    let accDesc = nameFromAttributeIdRefs(doc, element, 'aria-describedby');
-    if (accDesc === null) accDesc = nameFromAttribute(element, 'aria-description');
-    if (allowTitle && (accDesc === null)) accDesc = nameFromAttribute(element, 'title');
-    if (accDesc === null) accDesc = noAccName;
-    return accDesc;
-  }
-
-
-  /*
-  *   @function getErrMessage
-  *
-  *   @desc Use the ARIA Roles Model specification for accessible
-  *         error description uses aria-errormessage attribute
-  *
-  *   @desc (Object)  doc              -  Parent document of element
-  *   @desc (Object)  element          -  DOM node of element to compute error message
-  *
-  *   @returns {Object} Returns a object with the following properties:
-  *                     'name' {String}
-  *                     'source' {String}
-  *                     'includesAlt' {Boolean}
-  *                     'includesAriaLabel' {Boolean}
-  *                     'nameIsNotVisible' {Boolean}
-  */
-  function getErrMessage (doc, element) {
-    let errMessage = null;
-
-    errMessage = nameFromAttributeIdRefs(doc, element, 'aria-errormessage');
-    if (errMessage === null) errMessage = noAccName;
-
-    return errMessage;
-  }
-
-  /*
-  *   @function nameFromNativeSemantics
-  *
-  *   @desc Use method appropriate to the native semantics
-  *         of element to find accessible name. Includes methods for all interactive
-  *         elements. For non-interactive elements, if the element's ARIA role allows
-  *         its acc. name to be derived from its text contents
-  *
-  *   @desc (Object)  doc              -  Parent document of element
-  *   @desc (Object)  element          -  DOM node of element to compute name
-  *
-  *   @returns {Object} Returns a object with an 'name' and 'source' property
-  */
-  function nameFromNativeSemantics (doc, element) {
-    let tagName = element.tagName.toLowerCase(),
-        accName = null;
-
-    switch (tagName) {
-      // FORM ELEMENTS: INPUT
-      case 'input':
-        switch (element.type) {
-          // HIDDEN
-          case 'hidden':
-              accName = '';
-            break;
-
-          // TEXT FIELDS
-          case 'email':
-          case 'password':
-          case 'search':
-          case 'tel':
-          case 'text':
-          case 'url':
-            accName = nameFromLabelElement(doc, element);
-            if (accName === null) accName = nameFromAttribute(element, 'placeholder');
-            break;
-
-          // OTHER INPUT TYPES
-          case 'button':
-            accName = nameFromAttribute(element, 'value');
-            break;
-
-          case 'reset':
-            accName = nameFromAttribute(element, 'value');
-            if (accName === null) accName = nameFromDefault('Reset');
-            break;
-
-          case 'submit':
-            accName = nameFromAttribute(element, 'value');
-            if (accName === null) accName = nameFromDefault('Submit');
-            break;
-
-          case 'image':
-            accName = nameFromAltAttribute(element);
-            if (accName === null) accName = nameFromAttribute(element, 'value');
-            break;
-
-          default:
-            accName = nameFromLabelElement(doc, element);
-            break;
-        }
-        break;
-
-      // FORM ELEMENTS: OTHER
-      case 'fieldset':
-        accName = nameFromLegendElement(doc, element);
-        break;
-
-      case 'keygen':
-      case 'meter':
-      case 'output':
-      case 'progress':
-      case 'select':
-        accName = nameFromLabelElement(doc, element);
-        break;
-
-      case 'textarea':
-        accName = nameFromLabelElement(doc, element);
-        if (accName === null) accName = nameFromAttribute(element, 'placeholder');
-        break;
-
-      case 'iframe':
-        accName = nameFromAttribute(element, 'title');
-        break;
-
-      case 'img':
-      case 'area': // added
-        accName = nameFromAltAttribute(element);
-        break;
-
-      case 'svg': // added
-        accName = nameFromDescendant(element, 'title');
-        break;
-
-      // OTHER ELEMENTS
-      case 'details':
-        accName = nameFromDetailsOrSummary(element);
-        break;
-
-      case 'figure':
-        accName = nameFromDescendant(element, 'figcaption');
-        break;
-
-      case 'table':
-        accName = nameFromDescendant(element, 'caption');
-        break;
-
-      // Elements that allow name from contents
-      case 'a':
-        if (element.hasAttribute('href')) {
-          accName = nameFromContents(element);
-        }
-        break;
-
-      case 'button':
-      case 'caption':
-      case 'dd':
-      case 'dt':
-      case 'figcaption':
-      case 'label':
-      case 'li':
-      case 'option':
-      case 'td':
-      case 'th':
-        accName = nameFromContents(element);
-        break;
-
-
-      // ELEMENTS NOT SPECIFIED ABOVE
-      default:
-        if (doesElementAllowNameFromContents(element)) {
-          accName = nameFromContents(element);
-        }
-        break;
-    }
-
-    // LAST RESORT USE TITLE
-    if (accName === null) accName = nameFromAttribute(element, 'title');
-
-    return accName;
-  }
-
-  // HELPER FUNCTIONS (NOT EXPORTED)
-
-  /*
-  *   @function nameFromAttributeIdRefs
-  *
-  *   @desc Get the value of attrName on element (a space-
-  *         separated list of IDREFs), visit each referenced element in the order it
-  *         appears in the list and obtain its accessible name, and return an object
-  *         with name property set to a string that is a space-separated concatenation
-  *         of those results if any, otherwise return null.
-  *
-  *   @desc (Object)  doc              -  Parent document of element
-  *   @desc (Object)  element          -  DOM node of element to compute name
-  *   @desc (Boolean) nameFromContent  -  If true allow element content to be used as name
-  *
-  *   @returns {Object} Returns a object with an 'name' and 'source' property
-  */
-  function nameFromAttributeIdRefs (doc, element, attribute) {
-    let value = getAttributeValue(element, attribute);
-    let idRefs, i, refElement, name, names, arr = [];
-    let includesAlt = false;
-    let includesAriaLabel = false;
-    let refNotVisible = false;
-
-    if (value.length) {
-      idRefs = value.split(' ');
-
-      for (i = 0; i < idRefs.length; i++) {
-        refElement = doc.getElementById(idRefs[i]);
-        if (refElement) {
-          if (refElement.hasAttribute('aria-label')) {
-            name = refElement.getAttribute('aria-label');
-            includesAriaLabel = true;
-          }
-          else {
-            if (refElement.hasChildNodes()) {
-              refNotVisible = refNotVisible || isDisplayNone(refElement) || isVisibilityHidden(refElement);
-              names = [];
-              let children = Array.from(refElement.childNodes);
-              children.forEach( child => {
-                // Need to ignore CSS display: none and visibility: hidden for referenced
-                // elements, but not their child elements
-                const [nc, nInclAlt, nInclAriaLabel] = getNodeContents(child, refElement, true);
-                if (nc.length) names.push(nc);
-                includesAlt       = includesAlt || nInclAlt;
-                includesAriaLabel = includesAriaLabel || nInclAriaLabel;
-              });
-              name = (names.length) ? names.join('') : '';
-            }
-            else {
-              name = '';
-            }
-          }
-          name = addCssGeneratedContent(refElement, name);
-          if (name.length) arr.push(name);
-        }
-      }
-    }
-
-    if (arr.length)
-      return { name: normalize(arr.join(' ')),
-               source: attribute,
-               includesAlt: includesAlt,
-               includesAriaLabel: includesAriaLabel,
-               nameIsNotVisible: refNotVisible
-             };
-
-    return null;
-  }
-
-
-  /*
-  *   @function doesElementAllowNameFromContents
-  *
-  *   @desc Returns true if tag name or role allows name from contents, otherwise false
-  *
-  *   @desc (Object)  element  -  DOM node of element to compute name
-  *
-  *   @return (Boolean) see @desc
-  */
-
-  function doesElementAllowNameFromContents (element) {
-    const role = element.getAttribute('role');
-    if (role) {
-      return rolesThatAllowNameFromContents.includes(role.toLowerCase());
-    }
-    else {
-      return elementsThatAllowNameFromContents.includes(element.tagName.toLowerCase());
-    }
-  }
-
-  /* domElement.js */
-
-  /* Constants */
-  const debug$W = new DebugLogging('DOMElement', false);
-  debug$W.flag = false;
-
-  const elementsWithContent = [
-    'area',
-    'audio',
-    'canvas',
-    'img',
-    'input',
-    'select',
-    'svg',
-    'textarea',
-    'video'
-  ];
-
-  const elementsThatMayHaveContent = [
-    'embed',
-    'object'
-  ];
-
-  const landmarkRoles = ['banner', 'complementary', 'contentinfo', 'form', 'main', 'navigation', 'region', 'search'];
-  const requireAccessibleNames = ['region', 'form'];
-
-  /**
-   * @class DOMElement
-   *
-   * @desc Used to represent a dom element node with additional
-   *       information useful for accessibility rules
-   *
-   * @param  {Object}   parentInfo       - ParentInfo object (can be null for top level)
-   * @param  {Object}   elementNode      - dom element node to be represented
-   * @param  {Number}   ordinalPosition  - Number indicating the ordinal position of the element
-   *                                       in the DOM
-   * @param  {String}   ariaVersion      - Version of ARIA to use for roles, props and state info
-   * @param  {Boolean}  addDataId        - If true, add data attribute based on ordinal position
-   *                                       in the DOM
-   */
-
-  class DOMElement {
-    constructor (parentInfo, elementNode, ordinalPosition, ariaVersion='ARIA12', addDataId) {
-      const parentDomElement = parentInfo.domElement;
-      const accNameDoc       = parentInfo.useParentDocForName ?
-                               parentInfo.parentDocument :
-                               parentInfo.document;
-
-      this.ordinalPosition  = ordinalPosition;
-      this.parentInfo       = parentInfo;
-      this.node             = elementNode;
-      this.tagName          = elementNode.tagName.toLowerCase();
-      this.isLabelable      = isLabelable(elementNode);
-      this.lang             = elementNode.hasAttribute('lang') ?
-                              elementNode.getAttribute('lang') :
-                              '';
-
-      if (addDataId) {
-        elementNode.setAttribute('data-opena11y-id', ordinalPosition);
-      }
-
-      this.ariaInHTMLInfo  = getAriaInHTMLInfo(elementNode);
-      const defaultRole = this.ariaInHTMLInfo.defaultRole;
-
-      this.hasRole = elementNode.hasAttribute('role');
-      this.role    = this.hasRole ?
-                     elementNode.getAttribute('role') :
-                     defaultRole;
-
-      this.roleDescription = elementNode.hasAttribute('aria-roledescription') ?
-                                elementNode.getAttribute('aria-roledescription') :
-                                '';
-
-      this.accesskey = elementNode.hasAttribute('accesskey') ? elementNode.getAttribute('accesskey') : '';
-
-      // used for button and form control related rules
-      this.typeAttr = elementNode.getAttribute('type');
-
-      this.hasNativeCheckedState  = hasCheckedState(elementNode);
-      this.hasNativeInvalidState  = hasInvalidState(elementNode);
-      this.hasNativeSelectedState = hasSelectedState(elementNode);
-
-      this.ariaInfo  = new AriaInfo(accNameDoc, this.hasRole, this.role, defaultRole, elementNode, ariaVersion);
-      this.eventInfo = new EventInfo(elementNode);
-
-      this.isInert   = elementNode.hasAttribute('inert') ?
-                       elementNode.inert :
-                       parentInfo.isInert;
-
-      this.tabIndex             = checkTabIndex(elementNode);
-      this.isTabStop            = checkIsTabStop(elementNode);
-      this.isInteractiveElement = checkForInteractiveElement(elementNode);
-
-      this.accName        = getAccessibleName(accNameDoc, elementNode);
-      this.accDescription = getAccessibleDesc(accNameDoc, elementNode, (this.accName.source !== 'title'));
-      this.errMessage     = getErrMessage(accNameDoc, elementNode);
-
-
-      this.colorContrast = new ColorContrast(parentDomElement, elementNode);
-      this.visibility    = new Visibility(parentDomElement, elementNode);
-
-      this.id         = elementNode.id        ? elementNode.id   : '';
-      this.name       = elementNode.name      ? elementNode.name : '';
-      this.className  = elementNode.className ? elementNode.className : '';
-      this.htmlAttrs  = this.getHtmlAttrs(elementNode);
-      this.ariaAttrs  = this.getAriaAttrs(elementNode);
-
-      this.hasContent = elementsWithContent.includes(this.tagName);
-      this.mayHaveContent = elementsThatMayHaveContent.includes(this.tagName);
-
-
-      this.isLink      = this.role === 'link';
-      this.isLandmark  = this.checkIsLandamrk();
-      this.isHeading   = this.role === 'heading';
-      this.isInDialog  = this.tagName === 'dialog' ||
-                         this.role === 'dialog' ||
-                         parentInfo.inDialog;
-
-      // CSS Position property and size information
-
-      const cssStyle = window.getComputedStyle(elementNode, null);
-      const elemRect = elementNode.getBoundingClientRect();
-
-      this.cssPosition = cssStyle.getPropertyValue('position');
-
-      this.top      = window.scrollY + elemRect.top;
-      this.left     = window.scrollX + elemRect.left;
-      this.height   = Math.round(10 * elemRect.height, 1) / 10;
-      this.width    = Math.round(10 * elemRect.width, 1) / 10;
-      this.area     = this.height * this.width;
-
-      this.authorWidth    = cssStyle.getPropertyValue('width');
-      this.authorHeight   = cssStyle.getPropertyValue('height');
-      this.authorLeft     = cssStyle.getPropertyValue('left');
-      this.authorRight    = cssStyle.getPropertyValue('right');
-      this.authorTop      = cssStyle.getPropertyValue('top');
-      this.authorBottom   = cssStyle.getPropertyValue('bottom');
-      this.authorDisplay  = cssStyle.getPropertyValue('display');
-      this.authorPosition = cssStyle.getPropertyValue('position');
-
-      this.authorSizing = (this.authorWidth  !== 'auto') ||
-                          (this.authorHeight !== 'auto') ||
-                          ((this.authorLeft   !== 'auto') &&
-                           (this.authorRight  !== 'auto')) ||
-                          ((this.authorTop    !== 'auto') &&
-                           (this.authorBottom !== 'auto'));
-
-      this.children = [];
-
-      // Information on rule results associated with this element
-      this.resultsHidden       = [];
-      this.resultsPassed       = [];
-      this.resultsViolations   = [];
-      this.resultsWarnings     = [];
-      this.resultsManualChecks = [];
-
-      // A name that can be used in rule results to identify the element
-      this.elemName = this.tagName;
-      this.elemName += elementNode.type ? `[type=${elementNode.type}]` : '';
-      this.elemName += this.hasRole ? `[role=${this.role}]` : '';
-      this.elemName += this.id ? `#${this.id}` : '';
-
-      // Potential references to other cache objects
-
-      this.tableCell = null;
-      this.tableElement = null;
-      this.ControlElement = null;
-
-      if (parentInfo.tableCell &&
-          this.isInteractiveElement) {
-        parentInfo.tableCell.interactiveDomElements.push(this);
-      }
-
-    }
-
-
-    /**
-     * @method isDomText
-     *
-     * @desc
-     *
-     * @return {Boolean} Returns false since this is a DOMElement object
-     */
-
-    get isDomText () {
-      return false;
-    }
-
-
-    /**
-     * @method isDomElement
-     *
-     * @desc Returns true since this is a DOMElement object
-     *
-     * @return {Boolean} see @desc
-     */
-
-    get isDomElement () {
-      return true;
-    }
-
-    /**
-     * @method checkIsLandamrk
-     *
-     * @desc Returns true if the domElement has a landmark role, otherwise false
-     *
-     * @returns  {Boolean}  see @desc
-     */
-
-    checkIsLandamrk () {
-      let flag = false;
-      const role = this.role || this.defaultRole;
-      const name = this.accName.name;
-
-      if (landmarkRoles.includes(role)) {
-        if (requireAccessibleNames.includes(role)) {
-          flag = name && name.length;
-        } else {
-          flag = true;
-        }
-      }
-
-      return flag;
-    }
-
-    /**
-     * @method isLastChildDomText
-     *
-     * @desc
-     *
-     * @return {Boolean} Returns true if the last child is a DOMText object, otherwise false
-     */
-
-    get isLastChildDomText () {
-      let flag = false;
-      const lastChild = this.getLastChild();
-      if (lastChild && lastChild.isDomText) {
-        flag = true;
-      }
-      return flag;
-    }
-
-    /**
-     * @method addChild
-     *
-     * @desc
-     *
-     * @param {Object}  domItem  -
-     */
-
-    addChild (domItem) {
-      this.children.push(domItem);
-    }
-
-    /**
-     * @method getIndentifier
-     *
-     * @desc
-     */
-
-    getIdentifier () {
-      let identifier = this.node.hasAttribute('type') ?
-                       `${this.tagName}[${this.node.getAttribute('type')}]` :
-                       this.tagName;
-      return identifier;
-    }
-
-    /**
-     * @method getLastChild
-     *
-     * @desc
-     */
-
-    getLastChild () {
-      let len = this.children.length;
-      let domItem = null;
-      if (len) {
-        domItem = this.children[len-1];
-      }
-      return domItem;
-    }
-
-    /**
-     * @method getHtmlAttrs
-     *
-     * @desc Get non-ARIA attributes for the element in a name value object
-     *
-     * @param {Object}  node  - DOM node element
-     *
-     * @param {Array} array of objects with attribute name and value properties
-     */
-
-    getHtmlAttrs (node) {
-      const htmlAttrs = {};
-      const attrs = Array.from(node.attributes);
-      attrs.forEach( attr => {
-        if (attr.name.toLowerCase().indexOf('aria') !== 0) {
-          htmlAttrs[attr.name] = attr.value;
-        }
-      });
-      return htmlAttrs;
-    }
-
-    /**
-     * @method getAriaAttrs
-     *
-     * @desc Get ARIA attributes for the element in a name value object
-     *
-     * @param {Object}  node  - DOM node element
-     *
-     * @param {Array} array of objects with attribute name and value properties
-     */
-
-    getAriaAttrs (node) {
-      const ariaAttrs = {};
-      const attrs = Array.from(node.attributes);
-      attrs.forEach( attr => {
-        if (attr.name.toLowerCase().indexOf('aria') === 0) {
-          ariaAttrs[attr.name] = attr.value;
-        }
-      });
-      return ariaAttrs;
-    }
-
-    /**
-     * @method addTextToLastChild
-     *
-     * @desc Adds the text content to an existing DOMText object
-     *
-     * @param {String}  text  - text content to add
-     */
-
-    addTextToLastChild (text) {
-      const domItem = this.getLastChild();
-      if (domItem && domItem.isDomText) {
-        domItem.addText(text);
-      }
-    }
-
-    /**
-     * @method hasTextContent
-     *
-     * @desc Checks to see if the element contains any text content
-     *
-     * @return {Boolean} True it there are text nodes, otherwise false
-     */
-
-    hasTextContent () {
-
-      function anyDOMText (domItems) {
-        for (let i = 0; i < domItems.length; i += 1) {
-          const domItem = domItems[i];
-          if (domItem.isDomText) {
-            return true;
-          }
-          else {
-            if (anyDOMText (domItem.children)) {
-              return true;
-            }
-          }
-        }
-        return false;
-      }
-      return anyDOMText(this.children);
-    }
-
-
-    toString () {
-      let type = '';
-      let id = '';
-
-      if (this.node.type) {
-        type = `[type=${this.node.type}]`;
-      }
-
-      if (this.node.id) {
-        id = `[id=${this.node.id}]`;
-      }
-
-      return `(${this.ordinalPosition}): ${this.tagName}${type}${id}[${this.role}]`;
-    }
-
-    /**
-     * @method showDomElementTree
-     *
-     * @desc  Used for debugging the DOMElement tree
-     */
-    showDomElementTree (prefix) {
-      if (typeof prefix !== 'string') {
-        prefix = '';
-      }
-      if (debug$W.flag) {
-        this.children.forEach( domItem => {
-          if (domItem.isDomText) {
-            debug$W.domText(domItem, prefix);
-          } else {
-            debug$W.domElement(domItem, prefix);
-            domItem.showDomElementTree(prefix + '   ');
-          }
-        });
-      }
-    }
-  }
-
-  // Helper functions
-
-  /**
-   * @function checkForInteractiveElement
-   *
-   * @desc Returns true if the element is natively interactive
-   *
-   * @param  {Object}   node    - DOM node
-   *
-   * @return Returns true if the elements is interactive, otherwise false
-   */
-
-  function checkForInteractiveElement (node) {
-    const tagName     = node.tagName.toLowerCase();
-    const hasHref     = node.hasAttribute('href');
-    const hasControls = node.hasAttribute('controls');
-    const type        = node.hasAttribute('type') ? node.getAttribute('type') : 'text';
-
-    switch (tagName ) {
-      case 'a':
-      case 'area':
-        return hasHref;
-
-      case 'audio':
-        return hasControls;
-
-      case 'button':
-        return true;
-
-      case 'input':
-        return type !== 'hidden';
-
-      case 'output':
-        return true;
-
-      case 'select':
-        return true;
-
-      case 'textarea':
-        return true;
-
-      case 'video':
-        return hasControls;
-
-    }
-
-    return false;
-  }
-
-
-  /**
-   * @function checkIsTabStop
-   *
-   * @desc Returns true if the tabindex is defined and greater than or equal to zero,
-   *       or the element's native semantics is an interactive element
-   *
-   * @param  {Object}  node - DOM node
-   *
-   * @return Returns true if the elements is a tab stop, otherwise false
-   */
-
-  function checkIsTabStop (node) {
-    return (node.tabIndex >= 0) || checkForInteractiveElement(node);
-  }
-
-  /**
-   * @function checkTabIndex
-   *
-   * @desc Returns value of tabindex if it is defined
-   *
-   * @param  {Object}  node - DOM node
-   *
-   * @return see @desc
-   */
-
-  function checkTabIndex (node) {
-    if (node.tabIndex >= 0) {
-      return node.tabIndex;
-    }
-    return node.hasAttribute('tabIndex') ? -1 : undefined;
-  }
-
-  /* domText.js */
-
-  /* Constants */
-  const debug$V = new DebugLogging('domText', false);
-
-  /**
-   * @class DOMText
-   *
-   * @desc Used to represent a dom text node for use in computing information 
-   *       usefule for accessibility rules.
-   * 
-   *       NOTE: Adjacent dom text nodes in the live dom are combined into a
-   *             single DOMText object
-   *
-   * @param  {Object}  parentInfo - ParentInfo object 
-   * @param  {Object}  textNode   - dom text node to be represented
-   */
-
-  class DOMText {
-    constructor (parentDomElement, textNode) {
-      this.parentDomElement = parentDomElement;
-      this.text = textNode.textContent.trim();
-      if (debug$V.flag) {
-        debug$V.log(`[text]: ${this.text}`);
-      }
-    }
-
-    /**
-     * @method getText
-     *
-     * @desc
-     *
-     * @return {String} Returns text content
-     */
-
-    get getText () {
-      return this.text;
-    }
-
-    /**
-     * @method isDomElement
-     *
-     * @desc Returns false since this is a DOMText object
-     *
-     * @return {Boolean} see @desc
-     */
-
-    get isDomElement () {
-      return false;
-    }  
-
-    /**
-     * @method isDomText
-     *
-     * @desc
-     *
-     * @return {Boolean} Returns true since this is a DOMText object
-     */
-
-    get isDomText () {
-      return true;
-    }
-
-    /**
-     * @method hasContent
-     *
-     * @desc Returns true if the DOMText has visiible content, otherwise false
-     *
-     * @return {Boolean} see @desc
-     */
-
-    get hasContent () {
-      return this.text.length > 0;
-    }
-
-    addText (text) {
-      const s = text.trim();
-      if (s) {
-        this.text += ' ' + s;
-      }
-    }
-  }
-
-  /* iframeInfo.js */
-
-  /* Constants */
-  const debug$U = new DebugLogging('iframeInfo', false);
-
-  /**
-   * @class IFrameElement
-   *
-   * @desc Idenifies a DOM element as being an iframe.
-   *
-   * @param  {Object}  domElement   - dome element information
-   */
-
-  class IFrameElement {
-    constructor (domElement, isCrossDomain) {
-      this.domElement = domElement;
-      this.src = domElement.node.src;
-      this.isCrossDomain = isCrossDomain;
-    }
-
-    showInfo () {
-      if (debug$U.flag) {
-        debug$U.log(`[          src]: ${this.src}`);
-        debug$U.log(`[isCrossDomain]: ${this.isCrossDomain}`);
-      }
-    }
-  }
-
-  /**
-   * @class IframeInfo
-   *
-   * @desc Collects information on the iframes in a web page
-   */
-
-  class IframeInfo {
-    constructor () {
-      this.allIFrameElements = [];
-    }
-
-    /**
-     * @method update
-     *
-     * @desc Checks to see if the domElement has a role of "link"
-     *
-     * @param  {Object}  domElement        - DOMElement object representing an element in the DOM
-     */
-
-    update (domElement, isCrossDomain) {
-      const ife = new IFrameElement(domElement, isCrossDomain);
-      this.allIFrameElements.push(ife);
-    }
-
-    /**
-     * @method showLinkInfo
-     *
-     * @desc showLinkInfo is used for debugging the LinkInfo object
-     */
-
-    showIFrameInfo () {
-      if (debug$U.flag) {
-        debug$U.log(`== ${this.allIFrameElements.length} IFrames ==`, 1);
-        this.allIFrameElements.forEach( ife => {
-          ife.showInfo();
-        });
-      }
-    }
-  }
-
-  /* linkInfo.js */
-
-  /* Constants */
-  const debug$T = new DebugLogging('idInfo', false);
-
-  /**
-   * @class idInfo
-   *
-   * @desc Collects information on the ids in a web page
-   */
-
-  class IdInfo {
-    constructor () {
-      this.idCountsByDoc = [];
-    }
-
-    /**
-     * @method update
-     *
-     * @desc Adds the id to the list of elements with a id
-     *
-     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
-     */
-
-    update (documentIndex, domElement) {
-      const id = domElement.node.id;
-      if (id) {
-        if (!this.idCountsByDoc[documentIndex]) {
-          this.idCountsByDoc[documentIndex] = {};
-        }
-        if (this.idCountsByDoc[documentIndex][id]) {
-          this.idCountsByDoc[documentIndex][id] += 1;       
-        }
-        else {
-          this.idCountsByDoc[documentIndex][id] = 1;       
-        }
-      }
-    }
-
-    /**
-     * @method showIdInfo
-     *
-     * @desc showIdInfo is used for debugging the IdInfo object
-     */
-
-    showIdInfo () {
-      if (debug$T.flag) {
-        debug$T.log('== All Links ==', 1);
-        this.idCounts.for( id => {
-          debug$T.log(`[${id}]: ${this.idCounts[id]}`);
-        });
-      }
-    }
-  }
-
-  /* imageInfo.js */
-
-  /* Constants */
-  const debug$S = new DebugLogging('imageInfo', false);
-
-  /**
-   * @class ImageElement
-   *
-   * @desc Identifies a DOM element as an image or graphical object
-   *
-   * @param  {Object}  domElement   - Structural Information
-   */
-
-  class ImageElement {
-    constructor (domElement) {
-      this.domElement = domElement;
-      this.url = domElement.node.src ? new URL(domElement.node.src) : '';
-      if (this.url) {
-        const parts = this.url.pathname.split('/');
-        this.fileName = parts.length ? parts.pop() : '';
-      }
-      else {
-        this.fileName = '';
-      }
-    }
-
-    addAreaDomElement (domElement) {
-      this.areaDomElements.push(domElement);
-    }
-
-    toString () {
-      return this.domElement.role;
-    }
-  }
-
-  /**
-   * @class MapElement
-   *
-   * @desc Identifies a DOM element as an image map
-   *
-   * @param  {Object}  domElement   - Structural Information
-   */
-
-  class MapElement {
-    constructor (domElement) {
-      this.domElement = domElement;
-      this.areaDomElements = [];
-    }
-
-    addAreaDomElement (domElement) {
-      this.areaDomElements.push(domElement);
-    }
-
-    toString () {
-      return this.domElement.role;
-    }
-  }
-
-
-  /**
-   * @class ImageInfo
-   *
-   * @desc Collects information on the image elements on a web page for use in
-   *       rules
-   */
-
-  class ImageInfo {
-    constructor () {
-      this.allImageElements  = [];
-      this.allSVGDomElements    = [];
-      this.allMapElements       = [];
-    }
-
-    /**
-     * @method addImageElement
-     *
-     * @desc Creates a new IamgeElement and to the array of
-     *       ImageElements
-     *
-     * @param  {Object}  domElement -
-     *
-     */
-
-    addImageElement (domElement) {
-      const ie = new ImageElement(domElement);
-      this.allImageElements.push(ie);
-      return ie;
-    }
-
-    /**
-     * @method addMapElement
-     *
-     * @desc Creates a new MapElement and to the array of
-     *       MapElements
-     *
-     * @param  {Object}  domElement -
-     *
-     */
-
-    addMapElement (domElement) {
-      const me = new MapElement(domElement);
-      this.allMapElements.push(me);
-      return me;
-    }
-
-    /**
-     * @method isImage
-     *
-     * @desc Tests if a domElement for role of "img"
-     *
-     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
-     */
-
-    isImage (domElement) {
-      return (domElement.role === 'img') ||
-             (domElement.role === 'image') || // Support in ARIA 1.3
-             (domElement.tagName === 'img');
-    }
-
-    /**
-     * @method isSVG
-     *
-     * @desc Tests if a domElement is an SVG graphic
-     *
-     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
-     */
-
-    isSVG (domElement) {
-      return domElement.tagName === 'svg';
-    }
-
-    /**
-     * @method isMap
-     *
-     * @desc Tests if a domElement is an map element
-     *
-     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
-     */
-
-    isMap (domElement) {
-      return domElement.tagName === 'map';
-    }
-
-    /**
-     * @method isArea
-     *
-     * @desc Tests if a domElement is an area element
-     *
-     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
-     */
-
-    isArea (domElement) {
-      return domElement.tagName === 'area';
-    }
-
-    /**
-     * @method update
-     *
-     * @desc Checks to see if the domElement has a role of "img" or a graphical tag name
-     *
-     * @param  {Object}  parentMapElement  - current ancestor MapElement object
-     * @param  {Object}  domElement        - DOMElement object representing an element in the DOM
-     *
-     * @return {Object}  Last MapElement object
-     */
-
-    update (parentMapElement, domElement) {
-      let currentMapElement = parentMapElement;
-
-      if (this.isImage(domElement)) {
-        this.addImageElement(domElement);
-      }
-
-     if (this.isSVG(domElement)) {
-        this.allSVGDomElements.push(domElement);
-      }
-
-      if (this.isMap(domElement)) {
-        currentMapElement = this.addMapElement(domElement);
-      }
-
-      if (this.isArea(domElement)) {
-        if (parentMapElement) {
-          parentMapElement.addAreaDomElement(domElement);
-        }
-      }
-
-      return currentMapElement;
-    }
-
-    /**
-     * @method showImageInfo
-     *
-     * @desc showImageInfo is used for debugging the ImageInfo, ImageElement and MapElement objects
-     */
-
-    showImageInfo () {
-      if (debug$S.flag) {
-        debug$S.log('== All Image elements ==', 1);
-        this.allImageElements.forEach( ie => {
-          debug$S.log(`[fileName]: ${ie.fileName}`, true);
-          debug$S.log(`[    role]: ${ie.domElement.role}`);
-          debug$S.log(`[    name]: ${ie.domElement.accName.name}`);
-          debug$S.log(`[  source]: ${ie.domElement.accName.source}`);
-          debug$S.log(`[  length]: ${ie.domElement.accName.name.length}`);
-        });
-        debug$S.log('== All SVG domElements  ==', 1);
-        this.allSVGDomElements.forEach( de => {
-          debug$S.domElement(de);
-        });
-        debug$S.log('== All MapElements ==', 1);
-        this.allMapElements.forEach( me => {
-          debug$S.domElement(me.domElement);
-        });
-      }
-    }
-  }
-
-  /* linkInfo.js */
-
-  /* Constants */
-  const debug$R = new DebugLogging('linkInfo', false);
-
-  /**
-   * @class LinkInfo
-   *
-   * @desc Collects information on the links in a web page
-   */
-
-  class LinkInfo {
-    constructor () {
-      this.allLinkDomElements = [];
-    }
-
-    /**
-     * @method isLink
-     *
-     * @desc Tests if a domElement for role of "link"
-     *
-     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
-     */
-
-    isLink (domElement) {
-      return domElement.role === 'link';
-    }
-
-    /**
-     * @method update
-     *
-     * @desc Checks to see if the domElement has a role of "link"
-     *
-     * @param  {Object}  domElement  - DOMElement object representing an element in the DOM
-     * @param  {Boolean} inLink      - True if element is a descendant of a link, otherwise false
-     */
-
-    update (domElement, inLink) {
-      if (this.isLink(domElement)) {
-        this.allLinkDomElements.push(domElement);
-        return true;
-      }
-      return inLink;
-    }
-
-    /**
-     * @method showLinkInfo
-     *
-     * @desc showLinkInfo is used for debugging the LinkInfo object
-     */
-
-    showLinkInfo () {
-      if (debug$R.flag) {
-        debug$R.log('== All Links ==', 1);
-        this.allLinkDomElements.forEach( de => {
-          debug$R.domElement(de);
-        });
-      }
-    }
-  }
-
-  /* listInfo.js */
-
-  /* Constants */
-  const debug$Q = new DebugLogging('ListInfo', false);
-  debug$Q.flag = false;
-  const allListitemRoles = ['list', 'listitem', 'menu', 'menuitem', 'menuitemcheckbox', 'menuitemradio'];
-  const listRoles = ['list', 'menu'];
-
-  /**
-   * @class ListElement
-   *
-   * @desc Identifies a DOM element as being a container for a list items.
-   *
-   * @param  {Object}  domElement   - Structural Information
-   */
-
-  class ListElement {
-    constructor (domElement, parentListElement) {
-
-      this.parentListElement = parentListElement;
-      this.domElement = domElement;
-      this.childListElements = [];
-      this.isListRole = this.isList(domElement);
-      this.linkCount = 0;  // Used in determining if a list is for navigation
-      this.textContent = 0;
-      this.linkTextContent = 0;
-    }
-
-    /**
-     * @method isList
-     *
-     * @desc Tests if a domElement is a list
-     *
-     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
-     */
-
-    isList (domElement) {
-      const role = domElement.role;
-      return listRoles.includes(role);
-    }
-
-    addChildListitem (listElement) {
-      this.childListElements.push(listElement);
-    }
-
-    showListInfo (prefix) {
-      if (typeof prefix !== 'string') {
-        prefix = '';
-      }
-      debug$Q.log(`${prefix}[List Count]: ${this.childListElements.length} [Link Count]: ${this.linkCount}`);
-      this.childListElements.forEach( le => {
-        debug$Q.domElement(le.domElement, prefix);
-        le.showListInfo(prefix + '  ');
-      });
-    }
-  }
-
-  /**
-   * @class ListInfo
-   *
-   * @desc Collects information on the list elements on a web page for use in
-   *       rules
-   *
-   * @param  {Object}  ListInfo   - Structural Information
-   */
-
-  class ListInfo {
-    constructor () {
-
-      this.allListElements = [];
-      this.childListElements = [];
-      this.linkCount = 0;
-    }
-
-    /**
-     * @method addChildListitem
-     *
-     * @desc Creates a new ListElement and to the array of
-     *       ListElements
-     *
-     * @param  {Object}  domElement        - New ListElement object being added to ListInfo
-     * @param  {Object}  parentListElement - ListElement object representing that parent ListElement
-     *
-     */
-
-    addChildListitem (domElement, parentListElement) {
-      const le = new ListElement(domElement, parentListElement);
-      this.allListElements.push(le);
-
-      if (parentListElement) {
-        parentListElement.addChildListitem(le);
-      } else {
-        this.childListElements.push(le);
-      }
-      return le;
-    }
-
-    /**
-     * @method isListitem
-     *
-     * @desc Tests if a domElement is a listitem
-     *
-     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
-     */
-
-    isListitem (domElement) {
-      const role = domElement.role;
-      return allListitemRoles.includes(role);
-    }
-
-    /**
-     * @method isLink
-     *
-     * @desc Tests if a domElement is a link
-     *
-     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
-     */
-
-    isLink (domElement) {
-      return domElement.role === 'link';
-    }
-
-    /**
-     * @method update
-     *
-     * @desc Checks to see if the domElement is a list item and if so adds the
-     *       domElement to the List Info object and current ListElement
-     *
-     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
-     *
-     * @return  {Object}  ListElement - ListElement object for use as the parent ListElement
-     *                                  for descendant domElements
-     */
-
-    update (parentListElement, domElement) {
-      let listElement = parentListElement;
-      if (this.isListitem(domElement)) {
-        listElement = this.addChildListitem(domElement, parentListElement);
-      }
-      if (this.isLink(domElement)) {
-        this.linkCount += 1;
-        while (parentListElement) {
-          if (parentListElement.isListRole) {
-            parentListElement.linkCount += 1;
-            break;
-          }
-          parentListElement = parentListElement.parentListElement;
-        }
-      }
-      return listElement;
-    }
-
-    /**
-     * @method showListInfo
-     *
-     * @desc showListInfo is used for debugging the ListInfo and ListElement objects
-     */
-
-    showListInfo () {
-      if (debug$Q.flag) {
-        debug$Q.log('== All ListElements ==', 1);
-        debug$Q.log(`[linkCount]: ${this.linkCount}`);
-        this.allListElements.forEach( le => {
-          debug$Q.log(`[textContent]: ${le.textContent}`);
-          debug$Q.log(`[linkTextContent]: ${le.linkTextContent}`);
-          debug$Q.domElement(le.domElement);
-        });
-        debug$Q.log('== List Tree ==', 1);
-        debug$Q.log(`[linkCount]: ${this.linkCount}`);
-        this.childListElements.forEach( le => {
-          debug$Q.log(`[textContent]: ${le.textContent}`);
-          debug$Q.log(`[linkTextContent]: ${le.linkTextContent}`);
-          debug$Q.domElement(le.domElement);
-          le.showListInfo('  ');
-        });
-      }
-    }
-  }
-
-  /* listInfo.js */
-
-  /* Constants */
-  const debug$P = new DebugLogging('MediaInfo', false);
-  debug$P.flag = false;
-
-  /**
-   * @class MediaElement
-   *
-   * @desc Identifies a DOM element as an audio or video element.
-   *
-   * @param  {Object}  domElement   - DOM element object
-   */
-
-  class MediaElement {
-    constructor (domElement) {
-      const node = domElement.node;
-      const type = node.getAttribute('type');
-
-      this.domElement = domElement;
-      this.tracks = [];
-      this.params = [];
-
-      this.hasAutoPlay = domElement.node.hasAttribute('autoplay');
-      this.type = (typeof type === 'string') ? type.toLowerCase() : '';
-    }
-
-    get isAudio () {
-      return this.type.includes('audio') || this.domElement.tagName === 'audio';
-    }
-
-    get isVideo () {
-      return this.type.includes('video') || this.domElement.tagName === 'video';
-    }
-
-    get allowsTracks () {
-      return ['audio', 'video'].includes(this.domElement.tagName);
-    }
-
-    get isEmbed () {
-      return this.domElement.tagName === 'embed';
-    }
-
-    get isObject () {
-      return this.domElement.tagName === 'object';
-    }
-
-    get hasCaptionTrack () {
-      return this.checkForTrackKind('captions');
-    }
-
-    get hasDescriptionTrack () {
-      return this.checkForTrackKind('descriptions');
-    }
-
-    checkForTrackKind (type) {
-      for (let i = 0; i < this.tracks.length; i += 1) {
-        if (this.tracks[i].kind.includes(type)) {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    toString() {
-      return `[MediaElement]: ${this.domElement}`;
-    }
-  }
-
-  /**
-   * @class TrackElement
-   *
-   * @desc Identifies a DOM element as a track element.
-   *
-   * @param  {Object}  domElement   - DOM element object
-   */
-
-  class TrackElement {
-    constructor (domElement) {
-      const node = domElement.node;
-      this.domElement = domElement;
-      this.kind = node.hasAttribute('kind') ? node.kind.toLowerCase() : '';
-    }
-
-    toString() {
-      return `[TrackElement]: ${this.domElement}`;
-    }
-  }
-
-  /**
-   * @class ParamElement
-   *
-   * @desc Identifies a DOM element as a param element.
-   *
-   * @param  {Object}  domElement   - DOM element object
-   */
-
-  class ParamElement {
-    constructor (domElement) {
-      this.domElement = domElement;
-    }
-
-    toString() {
-      return `[ParamElement]: ${this.domElement}`;
-    }
-
-  }
-
-
-  /**
-   * @class MediaInfo
-   *
-   * @desc Collects information on the media elements on a web page for use in
-   *       rules
-   */
-
-  class MediaInfo {
-    constructor () {
-      this.allMediaElements = [];
-    }
-
-    update (mediaElement, domElement) {
-
-      switch (domElement.tagName) {
-
-        case 'audio':
-          mediaElement = new MediaElement(domElement);
-          this.allMediaElements.push(mediaElement);
-          break;
-
-        case 'embed':
-          mediaElement = new MediaElement(domElement);
-          this.allMediaElements.push(mediaElement);
-          break;
-
-        case 'object':
-          mediaElement = new MediaElement(domElement);
-          this.allMediaElements.push(mediaElement);
-          break;
-
-        case 'param':
-          if (mediaElement && mediaElement.isObject) {
-            const param = new ParamElement(domElement);
-            mediaElement.params.push(param);
-          }
-          break;
-
-        case 'track':
-          if (mediaElement &&
-              mediaElement.allowsTracks) {
-            const track = new TrackElement(domElement);
-            mediaElement.tracks.push(track);
-          }
-          break;
-
-        case 'video':
-          mediaElement = new MediaElement(domElement);
-          this.allMediaElements.push(mediaElement);
-          break;
-
-      }
-
-      return mediaElement;
-    }
-
-    /**
-     * @method showMediaInfo
-     *
-     * @desc showMediaInfo is used for debugging the MediaInfo and other media objects
-     */
-
-    showListInfo () {
-      if (debug$P.flag) {
-        debug$P.log('== Media Elements ==', 1);
-        this.allElements.forEach( me => {
-          debug$P.log(me);
-        });
-
-      }
-    }
-  }
-
-  /* structureInfo.js */
-
-  /* Constants */
-  const debug$O = new DebugLogging('structureInfo', false);
-
-  /**
-   * @class LandmarkElement
-   *
-   * @desc Identifies a DOM element as being a landmark and relationships to other landmarks and headings.
-   *
-   * @param  {Object}  domElement   - Structural Information
-   */
-
-  class LandmarkElement {
-    constructor (domElement, parentLandmarkElement) {
-
-      this.parentLandmarkElement   = parentLandmarkElement;
-      this.domElement              = domElement;
-
-      this.descendantLandmarkElements = [];
-      this.childLandmarkElements      = [];
-      this.childHeadingDomElements    = [];
-    }
-
-    addChildLandmark (landmarkElement) {
-      this.childLandmarkElements.push(landmarkElement);
-      let ple = landmarkElement.parentLandmarkElement;
-      while (ple) {
-        ple.descendantLandmarkElements.push(landmarkElement);
-        ple = ple.parentLandmarkElement;
-      }
-    }
-
-    addChildHeading (domElement) {
-      this.childHeadingDomElements.push(domElement);
-    }
-
-    showLandmarkInfo (prefix) {
-      if (typeof prefix !== 'string') {
-        prefix = '';
-      }
-      this.childLandmarkElements.forEach( le => {
-        debug$O.domElement(le.domElement, prefix);
-        le.showLandmarkInfo(prefix + '  ');
-      });
-      this.childHeadingDomElements.forEach( h => {
-        debug$O.domElement(h, prefix);
-      });
-    }
-
-    getFirstVisibleHeadingDomElement() {
-      const domElements = this.childHeadingDomElements;
-      for (let i = 0; i < domElements.length; i += 1){
-        const de = domElements[i];
-        if (de.visibility.isVisibleToAT) {
-          return de;
-        }
-      }
-      return false;
-    }
-
-    toString () {
-      return this.domElement.role;
-    }
-  }
-
-  /**
-   * @class StructureInfo
-   *
-   * @desc Collects information on the landmarks or headings on a web page for use in
-   *       rules
-   *
-   * @param  {Object}  structuralInfo   - Structural Information
-   */
-
-  class StructureInfo {
-    constructor () {
-      this.hasMainLandmark = false;
-      this.allLandmarkElements = [];
-      this.allHeadingDomElements = [];
-      this.allH1DomElements = [];
-      this.childLandmarkElements = [];
-      this.landmarkElementsByDoc = [];
-    }
-
-    /**
-     * @method addChildLandmark
-     *
-     * @desc Creates a new LandmarkElement and to the array of
-     *       LandmarkElements
-     *
-     * @param  {Object}  domElement             - New LandmarkElement object being added to StrutureInfo
-     * @param  {Object}  parentLandmarkElement  - LandmarkElement object identifying the parent
-     *                                            LandmarkElement
-     * @param  {Integer} documentIndex          - index for identifying the current document (e.g. iframe
-     *                                             or custom element dom)
-     */
-
-    addChildLandmark (domElement, parentLandmarkElement, documentIndex) {
-
-      if (domElement.role === 'main') {
-        this.hasMainLandmark = true;
-      }
-
-      const le = new LandmarkElement(domElement, parentLandmarkElement);
-      this.allLandmarkElements.push(le);
-
-      if (!Array.isArray(this.landmarkElementsByDoc[documentIndex])) {
-        this.landmarkElementsByDoc[documentIndex] = [];
-      }
-      this.landmarkElementsByDoc[documentIndex].push(le);
-
-      if (parentLandmarkElement) {
-        parentLandmarkElement.addChildLandmark(le);
-      } else {
-        this.childLandmarkElements.push(le);
-      }
-
-      return le;
-    }
-
-    /**
-     * @method addChildHeading
-     *
-     * @desc
-     *
-     * @param  {Object}  domElement            - DOMElement object representing an element in the DOM
-     * @param  {Object}  parentLandmarkElement - LandmarkElement object representing an landmark region
-     */
-
-    addChildHeading (domElement, parentLandmarkElement) {
-      this.allHeadingDomElements.push(domElement);
-
-      if (domElement.ariaInfo.ariaLevel === 1) {
-        this.allH1DomElements.push(domElement);
-      }
-
-      if (parentLandmarkElement) {
-        parentLandmarkElement.addChildHeading(domElement);
-      }
-    }
-
-    /**
-     * @method update
-     *
-     * @desc Checks to see if the domElement is a heading or landmark and if so adds the
-     *       domElement to the StrutureInfo object and current LandmarkElement
-     *
-     * @param  {Object}  parentLandmarkElement  - Parent LandmarkElement (note: can be null)
-     * @param  {Object}  domElement             - DOMElement object representing an element in the DOM
-     * @param  {Integer} documentIndex          - index for identifying the current document (e.g. iframe
-     *                                            or custom element dom)
-     *
-     * @return  {Object}  LandmarkElement - Landmarklement object for use as the parent landmark
-     *                                      element for descendant domElements
-     */
-
-    update (parentLandmarkElement, domElement, documentIndex) {
-      let landmarkElement = parentLandmarkElement;
-      if (domElement.isHeading) {
-        this.addChildHeading(domElement, parentLandmarkElement);
-      }
-
-      if (domElement.isLandmark) {
-        landmarkElement = this.addChildLandmark(domElement, parentLandmarkElement, documentIndex);
-      }
-      return landmarkElement;
-    }
-
-    /**
-     * @method showStructureInfo
-     *
-     * @desc showSructureInfo is used for debugging the StructureInfo and LandmarkElement objects
-     */
-
-    showStructureInfo () {
-      if (debug$O.flag) {
-        debug$O.log('== All Headings ==', 1);
-        this.allHeadingDomElements.forEach( h => {
-          debug$O.domElement(h);
-        });
-        debug$O.log('== All Landmarks ==', 1);
-        this.allLandmarkElements.forEach( le => {
-          debug$O.domElement(le.domElement);
-        });
-        debug$O.log('== Landmarks By Doc ==', 1);
-        this.landmarkElementsByDoc.forEach( (les, index) => {
-          debug$O.log(`Document Index: ${index} (${Array.isArray(les)})`);
-          if (Array.isArray(les)) {
-            les.forEach(le => {
-              debug$O.domElement(le.domElement);
-            });
-          }
-        });
-        debug$O.log('== Structure Tree ==', 1);
-        this.childLandmarkElements.forEach( le => {
-          debug$O.domElement(le.domElement);
-          le.showLandmarkInfo('  ');
-        });
-      }
-    }
-  }
-
   /* common.js */
 
   const common = {
@@ -18122,7 +12819,9 @@
     scopeFilterPage:    ', Page scope only',
     scopeFilterWebsite: ', Website scope only',
 
-    headerSource: ['none', 'none', 'Headers Attribute', 'Row/Column Headers']
+    headerSource: ['none', 'none', 'Headers Attribute', 'Row/Column Headers'],
+
+    unsupported_color: 'Unsupported computed color'
 
   };
 
@@ -19670,7 +14369,8 @@
           ELEMENT_MC_2:     'CCR of %1 is less than 4.5, but background image may improve color contrast.',
           ELEMENT_MC_3:     'CCR of %1 is equal to or greater than 3 for large or bolded text, but background image may reduce color contrast.',
           ELEMENT_MC_4:     'CCR of %1 is less than 3 for large and bolded text, but background image may improve color contrast.',
-          ELEMENT_MC_5:     'CCR cannot be reliably computed due to the repositioning of the text on the page by the author and the background of the text being transparent (e.g. no specific color).',
+          ELEMENT_MC_5:     'CCR cannot be reliably computed due to the repositioning of the text on the page by the author and the background of the text being transparent (e.g. no specific color), you will need to use another method to verify the color contrast.',
+          ELEMENT_MC_6:     'CCR cannot be computed due the computed color format not supported for conversion to a hex number, you will need to use another method to verify the color contrast.',
           ELEMENT_HIDDEN_1: 'CCR was not tested since the text is hidden from assistive technologies.'
         },
         PURPOSES:       [ 'The higher the color contrast of text the more easy it is to read, especially for people with visual impairments.'
@@ -19764,8 +14464,9 @@
           ELEMENT_MC_2:     'CCR of %1 is less than 7, but background image may improve color contrast.',
           ELEMENT_MC_3:     'CCR of %1 is equal to or greater than 4.5 for large or bolded text, but background image may reduce color contrast.',
           ELEMENT_MC_4:     'CCR of %1 is less than 4.5 for large and bolded text, but background image may improve color contrast.',
-          ELEMENT_MC_5:     'CCR cannot be reliably computed due to the repositioning of the text on the page by the author and the background of the text being transparent (e.g. no specific color).',
-          ELEMENT_HIDDEN_1: 'CCR was not tested since the text is hidden from assistive technologies.'
+          ELEMENT_MC_5:     'CCR cannot be reliably computed due to the repositioning of the text on the page by the author and the background of the text being transparent (e.g. no specific color), you will need to use another method to verify the color contrast.',
+          ELEMENT_MC_6:     'CCR cannot be computed due the computed color format not supported for conversion to a hex number, you will need to use another method to verify the color contrast.',
+         ELEMENT_HIDDEN_1: 'CCR was not tested since the text is hidden from assistive technologies.'
         },
         PURPOSES:       [ 'The higher the color contrast of text the more easy it is to read, especially for people with visual impairments.'
                         ],
@@ -20211,15 +14912,15 @@
   const controlRules$1 = {
     CONTROL_1: {
         ID:         'Control 1',
-        DEFINITION: 'Each @input@, @select@, @textarea@, @progress@, @meter@ and @output@ element must have an accessible name using @label@ elements.',
+        DEFINITION: 'Each @input@, @select@, @textarea@, @progress@ and @meter@ element must have an accessible name using @label@ elements.',
         SUMMARY:    'Form controls must have labels',
-        TARGET_RESOURCES_DESC: '@input@, @select@, @textarea@, @progress@, @meter@ and @output@ elements',
+        TARGET_RESOURCES_DESC: '@input@, @select@, @textarea@, @progress@ and @meter@ elements',
         RULE_RESULT_MESSAGES: {
           FAIL_S:   'Add a label to the form control element that is unlabelled.',
           FAIL_P:   'Add labels to the %N_F form control elements that are unlabelled.',
           MANUAL_CHECK_S: 'Verify the visual rendering of the SVG content of the element with @role=button@ adapts to operating system and browser color and size settings.',
           MANUAL_CHECK_P: 'Verify the visual rendering of the SVG content of the %N_MC elements with @role=button@ adapt to operating system and browser color and size settings.',
-          NOT_APPLICABLE: 'No @input@, @select@, @textarea@, @progress@, @meter@ or @output@ elements on the page.',
+          NOT_APPLICABLE: 'No @input@, @select@, @textarea@, @progress@ or @meter@ elements on the page.',
           HIDDEN_S: 'One form control element that is hidden was not evaluated.',
           HIDDEN_P: '%N_H form control elements that are hidden were not evaluated.'
         },
@@ -21021,7 +15722,7 @@
           ID:                    'Control 15',
           DEFINITION:            'The labels (e.g. accessible name) for controls and widgets that include text or images of text, the name contains the text that is presented visually.',
           SUMMARY:               'Label in name for controls',
-          TARGET_RESOURCES_DESC: '@input@, @output@, @select@, @textarea@ and widgets',
+          TARGET_RESOURCES_DESC: '@input@, @select@, @textarea@ and widgets',
           RULE_RESULT_MESSAGES: {
             MANUAL_CHECK_S:  'Verify the control with images, @aria-label@ and/or references to hidden content contain the same text associated with the visually rendered label associated with the control.',
             MANUAL_CHECK_P:  'Verify that each of the %N_MC controls with images, @aria-label@ and/or references to hidden content contain the same text associated with each of the visually rendered labels associated with each control.',
@@ -21082,7 +15783,7 @@
           ID:                    'Control 16',
           DEFINITION:            'Use @autocomplete@ attributes or other programmatic techniques that support auto-populating form controls with information previously entered by the user, unless the content meets one of the exceptions related to gaming, security or data validity.',
           SUMMARY:               'Redundant Entry',
-          TARGET_RESOURCES_DESC: '@input@, @output@, @select@, @textarea@ and widgets',
+          TARGET_RESOURCES_DESC: '@input@, @select@, @textarea@ and widgets',
           RULE_RESULT_MESSAGES: {
             MANUAL_CHECK_S:  'Verify if the user benefits from the control supporting auto population.',
             MANUAL_CHECK_P:  'Verify if the user benefits from the any of the %N_MC controls supporting auto population.',
@@ -21127,7 +15828,7 @@
         ID:                    'Control 17',
         DEFINITION:            'Some assistive technologies, including speech input, do not reliably associate labels with the controls when only label encapsulation is used for labeling.',
         SUMMARY:               'Avoid label encapsulation',
-        TARGET_RESOURCES_DESC: '@input@, @select@, @textarea@, @progress@, @meter@ and @output@ elements',
+        TARGET_RESOURCES_DESC: '@input@, @select@, @textarea@, @progress@ and @meter@ elements',
         RULE_RESULT_MESSAGES: {
           FAIL_S:   'Add a an @id@ to the control and use the @ a label to the form control element that is unlabelled.',
           FAIL_P:   'Add labels to the %N_F form control elements that are unlabelled.',
@@ -27878,7 +22579,7 @@
   /* locale.js */
 
   /* Constants */
-  const debug$N = new DebugLogging('locale', false);
+  const debug$10 = new DebugLogging('locale', false);
 
   // const globalUseCodeTags = true;
 
@@ -27934,7 +22635,7 @@
     if (!message) {
       message = `[common][error]: id="${id}"`;
     }
-    debug$N.flag && debug$N.log(`[${id}][${value}]: ${message}`);
+    debug$10.flag && debug$10.log(`[${id}][${value}]: ${message}`);
     return message;
   }
 
@@ -28107,7 +22808,7 @@
       for (const g in principle.guidelines) {
         const guideline = principle.guidelines[g];
         if (guideline.id === guidelineId) {
-          debug$N.flag && debug$N.log(`[getGuidelineInfo][${guidelineId}]: ${guideline.title}`);
+          debug$10.flag && debug$10.log(`[getGuidelineInfo][${guidelineId}]: ${guideline.title}`);
           return {
             num: g,
             title: guideline.title,
@@ -28117,7 +22818,7 @@
         }
       }
     }
-    debug$N.flag && debug$N.log(`[getGuidelineInfo][${guidelineId}][ERROR]: `);
+    debug$10.flag && debug$10.log(`[getGuidelineInfo][${guidelineId}][ERROR]: `);
     // Assume all rules
     return {
       title: messages[locale].common.allRules,
@@ -28150,7 +22851,7 @@
         for (const sc in guideline.success_criteria) {
           const success_criterion = guideline.success_criteria[sc];
           if (sc === successCriterionId) {
-            debug$N.flag && debug$N.log(`[getSuccessCriterionInfo][${successCriterionId}]: ${success_criterion.title}`);
+            debug$10.flag && debug$10.log(`[getSuccessCriterionInfo][${successCriterionId}]: ${success_criterion.title}`);
             return {
               id: successCriterionId,
               level: success_criterion.level,
@@ -28162,7 +22863,7 @@
         }
       }
     }
-    debug$N.flag && debug$N.log(`[getSuccessCriterionInfo][${successCriterionId}]: ERROR`);
+    debug$10.flag && debug$10.log(`[getSuccessCriterionInfo][${successCriterionId}]: ERROR`);
     return null;
   }
 
@@ -28182,7 +22883,7 @@
    */
 
   function getSuccessCriteriaInfo(successCriteriaIds) {
-    debug$N.flag && debug$N.log(`[getSuccessCriteriaInfo]: ${successCriteriaIds.length}`);
+    debug$10.flag && debug$10.log(`[getSuccessCriteriaInfo]: ${successCriteriaIds.length}`);
     const scInfoArray = [];
     successCriteriaIds.forEach( sc => {
       scInfoArray.push(getSuccessCriterionInfo(sc));
@@ -28230,7 +22931,7 @@
    */
 
   function getRuleDefinition (ruleId, transform=false) {
-    debug$N.flag && debug$N.log(`[getRuleDefinition][${ruleId}]: ${messages[locale].rules[ruleId].DEFINITION}`);
+    debug$10.flag && debug$10.log(`[getRuleDefinition][${ruleId}]: ${messages[locale].rules[ruleId].DEFINITION}`);
     let m = messages[locale].rules[ruleId].DEFINITION;
     if (transform) m = transformToCode(m);
     return m;
@@ -28248,7 +22949,7 @@
    */
 
   function getRuleSummary (ruleId, transform=false) {
-    debug$N.flag && debug$N.log(`[getRuleSummary][${ruleId}]: ${messages[locale].rules[ruleId].SUMMARY}`);
+    debug$10.flag && debug$10.log(`[getRuleSummary][${ruleId}]: ${messages[locale].rules[ruleId].SUMMARY}`);
     let m = messages[locale].rules[ruleId].SUMMARY;
     if (transform) m = transformToCode(m);
     return m;
@@ -28266,7 +22967,7 @@
    */
 
   function getTargetResourcesDesc (ruleId, transform=false) {
-    debug$N.flag && debug$N.log(`[getTargetResourcesDesc][${ruleId}]: ${messages[locale].rules[ruleId].TARGET_RESOURCES_DESC}`);
+    debug$10.flag && debug$10.log(`[getTargetResourcesDesc][${ruleId}]: ${messages[locale].rules[ruleId].TARGET_RESOURCES_DESC}`);
     let m = messages[locale].rules[ruleId].TARGET_RESOURCES_DESC;
     if (transform) m = transformToCode(m);
     return m;
@@ -28289,7 +22990,7 @@
       if (transform) p = transformToCode(p);
       purposes.push(p);
     });
-    debug$N.flag && debug$N.log(`[getPurposes][${ruleId}]: ${purposes.join('; ')}`);
+    debug$10.flag && debug$10.log(`[getPurposes][${ruleId}]: ${purposes.join('; ')}`);
     return purposes;
   }
 
@@ -28310,7 +23011,7 @@
       if (transform) t = transformToCode(t);
       techniques.push(t);
     });
-    debug$N.flag && debug$N.log(`[getTechniques][${ruleId}]: ${techniques.join('; ')}`);
+    debug$10.flag && debug$10.log(`[getTechniques][${ruleId}]: ${techniques.join('; ')}`);
     return techniques;
   }
 
@@ -28339,8 +23040,8 @@
           url: infoLink.url
         }
       );
-      debug$N.flag && debug$N.log(`[infoLink][title]: ${infoLink.title}`);
-      debug$N.flag && debug$N.log(`[infoLink][  url]: ${infoLink.url}`);
+      debug$10.flag && debug$10.log(`[infoLink][title]: ${infoLink.title}`);
+      debug$10.flag && debug$10.log(`[infoLink][  url]: ${infoLink.url}`);
     });
     return infoLinks;
   }
@@ -28362,7 +23063,7 @@
       if (transform) mc = transformToCode(mc);
       manualChecks.push(mc);
     });
-    debug$N.flag && debug$N.log(`[getManualChecks][${ruleId}]: ${manualChecks.join('; ')}`);
+    debug$10.flag && debug$10.log(`[getManualChecks][${ruleId}]: ${manualChecks.join('; ')}`);
     return manualChecks;
   }
 
@@ -28382,7 +23083,7 @@
     const msgs = messages[locale].rules[ruleId].RULE_RESULT_MESSAGES;
     for ( const key in msgs ) {
       resultMessages[key] = transform ? transformToCode(msgs[key]) : msgs[key];
-      debug$N.flag && debug$N.log(`[getRuleResultMessages][${ruleId}][${key}]: ${resultMessages[key]}`);
+      debug$10.flag && debug$10.log(`[getRuleResultMessages][${ruleId}][${key}]: ${resultMessages[key]}`);
     }
     return resultMessages;
   }
@@ -28403,7 +23104,7 @@
     const msgs = messages[locale].rules[ruleId].BASE_RESULT_MESSAGES;
     for ( const key in msgs ) {
       resultMessages[key] = transform ? transformToCode(msgs[key]) : msgs[key];
-      debug$N.flag && debug$N.log(`[getBaseResultMessages][${ruleId}][${key}]: ${resultMessages[key]}`);
+      debug$10.flag && debug$10.log(`[getBaseResultMessages][${ruleId}][${key}]: ${resultMessages[key]}`);
     }
     return resultMessages;
   }
@@ -28542,6 +23243,5374 @@
     }
 
     return c;
+  }
+
+  /* colorContrast.js */
+
+  /* Constants */
+  const debug$$ = new DebugLogging('colorContrast', false);
+  debug$$.flag = false;
+
+  const defaultFontSize = 16;    // In pixels (px)
+  const biggerFontSize  = 18.66; // In pixels (px)
+  const largeFontSize   = 24;    // In pixels (px)
+  const fontWeightBold  = 300;
+
+    /**
+     * @function getLuminance
+     *
+     * @desc Get the luminance value of a hex encoded color
+     *
+     * @param {String}  color    - Hex representation of a color value
+     *
+     * @return {Number}  Returns a number representing the limnance value
+     */
+
+    function getLuminance (color) {
+
+      // Get decimal values
+      const R8bit = parseInt(color.substring(0,2),16);
+      const G8bit = parseInt(color.substring(2,4),16);
+      const B8bit = parseInt(color.substring(4,6),16);
+
+      // Get sRGB values
+      const RsRGB = R8bit/255;
+      const GsRGB = G8bit/255;
+      const BsRGB = B8bit/255;
+      // Calculate luminance
+      const R = (RsRGB <= 0.03928) ? RsRGB/12.92 : Math.pow(((RsRGB + 0.055)/1.055), 2.4);
+      const G = (GsRGB <= 0.03928) ? GsRGB/12.92 : Math.pow(((GsRGB + 0.055)/1.055), 2.4);
+      const B = (BsRGB <= 0.03928) ? BsRGB/12.92 : Math.pow(((BsRGB + 0.055)/1.055), 2.4);
+
+      return (0.2126 * R + 0.7152 * G + 0.0722 * B);
+    }
+
+  function computeCCR (hex1, hex2) {
+      const L1 = getLuminance(hex1);
+      const L2 = getLuminance(hex2);
+      return Math.round((Math.max(L1, L2) + 0.05)/(Math.min(L1, L2) + 0.05)*10)/10;
+  }
+
+  /*
+   * @class ColorContrast
+   *
+   * @desc Identifies the text properties used to determine WCAG color contrast 
+   *       requirements including computing the color contrast ratio based on 
+   *       text and background colors
+   *
+   * @param  {Object}  parentDomElement - Parent DomElement containing ancestor style information
+   * @param  {Object}  elementNode      - dom element node 
+   */
+
+  class ColorContrast {
+    constructor (parentDomElement, elementNode) {
+      let parentColorContrast = parentDomElement ? parentDomElement.colorContrast : false;
+      let style = window.getComputedStyle(elementNode, null);
+
+      if (debug$$.flag) {
+        debug$$.separator();
+        debug$$.tag(elementNode);
+      }
+
+      this.hasTextNodes = this.getHasTextNodes(elementNode);
+
+      this.opacity            = this.normalizeOpacity(style, parentColorContrast);
+
+      this.backgroundColorElem = style.getPropertyValue("background-color");
+      this.backgroundColor     = this.normalizeBackgroundColor(this.backgroundColorElem, parentColorContrast);
+      this.backgroundColorHex  = this.colorToHex(this.backgroundColor, parentColorContrast.backgroundColorHex);
+
+      this.color               = style.getPropertyValue("color");
+      this.colorHex            = this.colorToHex(this.color, this.backgroundColorHex, this.opacity);
+
+      this.backgroundImage    = this.normalizeBackgroundImage(style, parentColorContrast);
+      this.backgroundRepeat   = style.getPropertyValue("background-repeat");
+      this.backgroundPosition = style.getPropertyValue("background-position");
+      this.hasBackgroundImage = this.backgroundImage !== 'none';
+
+      this.fontFamily = style.getPropertyValue("font-family");
+      this.fontSize   = this.normalizeFontSize(style, parentColorContrast);
+      this.fontWeight = this.normalizeFontWeight(style, parentColorContrast);
+      this.isLargeFont = this.getLargeFont(this.fontSize, this.fontWeight);
+
+      if (isHex(this.colorHex) && isHex(this.backgroundColorHex)) {
+        this.colorContrastRatio = computeCCR(this.colorHex, this.backgroundColorHex);
+      }
+      else {
+        this.colorContrastRatio = '';
+        if (!isHex(this.colorHex)) {
+          this.colorHex = getCommonMessage('unsupported_color');
+        }
+        if (!isHex(this.backgroundColorHex)) {
+          this.backgroundColorHex = getCommonMessage('unsupported_color');
+        }
+      }
+
+      this.isPositioned  = this.isPositioned(style, parentColorContrast);
+      this.isTransparent = this.isTransparent(this.backgroundColor);
+
+      if (debug$$.flag) {
+
+        debug$$.log(`[                 parent color]: ${parentColorContrast.color}`);
+        debug$$.log(`[      parent background color]: ${parentColorContrast.backgroundColor}`);
+
+        debug$$.log(`[                        color]: ${this.color}`);
+        debug$$.log(`[             background color]: ${this.backgroundColor}`);
+
+        debug$$.log(`[                      opacity]: ${this.opacity}`);
+        debug$$.log(`[             Background Image]: ${this.backgroundImage} (${this.hasBackgroundImage})`);
+        debug$$.log(`[   Family/Size/Weight/isLarge]: "${this.fontFamily}"/${this.fontSize}/${this.fontWeight}/${this.isLargeFont}`);
+        debug$$.color(`[   CCR for Color/Background]: ${this.colorContrastRatio} for #${this.colorHex}/#${this.backgroundColorHex}`, this.color, this.backgroundColor);
+      }
+    }
+
+    /**
+     * @method getHasTextNodes
+     *
+     * @desc Returns true if the element node has text content, otherwise false
+     *       Analyzes node for text nodes
+     *
+     * @param {Object}  elemNode  - DOM element node
+     *
+     * @return {Number}  see @desc
+     */
+
+    getHasTextNodes (elemNode) {
+      let text = '';
+      let childNodes = elemNode.childNodes;
+
+      for (let i = 0; i < childNodes.length; i++) {
+        let node = childNodes[i];
+        if (node.nodeType === Node.TEXT_NODE) {
+          text += node.textContent.trim().replace(' ', '');
+        }
+      }
+      return text.length > 0;
+    }
+
+    /**
+     * @method normalizeOpacity
+     *
+     * @desc Normalizes opacity to a number 
+     *
+     * @param {Object}  style                - Computed style object for an element node 
+     * @param {Object}  parentColorContrast  - Computed color contrast information for parent
+     *                                         DomElement
+     *
+     * @return {Number}  Returns a number representing the opacity
+     */
+
+    normalizeOpacity (style, parentColorContrast) {
+      let opacity = style.getPropertyValue("opacity");
+      let parentOpacity = 1.0;
+
+      if (parentColorContrast) {
+        parentOpacity = parentColorContrast.opacity;
+      }
+
+      if (isNaN(opacity)) {
+        opacity = opacity.toLowerCase();
+
+        switch (opacity) {
+          case 'inherit':
+          case 'unset':
+            opacity = parentOpacity;
+            break;
+
+          case 'initial':
+          case 'revert':
+            opacity = 1.0;
+            break;
+
+          default:
+            if (opacity.indexOf('%')) {
+              opacity = parseInt(opacity.split('%')[0]);
+              if (isNaN(opacity)) {
+                opacity = parentOpacity;
+              } else {
+                opacity = parentOpacity * (opacity / 100);
+              }
+            }
+            else {
+              opacity = parseFloat(opacity) * parentOpacity;
+              if (isNaN(opacity)) {
+                opacity = 1.0;
+              }
+            }
+            break;
+        }  // end switch
+      } else {
+        opacity = parseFloat(opacity) * parentOpacity;
+        if (isNaN(opacity)) {
+          opacity = 1.0;
+        }
+
+      }
+
+      // Make sure opacity is between 0 and 1
+      opacity = Math.max(Math.min(opacity, 1.0), 0.0);
+
+      return opacity;
+    }  
+
+    /**
+     * @method normalizeBackgroundColor
+     *
+     * @desc Normalizes background color
+     *
+     * @param {Object}  style                - Computed style object for an element node 
+     * @param {Object}  parentColorContrast  - Computed color contrast information for parent
+     *                                         DomElement
+     *
+     * @return {String}  Returns the background color
+     */
+
+    normalizeBackgroundColor (backgroundColor, parentColorContrast) {
+      if ((backgroundColor == 'rgba(0, 0, 0, 0)') ||
+          (backgroundColor == 'transparent') ||
+          (backgroundColor == 'inherit')) {
+
+        debug$$.flag && debug$$.log(`[normalizeBackgroundColor][parentColorContrast]: ${parentColorContrast}`);
+
+        if (parentColorContrast) {
+          debug$$.flag && debug$$.log(`[normalizeBackgroundColor][backgroundColor]: ${parentColorContrast.backgroundColor}`);
+          backgroundColor   = parentColorContrast.backgroundColor;
+        }
+      }
+      return backgroundColor;
+    }
+
+    /**
+     * @method normalizeBackgroundImage
+     *
+     * @desc Normalizes background image 
+     *
+     * @param {Object}  style                - Computed style object for an element node 
+     * @param {Object}  parentColorContrast  - Computed color contrast information for parent
+     *                                         DomElement
+     *
+     * @return {String}  Returns a reference to a background image URL or none
+     */
+
+    normalizeBackgroundImage (style, parentColorContrast) {
+      let backgroundImage = style.getPropertyValue("background-image").toLowerCase();
+
+      if ((backgroundImage === 'inherit') ||
+          (backgroundImage === 'none') ||
+          (backgroundImage === '')) {
+        if (parentColorContrast) {
+          backgroundImage = parentColorContrast.backgroundImage;
+        }
+        else {
+          backgroundImage = 'none';
+        }
+      }
+      return backgroundImage;
+    }
+
+    /*
+     * @method normalizeFontSize
+     *
+     * @desc Normalizes font size to a number 
+     *
+     * @param {Object}  style                - Computed style object for an element node 
+     * @param {Object}  parentColorContrast  - Computed color contrast information for parent
+     *                                         DomElement
+     *
+     * @return {Number}  Returns a number representing font size value in pixels (px)
+     */
+
+    normalizeFontSize (style, parentColorContrast) {
+      let fontSize = style.getPropertyValue("font-size");
+      if (isNaN(fontSize)) {
+        if (fontSize.toLowerCase() == 'inherit') {
+          if (parentColorContrast) {
+            fontSize = parentColorContrast.fontSize;
+          }
+          else {
+            fontSize = defaultFontSize;
+          }
+        } else {
+          fontSize = parseInt(fontSize, 10);
+          if (isNaN(fontSize)) {
+            fontSize = defaultFontSize;
+          }
+        }
+      } 
+      return fontSize;
+    }
+
+    /*
+     * @method normalizeFontWeight
+     *
+     * @desc Normalizes font weight to a number 
+     *
+     * @param {Object}  style                - Computed style object for an element node 
+     * @param {Object}  parentColorContrast  - Computed color contrast information for parent
+     *                                         DomElement
+     *
+     * @return {Number}  Returns a number representing font weight value
+     */
+
+    normalizeFontWeight (style, parentColorContrast) {
+      let fontWeight = style.getPropertyValue("font-weight");
+
+      if (isNaN(fontWeight)) {
+        switch (fontWeight.toLowerCase()) {
+        case 'bold':
+          fontWeight = 700;
+          break;
+
+        case 'normal':
+          fontWeight = 400;
+          break;
+
+        case 'inherit':
+          if (parentColorContrast) {
+            fontWeight = parentColorContrast.fontWeight;
+          }
+          else {
+            fontWeight = 400;
+          }
+          break;
+
+        case 'bolder':
+          fontWeight = 700;
+          break;
+
+        default:
+          fontWeight = 400;
+          break;
+
+        }
+      }
+      else {
+        fontWeight = parseInt(fontWeight, 10);
+      }    
+      return fontWeight;
+    }
+
+    /**
+    * @function colorToHex
+    *
+    * @desc Tries to convert a colorto Hex values
+    *
+    * @param {String} color.         - RGB Color rgb(rr, gg, bb), rgb(rr, gg, bb, aa) or srgb( n n n)
+    * @param {String} backgroundHex  - Background color as a hex value
+    * @param {Number}  opacity       - A number between 0 and 1 representing CSS value
+    *                                  default value is 1.0
+    *
+    * @return  {String}  - Hex version of the RGB color
+    */
+
+    colorToHex ( color, backgroundHex, opacity=1.0 ) {
+
+      function isRGB(c) {
+        return (c.includes('rgb') || c.includes('rgba')) && !isSRGB(c);
+      }
+
+      function isSRGB(c) {
+        return c.includes('srgb');
+      }
+
+      function hexToString(d) {
+        let hex = Math.round(d).toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+      }
+
+      let c, parts, r1, g1, b1;
+      let o1 = 1.0;
+
+      if (isSRGB(color)) {
+        debug$$.log(`[color]: ${color} [isRGB]: ${isRGB(color)} [isSRGB]: ${isSRGB(color)}`);
+      }
+
+      if (!isRGB(color) && !isSRGB(color)) return "";
+
+      if (isRGB(color)) {
+        c = color.replace('"', '');
+        c = c.split(')')[0];
+        c = c.split('(')[1];
+        parts = c.split(',');
+        r1 = parseFloat(parts[0]);
+        g1 = parseFloat(parts[1]);
+        b1 = parseFloat(parts[2]);
+        o1 = parts.length === 4 ? parseFloat(parts[3]) : 1.0;
+      }
+      else {
+        // Assume srgb
+        c = color.split(')')[0];
+        c = c.split('srgb')[1].trim();
+        parts = c.split(' ');
+        r1 = parseFloat(parts[0]) * 255;
+        g1 = parseFloat(parts[1]) * 255;
+        b1 = parseFloat(parts[2]) * 255;
+        debug$$.log(`[srgb][r1]: ${r1}`);
+        debug$$.log(`[srgb][g1]: ${g1}`);
+        debug$$.log(`[srgb][c1]: ${b1}`);
+      }
+
+      if (!isHex(backgroundHex)) {
+        backgroundHex = 'FFFFFF';
+      }
+
+      const r2 = parseInt(backgroundHex.substring(0,2), 16);
+      const g2 = parseInt(backgroundHex.substring(2,4), 16);
+      const b2 = parseInt(backgroundHex.substring(4,6), 16);
+
+      const min = 0.0001;
+
+      if (o1 < min) {
+        return backgroundHex;
+      }
+      else {
+        if (o1 < 1.0) {
+          r1 = Math.round(r1 * o1 + r2 * (1 - o1));
+          g1 = Math.round(g1 * o1 + g2 * (1 - o1));
+          b1 = Math.round(b1 * o1 + b2 * (1 - o1));
+        }
+      }
+
+      if (typeof opacity === 'string') {
+        opacity = parseFloat(opacity);
+      }
+
+      if ((opacity === Number.NaN) || (opacity < 0.0) || (opacity > 1.0)) {
+        opacity = 1.0;
+      }
+
+      if (opacity < 1.0) {
+        r1 = Math.round(r1 * opacity + r2 * (1 - opacity));
+        g1 = Math.round(g1 * opacity + g2 * (1 - opacity));
+        b1 = Math.round(b1 * opacity + b2 * (1 - opacity));
+      }
+
+      if (isSRGB(color)) {
+        debug$$.log(`[r1]: ${hexToString(r1)} [g1]: ${hexToString(g1)} [b1]: ${hexToString(b1)}`);
+      }
+
+      return hexToString(r1) + hexToString(g1) + hexToString(b1);
+    }
+
+    /**
+     * @method getLargeFont
+     *
+     * @desc Returns a boolean indiciating if the fontis considered large
+     *
+     * @param {Number}  fontSize    - font size of the element in pixels
+     * @param {Number}  fontWeight  - Numberical value of the font wieght (100-900)
+     *
+     * @return {Boolean}  Returns true if considered a large font, otherwise fals
+     */
+
+    getLargeFont (fontSize, fontWeight) {
+      const isSizeLarge   = fontSize >= largeFontSize;
+      const isSizeBigger  = fontSize >= biggerFontSize;
+      const isBold        = fontWeight >= fontWeightBold;
+
+
+      return isSizeLarge || (isSizeBigger && isBold);
+    }
+
+    /**
+     * @method isPositioned
+     *
+      * @desc Returns true if element or it's ancestor is absolute positioning
+     *
+     * @param {Object}  style                - Computed style object for an element node
+     * @param {Object}  parentColorContrast  - Computed color contrast information for parent
+     *                                         DomElement
+     *
+     * @return {Boolean}  Returns a number representing font weight value
+     */
+
+    isPositioned (style, parentColorContrast) {
+      const position = style.getPropertyValue("position");
+
+      return parentColorContrast.isPositioned || (position === 'absolute');
+
+    }
+
+    /**
+     * @function isTransparent
+     *
+     * @desc Returns true if RGBA is transparent
+     *
+     * @return {Boolean}  see @desc
+     */
+
+     isTransparent (colorRGB) {
+
+      if (!colorRGB) {
+        return false;
+      }
+
+      colorRGB = colorRGB.replace('"', '');
+      colorRGB = colorRGB.split(')')[0];
+      colorRGB = colorRGB.split('(')[1];
+      const parts = colorRGB.split(',');
+      const opacity = parts.length === 4 ? parseFloat(parts[3]) : 1.0;
+
+      return opacity < .001;
+    }
+
+  }
+
+  /* eventInfo.js */
+
+  /* Constants */
+  const debug$_ = new DebugLogging('EventInfo', false);
+
+  /**
+   * @class EventInfo
+   *
+   * @desc Collects information on the links in a web page
+   */
+
+  class EventInfo {
+    constructor (node) {
+      this.hasClick  = node.hasAttribute('onclick');
+      this.hasChange = node.hasAttribute('onchange');
+
+      if (debug$_.flag) {
+        console.log(`[hasClick ]: ${this.hasClick}`);
+        console.log(`[hasChange]: ${this.hasChange}`);
+      }
+    }
+  }
+
+  /* generated file, see https://github.com/opena11y/aria-in-html-to-code */
+  const ariaInHTMLInfo = {
+    title: 'ARIA in HTML',
+    status: 'W3C Recommendation 05 July 2023',
+    reference: 'https://www.w3.org/TR/html-aria/',
+    elementInfo: {
+      'a[href]': {
+        tagName: 'a',
+        defaultRole: 'link',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'button',
+          'checkbox',
+          'menuitem',
+          'menuitemcheckbox',
+          'menuitemradio',
+          'option',
+          'radio',
+          'switch',
+          'tab',
+          'treeitem',
+          'link'
+        ],
+        attr1: 'href',
+        id: 'a[href]'
+      },
+      a: {
+        tagName: 'a',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'a'
+      },
+      abbr: {
+        tagName: 'abbr',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'abbr'
+      },
+      address: {
+        tagName: 'address',
+        defaultRole: 'group',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'address'
+      },
+      'area[href]': {
+        tagName: 'area',
+        defaultRole: 'link',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'href',
+        id: 'area[href]'
+      },
+      area: {
+        tagName: 'area',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'button',
+          'link',
+          'generic'
+        ],
+        id: 'area'
+      },
+      article: {
+        tagName: 'article',
+        defaultRole: 'article',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'application',
+          'document',
+          'feed',
+          'main',
+          'none',
+          'presentation',
+          'region',
+          'article'
+        ],
+        id: 'article'
+      },
+      aside: {
+        tagName: 'aside',
+        defaultRole: 'complementary',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'feed',
+          'none',
+          'note',
+          'presentation',
+          'region',
+          'search',
+          'complementary'
+        ],
+        id: 'aside'
+      },
+      audio: {
+        tagName: 'audio',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'application'
+        ],
+        id: 'audio'
+      },
+      b: {
+        tagName: 'b',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'b'
+      },
+      base: {
+        tagName: 'base',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'base'
+      },
+      bdi: {
+        tagName: 'bdi',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'bdi'
+      },
+      bdo: {
+        tagName: 'bdo',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'bdo'
+      },
+      blockquote: {
+        tagName: 'blockquote',
+        defaultRole: 'blockquote',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'blockquote'
+      },
+      body: {
+        tagName: 'body',
+        defaultRole: 'generic',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'body'
+      },
+      br: {
+        tagName: 'br',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'none',
+          'presentation'
+        ],
+        id: 'br'
+      },
+      button: {
+        tagName: 'button',
+        defaultRole: 'button',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'checkbox',
+          'combobox',
+          'gridcell',
+          'link',
+          'menuitem',
+          'menuitemcheckbox',
+          'menuitemradio',
+          'option',
+          'radio',
+          'slider',
+          'switch',
+          'tab',
+          'treeitem',
+          'button'
+        ],
+        id: 'button'
+      },
+      canvas: {
+        tagName: 'canvas',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'canvas'
+      },
+      caption: {
+        tagName: 'caption',
+        defaultRole: 'caption',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'caption'
+      },
+      cite: {
+        tagName: 'cite',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'cite'
+      },
+      code: {
+        tagName: 'code',
+        defaultRole: 'code',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'code'
+      },
+      col: {
+        tagName: 'col',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'col'
+      },
+      colgroup: {
+        tagName: 'colgroup',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'colgroup'
+      },
+      data: {
+        tagName: 'data',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'data'
+      },
+      datalist: {
+        tagName: 'datalist',
+        defaultRole: 'listbox',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'datalist'
+      },
+      dd: {
+        tagName: 'dd',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'dd'
+      },
+      del: {
+        tagName: 'del',
+        defaultRole: 'deletion',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'del'
+      },
+      details: {
+        tagName: 'details',
+        defaultRole: 'group',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'details'
+      },
+      dfn: {
+        tagName: 'dfn',
+        defaultRole: 'term',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'dfn'
+      },
+      dialog: {
+        tagName: 'dialog',
+        defaultRole: 'dialog',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'alertdialog',
+          'dialog'
+        ],
+        id: 'dialog'
+      },
+      div: {
+        tagName: 'div',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'div'
+      },
+      dl: {
+        tagName: 'dl',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'group',
+          'list',
+          'none',
+          'presentation'
+        ],
+        id: 'dl'
+      },
+      dt: {
+        tagName: 'dt',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'listitem'
+        ],
+        id: 'dt'
+      },
+      em: {
+        tagName: 'em',
+        defaultRole: 'emphasis',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'em'
+      },
+      embed: {
+        tagName: 'embed',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'application',
+          'document',
+          'img',
+          'none',
+          'presentation'
+        ],
+        id: 'embed'
+      },
+      fieldset: {
+        tagName: 'fieldset',
+        defaultRole: 'group',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'none',
+          'presentation',
+          'radiogroup',
+          'group'
+        ],
+        id: 'fieldset'
+      },
+      figcaption: {
+        tagName: 'figcaption',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'group',
+          'none',
+          'presentation'
+        ],
+        id: 'figcaption'
+      },
+      'figure[figcaption]': {
+        tagName: 'figure',
+        defaultRole: 'figure',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        hasFigcaption: true,
+        id: 'figure[figcaption]'
+      },
+      figure: {
+        tagName: 'figure',
+        defaultRole: 'figure',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'figure'
+      },
+      'footer[contentinfo]': {
+        tagName: 'footer',
+        defaultRole: 'contentinfo',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'group',
+          'presentation',
+          'none',
+          'article',
+          'aside',
+          'main',
+          'nav',
+          'section',
+          'role=article',
+          'complementary',
+          'main',
+          'navigation',
+          'region',
+          'role=contentinfo',
+          'role=generic'
+        ],
+        isLandmark: true,
+        id: 'footer[contentinfo]'
+      },
+      footer: {
+        tagName: 'footer',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'group',
+          'presentation',
+          'none',
+          'article',
+          'aside',
+          'main',
+          'nav',
+          'section',
+          'role=article',
+          'complementary',
+          'main',
+          'navigation',
+          'region',
+          'role=contentinfo',
+          'role=generic'
+        ],
+        id: 'footer'
+      },
+      form: {
+        tagName: 'form',
+        defaultRole: 'form',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'none',
+          'presentation',
+          'search',
+          'form'
+        ],
+        id: 'form'
+      },
+      h1: {
+        tagName: 'h1',
+        defaultRole: 'heading',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'none',
+          'presentation',
+          'tab',
+          'heading'
+        ],
+        id: 'h1'
+      },
+      h2: {
+        tagName: 'h2',
+        defaultRole: 'heading',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'none',
+          'presentation',
+          'tab',
+          'heading'
+        ],
+        id: 'h2'
+      },
+      h3: {
+        tagName: 'h3',
+        defaultRole: 'heading',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'none',
+          'presentation',
+          'tab',
+          'heading'
+        ],
+        id: 'h3'
+      },
+      h4: {
+        tagName: 'h4',
+        defaultRole: 'heading',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'none',
+          'presentation',
+          'tab',
+          'heading'
+        ],
+        id: 'h4'
+      },
+      h5: {
+        tagName: 'h5',
+        defaultRole: 'heading',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'none',
+          'presentation',
+          'tab',
+          'heading'
+        ],
+        id: 'h5'
+      },
+      h6: {
+        tagName: 'h6',
+        defaultRole: 'heading',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'none',
+          'presentation',
+          'tab',
+          'heading'
+        ],
+        id: 'h6'
+      },
+      head: {
+        tagName: 'head',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'head'
+      },
+      'header[banner]': {
+        tagName: 'header',
+        defaultRole: 'banner',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'group',
+          'none',
+          'presentation',
+          'article',
+          'aside',
+          'main',
+          'nav',
+          'section',
+          'role=article',
+          'complementary',
+          'main',
+          'navigation',
+          'region',
+          'role=contentinfo',
+          'role=generic'
+        ],
+        isLandmark: true,
+        id: 'header[banner]'
+      },
+      header: {
+        tagName: 'header',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'group',
+          'none',
+          'presentation',
+          'article',
+          'aside',
+          'main',
+          'nav',
+          'section',
+          'role=article',
+          'complementary',
+          'main',
+          'navigation',
+          'region',
+          'role=contentinfo',
+          'role=generic'
+        ],
+        id: 'header'
+      },
+      hgroup: {
+        tagName: 'hgroup',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'hgroup'
+      },
+      hr: {
+        tagName: 'hr',
+        defaultRole: 'separator',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'none',
+          'presentation',
+          'separator'
+        ],
+        id: 'hr'
+      },
+      html: {
+        tagName: 'html',
+        defaultRole: 'document',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'html'
+      },
+      i: {
+        tagName: 'i',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'i'
+      },
+      iframe: {
+        tagName: 'iframe',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'application',
+          'document',
+          'img',
+          'none',
+          'presentation'
+        ],
+        id: 'iframe'
+      },
+      'img[accname]': {
+        tagName: 'img',
+        defaultRole: 'img',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'button',
+          'checkbox',
+          'link',
+          'menuitem',
+          'menuitemcheckbox',
+          'menuitemradio',
+          'option',
+          'progressbar',
+          'radio',
+          'scrollbar',
+          'separator',
+          'slider',
+          'switch',
+          'tab',
+          'treeitem',
+          'img'
+        ],
+        hasAccname: true,
+        id: 'img[accname]'
+      },
+      'img[alt]': {
+        tagName: 'img',
+        defaultRole: 'img',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'button',
+          'checkbox',
+          'link',
+          'menuitem',
+          'menuitemcheckbox',
+          'menuitemradio',
+          'option',
+          'progressbar',
+          'radio',
+          'scrollbar',
+          'separator',
+          'slider',
+          'switch',
+          'tab',
+          'treeitem',
+          'img'
+        ],
+        attr1: 'alt',
+        id: 'img[alt]'
+      },
+      'img[emptyalt]': {
+        tagName: 'img',
+        defaultRole: 'presentation',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'alt=""',
+        id: 'img[emptyalt]'
+      },
+      img: {
+        tagName: 'img',
+        defaultRole: 'img',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'img'
+      },
+      'input[type=button]': {
+        tagName: 'input',
+        defaultRole: 'button',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'checkbox',
+          'combobox',
+          'gridcell',
+          'link',
+          'menuitem',
+          'menuitemcheckbox',
+          'menuitemradio',
+          'option',
+          'radio',
+          'slider',
+          'switch',
+          'tab',
+          'treeitem',
+          'button'
+        ],
+        attr1: 'type=button',
+        id: 'input[type=button]'
+      },
+      'input[type=checkbox]': {
+        tagName: 'input',
+        defaultRole: 'checkbox',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'menuitemcheckbox',
+          'option',
+          'switch',
+          'button',
+          'checkbox'
+        ],
+        attr1: 'type=checkbox',
+        id: 'input[type=checkbox]'
+      },
+      'input[type=color]': {
+        tagName: 'input',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=color',
+        id: 'input[type=color]'
+      },
+      'input[type=date]': {
+        tagName: 'input',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=date',
+        id: 'input[type=date]'
+      },
+      'input[type=datetime-local]': {
+        tagName: 'input',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=datetime-local',
+        id: 'input[type=datetime-local]'
+      },
+      'input[type=email][list]': {
+        tagName: 'input',
+        defaultRole: 'combobox',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=email',
+        attr2: 'list',
+        id: 'input[type=email][list]'
+      },
+      'input[type=email]': {
+        tagName: 'input',
+        defaultRole: 'textbox',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=email',
+        id: 'input[type=email]'
+      },
+      'input[type=file]': {
+        tagName: 'input',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=file',
+        id: 'input[type=file]'
+      },
+      'input[type=hidden]': {
+        tagName: 'input',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=hidden',
+        id: 'input[type=hidden]'
+      },
+      'input[type=image]': {
+        tagName: 'input',
+        defaultRole: 'button',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'button',
+          'checkbox',
+          'gridcell',
+          'link',
+          'menuitem',
+          'menuitemcheckbox',
+          'menuitemradio',
+          'option',
+          'radio',
+          'slider',
+          'switch',
+          'tab',
+          'treeitem'
+        ],
+        attr1: 'type=image',
+        id: 'input[type=image]'
+      },
+      'input[type=month]': {
+        tagName: 'input',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=month',
+        id: 'input[type=month]'
+      },
+      'input[type=number]': {
+        tagName: 'input',
+        defaultRole: 'spinbutton',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=number',
+        id: 'input[type=number]'
+      },
+      'input[type=password]': {
+        tagName: 'input',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=password',
+        id: 'input[type=password]'
+      },
+      'input[type=radio]': {
+        tagName: 'input',
+        defaultRole: 'radio',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'menuitemradio',
+          'radio'
+        ],
+        attr1: 'type=radio',
+        id: 'input[type=radio]'
+      },
+      'input[type=range]': {
+        tagName: 'input',
+        defaultRole: 'slider',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=range',
+        id: 'input[type=range]'
+      },
+      'input[type=reset]': {
+        tagName: 'input',
+        defaultRole: 'button',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [],
+        attr1: 'type=reset',
+        id: 'input[type=reset]'
+      },
+      'input[type=search][list]': {
+        tagName: 'input',
+        defaultRole: 'combobox',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=search',
+        attr2: 'list',
+        id: 'input[type=search][list]'
+      },
+      'input[type=search]': {
+        tagName: 'input',
+        defaultRole: 'searchbox',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=search',
+        id: 'input[type=search]'
+      },
+      'input[type=submit]': {
+        tagName: 'input',
+        defaultRole: 'button',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [],
+        attr1: 'type=submit',
+        id: 'input[type=submit]'
+      },
+      'input[type=tel][list]': {
+        tagName: 'input',
+        defaultRole: 'combobox',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=tel',
+        attr2: 'list',
+        id: 'input[type=tel][list]'
+      },
+      'input[type=tel]': {
+        tagName: 'input',
+        defaultRole: 'textbox',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=tel',
+        id: 'input[type=tel]'
+      },
+      'input[type=text][list]': {
+        tagName: 'input',
+        defaultRole: 'combobox',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=text',
+        attr2: 'list',
+        id: 'input[type=text][list]'
+      },
+      'input[type=text]': {
+        tagName: 'input',
+        defaultRole: 'textbox',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'combobox',
+          'searchbox',
+          'spinbutton',
+          'textbox'
+        ],
+        attr1: 'type=text',
+        id: 'input[type=text]'
+      },
+      'input[type=time]': {
+        tagName: 'input',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=time',
+        id: 'input[type=time]'
+      },
+      'input[type=url][list]': {
+        tagName: 'input',
+        defaultRole: 'combobox',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=url',
+        attr2: 'list',
+        id: 'input[type=url][list]'
+      },
+      'input[type=url]': {
+        tagName: 'input',
+        defaultRole: 'textbox',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=url',
+        id: 'input[type=url]'
+      },
+      'input[type=week]': {
+        tagName: 'input',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        attr1: 'type=week',
+        id: 'input[type=week]'
+      },
+      ins: {
+        tagName: 'ins',
+        defaultRole: 'insertion',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'ins'
+      },
+      kbd: {
+        tagName: 'kbd',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'kbd'
+      },
+      label: {
+        tagName: 'label',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'label'
+      },
+      legend: {
+        tagName: 'legend',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'legend'
+      },
+      'li[listitem]': {
+        tagName: 'li',
+        defaultRole: 'listitem',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        ownedbyOL: true,
+        ownedbyUL: true,
+        ownedbyMenu: true,
+        id: 'li[listitem]'
+      },
+      li: {
+        tagName: 'li',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'li'
+      },
+      link: {
+        tagName: 'link',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'link'
+      },
+      main: {
+        tagName: 'main',
+        defaultRole: 'main',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'main'
+      },
+      map: {
+        tagName: 'map',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'map'
+      },
+      mark: {
+        tagName: 'mark',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'mark'
+      },
+      math: {
+        tagName: 'math',
+        defaultRole: 'math',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'math'
+      },
+      menu: {
+        tagName: 'menu',
+        defaultRole: 'list',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'group',
+          'listbox',
+          'menu',
+          'menubar',
+          'none',
+          'presentation',
+          'radiogroup',
+          'tablist',
+          'toolbar',
+          'tree',
+          'list'
+        ],
+        id: 'menu'
+      },
+      meta: {
+        tagName: 'meta',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'meta'
+      },
+      meter: {
+        tagName: 'meter',
+        defaultRole: 'meter',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'meter'
+      },
+      nav: {
+        tagName: 'nav',
+        defaultRole: 'navigation',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'menu',
+          'menubar',
+          'none',
+          'presentation',
+          'tablist',
+          'navigation'
+        ],
+        id: 'nav'
+      },
+      noscript: {
+        tagName: 'noscript',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'noscript'
+      },
+      object: {
+        tagName: 'object',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'application',
+          'document',
+          'img'
+        ],
+        id: 'object'
+      },
+      ol: {
+        tagName: 'ol',
+        defaultRole: 'list',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'group',
+          'listbox',
+          'menu',
+          'menubar',
+          'none',
+          'presentation',
+          'radiogroup',
+          'tablist',
+          'toolbar',
+          'tree',
+          'list'
+        ],
+        id: 'ol'
+      },
+      optgroup: {
+        tagName: 'optgroup',
+        defaultRole: 'group',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'optgroup'
+      },
+      option: {
+        tagName: 'option',
+        defaultRole: 'option',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'option'
+      },
+      output: {
+        tagName: 'output',
+        defaultRole: 'status',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'output'
+      },
+      p: {
+        tagName: 'p',
+        defaultRole: 'paragraph',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'p'
+      },
+      param: {
+        tagName: 'param',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'param'
+      },
+      picture: {
+        tagName: 'picture',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'picture'
+      },
+      pre: {
+        tagName: 'pre',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'pre'
+      },
+      progress: {
+        tagName: 'progress',
+        defaultRole: 'progressbar',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'progress'
+      },
+      q: {
+        tagName: 'q',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'q'
+      },
+      rp: {
+        tagName: 'rp',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'rp'
+      },
+      rt: {
+        tagName: 'rt',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'rt'
+      },
+      ruby: {
+        tagName: 'ruby',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'ruby'
+      },
+      s: {
+        tagName: 's',
+        defaultRole: 'deletion',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 's'
+      },
+      samp: {
+        tagName: 'samp',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'samp'
+      },
+      script: {
+        tagName: 'script',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'script'
+      },
+      search: {
+        tagName: 'search',
+        defaultRole: 'search',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'form',
+          'group',
+          'none',
+          'presentation',
+          'region',
+          'search'
+        ],
+        id: 'search'
+      },
+      'section[accname]': {
+        tagName: 'section',
+        defaultRole: 'region',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'alert',
+          'alertdialog',
+          'application',
+          'banner',
+          'complementary',
+          'contentinfo',
+          'dialog',
+          'document',
+          'feed',
+          'group',
+          'log',
+          'main',
+          'marquee',
+          'navigation',
+          'none',
+          'note',
+          'presentation',
+          'search',
+          'status',
+          'tabpanel',
+          'role=region',
+          'role=generic'
+        ],
+        hasAccname: true,
+        id: 'section[accname]'
+      },
+      section: {
+        tagName: 'section',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'alert',
+          'alertdialog',
+          'application',
+          'banner',
+          'complementary',
+          'contentinfo',
+          'dialog',
+          'document',
+          'feed',
+          'group',
+          'log',
+          'main',
+          'marquee',
+          'navigation',
+          'none',
+          'note',
+          'presentation',
+          'search',
+          'status',
+          'tabpanel',
+          'role=region',
+          'role=generic'
+        ],
+        id: 'section'
+      },
+      select: {
+        tagName: 'select',
+        defaultRole: 'combobox',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'menu',
+          'combobox'
+        ],
+        id: 'select'
+      },
+      'select[size-or-multiple]': {
+        tagName: 'select',
+        defaultRole: 'listbox',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        hasSizeOrMultiple: true,
+        id: 'select[size-or-multiple]'
+      },
+      slot: {
+        tagName: 'slot',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'slot'
+      },
+      small: {
+        tagName: 'small',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'small'
+      },
+      source: {
+        tagName: 'source',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'source'
+      },
+      span: {
+        tagName: 'span',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'span'
+      },
+      strong: {
+        tagName: 'strong',
+        defaultRole: 'strong',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'strong'
+      },
+      style: {
+        tagName: 'style',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'style'
+      },
+      sub: {
+        tagName: 'sub',
+        defaultRole: 'subscript',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'sub'
+      },
+      summary: {
+        tagName: 'summary',
+        defaultRole: 'summary',
+        noRoleAllowed: true,
+        anyRoleAllowed: true,
+        id: 'summary'
+      },
+      sup: {
+        tagName: 'sup',
+        defaultRole: 'superscript',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'sup'
+      },
+      svg: {
+        tagName: 'SVG',
+        defaultRole: 'graphics-document',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'SVG'
+      },
+      table: {
+        tagName: 'table',
+        defaultRole: 'table',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'table'
+      },
+      tbody: {
+        tagName: 'tbody',
+        defaultRole: 'rowgroup',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'tbody'
+      },
+      template: {
+        tagName: 'template',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'template'
+      },
+      textarea: {
+        tagName: 'textarea',
+        defaultRole: 'textbox',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'textarea'
+      },
+      tfoot: {
+        tagName: 'tfoot',
+        defaultRole: 'rowgroup',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'tfoot'
+      },
+      thead: {
+        tagName: 'thead',
+        defaultRole: 'rowgroup',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'thead'
+      },
+      time: {
+        tagName: 'time',
+        defaultRole: 'time',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'time'
+      },
+      title: {
+        tagName: 'title',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'title'
+      },
+      'td[cell]': {
+        tagName: 'td',
+        defaultRole: 'cell',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        ownedbyTable: true,
+        id: 'td[cell]'
+      },
+      'td[gridcell]': {
+        tagName: 'td',
+        defaultRole: 'gridcell',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        ownedbyGrid: true,
+        ownedbyTreegrid: true,
+        id: 'td[gridcell]'
+      },
+      td: {
+        tagName: 'td',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'td'
+      },
+      'th[cell]': {
+        tagName: 'th',
+        defaultRole: 'cell',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        ownedbyTable: true,
+        id: 'th[cell]'
+      },
+      'th[gridcell]': {
+        tagName: 'th',
+        defaultRole: 'gridcell',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        ownedbyGrid: true,
+        ownedbyTreegrid: true,
+        id: 'th[gridcell]'
+      },
+      'th[colheader]': {
+        tagName: 'th',
+        defaultRole: 'colheader',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        ownedbyTable: true,
+        ownedbyGrid: true,
+        ownedbyTreegrid: true,
+        id: 'th[colheader]'
+      },
+      th: {
+        tagName: 'th',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'th'
+      },
+      'tr[table]': {
+        tagName: 'tr',
+        defaultRole: 'row',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        ownedbyTable: true,
+        ownedbyGrid: true,
+        ownedbyTreegrid: true,
+        id: 'tr[table]'
+      },
+      tr: {
+        tagName: 'tr',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'tr'
+      },
+      track: {
+        tagName: 'track',
+        defaultRole: '',
+        noRoleAllowed: true,
+        anyRoleAllowed: false,
+        id: 'track'
+      },
+      u: {
+        tagName: 'u',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'u'
+      },
+      ul: {
+        tagName: 'ul',
+        defaultRole: 'list',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'group',
+          'listbox',
+          'menu',
+          'menubar',
+          'none',
+          'presentation',
+          'radiogroup',
+          'tablist',
+          'toolbar',
+          'tree',
+          'list'
+        ],
+        id: 'ul'
+      },
+      var: {
+        tagName: 'var',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: true,
+        id: 'var'
+      },
+      video: {
+        tagName: 'video',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'application'
+        ],
+        id: 'video'
+      },
+      wbr: {
+        tagName: 'wbr',
+        defaultRole: '',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'none',
+          'presentation'
+        ],
+        id: 'wbr'
+      }
+    }
+  };
+
+  /* ariaInHtml.js */
+
+  /* Constants */
+  const debug$Z = new DebugLogging('ariaInHtml', false);
+  const higherLevelElements = [
+    'article',
+    'aside',
+    'footer',
+    'header',
+    'main',
+    'nav',
+    'region',
+    'section'
+    ];
+
+  const landmarkRoles$1 = [
+    'banner',
+    'complementary',
+    'contentinfo',
+    'form',
+    'main',
+    'navigation',
+    'region',
+    'search'
+    ];
+
+  /**
+  * @function getAriaInHTMLInfo
+  *
+  * @desc Uses the ARIA in HTML specification to identify a default role and provide
+  *       role restriction information
+  *
+  * @param  {Object}  node        - Element node from a browser DOM
+  */
+
+  function getAriaInHTMLInfo (node) {
+    let elemInfo, type, selector;
+
+    let tagName = node.tagName.toLowerCase();
+    const elementInfo = ariaInHTMLInfo.elementInfo;
+
+    switch (tagName) {
+      case 'a':
+        if (node.href) {
+          elemInfo = elementInfo['a[href]'];
+        } else {
+          elemInfo = elementInfo['a'];
+        }
+        break;
+
+      case 'area':
+        if (node.href) {
+          elemInfo = elementInfo['area[href]'];
+        } else {
+          elemInfo = elementInfo['area'];
+        }
+        break;
+
+      case 'header':
+        if (isTopLevel(node)) {
+          elemInfo = elementInfo['header[banner]'];
+        } else {
+          elemInfo = elementInfo['header'];
+        }
+        break;
+
+      case 'figure':
+        if (node.querySelector('figcaption')) {
+          elemInfo = elementInfo['figure[figcaption]'];
+        } else {
+          elemInfo = elementInfo['figure'];
+        }
+        break;
+
+      case 'footer':
+        if (isTopLevel(node)) {
+          elemInfo = elementInfo['footer[contentinfo]'];
+        } else {
+          elemInfo = elementInfo['footer'];
+        }
+        break;
+
+      // This is a fix since you don't always want an accessible name on a form
+      case 'form':
+        if (node.hasAttribute('aria-label') ||
+          node.hasAttribute('aria-labelledby')||
+          node.hasAttribute('title')) {
+          elemInfo = elementInfo['form'];
+        } else {
+          elemInfo = elementInfo['form'];
+          elemInfo.defaultRole = 'generic';
+        }
+        break;
+
+      case 'img':
+        if (node.hasAttribute('aria-label') ||
+            node.hasAttribute('aria-labelledby')) {
+            elemInfo = elementInfo['img[accname]'];
+        } else {
+          if (node.hasAttribute('alt')) {
+            if (node.alt.trim().length) {
+              elemInfo = elementInfo['img[alt]'];
+            } else {
+              elemInfo = elementInfo['img[emptyalt]'];
+            }
+          } else {
+            elemInfo = elementInfo['img'];
+          }
+        }
+        break;
+
+      case 'input':
+        type = node.getAttribute('type');
+        if (!type) {
+          type = 'text';
+        }
+        selector = tagName + '[type=' + type + ']';
+        if (node.hasAttribute('list')) {
+          selector += '[list]';
+        }
+
+        elemInfo = elementInfo[selector];
+
+        switch (type) {
+          case 'color':
+          case 'date':
+          case 'datetime-local':
+          case 'month':
+          case 'password':
+          case 'time':
+          case 'week':
+            elemInfo.defaultRole = 'textbox';
+            break;
+
+          case 'file':
+            elemInfo.defaultRole = 'button';
+            break;
+        }
+
+        break;
+
+      case 'li':
+        if (isListitemInList(node)) {
+          elemInfo = elementInfo[`${tagName}[listitem]`];
+        } else {
+          elemInfo = elementInfo[`${tagName}`];
+        }
+        break;
+
+
+      case 'section':
+        if (node.hasAttribute('aria-label') ||
+          node.hasAttribute('aria-labelledby')||
+          node.hasAttribute('title')) {
+          elemInfo = elementInfo['section[accname]'];
+        } else {
+          elemInfo = elementInfo['section'];
+        }
+        break;
+
+      case 'select':
+        if (node.multiple || (node.size > 1)) {
+          elemInfo = elementInfo['select[size-or-multiple]'];
+        } else {
+          elemInfo = elementInfo['select'];
+        }
+        break;
+
+      case 'td':
+      case 'th':
+        if (isCellInGrid(node)) {
+            elemInfo = elementInfo[`${tagName}[gridcell]`];
+        } else {
+          if (isCellInLayoutTable(node)) {
+            elemInfo = elementInfo[tagName];
+          } else {
+            elemInfo = elementInfo[`${tagName}[cell]`];
+          }
+        }
+        break;
+
+      case 'tr':
+        if (isCellInLayoutTable(node)) {
+          elemInfo = elementInfo['tr'];
+        } else {
+          elemInfo = elementInfo[`tr[table]`];
+        }
+        break;
+
+      default:
+        elemInfo = elementInfo[tagName];
+
+    }
+
+    if (!elemInfo) {
+        elemInfo = {
+        "tagName": node.tagName,
+        "defaultRole": "generic",
+        "noRoleAllowed": false,
+        "anyRoleAllowed": true,
+        "id": "custom"
+      };
+    }
+
+    if (debug$Z.flag) {
+      if (tagName === 'h2') {
+        debug$Z.tag(node);
+      }
+      debug$Z.log(`[elemInfo][id]: ${elemInfo.id} (${tagName})`);
+    }
+
+    return elemInfo;
+  }
+
+
+  /**
+  * @function getString
+  *
+  * @desc Checks if a value is a string, if it is a string convert it to lowercase.
+  *       If not a string, return an empty string
+  *
+  * @param  {String}  value        - value to be checked
+  */
+
+  function getString (value) {
+    if (typeof value === 'string') {
+      return value.trim().toLowerCase();
+    }
+    return '';
+  }
+
+  /**
+  * @function isTopLevel
+  *
+  * @desc Tests the node to see if it is in the content of any other
+  *       elements with default landmark roles or is the descendant
+  *       of an element with a defined landmark role
+  *
+  * @param  {Object}  node        - Element node from a browser DOM
+  */
+
+  function isTopLevel (node) {
+    node = node && node.parentNode;
+    while (node && (node.nodeType === Node.ELEMENT_NODE)) {
+      const tagName = getString(node.tagName);
+      const role = getString(node.getAttribute('role'));
+
+      if (higherLevelElements.includes(tagName) ||
+          landmarkRoles$1.includes(role)) {
+        return false;
+      }
+      node = node.parentNode;
+    }
+    return true;
+  }
+
+
+  /**
+  * @function isListiemInList
+  *
+  * @desc Returns true if the listitem is a descendant of OL, UL or MENU element
+  *
+  * @param  {Object}  node - Element node from a browser DOM
+  *
+  * @return {Boolean} see @desc
+  */
+
+  function isListitemInList  (node) {
+    node = node && node.parentNode;
+    while (node && (node.nodeType === Node.ELEMENT_NODE)) {
+      const tagName = getString(node.tagName);
+      if (['menu', 'ol', 'ul'].includes(tagName)) {
+        return true;
+      }
+      node = node.parentNode;
+    }
+    return false;
+  }
+
+  /**
+  * @function isCellInGrid
+  *
+  * @desc Tests the table cell is part of a grid widget
+  *
+  * @param  {Object}  node - Element node from a browser DOM
+  */
+
+  function isCellInGrid  (node) {
+    node = node && node.parentNode;
+    while (node && (node.nodeType === Node.ELEMENT_NODE)) {
+      const tagName = getString(node.tagName);
+      const role = getString(node.getAttribute('role'));
+
+      if (tagName === 'table') {
+        return role === 'grid' || role === 'treegrid';
+      }
+
+      node = node.parentNode;
+    }
+    return false;
+  }
+
+  /**
+  * @function isCellInLayoutTable
+  *
+  * @desc Tests the table cell is part of a table that
+  *       has been identified as being used for layout
+  *
+  * @param  {Object}  node - Element node from a browser DOM
+  */
+
+  function isCellInLayoutTable  (node) {
+    node = node && node.parentNode;
+    while (node && (node.nodeType === Node.ELEMENT_NODE)) {
+      const tagName = getString(node.tagName);
+      const role = getString(node.getAttribute('role'));
+
+      if (tagName === 'table') {
+        return role === 'none' || role === 'presentation';
+      }
+      node = node.parentNode;
+    }
+    return false;
+  }
+
+  /* visibility.js */
+
+  /* Constants */
+  const debug$Y = new DebugLogging('visibility', false);
+
+  /**
+   * @class Visibility
+   *
+   * @desc Identifies the properties used to determine the visibility of the element
+   *       for both the graphical rendering and assistive technologies
+   *
+   * @param  {Object}  parentDomElement - Parent DomElement containing ancestor style information
+   * @param  {Object}  elementNode      - dom element node 
+   */
+
+  class Visibility {
+    constructor (parentDomElement, elementNode) {
+      let parentVisibility = parentDomElement ? parentDomElement.visibility : false;
+      let style = window.getComputedStyle(elementNode, null);
+      let tagName = elementNode.tagName ? elementNode.tagName : '';
+
+      this.isHidden           = this.normalizeHidden (elementNode, parentVisibility);
+      this.isAriaHidden       = this.normalizeAriaHidden (elementNode, parentVisibility);
+      this.isDisplayNone      = this.normalizeDisplay (style, parentVisibility);
+      this.isVisibilityHidden = this.normalizeVisibility (style, parentVisibility);
+      this.isSmallHeight      = this.normalizeHeight(style, parentVisibility);
+      this.isSmallFont        = this.getFontSize(style);
+      this.isInClosedDetails  = this.normalizeInClosedDetails(elementNode, parentVisibility);
+
+      // Set default values for visibility
+      this.isVisibleOnScreen = true;
+      this.isVisibleToAT     = true; // AT -> Assistive Technology
+
+      if (this.isHidden ||
+          this.isDisplayNone ||
+          this.isVisibilityHidden ||
+          this.isInClosedDetails) {
+
+        if (tagName !== 'area') {
+          this.isVisibleOnScreen = false;
+          this.isVisibleToAT     = false;
+        }
+      }
+
+      if (this.isSmallHeight ||
+          this.isSmallFont) {
+        this.isVisibleOnScreen = false;
+      }
+
+      if (this.isAriaHidden) {
+        this.isVisibleToAT = false;
+      }
+
+      if (debug$Y.flag) {
+        debug$Y.separator();
+        debug$Y.tag(elementNode);
+        debug$Y.log('[          isHidden]: ' + this.isHidden);
+        debug$Y.log('[      isAriaHidden]: ' + this.isAriaHidden);
+        debug$Y.log('[     isDisplayNone]: ' + this.isDisplayNone);
+        debug$Y.log('[isVisibilityHidden]: ' + this.isVisibilityHidden);
+        debug$Y.log('[     isSmallHeight]: ' + this.isSmallHeight);
+        debug$Y.log('[       isSmallFont]: ' + this.isSmallFont);
+        debug$Y.log('[ isInClosedDetails]: ' + this.isInClosedDetails);
+        debug$Y.log('[ isVisibleOnScreen]: ' + this.isVisibleOnScreen);
+        debug$Y.log('[     isVisibleToAT]: ' + this.isVisibleToAT);
+      }
+    }
+
+    /**
+     * @method normalizeInClosedDetails
+     *
+     * @desc Returns true if element is in a closed details eleemnt
+     *
+     * @param {Object}  node              - dom element node
+     * @param {Object}  parentVisibility  - Computed visibility information for parent
+     *                                      DomElement
+     *
+     * @return {Boolean} see @desc
+     */
+
+    normalizeInClosedDetails (node, parentVisibility) {
+      if (node.parentNode.tagName === 'DETAILS' &&
+          node.tagName !== 'SUMMARY' &&
+          !node.parentNode.open) {
+        return true;
+      }
+      return parentVisibility.isInClosedDetails;
+    }
+
+    /**
+     * @method normalizeHidden
+     *
+     * @desc Determine if the hidden attribute is set on this element
+     *       or one of its ancestors 
+     *
+     * @param {Object}  node              - dom element node
+     * @param {Object}  parentVisibility  - Computed visibility information for parent
+     *                                      DomElement
+     *
+     * @return {Boolean}  Returns true if element or one of its ancestors has the 
+     *                    hidden attribute 
+     */
+
+    normalizeHidden (node, parentVisibility) {
+      let hidden = node.getAttribute('hidden');
+      hidden = hidden ? true : false;
+      if (parentVisibility &&
+          parentVisibility.hidden)  {
+        hidden = true;
+      }
+      return hidden;
+    }
+
+    /**
+     * @method normalizeAriaHidden
+     *
+     * @desc Determine if the aria-hidden attribute is set to true on this element
+     *       or one of its ancestors 
+     *
+     * @param {Object}  node              - dom element node
+     * @param {Object}  parentVisibility  - Computed visibility information for parent
+     *                                      DomElement
+     *
+     * @return {Boolean}  Returns true if element or one of its ancestors has the 
+     *                    aria-hidden attribute set to true 
+     */
+
+    normalizeAriaHidden (node, parentVisibility) {
+      let hidden = false;
+      let ariaHidden = node.getAttribute('aria-hidden');
+      if (ariaHidden) {
+        ariaHidden = ariaHidden.trim().toLowerCase();
+        hidden = (ariaHidden === 'true') ? true : false;
+      }
+      if (parentVisibility &&
+          parentVisibility.isAriaHidden)  {
+        hidden = true;
+      }
+      return hidden;
+    }
+
+    /**
+     * @method normalizeDisplay
+     *
+     * @desc Computes a boolean value to indicate whether the content or its
+     *       ancestor that results in content not being displayed based on 
+     *       the CSS display property
+     *
+     * @param {Object}  style             - Computed style object for an element node
+     * @param {Object}  parentVisibility  - Computed visibility information for parent
+     *                                      DomElement
+     *
+     * @return {Boolean}  Returns a true if content is visible
+     */
+
+    normalizeDisplay (style, parentVisibility) {
+      let display = style.getPropertyValue("display");
+      let isDisplayNone = false;
+
+      if ((display === 'none') || 
+          (parentVisibility && parentVisibility.isDisplayNone)) {
+        isDisplayNone = true;
+      }
+
+      return isDisplayNone;
+    }
+
+    /**
+     * @method normalizeVisibility
+     *
+     * @desc Computes a boolean value to indicate whether the content or its
+     *       ancestor that results in content not being displayed based on 
+     *       the CSS visibility property
+     *
+     * @param {Object}  style             - Computed style object for an element node
+     * @param {Object}  parentVisibility  - Computed visibility information for parent
+     *                                      DomElement
+     *
+     * @return {Boolean}  Returns a true if content is visible
+     */
+
+    normalizeVisibility (style, parentVisibility) {
+      let visibility = style.getPropertyValue("visibility");
+      let isVisibilityHidden =  parentVisibility.isVisibilityHidden; 
+
+      if ((visibility === 'collapse') ||
+          (visibility === 'hidden')) {
+          isVisibilityHidden = true;
+      }
+      else {
+        if (visibility === 'visible') {
+          isVisibilityHidden = false;        
+        }
+      }
+      return isVisibilityHidden;
+    }
+
+    /**
+     * @method normalizeHeight
+     *
+     * @desc Computes a boolean value to indicate whether the content or its
+     *       ancestor that results in content not being displayed based on
+     *       the CSS height and overflow properties
+     *
+     * @param {Object}  style             - Computed style object for an element node
+     * @param {Object}  parentVisibility  - Computed visibility information for parent
+     *                                      DomElement
+     *
+     * @return {Boolean}  Returns a true if content is visible
+     */
+
+    normalizeHeight (style, parentVisibility) {
+      const height   = parseFloat(style.getPropertyValue("height"));
+      const overflow = style.getPropertyValue("overflow");
+      return parentVisibility.isSmallHeight || ((height <= 1) && (overflow === 'hidden'));
+    }
+
+    /**
+     * @method getFontSize
+     *
+     * @desc Computes a boolean value to indicate whether the content or its
+     *       ancestor that results in content not being displayed based on
+     *       the CSS height and overflow properties
+     *
+     * @param {Object}  style             - Computed style object for an element node
+     *
+     * @return {Boolean}  Returns a true if content is small
+     */
+
+    getFontSize (style) {
+      const fontSize = parseFloat(style.getPropertyValue("font-size"));
+      return fontSize <= 1;
+    }
+  }
+
+  /*
+  *   embedded.js
+  *
+  *   To calculate the accessible name of a form element from its label, it is
+  *   necessary to aggregate the text nodes in the label along with the values
+  *   of any embedded controls that text content may contain.
+  *
+  *   isEmbeddedControl is used to determine whether or not a form control can
+  *   be embedded within text content.
+  *
+  *   getEmbeddedControlValue is used to get the value of an embedded control
+  *   based on its ARIA role.
+  */
+
+  const rangeRoles = ['slider', 'spinbutton'];
+
+  /*
+  *   @function isEmbeddedControl
+  *
+  *   @desc  Determine whether element is an element or has a role
+  *          that could be embedded within text content of a label.
+  *
+  *   @parm {Object}  element  - DOM node of element
+  *
+  *   @returns {Boolean}  True if element has content, otherwise false
+  */
+  function isEmbeddedControl (element) {
+    return isInputWithValue(element) ||
+           isSelectElement(element) ||
+           rangeRoles.includes(getRole(element));
+  }
+
+  /*
+  *   @function getEmbeddedControlValue
+  *
+  *   @desc Based on the tag name or the role of element,
+  *         value of the embedded control.
+  *
+  *   @parm {Object}  element  - DOM node of input element
+  *
+  *   @returns {String}  Content of the value attribute if defined,
+  *                      else empty string
+  */
+  function getEmbeddedControlValue (element) {
+    if (isInputWithValue(element)) {
+      return getAttributeValue(element, 'value') + ' ';
+    }
+    else {
+      if (isSelectElement(element)) {
+        return getSelectValue(element) + ' ';
+      }
+      else {
+        if (rangeRoles.includes(getRole(element))) {
+          return getRangeValue(element) + ' ';
+        }
+      }
+    }
+
+    return '';
+  }
+
+  // LOW-LEVEL FUNCTIONS
+
+  /*
+  *   @function getRangeValue
+  *
+  *   @desc Get current value of element with role 'slider'
+  *         or 'spinbutton' (i.e., subclass of abstract 'range' role).
+  *
+  *   @parm {Object}  element  - DOM node of select element
+  *
+  *   @returns {String}  @desc
+  */
+  function getRangeValue (element) {
+    let value;
+
+    value = getAttributeValue(element, 'aria-valuetext');
+    if (value.length) return value;
+
+    value = getAttributeValue(element, 'aria-valuenow');
+    if (value.length) return value;
+
+    return '';
+  }
+
+  /*
+  *   @function getSelectValue
+  *
+  *   @desc Returns the content of the selected option elements
+  *         of a select element, if no selected options returns
+  *         empty string
+  *
+  *   @parm {Object}  element  - DOM node of select element
+  *
+  *   @returns {String}  @desc
+  */
+  function getSelectValue (element) {
+    let tagName = element.tagName.toLowerCase();
+
+    if (tagName === 'select') {
+      let arr = [], selectedOptions = element.selectedOptions;
+
+      for (let i = 0; i < selectedOptions.length; i++) {
+        let option = selectedOptions[i];
+        let value = normalize(option.value);
+        if (value.length) arr.push(value);
+      }
+
+      if (arr.length) return arr.join(' ');
+    }
+
+    return '';
+  }
+
+  /*   @function  getRole
+  *
+  *    @desc  If defined return attribbute role
+  *
+  *    @parm {Object}  element  - DOM node of element
+  *
+  *    @returns {String}  see @desc
+  */
+  function getRole (element) {
+    return element.hasAttribute('role') ? element.getAttribute('role').toLowerCase() : '';
+  }
+
+  /*   @function  isInputWithValue
+  *
+  *    @desc  Returns true if an input element can be used in accessible
+  *           name calculation, (e.g. not all types can be included)
+  *
+  *    @parm {Object}  element  - DOM node of element
+  *
+  *    @returns {Boolean}  see @desc
+  */
+  function isInputWithValue (element) {
+    // Included types are based on testing with Chrome browser
+    const includeTypes = ['button', 'email', 'number', 'password', 'range', 'tel', 'text', 'url'];
+    const tagName   = element.tagName.toLowerCase();
+    const typeValue = element.hasAttribute('type') ?
+                      element.getAttribute('type').toLowerCase() :
+                      'text';
+
+    return (tagName === 'input') &&
+          includeTypes.includes(typeValue);
+  }
+
+  /*   @function  isSelectElement
+  *
+  *    @desc  Returns true if a select element, otherwise false
+  *
+  *    @parm {Object}  element  - DOM node of element
+  *
+  *    @returns {Boolean}  see @desc
+  */
+  function isSelectElement (element) {
+    const tagName = element.tagName.toLowerCase();
+    return (tagName === 'select');
+  }
+
+  /*
+  *   namefrom.js
+  */
+  const debug$X = new DebugLogging('nameFrom', false);
+  debug$X.flag = false;
+
+  /*
+  *   @function getElementContents
+  *
+  *   @desc  Construct the ARIA text alternative for element by
+  *          processing its element and text node descendants and then adding any CSS-
+  *          generated content if present.
+  *
+  *   @parm {Object}  element     - DOM node of element
+  *   @parm {Object}  forElement  - DOM node of element being labelled
+  *
+  *   @returns {[String, Boolean]}  Returns a string and a boolean indicating
+  *                                 the name includes some image content
+  */
+  function getElementContents (element, forElement) {
+    let result = '';
+    let includesAlt       = false;
+    let includesAriaLabel = false;
+
+    if (element.hasChildNodes()) {
+      let children = element.childNodes,
+          arrayOfStrings = [];
+
+      for (let i = 0; i < children.length; i++) {
+        const [contents, inclAlt, inclAriaLabel] = getNodeContents(children[i], forElement);
+        if (contents && contents.length) arrayOfStrings.push(contents);
+        includesAlt       = includesAlt       || inclAlt;
+        includesAriaLabel = includesAriaLabel || inclAriaLabel;
+      }
+
+      result = (arrayOfStrings.length) ? arrayOfStrings.join('') : '';
+    }
+
+    const name = normalize(addCssGeneratedContent(element, result));
+
+    return [name, includesAlt, includesAriaLabel];
+  }
+
+  // HIGHER-LEVEL FUNCTIONS THAT RETURN AN OBJECT WITH SOURCE PROPERTY
+
+  /*
+  *   @function nameFromAttribute
+  *
+  *   @desc
+  *
+  *   @parm {Object}  element    - DOM node of element
+  *   @parm {String}  attribute  - name of attribute (e.g. 'alt', 'value')
+  *
+  *   @returns {Object}  @desc
+  */
+  function nameFromAttribute (element, attribute) {
+    let name;
+
+    name = getAttributeValue(element, attribute);
+    if (name.length) return { name: normalize(name),
+                              source: attribute,
+                              includesAlt: false,
+                              includesAriaLabel: attribute === 'aria=label',
+                              nameIsNotVisible: true
+                             };
+    return null;
+  }
+
+  /*
+  *   @function  nameFromAltAttribute
+  *
+  *   @desc
+  *
+  *   @parm {Object}  element - DOM node of element
+  *
+  *   @returns {Object}  @desc
+  */
+  function nameFromAltAttribute (element) {
+    let name = element.getAttribute('alt');
+
+    // Attribute is present
+    if (name !== null) {
+      name = normalize(name);
+      return { name: name,
+               source: 'alt',
+               includesAlt: true,
+               includesAriaLabel: false,
+               nameIsNotVisible: false
+             };
+    }
+
+    // Attribute not present
+    return null;
+  }
+
+  /*
+  *   @function nameFromContents
+  *   @desc
+  *
+  *   @parm {Object}  element - DOM node of element
+  *
+  *   @returns {Object}  @desc
+  */
+  function nameFromContents (element) {
+    const [name, inclAlt, inclAriaLabel] = getElementContents(element);
+
+    if (name.length) {
+      return  { name: normalize(name),
+                source: 'contents',
+                includesAlt: inclAlt,
+                includesAriaLabel: inclAriaLabel,
+                nameIsNotVisible: false
+              };
+    }
+
+    return null;
+  }
+
+  /*
+  *   @function nameFromDefault
+  *   @desc
+  *
+  *   @parm {Object}  element - DOM node of element
+  *
+  *   @returns {Object}  @desc
+  */
+  function nameFromDefault (name) {
+    return name.length ? { name: name,
+                           source: 'default',
+                           includesAlt: false,
+                           includesAriaLabel: false,
+                           nameIsNotVisible: false
+                         } : null;
+  }
+
+  /*
+  *   @function nameFromDescendant
+  *   @desc
+  *
+  *   @parm {Object}  element - DOM node of element
+  *
+  *   @returns {Object}  @desc
+  */
+  function nameFromDescendant (element, tagName) {
+    let descendant = element.querySelector(tagName);
+    if (descendant) {
+      let [name, incAlt, incAriaLabel] = descendant.hasAttribute('aria-label') ?
+                 [descendant.getAttribute('aria-label'), false, true] :
+                 getElementContents(descendant);
+      if (name.length) return { name: normalize(name),
+                                source: tagName + ' element',
+                                includesAlt: incAlt,
+                                includesAriaLabel: incAriaLabel,
+                                nameIsNotVisible: isDisplayNone(descendant) || isVisibilityHidden(descendant)
+                              };
+    }
+
+    return null;
+  }
+
+  /*
+  *   @function nameFromLabelElement
+  *   @desc
+  *
+  *   @parm {Object}  doc     - Parent document of the element
+  *   @parm {Object}  element - DOM node of element
+  *
+  *   @returns {Object}  @desc
+  */
+  function nameFromLabelElement (doc, element) {
+    let label, name, inclAlt, inclAriaLabel, notVisible;
+    // label [for=id]
+    if (element.id) {
+      try {
+        label = doc.querySelector('[for="' + element.id + '"]');
+        if (label) {
+          [name, inclAlt, inclAriaLabel, notVisible] = label.hasAttribute('aria-label') ?
+                 [label.getAttribute('aria-label'), false, true, true] :
+                 getElementContents(label, element);
+          if (name.length) return { name: normalize(name),
+                                    source: 'label reference',
+                                    includeAlt: inclAlt,
+                                    includeAriaLabel: inclAriaLabel,
+                                    nameIsNotVisibile: notVisible
+                                   };
+        }
+      } catch (error) {
+        debug$X.log(`[nameFromLabelElement][error]: ${error}`);
+      }
+    }
+
+    // label encapsulation
+    if (typeof element.closest === 'function') {
+      label = element.closest('label');
+      if (label) {
+        [name, inclAlt, inclAriaLabel] = label.hasAttribute('aria-label') ?
+               [label.getAttribute('aria-label'), false, true] :
+               getElementContents(label, element);
+        if (name.length) return { name: normalize(name),
+                                  source: 'label encapsulation',
+                                  includesAlt: inclAlt,
+                                  includesAriaLabel: inclAriaLabel
+                              };
+      }
+    }
+
+    return null;
+  }
+
+  /*
+  *   @function nameFromLegendElement
+  *
+  *   @desc
+  *
+  *   @parm {Object}  doc     - Parent document of the element
+  *   @parm {Object}  element - DOM node of element
+  *
+  *   @returns {Object}  @desc
+  */
+  function nameFromLegendElement (doc, element) {
+    let name, legend, inclAlt, inclAriaLabel;
+
+    // legend
+    if (element) {
+      legend = element.querySelector('legend');
+      if (legend) {
+        [name, inclAlt, inclAriaLabel] = legend.hasAttribute('aria-label') ?
+               [legend.getAttribute('aria-label'), false, true] :
+               getElementContents(legend, element);
+      if (name.length) return { name: normalize(name),
+                                source: 'legend',
+                                includesAlt: inclAlt,
+                                includesAriaLabel: inclAriaLabel
+                            };
+      }
+    }
+    return null;
+  }
+
+  /*
+  *   @function nameFromDetailsOrSummary
+  *
+  *   @desc If element is expanded (has open attribute),
+  *         return the contents of the summary element followed
+  *         by the text contents of element and all of its non-summary
+  *         child elements. Otherwise, return only the contents of the
+  *         first summary element descendant.
+  *
+  *   @parm {Object}  element - DOM node of element
+  *
+  *   @returns {Object}  @desc
+  */
+
+  function nameFromDetailsOrSummary (element) {
+    let name, summary, inclAlt = false, inclAriaLabel = false;
+
+    function isExpanded (elem) { return elem.hasAttribute('open'); }
+
+    // At minimum, always use summary contents
+    summary = element.querySelector('summary');
+    if (summary) [name, inclAlt, inclAriaLabel] = getElementContents(summary);
+
+    // Return either summary + details (non-summary) or summary only
+    if (isExpanded(element)) {
+      name += getContentsOfChildNodes(element, function (elem) {
+        return elem.tagName.toLowerCase() !== 'summary';
+      });
+      if (name.length) return { name: normalize(name),
+                                source: 'contents',
+                                includesAlt : inclAlt,
+                                includesAriaLabel: inclAriaLabel
+                              };
+    }
+    else {
+      if (name.length) return { name: normalize(name),
+                                source: 'summary element',
+                                includesAlt : inclAlt,
+                                includesAriaLabel: inclAriaLabel
+                              };
+
+    }
+
+    return null;
+  }
+
+  // LOW-LEVEL HELPER FUNCTIONS (NOT EXPORTED)
+
+  /*
+  *   @function  isDisplayNone
+  *
+  *   @desc Returns true if the element or parent element has set the CSS
+  *         display property to none or has the hidden attribute,
+  *         otherwise false
+  *
+  *   @param  {Object}  node  - a DOM node
+  *
+  *   @returns  {Boolean} see @desc
+  */
+
+  function isDisplayNone (node, psuedo=null) {
+
+    if (!node) {
+      return false;
+    }
+
+    if (node.nodeType === Node.TEXT_NODE) {
+        node = node.parentNode;
+    }
+
+    if (node.nodeType === Node.ELEMENT_NODE) {
+
+      if (node.hasAttribute('hidden')) {
+        return true;
+      }
+
+      // aria-hidden attribute with the value "true" is the same as
+      // setting the hidden attribute for name calculation
+      if (node.hasAttribute('aria-hidden')) {
+        if (node.getAttribute('aria-hidden').toLowerCase()  === 'true') {
+          return true;
+        }
+      }
+
+      const style = window.getComputedStyle(node, psuedo);
+
+      const display = style.getPropertyValue("display");
+
+      if (display) {
+        return display === 'none';
+      }
+    }
+    return false;
+  }
+
+  /*
+  *   @function isVisibilityHidden
+  *
+  *   @desc Returns true if the node (or it's parrent) has the CSS visibility
+  *         property set to "hidden" or "collapse", otherwise false
+  *
+  *   @param  {Object}   node  -  DOM node
+  *
+  *   @return  see @desc
+  */
+
+  function isVisibilityHidden(node, psuedo=null) {
+
+    if (!node) {
+      return false;
+    }
+
+    if (node.nodeType === Node.TEXT_NODE) {
+      node = node.parentNode;
+    }
+
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const style = window.getComputedStyle(node, psuedo);
+
+      const visibility = style.getPropertyValue("visibility");
+      if (visibility) {
+        return (visibility === 'hidden') || (visibility === 'collapse');
+      }
+    }
+    return false;
+  }
+
+  /*
+  *   @function isAriaHiddenFalse
+  *
+  *   @desc Returns true if the node has the aria-hidden property set to
+  *         "true", otherwise false.
+  *         NOTE: This function is important in the accessible name
+  *               calculation, since content hidden with a CSS technique
+  *               can be included in the accessible name calculation when
+  *               aria-hidden is set to false for the chrome browser
+  *
+  *   @param  {Object}   node  -  DOM node
+  *
+  *   @return  see @desc
+  */
+
+  function isAriaHiddenTrue(node) {
+
+    if (!node) {
+      return false;
+    }
+
+    if (node.nodeType === Node.TEXT_NODE) {
+        node = node.parentNode;
+    }
+
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      return (node.hasAttribute('aria-hidden') &&
+          (node.getAttribute('aria-hidden').toLowerCase() === 'true'));
+    }
+
+    return false;
+  }
+
+  /*
+  *   @function includeContentInName
+  *
+  *   @desc Checks the CSS display and hidden properties, and
+  *         the aria-hidden property to see if the content
+  *         should be included in the accessible name
+  *        calculation.  Returns true if it should be
+  *         included, otherwise false
+  *
+  *   @param  {Object}   node  -  DOM node
+  *
+  *   @return  see @desc
+  */
+
+  function includeContentInName(node) {
+    // NOTE: Chrome is the only major browser using aria-hidden=false in
+    //       accessible name computation
+    const flag = isAriaHiddenTrue(node);
+    return !flag && (!isVisibilityHidden(node) && !isDisplayNone(node));
+  }
+
+  /*
+  *   @function getNodeContents
+  *
+  *   @desc Get text content from a node for a name or description
+  *
+  *   @param  {Object}   node     -  DOM node
+  *   @param  {Object}   forElem  -  DOM node the name is being computed for
+  *
+  *   @returns {[String, Boolean, Boolean]}  Returns a string and two boolean values
+  *                                          indicating the name includes alt text
+  *                                          and content from aria-label
+  */
+
+  function getNodeContents (node, forElem, alwaysInclude=false) {
+    let contents = '';
+    let nc;
+    let arr = [];
+    let includesAlt = false;
+    let includesAriaLabel = false;
+    let nInclAlt, nInclAriaLabel;
+
+    // Cannot recursively use the element
+    // in computing it's accessible name
+    if (node === forElem) {
+      return ['', false, false];
+    }
+
+    switch (node.nodeType) {
+
+        case Node.ELEMENT_NODE:
+        // If aria-label is present, node recursion stops and
+        // aria-label value is returned
+        if (node.hasAttribute('aria-label')) {
+          if (includeContentInName(node) || alwaysInclude ) {
+            contents = node.getAttribute('aria-label');
+            includesAriaLabel = true;
+          }
+        }
+        else {
+          if (node instanceof HTMLSlotElement) {
+            // if no slotted elements, check for default slotted content
+            const assignedNodes = node.assignedNodes().length ? node.assignedNodes() : node.assignedNodes({ flatten: true });
+            assignedNodes.forEach( assignedNode => {
+              [nc, nInclAlt, nInclAriaLabel] = getNodeContents(assignedNode, forElem);
+              if (nc && nc.length) arr.push(nc);
+              includesAlt = includesAlt       || nInclAlt;
+              includesAlt = includesAriaLabel || nInclAriaLabel;
+            });
+            contents = (arr.length) ? arr.join('') : '';
+          } else {
+            if (couldHaveAltText(node) && (includeContentInName(node) || alwaysInclude)) {
+              contents = getAttributeValue(node, 'alt');
+              includesAlt = true;
+            }
+            else {
+              if (isEmbeddedControl(node) && (includeContentInName(node) || alwaysInclude)) {
+                contents = getEmbeddedControlValue(node);
+              }
+              else {
+                if (!isAriaHiddenTrue(node) && node.hasChildNodes()) {
+                  let children = Array.from(node.childNodes);
+                  children.forEach( child => {
+                    [nc, nInclAlt, nInclAriaLabel] = getNodeContents(child, forElem);
+                    if (nc && nc.length) arr.push(nc);
+                    includesAlt = includesAlt       || nInclAlt;
+                    includesAlt = includesAriaLabel || nInclAriaLabel;
+                  });
+                  contents = (arr.length) ? arr.join('') : '';
+                }
+              }
+            }
+            // For all branches of the ELEMENT_NODE case...
+          }
+        }
+        contents = addCssGeneratedContent(node, contents);
+        if (contents.length) {
+          contents = ' ' + contents;
+        }
+        break;
+
+      case Node.TEXT_NODE:
+        if (includeContentInName(node) || alwaysInclude) {
+          contents = normalizeLeadingAndTrailingSpace(node.textContent);
+        }
+        break;
+    }
+
+    return [contents, includesAlt, includesAriaLabel];
+  }
+
+  /*
+  *   couldHaveAltText: Based on HTML5 specification, determine whether
+  *   element could have an 'alt' attribute.
+  */
+  function couldHaveAltText (element) {
+    let tagName = element.tagName.toLowerCase();
+
+    switch (tagName) {
+      case 'img':
+      case 'area':
+        return true;
+      case 'input':
+        return (element.type && element.type === 'image');
+    }
+
+    return false;
+  }
+
+  /*
+  *   addCssGeneratedContent: Add CSS-generated content for pseudo-elements
+  *   :before and :after. According to the CSS spec, test that content value
+  *   is other than the default computed value of 'none'.
+  *
+  *   Note: Even if an author specifies content: 'none', because browsers add
+  *   the double-quote character to the beginning and end of computed string
+  *   values, the result cannot and will not be equal to 'none'.
+  */
+  function addCssGeneratedContent (element, contents) {
+
+    function isVisible (style) {
+
+      let flag = true;
+
+      const display = style.getPropertyValue("display");
+      if (display) {
+        flag = flag && display !== 'none';
+      }
+
+      const visibility = style.getPropertyValue("visibility");
+      if (visibility) {
+        flag = flag && (visibility !== 'hidden') && (visibility !== 'collapse');
+      }
+      return flag;
+    }
+
+    let result = contents;
+    const styleBefore = getComputedStyle(element, ':before');
+    const styleAfter  = getComputedStyle(element, ':after');
+
+    const beforeVisible = isVisible(styleBefore);
+    const afterVisible  = isVisible(styleAfter);
+
+    const prefix = beforeVisible ?
+                   styleBefore.content :
+                   '';
+
+    const suffix = afterVisible ?
+                   styleAfter.content :
+                   '';
+
+    if ((prefix[0] === '"') && !prefix.toLowerCase().includes('moz-')) {
+      result = prefix.substring(1, (prefix.length-1)) + result;
+    }
+
+    if ((suffix[0] === '"') && !suffix.toLowerCase().includes('moz-')) {
+      result = result + suffix.substring(1, (suffix.length-1)) ;
+    }
+
+    return result;
+  }
+
+  /*
+  *   getContentsOfChildNodes: Using predicate function for filtering element
+  *   nodes, collect text content from all child nodes of element.
+  */
+  function getContentsOfChildNodes (element, predicate) {
+    let arr = [], content;
+
+    Array.prototype.forEach.call(element.childNodes, function (node) {
+      switch (node.nodeType) {
+        case (Node.ELEMENT_NODE):
+          if (predicate(node)) {
+            content = getElementContents(node)[0];
+            if (content.length) arr.push(content);
+          }
+          break;
+        case (Node.TEXT_NODE):
+          content = normalizeLeadingAndTrailingSpace(node.textContent);
+          if (content.length) arr.push(content);
+          break;
+      }
+    });
+
+    if (arr.length) return arr.join(' ');
+    return '';
+  }
+
+  /*
+  *   getaccname.js
+  *
+  *   Note: Information in this module is based on the following documents:
+  *   1. HTML Accessibility API Mappings 1.0 (http://rawgit.com/w3c/aria/master/html-aam/html-aam.html)
+  *   2. SVG Accessibility API Mappings (http://rawgit.com/w3c/aria/master/svg-aam/svg-aam.html)
+  */
+
+  const noAccName = {
+    name: '',
+    source: 'none',
+    includesAlt: false,
+    includesAriaLabel: false,
+    nameIsNotVisible: false,
+    cellHeaders: false
+  };
+
+  // These roles are based on the ARAI 1.2 specification
+  const  rolesThatAllowNameFromContents = [
+    'button',
+    'cell',
+    'checkbox',
+    'columnheader',
+    'gridcell',
+    'heading',
+    'link',
+    'menuitem',
+    'menuitemcheckbox',
+    'menuitemradio',
+    'option',
+    'radio',
+    'row',
+    'rowheader',
+    'sectionhead',
+    'switch',
+    'tab',
+    'tooltip',
+    'treeitem'
+  ];
+
+  // These elements that allow name from content
+  const  elementsThatAllowNameFromContents = [
+  'a',
+  'button',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'summary'
+  ];
+  const debug$W = new DebugLogging('getAccName', false);
+  debug$W.flag = false;
+
+  function debugAccName (accName) {
+    if (debug$W.flag && accName.name) {
+      debug$W.log(`====================`);
+      debug$W.log(`[             name]: ${accName.name}`);
+      debug$W.log(`[           source]: ${accName.source}`);
+      debug$W.log(`[      includesAlt]: ${accName.includesAlt}`);
+      debug$W.log(`[includesAriaLabel]: ${accName.includesAriaLabel}`);
+      debug$W.log(`[ nameIsNotVisible]: ${accName.nameIsNotVisible}`);
+    }
+  }
+
+  /*
+  *   @function getAccessibleName
+  *
+  *   @desc Use the ARIA Roles Model specification for accessible
+  *         name calculation based on its precedence order:
+  *         (1) Use aria-labelledby, unless a traversal is already underway;
+  *         (2) Use aria-label attribute value;
+  *         (3) Use whatever method is specified by the native semantics of the
+  *             element, which includes, as last resort, use of the title attribute.
+  *
+  *   @desc (Object)  doc              -  Parent document of element
+  *   @desc (Object)  element          -  DOM node of element to compute name
+  *
+  *   @returns {Object} Returns a object with the following properties:
+  *                     'name' {String}
+  *                     'source' {String}
+  *                     'includesAlt' {Boolean}
+  *                     'includesAriaLabel' {Boolean}
+  *                     'nameIsNotVisible' {Boolean}
+  */
+  function getAccessibleName (doc, element) {
+    let accName = nameFromAttributeIdRefs(doc, element, 'aria-labelledby');
+    if (accName === null) accName = nameFromAttribute(element, 'aria-label');
+    if (accName === null) accName = nameFromNativeSemantics(doc, element);
+    if (accName === null) accName = noAccName;
+    debug$W.flag && debugAccName(accName);
+    return accName;
+  }
+
+  /*
+  *   @function getAccessibleDesc
+  *
+  *   @desc Use the ARIA Roles Model specification for accessible
+  *         description calculation based on its precedence order:
+  *         (1) Use aria-describedby, unless a traversal is already underway;
+  *         (2) As last resort, use the title attribute, if not used as accessible name.
+  *
+  *   @desc (Object)  doc         -  Parent document of element
+  *   @desc (Object)  element     -  DOM node of element to compute description
+  *   @desc (Boolean) allowTitle  -  Allow title as accessible description
+  *
+  *   @returns {Object} Returns a object with the following properties:
+  *                     'name' {String}
+  *                     'source' {String}
+  *                     'includesAlt' {Boolean}
+  *                     'includesAriaLabel' {Boolean}
+  *                     'nameIsNotVisible' {Boolean}
+  */
+  function getAccessibleDesc (doc, element, allowTitle=true) {
+    let accDesc = nameFromAttributeIdRefs(doc, element, 'aria-describedby');
+    if (accDesc === null) accDesc = nameFromAttribute(element, 'aria-description');
+    if (allowTitle && (accDesc === null)) accDesc = nameFromAttribute(element, 'title');
+    if (accDesc === null) accDesc = noAccName;
+    return accDesc;
+  }
+
+
+  /*
+  *   @function getErrMessage
+  *
+  *   @desc Use the ARIA Roles Model specification for accessible
+  *         error description uses aria-errormessage attribute
+  *
+  *   @desc (Object)  doc              -  Parent document of element
+  *   @desc (Object)  element          -  DOM node of element to compute error message
+  *
+  *   @returns {Object} Returns a object with the following properties:
+  *                     'name' {String}
+  *                     'source' {String}
+  *                     'includesAlt' {Boolean}
+  *                     'includesAriaLabel' {Boolean}
+  *                     'nameIsNotVisible' {Boolean}
+  */
+  function getErrMessage (doc, element) {
+    let errMessage = null;
+
+    errMessage = nameFromAttributeIdRefs(doc, element, 'aria-errormessage');
+    if (errMessage === null) errMessage = noAccName;
+
+    return errMessage;
+  }
+
+  /*
+  *   @function nameFromNativeSemantics
+  *
+  *   @desc Use method appropriate to the native semantics
+  *         of element to find accessible name. Includes methods for all interactive
+  *         elements. For non-interactive elements, if the element's ARIA role allows
+  *         its acc. name to be derived from its text contents
+  *
+  *   @desc (Object)  doc              -  Parent document of element
+  *   @desc (Object)  element          -  DOM node of element to compute name
+  *
+  *   @returns {Object} Returns a object with an 'name' and 'source' property
+  */
+  function nameFromNativeSemantics (doc, element) {
+    let tagName = element.tagName.toLowerCase(),
+        accName = null;
+
+    switch (tagName) {
+      // FORM ELEMENTS: INPUT
+      case 'input':
+        switch (element.type) {
+          // HIDDEN
+          case 'hidden':
+              accName = '';
+            break;
+
+          // TEXT FIELDS
+          case 'email':
+          case 'password':
+          case 'search':
+          case 'tel':
+          case 'text':
+          case 'url':
+            accName = nameFromLabelElement(doc, element);
+            if (accName === null) accName = nameFromAttribute(element, 'placeholder');
+            break;
+
+          // OTHER INPUT TYPES
+          case 'button':
+            accName = nameFromAttribute(element, 'value');
+            break;
+
+          case 'reset':
+            accName = nameFromAttribute(element, 'value');
+            if (accName === null) accName = nameFromDefault('Reset');
+            break;
+
+          case 'submit':
+            accName = nameFromAttribute(element, 'value');
+            if (accName === null) accName = nameFromDefault('Submit');
+            break;
+
+          case 'image':
+            accName = nameFromAltAttribute(element);
+            if (accName === null) accName = nameFromAttribute(element, 'value');
+            break;
+
+          default:
+            accName = nameFromLabelElement(doc, element);
+            break;
+        }
+        break;
+
+      // FORM ELEMENTS: OTHER
+      case 'fieldset':
+        accName = nameFromLegendElement(doc, element);
+        break;
+
+      case 'keygen':
+      case 'meter':
+      case 'output':
+      case 'progress':
+      case 'select':
+        accName = nameFromLabelElement(doc, element);
+        break;
+
+      case 'textarea':
+        accName = nameFromLabelElement(doc, element);
+        if (accName === null) accName = nameFromAttribute(element, 'placeholder');
+        break;
+
+      case 'iframe':
+        accName = nameFromAttribute(element, 'title');
+        break;
+
+      case 'img':
+      case 'area': // added
+        accName = nameFromAltAttribute(element);
+        break;
+
+      case 'svg': // added
+        accName = nameFromDescendant(element, 'title');
+        break;
+
+      // OTHER ELEMENTS
+      case 'details':
+        accName = nameFromDetailsOrSummary(element);
+        break;
+
+      case 'figure':
+        accName = nameFromDescendant(element, 'figcaption');
+        break;
+
+      case 'table':
+        accName = nameFromDescendant(element, 'caption');
+        break;
+
+      // Elements that allow name from contents
+      case 'a':
+        if (element.hasAttribute('href')) {
+          accName = nameFromContents(element);
+        }
+        break;
+
+      case 'button':
+      case 'caption':
+      case 'dd':
+      case 'dt':
+      case 'figcaption':
+      case 'label':
+      case 'li':
+      case 'option':
+      case 'td':
+      case 'th':
+        accName = nameFromContents(element);
+        break;
+
+
+      // ELEMENTS NOT SPECIFIED ABOVE
+      default:
+        if (doesElementAllowNameFromContents(element)) {
+          accName = nameFromContents(element);
+        }
+        break;
+    }
+
+    // LAST RESORT USE TITLE
+    if (accName === null) accName = nameFromAttribute(element, 'title');
+
+    return accName;
+  }
+
+  // HELPER FUNCTIONS (NOT EXPORTED)
+
+  /*
+  *   @function nameFromAttributeIdRefs
+  *
+  *   @desc Get the value of attrName on element (a space-
+  *         separated list of IDREFs), visit each referenced element in the order it
+  *         appears in the list and obtain its accessible name, and return an object
+  *         with name property set to a string that is a space-separated concatenation
+  *         of those results if any, otherwise return null.
+  *
+  *   @desc (Object)  doc              -  Parent document of element
+  *   @desc (Object)  element          -  DOM node of element to compute name
+  *   @desc (Boolean) nameFromContent  -  If true allow element content to be used as name
+  *
+  *   @returns {Object} Returns a object with an 'name' and 'source' property
+  */
+  function nameFromAttributeIdRefs (doc, element, attribute) {
+    let value = getAttributeValue(element, attribute);
+    let idRefs, i, refElement, name, names, arr = [];
+    let includesAlt = false;
+    let includesAriaLabel = false;
+    let refNotVisible = false;
+
+    if (value.length) {
+      idRefs = value.split(' ');
+
+      for (i = 0; i < idRefs.length; i++) {
+        refElement = doc.getElementById(idRefs[i]);
+        if (refElement) {
+          if (refElement.hasAttribute('aria-label')) {
+            name = refElement.getAttribute('aria-label');
+            includesAriaLabel = true;
+          }
+          else {
+            if (refElement.hasChildNodes()) {
+              refNotVisible = refNotVisible || isDisplayNone(refElement) || isVisibilityHidden(refElement);
+              names = [];
+              let children = Array.from(refElement.childNodes);
+              children.forEach( child => {
+                // Need to ignore CSS display: none and visibility: hidden for referenced
+                // elements, but not their child elements
+                const [nc, nInclAlt, nInclAriaLabel] = getNodeContents(child, refElement, true);
+                if (nc.length) names.push(nc);
+                includesAlt       = includesAlt || nInclAlt;
+                includesAriaLabel = includesAriaLabel || nInclAriaLabel;
+              });
+              name = (names.length) ? names.join('') : '';
+            }
+            else {
+              name = '';
+            }
+          }
+          name = addCssGeneratedContent(refElement, name);
+          if (name.length) arr.push(name);
+        }
+      }
+    }
+
+    if (arr.length)
+      return { name: normalize(arr.join(' ')),
+               source: attribute,
+               includesAlt: includesAlt,
+               includesAriaLabel: includesAriaLabel,
+               nameIsNotVisible: refNotVisible
+             };
+
+    return null;
+  }
+
+
+  /*
+  *   @function doesElementAllowNameFromContents
+  *
+  *   @desc Returns true if tag name or role allows name from contents, otherwise false
+  *
+  *   @desc (Object)  element  -  DOM node of element to compute name
+  *
+  *   @return (Boolean) see @desc
+  */
+
+  function doesElementAllowNameFromContents (element) {
+    const role = element.getAttribute('role');
+    if (role) {
+      return rolesThatAllowNameFromContents.includes(role.toLowerCase());
+    }
+    else {
+      return elementsThatAllowNameFromContents.includes(element.tagName.toLowerCase());
+    }
+  }
+
+  /* domElement.js */
+
+  /* Constants */
+  const debug$V = new DebugLogging('DOMElement', false);
+  debug$V.flag = false;
+
+  const elementsWithContent = [
+    'area',
+    'audio',
+    'canvas',
+    'img',
+    'input',
+    'select',
+    'svg',
+    'textarea',
+    'video'
+  ];
+
+  const elementsThatMayHaveContent = [
+    'embed',
+    'object'
+  ];
+
+  const landmarkRoles = ['banner', 'complementary', 'contentinfo', 'form', 'main', 'navigation', 'region', 'search'];
+  const requireAccessibleNames = ['region', 'form'];
+
+  /**
+   * @class DOMElement
+   *
+   * @desc Used to represent a dom element node with additional
+   *       information useful for accessibility rules
+   *
+   * @param  {Object}   parentInfo       - ParentInfo object (can be null for top level)
+   * @param  {Object}   elementNode      - dom element node to be represented
+   * @param  {Number}   ordinalPosition  - Number indicating the ordinal position of the element
+   *                                       in the DOM
+   * @param  {String}   ariaVersion      - Version of ARIA to use for roles, props and state info
+   * @param  {Boolean}  addDataId        - If true, add data attribute based on ordinal position
+   *                                       in the DOM
+   */
+
+  class DOMElement {
+    constructor (parentInfo, elementNode, ordinalPosition, ariaVersion='ARIA12', addDataId) {
+      const parentDomElement = parentInfo.domElement;
+      const accNameDoc       = parentInfo.useParentDocForName ?
+                               parentInfo.parentDocument :
+                               parentInfo.document;
+
+      this.ordinalPosition  = ordinalPosition;
+      this.parentInfo       = parentInfo;
+      this.node             = elementNode;
+      this.tagName          = elementNode.tagName.toLowerCase();
+      this.isLabelable      = isLabelable(elementNode);
+      this.lang             = elementNode.hasAttribute('lang') ?
+                              elementNode.getAttribute('lang') :
+                              '';
+
+      if (addDataId) {
+        elementNode.setAttribute('data-opena11y-id', ordinalPosition);
+      }
+
+      this.ariaInHTMLInfo  = getAriaInHTMLInfo(elementNode);
+      const defaultRole = this.ariaInHTMLInfo.defaultRole;
+
+      this.hasRole = elementNode.hasAttribute('role');
+      this.role    = this.hasRole ?
+                     elementNode.getAttribute('role') :
+                     defaultRole;
+
+      this.roleDescription = elementNode.hasAttribute('aria-roledescription') ?
+                                elementNode.getAttribute('aria-roledescription') :
+                                '';
+
+      this.accesskey = elementNode.hasAttribute('accesskey') ? elementNode.getAttribute('accesskey') : '';
+
+      // used for button and form control related rules
+      this.typeAttr = elementNode.getAttribute('type');
+
+      this.hasNativeCheckedState  = hasCheckedState(elementNode);
+      this.hasNativeInvalidState  = hasInvalidState(elementNode);
+      this.hasNativeSelectedState = hasSelectedState(elementNode);
+
+      this.ariaInfo  = new AriaInfo(accNameDoc, this.hasRole, this.role, defaultRole, elementNode, ariaVersion);
+      this.eventInfo = new EventInfo(elementNode);
+
+      this.isInert   = elementNode.hasAttribute('inert') ?
+                       elementNode.inert :
+                       parentInfo.isInert;
+
+      this.tabIndex             = checkTabIndex(elementNode);
+      this.isTabStop            = checkIsTabStop(elementNode);
+      this.isInteractiveElement = checkForInteractiveElement(elementNode);
+
+      this.accName        = getAccessibleName(accNameDoc, elementNode);
+      this.accDescription = getAccessibleDesc(accNameDoc, elementNode, (this.accName.source !== 'title'));
+      this.errMessage     = getErrMessage(accNameDoc, elementNode);
+
+
+      this.colorContrast = new ColorContrast(parentDomElement, elementNode);
+      this.visibility    = new Visibility(parentDomElement, elementNode);
+
+      this.id         = elementNode.id        ? elementNode.id   : '';
+      this.name       = elementNode.name      ? elementNode.name : '';
+      this.className  = elementNode.className ? elementNode.className : '';
+      this.htmlAttrs  = this.getHtmlAttrs(elementNode);
+      this.ariaAttrs  = this.getAriaAttrs(elementNode);
+
+      this.hasContent = elementsWithContent.includes(this.tagName);
+      this.mayHaveContent = elementsThatMayHaveContent.includes(this.tagName);
+
+
+      this.isButton    = this.role === 'button' && this.tagName === 'button';
+      this.isLink      = this.role === 'link' && this.tagName === 'a';
+      this.isLandmark  = this.checkIsLandamrk();
+      this.isHeading   = this.role === 'heading';
+      this.isInDialog  = this.tagName === 'dialog' ||
+                         this.role === 'dialog' ||
+                         parentInfo.inDialog;
+
+      // CSS Position property and size information
+
+      const cssStyle = window.getComputedStyle(elementNode, null);
+      const elemRect = elementNode.getBoundingClientRect();
+
+      this.cssPosition = cssStyle.getPropertyValue('position');
+
+      this.top      = window.scrollY + elemRect.top;
+      this.left     = window.scrollX + elemRect.left;
+      this.height   = Math.round(10 * elemRect.height, 1) / 10;
+      this.width    = Math.round(10 * elemRect.width, 1) / 10;
+      this.area     = this.height * this.width;
+
+      this.authorWidth    = cssStyle.getPropertyValue('width');
+      this.authorHeight   = cssStyle.getPropertyValue('height');
+      this.authorLeft     = cssStyle.getPropertyValue('left');
+      this.authorRight    = cssStyle.getPropertyValue('right');
+      this.authorTop      = cssStyle.getPropertyValue('top');
+      this.authorBottom   = cssStyle.getPropertyValue('bottom');
+      this.authorDisplay  = cssStyle.getPropertyValue('display');
+      this.authorPosition = cssStyle.getPropertyValue('position');
+
+      this.authorSizing = (this.authorWidth  !== 'auto') ||
+                          (this.authorHeight !== 'auto') ||
+                          ((this.authorLeft   !== 'auto') &&
+                           (this.authorRight  !== 'auto')) ||
+                          ((this.authorTop    !== 'auto') &&
+                           (this.authorBottom !== 'auto'));
+
+      this.children = [];
+
+      // Information on rule results associated with this element
+      this.resultsHidden       = [];
+      this.resultsPassed       = [];
+      this.resultsViolations   = [];
+      this.resultsWarnings     = [];
+      this.resultsManualChecks = [];
+
+      // A name that can be used in rule results to identify the element
+      this.elemName = this.tagName;
+      this.elemName += elementNode.type ? `[type=${elementNode.type}]` : '';
+      this.elemName += this.hasRole ? `[role=${this.role}]` : '';
+      this.elemName += this.id ? `#${this.id}` : '';
+
+      // Potential references to other cache objects
+
+      this.tableCell = null;
+      this.tableElement = null;
+      this.ControlElement = null;
+
+      if (parentInfo.tableCell &&
+          this.isInteractiveElement) {
+        parentInfo.tableCell.interactiveDomElements.push(this);
+      }
+
+    }
+
+
+    /**
+     * @method isDomText
+     *
+     * @desc
+     *
+     * @return {Boolean} Returns false since this is a DOMElement object
+     */
+
+    get isDomText () {
+      return false;
+    }
+
+
+    /**
+     * @method isDomElement
+     *
+     * @desc Returns true since this is a DOMElement object
+     *
+     * @return {Boolean} see @desc
+     */
+
+    get isDomElement () {
+      return true;
+    }
+
+    /**
+     * @method checkIsLandamrk
+     *
+     * @desc Returns true if the domElement has a landmark role, otherwise false
+     *
+     * @returns  {Boolean}  see @desc
+     */
+
+    checkIsLandamrk () {
+      let flag = false;
+      const role = this.role || this.defaultRole;
+      const name = this.accName.name;
+
+      if (landmarkRoles.includes(role)) {
+        if (requireAccessibleNames.includes(role)) {
+          flag = name && name.length;
+        } else {
+          flag = true;
+        }
+      }
+
+      return flag;
+    }
+
+    /**
+     * @method isLastChildDomText
+     *
+     * @desc
+     *
+     * @return {Boolean} Returns true if the last child is a DOMText object, otherwise false
+     */
+
+    get isLastChildDomText () {
+      let flag = false;
+      const lastChild = this.getLastChild();
+      if (lastChild && lastChild.isDomText) {
+        flag = true;
+      }
+      return flag;
+    }
+
+    /**
+     * @method addChild
+     *
+     * @desc
+     *
+     * @param {Object}  domItem  -
+     */
+
+    addChild (domItem) {
+      this.children.push(domItem);
+    }
+
+    /**
+     * @method getIndentifier
+     *
+     * @desc
+     */
+
+    getIdentifier () {
+      let identifier = this.node.hasAttribute('type') ?
+                       `${this.tagName}[${this.node.getAttribute('type')}]` :
+                       this.tagName;
+      return identifier;
+    }
+
+    /**
+     * @method getLastChild
+     *
+     * @desc
+     */
+
+    getLastChild () {
+      let len = this.children.length;
+      let domItem = null;
+      if (len) {
+        domItem = this.children[len-1];
+      }
+      return domItem;
+    }
+
+    /**
+     * @method getHtmlAttrs
+     *
+     * @desc Get non-ARIA attributes for the element in a name value object
+     *
+     * @param {Object}  node  - DOM node element
+     *
+     * @param {Object} Object of attribute name as key to a value
+     */
+
+    getHtmlAttrs (node) {
+      const htmlAttrs = {};
+      const attrs = Array.from(node.attributes);
+      attrs.forEach( attr => {
+        if (attr.name.toLowerCase().indexOf('aria') !== 0) {
+          htmlAttrs[attr.name] = attr.value;
+        }
+      });
+      return htmlAttrs;
+    }
+
+    /**
+     * @method getAriaAttrs
+     *
+     * @desc Get ARIA attributes for the element in a name value object
+     *
+     * @param {Object}  node  - DOM node element
+     *
+     * @param {Array} array of objects with attribute name and value properties
+     */
+
+    getAriaAttrs (node) {
+      const ariaAttrs = {};
+      const attrs = Array.from(node.attributes);
+      attrs.forEach( attr => {
+        if (attr.name.toLowerCase().indexOf('aria') === 0) {
+          ariaAttrs[attr.name] = attr.value;
+        }
+      });
+      return ariaAttrs;
+    }
+
+    /**
+     * @method addTextToLastChild
+     *
+     * @desc Adds the text content to an existing DOMText object
+     *
+     * @param {String}  text  - text content to add
+     */
+
+    addTextToLastChild (text) {
+      const domItem = this.getLastChild();
+      if (domItem && domItem.isDomText) {
+        domItem.addText(text);
+      }
+    }
+
+    /**
+     * @method hasTextContent
+     *
+     * @desc Checks to see if the element contains any text content
+     *
+     * @return {Boolean} True it there are text nodes, otherwise false
+     */
+
+    hasTextContent () {
+
+      function anyDOMText (domItems) {
+        for (let i = 0; i < domItems.length; i += 1) {
+          const domItem = domItems[i];
+          if (domItem.isDomText) {
+            return true;
+          }
+          else {
+            if (anyDOMText (domItem.children)) {
+              return true;
+            }
+          }
+        }
+        return false;
+      }
+      return anyDOMText(this.children);
+    }
+
+
+    toString () {
+      let type = '';
+      let id = '';
+
+      if (this.node.type) {
+        type = `[type=${this.node.type}]`;
+      }
+
+      if (this.node.id) {
+        id = `[id=${this.node.id}]`;
+      }
+
+      return `(${this.ordinalPosition}): ${this.tagName}${type}${id}[${this.role}]`;
+    }
+
+    /**
+     * @method showDomElementTree
+     *
+     * @desc  Used for debugging the DOMElement tree
+     */
+    showDomElementTree (prefix) {
+      if (typeof prefix !== 'string') {
+        prefix = '';
+      }
+      if (debug$V.flag) {
+        this.children.forEach( domItem => {
+          if (domItem.isDomText) {
+            debug$V.domText(domItem, prefix);
+          } else {
+            debug$V.domElement(domItem, prefix);
+            domItem.showDomElementTree(prefix + '   ');
+          }
+        });
+      }
+    }
+  }
+
+  // Helper functions
+
+  /**
+   * @function checkForInteractiveElement
+   *
+   * @desc Returns true if the element is natively interactive
+   *
+   * @param  {Object}   node    - DOM node
+   *
+   * @return Returns true if the elements is interactive, otherwise false
+   */
+
+  function checkForInteractiveElement (node) {
+    const tagName     = node.tagName.toLowerCase();
+    const hasHref     = node.hasAttribute('href');
+    const hasControls = node.hasAttribute('controls');
+    const type        = node.hasAttribute('type') ? node.getAttribute('type') : 'text';
+
+    switch (tagName ) {
+      case 'a':
+      case 'area':
+        return hasHref;
+
+      case 'audio':
+        return hasControls;
+
+      case 'button':
+        return true;
+
+      case 'input':
+        return type !== 'hidden';
+
+      case 'output':
+        return true;
+
+      case 'select':
+        return true;
+
+      case 'textarea':
+        return true;
+
+      case 'video':
+        return hasControls;
+
+    }
+
+    return false;
+  }
+
+
+  /**
+   * @function checkIsTabStop
+   *
+   * @desc Returns true if the tabindex is defined and greater than or equal to zero,
+   *       or the element's native semantics is an interactive element
+   *
+   * @param  {Object}  node - DOM node
+   *
+   * @return Returns true if the elements is a tab stop, otherwise false
+   */
+
+  function checkIsTabStop (node) {
+    return (node.tabIndex >= 0) || checkForInteractiveElement(node);
+  }
+
+  /**
+   * @function checkTabIndex
+   *
+   * @desc Returns value of tabindex if it is defined
+   *
+   * @param  {Object}  node - DOM node
+   *
+   * @return see @desc
+   */
+
+  function checkTabIndex (node) {
+    if (node.tabIndex >= 0) {
+      return node.tabIndex;
+    }
+    return node.hasAttribute('tabIndex') ? -1 : undefined;
+  }
+
+  /* domText.js */
+
+  /* Constants */
+  const debug$U = new DebugLogging('domText', false);
+
+  /**
+   * @class DOMText
+   *
+   * @desc Used to represent a dom text node for use in computing information 
+   *       usefule for accessibility rules.
+   * 
+   *       NOTE: Adjacent dom text nodes in the live dom are combined into a
+   *             single DOMText object
+   *
+   * @param  {Object}  parentInfo - ParentInfo object 
+   * @param  {Object}  textNode   - dom text node to be represented
+   */
+
+  class DOMText {
+    constructor (parentDomElement, textNode) {
+      this.parentDomElement = parentDomElement;
+      this.text = textNode.textContent.trim();
+      if (debug$U.flag) {
+        debug$U.log(`[text]: ${this.text}`);
+      }
+    }
+
+    /**
+     * @method getText
+     *
+     * @desc
+     *
+     * @return {String} Returns text content
+     */
+
+    get getText () {
+      return this.text;
+    }
+
+    /**
+     * @method isDomElement
+     *
+     * @desc Returns false since this is a DOMText object
+     *
+     * @return {Boolean} see @desc
+     */
+
+    get isDomElement () {
+      return false;
+    }  
+
+    /**
+     * @method isDomText
+     *
+     * @desc
+     *
+     * @return {Boolean} Returns true since this is a DOMText object
+     */
+
+    get isDomText () {
+      return true;
+    }
+
+    /**
+     * @method hasContent
+     *
+     * @desc Returns true if the DOMText has visiible content, otherwise false
+     *
+     * @return {Boolean} see @desc
+     */
+
+    get hasContent () {
+      return this.text.length > 0;
+    }
+
+    addText (text) {
+      const s = text.trim();
+      if (s) {
+        this.text += ' ' + s;
+      }
+    }
+  }
+
+  /* iframeInfo.js */
+
+  /* Constants */
+  const debug$T = new DebugLogging('iframeInfo', false);
+
+  /**
+   * @class IFrameElement
+   *
+   * @desc Idenifies a DOM element as being an iframe.
+   *
+   * @param  {Object}  domElement   - dome element information
+   */
+
+  class IFrameElement {
+    constructor (domElement, isCrossDomain) {
+      this.domElement = domElement;
+      this.src = domElement.node.src;
+      this.isCrossDomain = isCrossDomain;
+    }
+
+    showInfo () {
+      if (debug$T.flag) {
+        debug$T.log(`[          src]: ${this.src}`);
+        debug$T.log(`[isCrossDomain]: ${this.isCrossDomain}`);
+      }
+    }
+  }
+
+  /**
+   * @class IframeInfo
+   *
+   * @desc Collects information on the iframes in a web page
+   */
+
+  class IframeInfo {
+    constructor () {
+      this.allIFrameElements = [];
+    }
+
+    /**
+     * @method update
+     *
+     * @desc Checks to see if the domElement has a role of "link"
+     *
+     * @param  {Object}  domElement        - DOMElement object representing an element in the DOM
+     */
+
+    update (domElement, isCrossDomain) {
+      const ife = new IFrameElement(domElement, isCrossDomain);
+      this.allIFrameElements.push(ife);
+    }
+
+    /**
+     * @method showLinkInfo
+     *
+     * @desc showLinkInfo is used for debugging the LinkInfo object
+     */
+
+    showIFrameInfo () {
+      if (debug$T.flag) {
+        debug$T.log(`== ${this.allIFrameElements.length} IFrames ==`, 1);
+        this.allIFrameElements.forEach( ife => {
+          ife.showInfo();
+        });
+      }
+    }
+  }
+
+  /* linkInfo.js */
+
+  /* Constants */
+  const debug$S = new DebugLogging('idInfo', false);
+
+  /**
+   * @class idInfo
+   *
+   * @desc Collects information on the ids in a web page
+   */
+
+  class IdInfo {
+    constructor () {
+      this.idCountsByDoc = [];
+    }
+
+    /**
+     * @method update
+     *
+     * @desc Adds the id to the list of elements with a id
+     *
+     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
+     */
+
+    update (documentIndex, domElement) {
+      const id = domElement.node.id;
+      if (id) {
+        if (!this.idCountsByDoc[documentIndex]) {
+          this.idCountsByDoc[documentIndex] = {};
+        }
+        if (this.idCountsByDoc[documentIndex][id]) {
+          this.idCountsByDoc[documentIndex][id] += 1;       
+        }
+        else {
+          this.idCountsByDoc[documentIndex][id] = 1;       
+        }
+      }
+    }
+
+    /**
+     * @method showIdInfo
+     *
+     * @desc showIdInfo is used for debugging the IdInfo object
+     */
+
+    showIdInfo () {
+      if (debug$S.flag) {
+        debug$S.log('== All Links ==', 1);
+        this.idCounts.for( id => {
+          debug$S.log(`[${id}]: ${this.idCounts[id]}`);
+        });
+      }
+    }
+  }
+
+  /* imageInfo.js */
+
+  /* Constants */
+  const debug$R = new DebugLogging('imageInfo', false);
+
+  /**
+   * @class ImageElement
+   *
+   * @desc Identifies a DOM element as an image or graphical object
+   *
+   * @param  {Object}  domElement   - Structural Information
+   */
+
+  class ImageElement {
+    constructor (domElement) {
+      this.domElement = domElement;
+      this.url = domElement.node.src ? new URL(domElement.node.src) : '';
+      if (this.url) {
+        const parts = this.url.pathname.split('/');
+        this.fileName = parts.length ? parts.pop() : '';
+      }
+      else {
+        this.fileName = '';
+      }
+    }
+
+    addAreaDomElement (domElement) {
+      this.areaDomElements.push(domElement);
+    }
+
+    toString () {
+      return this.domElement.role;
+    }
+  }
+
+  /**
+   * @class MapElement
+   *
+   * @desc Identifies a DOM element as an image map
+   *
+   * @param  {Object}  domElement   - Structural Information
+   */
+
+  class MapElement {
+    constructor (domElement) {
+      this.domElement = domElement;
+      this.areaDomElements = [];
+    }
+
+    addAreaDomElement (domElement) {
+      this.areaDomElements.push(domElement);
+    }
+
+    toString () {
+      return this.domElement.role;
+    }
+  }
+
+
+  /**
+   * @class ImageInfo
+   *
+   * @desc Collects information on the image elements on a web page for use in
+   *       rules
+   */
+
+  class ImageInfo {
+    constructor () {
+      this.allImageElements  = [];
+      this.allSVGDomElements    = [];
+      this.allMapElements       = [];
+    }
+
+    /**
+     * @method addImageElement
+     *
+     * @desc Creates a new IamgeElement and to the array of
+     *       ImageElements
+     *
+     * @param  {Object}  domElement -
+     *
+     */
+
+    addImageElement (domElement) {
+      const ie = new ImageElement(domElement);
+      this.allImageElements.push(ie);
+      return ie;
+    }
+
+    /**
+     * @method addMapElement
+     *
+     * @desc Creates a new MapElement and to the array of
+     *       MapElements
+     *
+     * @param  {Object}  domElement -
+     *
+     */
+
+    addMapElement (domElement) {
+      const me = new MapElement(domElement);
+      this.allMapElements.push(me);
+      return me;
+    }
+
+    /**
+     * @method isImage
+     *
+     * @desc Tests if a domElement for role of "img"
+     *
+     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
+     */
+
+    isImage (domElement) {
+      return (domElement.role === 'img') ||
+             (domElement.role === 'image') || // Support in ARIA 1.3
+             (domElement.tagName === 'img');
+    }
+
+    /**
+     * @method isSVG
+     *
+     * @desc Tests if a domElement is an SVG graphic
+     *
+     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
+     */
+
+    isSVG (domElement) {
+      return domElement.tagName === 'svg';
+    }
+
+    /**
+     * @method isMap
+     *
+     * @desc Tests if a domElement is an map element
+     *
+     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
+     */
+
+    isMap (domElement) {
+      return domElement.tagName === 'map';
+    }
+
+    /**
+     * @method isArea
+     *
+     * @desc Tests if a domElement is an area element
+     *
+     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
+     */
+
+    isArea (domElement) {
+      return domElement.tagName === 'area';
+    }
+
+    /**
+     * @method update
+     *
+     * @desc Checks to see if the domElement has a role of "img" or a graphical tag name
+     *
+     * @param  {Object}  parentMapElement  - current ancestor MapElement object
+     * @param  {Object}  domElement        - DOMElement object representing an element in the DOM
+     *
+     * @return {Object}  Last MapElement object
+     */
+
+    update (parentMapElement, domElement) {
+      let currentMapElement = parentMapElement;
+
+      if (this.isImage(domElement)) {
+        this.addImageElement(domElement);
+      }
+
+     if (this.isSVG(domElement)) {
+        this.allSVGDomElements.push(domElement);
+      }
+
+      if (this.isMap(domElement)) {
+        currentMapElement = this.addMapElement(domElement);
+      }
+
+      if (this.isArea(domElement)) {
+        if (parentMapElement) {
+          parentMapElement.addAreaDomElement(domElement);
+        }
+      }
+
+      return currentMapElement;
+    }
+
+    /**
+     * @method showImageInfo
+     *
+     * @desc showImageInfo is used for debugging the ImageInfo, ImageElement and MapElement objects
+     */
+
+    showImageInfo () {
+      if (debug$R.flag) {
+        debug$R.log('== All Image elements ==', 1);
+        this.allImageElements.forEach( ie => {
+          debug$R.log(`[fileName]: ${ie.fileName}`, true);
+          debug$R.log(`[    role]: ${ie.domElement.role}`);
+          debug$R.log(`[    name]: ${ie.domElement.accName.name}`);
+          debug$R.log(`[  source]: ${ie.domElement.accName.source}`);
+          debug$R.log(`[  length]: ${ie.domElement.accName.name.length}`);
+        });
+        debug$R.log('== All SVG domElements  ==', 1);
+        this.allSVGDomElements.forEach( de => {
+          debug$R.domElement(de);
+        });
+        debug$R.log('== All MapElements ==', 1);
+        this.allMapElements.forEach( me => {
+          debug$R.domElement(me.domElement);
+        });
+      }
+    }
+  }
+
+  /* linkInfo.js */
+
+  /* Constants */
+  const debug$Q = new DebugLogging('linkInfo', false);
+
+  /**
+   * @class LinkInfo
+   *
+   * @desc Collects information on the links in a web page
+   */
+
+  class LinkInfo {
+    constructor () {
+      this.allLinkDomElements = [];
+    }
+
+    /**
+     * @method isLink
+     *
+     * @desc Tests if a domElement for role of "link"
+     *
+     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
+     */
+
+    isLink (domElement) {
+      return domElement.role === 'link';
+    }
+
+    /**
+     * @method update
+     *
+     * @desc Checks to see if the domElement has a role of "link"
+     *
+     * @param  {Object}  domElement  - DOMElement object representing an element in the DOM
+     * @param  {Boolean} inLink      - True if element is a descendant of a link, otherwise false
+     */
+
+    update (domElement, inLink) {
+      if (this.isLink(domElement)) {
+        this.allLinkDomElements.push(domElement);
+        return true;
+      }
+      return inLink;
+    }
+
+    /**
+     * @method showLinkInfo
+     *
+     * @desc showLinkInfo is used for debugging the LinkInfo object
+     */
+
+    showLinkInfo () {
+      if (debug$Q.flag) {
+        debug$Q.log('== All Links ==', 1);
+        this.allLinkDomElements.forEach( de => {
+          debug$Q.domElement(de);
+        });
+      }
+    }
+  }
+
+  /* listInfo.js */
+
+  /* Constants */
+  const debug$P = new DebugLogging('ListInfo', false);
+  debug$P.flag = false;
+  const allListitemRoles = ['list', 'listitem', 'menu', 'menuitem', 'menuitemcheckbox', 'menuitemradio'];
+  const listRoles = ['list', 'menu'];
+
+  /**
+   * @class ListElement
+   *
+   * @desc Identifies a DOM element as being a container for a list items.
+   *
+   * @param  {Object}  domElement   - Structural Information
+   */
+
+  class ListElement {
+    constructor (domElement, parentListElement) {
+
+      this.parentListElement = parentListElement;
+      this.domElement = domElement;
+      this.childListElements = [];
+      this.isListRole = this.isList(domElement);
+      this.linkCount = 0;  // Used in determining if a list is for navigation
+      this.textContent = 0;
+      this.linkTextContent = 0;
+    }
+
+    /**
+     * @method isList
+     *
+     * @desc Tests if a domElement is a list
+     *
+     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
+     */
+
+    isList (domElement) {
+      const role = domElement.role;
+      return listRoles.includes(role);
+    }
+
+    addChildListitem (listElement) {
+      this.childListElements.push(listElement);
+    }
+
+    showListInfo (prefix) {
+      if (typeof prefix !== 'string') {
+        prefix = '';
+      }
+      debug$P.log(`${prefix}[List Count]: ${this.childListElements.length} [Link Count]: ${this.linkCount}`);
+      this.childListElements.forEach( le => {
+        debug$P.domElement(le.domElement, prefix);
+        le.showListInfo(prefix + '  ');
+      });
+    }
+  }
+
+  /**
+   * @class ListInfo
+   *
+   * @desc Collects information on the list elements on a web page for use in
+   *       rules
+   *
+   * @param  {Object}  ListInfo   - Structural Information
+   */
+
+  class ListInfo {
+    constructor () {
+
+      this.allListElements = [];
+      this.childListElements = [];
+      this.linkCount = 0;
+    }
+
+    /**
+     * @method addChildListitem
+     *
+     * @desc Creates a new ListElement and to the array of
+     *       ListElements
+     *
+     * @param  {Object}  domElement        - New ListElement object being added to ListInfo
+     * @param  {Object}  parentListElement - ListElement object representing that parent ListElement
+     *
+     */
+
+    addChildListitem (domElement, parentListElement) {
+      const le = new ListElement(domElement, parentListElement);
+      this.allListElements.push(le);
+
+      if (parentListElement) {
+        parentListElement.addChildListitem(le);
+      } else {
+        this.childListElements.push(le);
+      }
+      return le;
+    }
+
+    /**
+     * @method isListitem
+     *
+     * @desc Tests if a domElement is a listitem
+     *
+     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
+     */
+
+    isListitem (domElement) {
+      const role = domElement.role;
+      return allListitemRoles.includes(role);
+    }
+
+    /**
+     * @method isLink
+     *
+     * @desc Tests if a domElement is a link
+     *
+     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
+     */
+
+    isLink (domElement) {
+      return domElement.role === 'link';
+    }
+
+    /**
+     * @method update
+     *
+     * @desc Checks to see if the domElement is a list item and if so adds the
+     *       domElement to the List Info object and current ListElement
+     *
+     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
+     *
+     * @return  {Object}  ListElement - ListElement object for use as the parent ListElement
+     *                                  for descendant domElements
+     */
+
+    update (parentListElement, domElement) {
+      let listElement = parentListElement;
+      if (this.isListitem(domElement)) {
+        listElement = this.addChildListitem(domElement, parentListElement);
+      }
+      if (this.isLink(domElement)) {
+        this.linkCount += 1;
+        while (parentListElement) {
+          if (parentListElement.isListRole) {
+            parentListElement.linkCount += 1;
+            break;
+          }
+          parentListElement = parentListElement.parentListElement;
+        }
+      }
+      return listElement;
+    }
+
+    /**
+     * @method showListInfo
+     *
+     * @desc showListInfo is used for debugging the ListInfo and ListElement objects
+     */
+
+    showListInfo () {
+      if (debug$P.flag) {
+        debug$P.log('== All ListElements ==', 1);
+        debug$P.log(`[linkCount]: ${this.linkCount}`);
+        this.allListElements.forEach( le => {
+          debug$P.log(`[textContent]: ${le.textContent}`);
+          debug$P.log(`[linkTextContent]: ${le.linkTextContent}`);
+          debug$P.domElement(le.domElement);
+        });
+        debug$P.log('== List Tree ==', 1);
+        debug$P.log(`[linkCount]: ${this.linkCount}`);
+        this.childListElements.forEach( le => {
+          debug$P.log(`[textContent]: ${le.textContent}`);
+          debug$P.log(`[linkTextContent]: ${le.linkTextContent}`);
+          debug$P.domElement(le.domElement);
+          le.showListInfo('  ');
+        });
+      }
+    }
+  }
+
+  /* listInfo.js */
+
+  /* Constants */
+  const debug$O = new DebugLogging('MediaInfo', false);
+  debug$O.flag = false;
+
+  /**
+   * @class MediaElement
+   *
+   * @desc Identifies a DOM element as an audio or video element.
+   *
+   * @param  {Object}  domElement   - DOM element object
+   */
+
+  class MediaElement {
+    constructor (domElement) {
+      const node = domElement.node;
+      const type = node.getAttribute('type');
+
+      this.domElement = domElement;
+      this.tracks = [];
+      this.params = [];
+
+      this.hasAutoPlay = domElement.node.hasAttribute('autoplay');
+      this.type = (typeof type === 'string') ? type.toLowerCase() : '';
+    }
+
+    get isAudio () {
+      return this.type.includes('audio') || this.domElement.tagName === 'audio';
+    }
+
+    get isVideo () {
+      return this.type.includes('video') || this.domElement.tagName === 'video';
+    }
+
+    get allowsTracks () {
+      return ['audio', 'video'].includes(this.domElement.tagName);
+    }
+
+    get isEmbed () {
+      return this.domElement.tagName === 'embed';
+    }
+
+    get isObject () {
+      return this.domElement.tagName === 'object';
+    }
+
+    get hasCaptionTrack () {
+      return this.checkForTrackKind('captions');
+    }
+
+    get hasDescriptionTrack () {
+      return this.checkForTrackKind('descriptions');
+    }
+
+    checkForTrackKind (type) {
+      for (let i = 0; i < this.tracks.length; i += 1) {
+        if (this.tracks[i].kind.includes(type)) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    toString() {
+      return `[MediaElement]: ${this.domElement}`;
+    }
+  }
+
+  /**
+   * @class TrackElement
+   *
+   * @desc Identifies a DOM element as a track element.
+   *
+   * @param  {Object}  domElement   - DOM element object
+   */
+
+  class TrackElement {
+    constructor (domElement) {
+      const node = domElement.node;
+      this.domElement = domElement;
+      this.kind = node.hasAttribute('kind') ? node.kind.toLowerCase() : '';
+    }
+
+    toString() {
+      return `[TrackElement]: ${this.domElement}`;
+    }
+  }
+
+  /**
+   * @class ParamElement
+   *
+   * @desc Identifies a DOM element as a param element.
+   *
+   * @param  {Object}  domElement   - DOM element object
+   */
+
+  class ParamElement {
+    constructor (domElement) {
+      this.domElement = domElement;
+    }
+
+    toString() {
+      return `[ParamElement]: ${this.domElement}`;
+    }
+
+  }
+
+
+  /**
+   * @class MediaInfo
+   *
+   * @desc Collects information on the media elements on a web page for use in
+   *       rules
+   */
+
+  class MediaInfo {
+    constructor () {
+      this.allMediaElements = [];
+    }
+
+    update (mediaElement, domElement) {
+
+      switch (domElement.tagName) {
+
+        case 'audio':
+          mediaElement = new MediaElement(domElement);
+          this.allMediaElements.push(mediaElement);
+          break;
+
+        case 'embed':
+          mediaElement = new MediaElement(domElement);
+          this.allMediaElements.push(mediaElement);
+          break;
+
+        case 'object':
+          mediaElement = new MediaElement(domElement);
+          this.allMediaElements.push(mediaElement);
+          break;
+
+        case 'param':
+          if (mediaElement && mediaElement.isObject) {
+            const param = new ParamElement(domElement);
+            mediaElement.params.push(param);
+          }
+          break;
+
+        case 'track':
+          if (mediaElement &&
+              mediaElement.allowsTracks) {
+            const track = new TrackElement(domElement);
+            mediaElement.tracks.push(track);
+          }
+          break;
+
+        case 'video':
+          mediaElement = new MediaElement(domElement);
+          this.allMediaElements.push(mediaElement);
+          break;
+
+      }
+
+      return mediaElement;
+    }
+
+    /**
+     * @method showMediaInfo
+     *
+     * @desc showMediaInfo is used for debugging the MediaInfo and other media objects
+     */
+
+    showListInfo () {
+      if (debug$O.flag) {
+        debug$O.log('== Media Elements ==', 1);
+        this.allElements.forEach( me => {
+          debug$O.log(me);
+        });
+
+      }
+    }
+  }
+
+  /* structureInfo.js */
+
+  /* Constants */
+  const debug$N = new DebugLogging('structureInfo', false);
+
+  /**
+   * @class LandmarkElement
+   *
+   * @desc Identifies a DOM element as being a landmark and relationships to other landmarks and headings.
+   *
+   * @param  {Object}  domElement   - Structural Information
+   */
+
+  class LandmarkElement {
+    constructor (domElement, parentLandmarkElement) {
+
+      this.parentLandmarkElement   = parentLandmarkElement;
+      this.domElement              = domElement;
+
+      this.descendantLandmarkElements = [];
+      this.childLandmarkElements      = [];
+      this.childHeadingDomElements    = [];
+    }
+
+    addChildLandmark (landmarkElement) {
+      this.childLandmarkElements.push(landmarkElement);
+      let ple = landmarkElement.parentLandmarkElement;
+      while (ple) {
+        ple.descendantLandmarkElements.push(landmarkElement);
+        ple = ple.parentLandmarkElement;
+      }
+    }
+
+    addChildHeading (domElement) {
+      this.childHeadingDomElements.push(domElement);
+    }
+
+    showLandmarkInfo (prefix) {
+      if (typeof prefix !== 'string') {
+        prefix = '';
+      }
+      this.childLandmarkElements.forEach( le => {
+        debug$N.domElement(le.domElement, prefix);
+        le.showLandmarkInfo(prefix + '  ');
+      });
+      this.childHeadingDomElements.forEach( h => {
+        debug$N.domElement(h, prefix);
+      });
+    }
+
+    getFirstVisibleHeadingDomElement() {
+      const domElements = this.childHeadingDomElements;
+      for (let i = 0; i < domElements.length; i += 1){
+        const de = domElements[i];
+        if (de.visibility.isVisibleToAT) {
+          return de;
+        }
+      }
+      return false;
+    }
+
+    toString () {
+      return this.domElement.role;
+    }
+  }
+
+  /**
+   * @class StructureInfo
+   *
+   * @desc Collects information on the landmarks or headings on a web page for use in
+   *       rules
+   *
+   * @param  {Object}  structuralInfo   - Structural Information
+   */
+
+  class StructureInfo {
+    constructor () {
+      this.hasMainLandmark = false;
+      this.allLandmarkElements = [];
+      this.allHeadingDomElements = [];
+      this.allH1DomElements = [];
+      this.childLandmarkElements = [];
+      this.landmarkElementsByDoc = [];
+    }
+
+    /**
+     * @method addChildLandmark
+     *
+     * @desc Creates a new LandmarkElement and to the array of
+     *       LandmarkElements
+     *
+     * @param  {Object}  domElement             - New LandmarkElement object being added to StrutureInfo
+     * @param  {Object}  parentLandmarkElement  - LandmarkElement object identifying the parent
+     *                                            LandmarkElement
+     * @param  {Integer} documentIndex          - index for identifying the current document (e.g. iframe
+     *                                             or custom element dom)
+     */
+
+    addChildLandmark (domElement, parentLandmarkElement, documentIndex) {
+
+      if (domElement.role === 'main') {
+        this.hasMainLandmark = true;
+      }
+
+      const le = new LandmarkElement(domElement, parentLandmarkElement);
+      this.allLandmarkElements.push(le);
+
+      if (!Array.isArray(this.landmarkElementsByDoc[documentIndex])) {
+        this.landmarkElementsByDoc[documentIndex] = [];
+      }
+      this.landmarkElementsByDoc[documentIndex].push(le);
+
+      if (parentLandmarkElement) {
+        parentLandmarkElement.addChildLandmark(le);
+      } else {
+        this.childLandmarkElements.push(le);
+      }
+
+      return le;
+    }
+
+    /**
+     * @method addChildHeading
+     *
+     * @desc
+     *
+     * @param  {Object}  domElement            - DOMElement object representing an element in the DOM
+     * @param  {Object}  parentLandmarkElement - LandmarkElement object representing an landmark region
+     */
+
+    addChildHeading (domElement, parentLandmarkElement) {
+      this.allHeadingDomElements.push(domElement);
+
+      if (domElement.ariaInfo.ariaLevel === 1) {
+        this.allH1DomElements.push(domElement);
+      }
+
+      if (parentLandmarkElement) {
+        parentLandmarkElement.addChildHeading(domElement);
+      }
+    }
+
+    /**
+     * @method update
+     *
+     * @desc Checks to see if the domElement is a heading or landmark and if so adds the
+     *       domElement to the StrutureInfo object and current LandmarkElement
+     *
+     * @param  {Object}  parentLandmarkElement  - Parent LandmarkElement (note: can be null)
+     * @param  {Object}  domElement             - DOMElement object representing an element in the DOM
+     * @param  {Integer} documentIndex          - index for identifying the current document (e.g. iframe
+     *                                            or custom element dom)
+     *
+     * @return  {Object}  LandmarkElement - Landmarklement object for use as the parent landmark
+     *                                      element for descendant domElements
+     */
+
+    update (parentLandmarkElement, domElement, documentIndex) {
+      let landmarkElement = parentLandmarkElement;
+      if (domElement.isHeading) {
+        this.addChildHeading(domElement, parentLandmarkElement);
+      }
+
+      if (domElement.isLandmark) {
+        landmarkElement = this.addChildLandmark(domElement, parentLandmarkElement, documentIndex);
+      }
+      return landmarkElement;
+    }
+
+    /**
+     * @method showStructureInfo
+     *
+     * @desc showSructureInfo is used for debugging the StructureInfo and LandmarkElement objects
+     */
+
+    showStructureInfo () {
+      if (debug$N.flag) {
+        debug$N.log('== All Headings ==', 1);
+        this.allHeadingDomElements.forEach( h => {
+          debug$N.domElement(h);
+        });
+        debug$N.log('== All Landmarks ==', 1);
+        this.allLandmarkElements.forEach( le => {
+          debug$N.domElement(le.domElement);
+        });
+        debug$N.log('== Landmarks By Doc ==', 1);
+        this.landmarkElementsByDoc.forEach( (les, index) => {
+          debug$N.log(`Document Index: ${index} (${Array.isArray(les)})`);
+          if (Array.isArray(les)) {
+            les.forEach(le => {
+              debug$N.domElement(le.domElement);
+            });
+          }
+        });
+        debug$N.log('== Structure Tree ==', 1);
+        this.childLandmarkElements.forEach( le => {
+          debug$N.domElement(le.domElement);
+          le.showLandmarkInfo('  ');
+        });
+      }
+    }
   }
 
   /* tableInfo.js */
@@ -31797,6 +31866,99 @@
   const debug$y = new DebugLogging('Color Rules', false);
   debug$y.flag = false;
 
+  /* Helper Functions */
+
+
+    /**
+     * @function checkColorContrast
+     *
+     * @desc Resolves color contrast rule results based on min CRR values,
+     *       this function is used by the two color contrast rules
+     *
+     * @param {Object}  rule_result         :  RuleResult object
+     * @param {Object}  domText             :  DOMText object
+     * @param {Number}  min_ccr_large_font  :  Minimum CCR for large font
+     * @param {Number}  min_ccr_normal_font :  Minimum CCR for normal font
+     *
+     */
+
+
+  function  checkColorContrast(rule_result, domText, min_ccr_large_font, min_ccr_normal_font) {
+
+    const de  = domText.parentDomElement;
+    const cc  = de.colorContrast;
+    const ccr = cc.colorContrastRatio;
+
+    if (de.visibility.isVisibleOnScreen) {
+      if (ccr === '') {
+        rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_6', []);
+      }
+      else {
+        if (cc.isLargeFont) {
+          if (ccr >= min_ccr_large_font) {
+            // Passes color contrast requirements
+            if (cc.hasBackgroundImage) {
+              rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_3', [ccr]);
+            }
+            else {
+              if (cc.isPositioned && cc.isTransparent) {
+                rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_5', []);
+              }
+              else {
+                rule_result.addElementResult(TEST_RESULT.PASS, domText, 'ELEMENT_PASS_2', [ccr]);
+              }
+            }
+          }
+          else {
+            // Fails color contrast requirements
+            if (cc.hasBackgroundImage) {
+              rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_4', [ccr]);
+            }
+            else {
+              if (cc.isPositioned && cc.isTransparent) {
+                rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_5', []);
+              }
+              else {
+                rule_result.addElementResult(TEST_RESULT.FAIL, domText, 'ELEMENT_FAIL_2', [ccr]);
+              }
+            }
+          }
+        }
+        else {
+          if (ccr >= min_ccr_normal_font) {
+            // Passes color contrast requirements
+            if (cc.hasBackgroundImage) {
+              rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_1', [ccr]);
+            }
+            else {
+              if (cc.isPositioned && cc.isTransparent) {
+                rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_5', []);
+              }
+              else {
+                rule_result.addElementResult(TEST_RESULT.PASS, domText, 'ELEMENT_PASS_1', [ccr]);
+              }
+            }
+          }
+          else {
+            // Fails color contrast requirements
+            if (cc.hasBackgroundImage) {
+              rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_2', [ccr]);
+            }
+            else {
+              if (cc.isPositioned && cc.isTransparent) {
+                rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_5', []);
+              }
+              else {
+                rule_result.addElementResult(TEST_RESULT.FAIL, domText, 'ELEMENT_FAIL_1', [ccr]);
+              }
+            }
+          }
+        }
+      }
+    } else {
+      rule_result.addElementResult(TEST_RESULT.HIDDEN, domText, 'ELEMENT_HIDDEN_1', []);
+    }
+  }
 
   /*
    * OpenA11y Alliance Rules
@@ -31821,80 +31983,10 @@
       target_resources    : ['text content'],
       validate            : function (dom_cache, rule_result) {
 
-        const MIN_CCR_NORMAL_FONT = 4.5;
-        const MIN_CCR_LARGE_FONT  = 3;
-
         debug$y.flag && debug$y.log(`===== COLOR 1 ====`);
 
         dom_cache.allDomTexts.forEach( domText => {
-          const de  = domText.parentDomElement;
-          const cc  = de.colorContrast;
-          const ccr = cc.colorContrastRatio;
-
-          if (de.visibility.isVisibleOnScreen) {
-            if (cc.isLargeFont) {
-              if (ccr >= MIN_CCR_LARGE_FONT) {
-                // Passes color contrast requirements
-                if (cc.hasBackgroundImage) {
-                  rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_3', [ccr]);
-                }
-                else {
-                  if (cc.isPositioned && cc.isTransparent) {
-                    rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_5', []);
-                  }
-                  else {
-                    rule_result.addElementResult(TEST_RESULT.PASS, domText, 'ELEMENT_PASS_2', [ccr]);
-                  }
-                }
-              }
-              else {
-                // Fails color contrast requirements
-                if (cc.hasBackgroundImage) {
-                  rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_4', [ccr]);
-                }
-                else {
-                  if (cc.isPositioned && cc.isTransparent) {
-                    rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_5', []);
-                  }
-                  else {
-                    rule_result.addElementResult(TEST_RESULT.FAIL, domText, 'ELEMENT_FAIL_2', [ccr]);
-                  }
-                }
-              }
-            }
-            else {
-              if (ccr >= MIN_CCR_NORMAL_FONT) {
-                // Passes color contrast requirements
-                if (cc.hasBackgroundImage) {
-                  rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_1', [ccr]);
-                }
-                else {
-                  if (cc.isPositioned && cc.isTransparent) {
-                    rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_5', []);
-                  }
-                  else {
-                    rule_result.addElementResult(TEST_RESULT.PASS, domText, 'ELEMENT_PASS_1', [ccr]);
-                  }
-                }
-              }
-              else {
-                // Fails color contrast requirements
-                if (cc.hasBackgroundImage) {
-                  rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_2', [ccr]);
-                }
-                else {
-                  if (cc.isPositioned && cc.isTransparent) {
-                    rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_5', []);
-                  }
-                  else {
-                    rule_result.addElementResult(TEST_RESULT.FAIL, domText, 'ELEMENT_FAIL_1', [ccr]);
-                  }
-                }
-              }
-            }
-          } else {
-            rule_result.addElementResult(TEST_RESULT.HIDDEN, domText, 'ELEMENT_HIDDEN_1', []);
-          }
+          checkColorContrast(rule_result, domText, 3, 4.5);
         });
       } // end validate function
     },
@@ -31938,96 +32030,10 @@
       target_resources    : ['text content'],
       validate            : function (dom_cache, rule_result) {
 
-        let index = 0;
-        function checkResult(domElement, result) {
-          const node    = domElement.node;
-          const tagName = node.tagName;
-          const id      = node.id ? `[id=${node.id}]` : '';
-          const cc      = domElement.colorContrast;
-          const crr     = cc.colorContrastRatio;
-          debug$y.flag && debug$y.log(`[${index += 1}][${result}][${tagName}]${id}: ${crr}`);
-        }
-
-
-        const MIN_CCR_NORMAL_FONT = 7;
-        const MIN_CCR_LARGE_FONT  = 4.5;
-
         debug$y.flag && debug$y.log(`===== COLOR 3 ====`);
 
         dom_cache.allDomTexts.forEach( domText => {
-          const de  = domText.parentDomElement;
-          const cc  = de.colorContrast;
-          const ccr = cc.colorContrastRatio;
-
-          if (de.visibility.isVisibleOnScreen) {
-            if (cc.isLargeFont || cc.isBoldedFont) {
-              if (ccr >= MIN_CCR_LARGE_FONT) {
-                // Passes color contrast requirements
-                if (cc.hasBackgroundImage) {
-                  checkResult(de, 'MC');
-                  rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_3', [ccr]);
-                }
-                else {
-                  if (cc.isPositioned && cc.isTransparent) {
-                    rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_5', []);
-                  }
-                  else {
-                    rule_result.addElementResult(TEST_RESULT.PASS, domText, 'ELEMENT_PASS_2', [ccr]);
-                  }
-                }
-              }
-              else {
-                // Fails color contrast requirements
-                if (cc.hasBackgroundImage) {
-                  checkResult(de, 'MC');
-                  rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_4', [ccr]);
-                }
-                else {
-                  if (cc.isPositioned && cc.isTransparent) {
-                    rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_5', []);
-                  }
-                  else {
-                    rule_result.addElementResult(TEST_RESULT.FAIL, domText, 'ELEMENT_FAIL_2', [ccr]);
-                  }
-                }
-              }
-            }
-            else {
-              if (ccr >= MIN_CCR_NORMAL_FONT) {
-                // Passes color contrast requirements
-                if (cc.hasBackgroundImage) {
-                  checkResult(de, 'MC');
-                  rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_1', [ccr]);
-                }
-                else {
-                  if (cc.isPositioned && cc.isTransparent) {
-                    rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_5', []);
-                  }
-                  else {
-                    rule_result.addElementResult(TEST_RESULT.PASS, domText, 'ELEMENT_PASS_1', [ccr]);
-                  }
-                }
-              }
-              else {
-                // Fails color contrast requirements
-                if (cc.hasBackgroundImage) {
-                  checkResult(de, 'MC');
-                  rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_2', [ccr]);
-                }
-                else {
-                  if (cc.isPositioned && cc.isTransparent) {
-                    rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_5', []);
-                  }
-                  else {
-                    rule_result.addElementResult(TEST_RESULT.FAIL, domText, 'ELEMENT_FAIL_1', [ccr]);
-                  }
-                }
-              }
-            }
-          } else {
-            checkResult(de, 'HIDDEN');
-            rule_result.addElementResult(TEST_RESULT.HIDDEN, domText, 'ELEMENT_HIDDEN_1', []);
-          }
+          checkColorContrast(rule_result, domText, 4.5, 7);
         });
       } // end validate function
     },
@@ -32516,7 +32522,7 @@
       dom_cache.controlInfo.allControlElements.forEach(ce => {
         const de = ce.domElement;
         if (!ce.isInputTypeImage) {
-          if (de.isLabelable) {
+          if (de.isLabelable && de.ariaInfo.isNameRequired) {
             if (de.visibility.isVisibleToAT) {
               if (de.accName.name) {
                 if (de.accName.cellHeaders) {
@@ -37938,7 +37944,7 @@
         const ai = de.ariaInfo;
         // There are other rules that check for accessible name for labelable controls, landmarks, headings and links
         // Ignore option role, since web developers are very sloppy about giving them content before they are made visible
-        if (ai.isWidget && !de.isLabelable && !de.isLink && (de.role !== 'option')) {
+        if (ai.isWidget && !de.isButton && !de.isLabelable && !de.isLink && (de.role !== 'option')) {
           if (de.visibility.isVisibleToAT) {
             if (de.accName.name) {
               rule_result.addElementResult(TEST_RESULT.PASS, de, 'ELEMENT_PASS_1', [de.tagName, de.role, de.accName.name]);
@@ -39455,6 +39461,7 @@
       this.date           = getFormattedDate();
       this.version        = VERSION;
       this.allDomElements = [];
+
       this._allRuleResults = [];
 
       this._headings           = new HeadingResults();
@@ -40116,7 +40123,6 @@
 
   /* aiRuleResult.js */
 
-
   /* constants */
   const debug$1 = new DebugLogging('aiRuleResult', false);
   debug$1.flag = false;
@@ -40173,8 +40179,8 @@
           accessible_description:     de.accDescription,
           error_message:              de.errMessage,
 
-          html_attributes:            de.html_attrs,
-          aria_attributes:            de.aria_attrs,
+          html_attributes:            de.htmlAttrs,
+          aria_attributes:            de.ariaAttrs,
 
           is_element: true,
           is_page: false,
@@ -40186,27 +40192,28 @@
           const cc = de.colorContrast;
           const cc_result = element_result.color_contrast = {};
 
-          cc_result.has_text_nodes         = cc.hasTextNodes;
-          cc_result.opacity                = cc.opacity;
-          cc_result.background_color_elem  = cc.backgroundColorElem;
-          cc_result.background_color       = cc.backgroundColorHex;
-          cc_result.color                  = cc.color;
-          cc_result.colorHex               = cc.colorHex;
+          cc_result.ccr                    = cc.colorContrastRatio;
 
-          cc_result.has_background_image   = cc.hasBackgroundImage;
-          cc_result.background_image       = cc.backgroundImage;
-          cc_result.background_repeat      = cc.backgroundRepeat;
-          cc_result.background_position    = cc.backgroundPosition;
+          cc_result.background_color       = cc.backgroundColor;
+          cc_result.background_color_hex   = isHex(cc.backgroundColorHex) ?
+                                                  '#' + cc.backgroundColorHex :
+                                                  cc.backgroundColorHex;
+          cc_result.color                  = cc.color;
+          cc_result.color_hex              = cc.colorHex;
+          cc_result.color_hex              = isHex(cc.colorHex) ?
+                                                  '#' + cc.colorHex :
+                                                  cc.colorHex;
+
+          cc_result.is_positioned          = cc.isPositioned;
 
           cc_result.font_family            = cc.fontFamily;
           cc_result.font_size              = cc.fontSize;
           cc_result.font_weight            = cc.fontWeight;
           cc_result.is_large_font          = cc.is_large_font;
 
-          cc_result.ccr                    = cc.colorContrastRatio;
-
-          cc_result.is_positioned          = cc.isPositioned;
-          cc_result.is_transparent         = cc.isTransparent;
+          cc_result.background_image       = cc.backgroundImage;
+          cc_result.background_repeat      = cc.backgroundRepeat;
+          cc_result.background_position    = cc.backgroundPosition;
         }
 
         // For table cell header rule add table cell information
@@ -40292,10 +40299,11 @@
   /**
    * @function aiRuleResultsByCategory
    *
-   * @desc Returns an object containing the rule results for the rules in a rule category
-   *       and a summary of rule results
+   * @desc Returns an array of information containing the rule results for the rules
+   *       in a rule category and a summary of rule results
    *
-   * @param {Integer}  categoryId  -  Number of the rule category
+   * @param {Array}    AllRuleResults  - Array of RuleResult objects from an EvaluationResult
+   * @param {Integer}  categoryId      - Number of the rule category
    *
    * @return array [String, {RuleResultsSummary}, {array}, {array}]  see description
    */
@@ -40324,10 +40332,11 @@
   /**
    * @method aiRuleResultsByGuideline
    *
-   * @desc Returns an object containing the rule results associated with a WCAG 2.0 Guideline
-   *       and a summary of rule results
+   * @desc Returns an array of information containing the rule results associated
+   *       with a WCAG 2.0 Guidelinr and a summary of rule results
    *
-   * @param {Integer}  guidelineId  - Number representing the guideline id
+   * @param {Array}    AllRuleResults  - Array of RuleResult objects from an EvaluationResult
+   * @param {Integer}  guidelineId     - Number representing the guideline id
    *
    * @return array [String, {RuleResultsSummary}, {array}, {array}]  see description
    */

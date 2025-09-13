@@ -115,10 +115,16 @@ label.focus {
   outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
 }
 
+select:focus,
 button:focus {
   outline-offset: var(--input-outline-offset);
   outline-width: var(--input-outline-width);
   outline-style:  var(--input-outline-style);
   outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+}
+
+select:hover,
+button:hover {
+  cursor: pointer;
 }
 

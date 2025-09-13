@@ -1,14 +1,10 @@
-/* info-rules.css */
-
-#container {
-  position: relative;
-  top: 9px;
-}
+/* info.css */
 
 h2 {
   margin: 0;
   padding: 0;
   font-size: 1.2em;
+  display: inline-block;
 }
 
 .info-rules,
@@ -57,7 +53,7 @@ li {
 }
 
 .prop-value .prop {
-  font-style: italics;
+  font-style: italic;
 }
 
 .prop-value.missing .value,
@@ -71,3 +67,45 @@ code {
   font-weight: var(--code-font-weight);
 }
 
+table {
+  margin: 0;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table thead tr {
+  border-bottom: 1px solid light-dark(#333, #ccc);
+}
+
+table tbody tr:nth-child(odd) {
+  background: light-dark(#eee, #222);
+}
+
+table thead th,
+table tbody td {
+  text-align: left;
+  padding-right: 0.25em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+table thead th {
+  font-weight: bold;
+}
+
+
+table.ccr thead th:first-child,
+table.ccr tbody td:first-child,
+table.vis thead th:first-child,
+table.vis tbody td:first-child,
+table.attrs thead th:first-child,
+table.attrs tbody td:first-child {
+  width: 8em;
+}
+
+.info-rules:focus,
+.info-results:focus {
+  outline-style: var( --input-outline-style);
+  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+}

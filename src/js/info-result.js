@@ -51,6 +51,49 @@ function addPropValue (elem, prop, value, className) {
   return div;
 }
 
+function addPropertyList (elem, prop_list, firstHeader, className='') {
+  let trElem, thElem, tdElem;
+
+  const tableElem = document.createElement('table');
+  tableElem.className = className;
+  elem.appendChild(tableElem);
+
+  const theadElem = document.createElement('thead');
+  tableElem.appendChild(theadElem);
+
+  trElem = document.createElement('tr');
+  theadElem.appendChild(trElem);
+
+  thElem = document.createElement('th');
+  thElem.textContent = firstHeader;
+  trElem.appendChild(thElem);
+
+  thElem = document.createElement('th');
+  thElem.textContent = getMessage('header_value');
+  trElem.appendChild(thElem);
+
+  const tbodyElem = document.createElement('tbody');
+  tableElem.appendChild(tbodyElem);
+
+  for(let prop in prop_list) {
+    trElem = document.createElement('tr');
+    tbodyElem.appendChild(trElem);
+
+    tdElem = document.createElement('td');
+    tdElem.textContent = className === 'ccr' ?
+                         getMessage(`color_${prop}`) :
+                         prop;
+    trElem.appendChild(tdElem);
+
+    tdElem = document.createElement('td');
+    tdElem.textContent = prop_list[prop];
+    trElem.appendChild(tdElem);
+  }
+
+  return tableElem;
+}
+
+
 function renderResultInfo (attachElem, result) {
 
   const divElem = addElementDiv(attachElem, result.id);
@@ -79,7 +122,7 @@ function renderResultInfo (attachElem, result) {
         addH3(divElem, getMessage('element_result_acc_name_required'));
         if (result.accessible_name.name) {
           addPropValue(divElem, getMessage('element_result_prop_text'), acc_name.name);
-          addPropValue(divElem, getMessage('element_result_prop_source'), acc_name.name);
+          addPropValue(divElem, getMessage('element_result_prop_source'), acc_name.source);
         }
         else {
           addPropValue(divElem, getMessage('element_result_prop_text'), getMessage('element_result_value_none'), 'missing');
@@ -125,9 +168,34 @@ function renderResultInfo (attachElem, result) {
     renderContent(divElem, result.tag_name, 'tag_name');
   }
 
+  if (result.color_contrast) {
+    addH3(divElem, getMessage('element_result_ccr'));
+    addPropertyList(divElem, result.color_contrast, 'Property', 'ccr');
+  }
+
+  if (result.table) {
+    addH3(divElem, 'Table Information');
+    addPropertyList(divElem, result.table, getMessage('header_property'), 'tables');
+  }
+
+  if (result.table_cell) {
+    addH3(divElem, 'Table Cell Information');
+    addPropertyList(divElem, result.table_cell, getMessage('header_property'), 'cells');
+  }
+
+  if (Object.keys(result.html_attributes).length) {
+    addH3(divElem, 'HTML Attributes');
+    addPropertyList(divElem, result.html_attributes, getMessage('header_attribute'), 'attrs');
+  }
+
+  if (Object.keys(result.aria_attributes).length) {
+    addH3(divElem, 'ARIA Attributes');
+    addPropertyList(divElem, result.aria_attributes, getMessage('header_attribute'), 'attrs');
+  }
+
   if (result.scope) {
-    addH3(divElem, getMessage('info_scope_label'));
-    renderContent(divElem, result.scope, 'scope');
+    addH3(divElem, getMessage('element_result_type'));
+    renderContent(divElem, result.result_type, 'result-type');
   }
 }
 
@@ -135,6 +203,7 @@ const template = document.createElement('template');
 template.innerHTML = `
   <div id="container">
     <h2 data-i18n="element_selected_label"></h2>
+    <copy-button></copy-button>
     <div class="info-results">
     </div>
   </div>
@@ -162,6 +231,9 @@ export default class InfoResult extends HTMLElement {
     setI18nLabels(this.shadowRoot, debug.flag);
 
     this.infoElementsElem = this.shadowRoot.querySelector('.info-results');
+
+    const copyButtonElem   = this.shadowRoot.querySelector('copy-button');
+    copyButtonElem.setGetTextFunct(this.getCopyText);
 
     this.website_result = false;
     this.page_result = false;
@@ -201,10 +273,10 @@ export default class InfoResult extends HTMLElement {
         }
       }
     }
+  }
 
-
-
-
+  getCopyText () {
+    return "Test";
   }
 
   setHeight (height) {

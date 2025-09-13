@@ -28,7 +28,7 @@ export class Grid extends HTMLElement {
 
     link = document.createElement('link');
     link.setAttribute('rel', 'stylesheet');
-    link.setAttribute('href', './result-grid.css');
+    link.setAttribute('href', './grid.css');
     this.shadowRoot.appendChild(link);
 
     // reference to associated details button

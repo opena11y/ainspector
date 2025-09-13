@@ -1,0 +1,41 @@
+/* copy-button.css */
+
+button  {
+  margin: 2px;
+  padding: 4px 4px 2px 4px;
+  background:  none;
+  border: none;
+  text-align: center;
+  outline: none;
+  display: inline-block;
+}
+
+button img {
+  margin: 0;
+  height: 16px;
+}
+
+button img.copied {
+  display:  none;
+}
+
+button.copied img.copy {
+  display:  none;
+}
+
+button.copied img.copied {
+  display:  inline-block;
+}
+
+button:focus {
+  outline-offset: var(--input-outline-offset);
+  outline-width: var( --input-outline-width);
+  outline-style: var( --input-outline-style);
+  outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+
