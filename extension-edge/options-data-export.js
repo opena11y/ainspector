@@ -184,7 +184,6 @@ class OptionsDataExport extends HTMLElement {
     getOptions().then( (options) => {
 
       formControls.forEach( input => {
-        debug.flag && debug.log(`[update][${input.id}]: ${options[input.getAttribute('data-option')]} (${input.getAttribute('data-option')})`);
 
         const option = input.getAttribute('data-option');
 

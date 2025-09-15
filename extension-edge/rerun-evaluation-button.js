@@ -51,6 +51,7 @@ template.innerHTML = `
                    data-i18n="rerun_eval_select_label">
             </label>
             <select id="select">
+              <option value="0" selected>0 sec.</option>
               <option value="5" selected>5 sec.</option>
               <option value="10">10 sec.</option>
               <option value="20">20 sec.</option>
@@ -156,7 +157,6 @@ export default class RerunEvaluationButton extends HTMLElement {
   }
 
   openDialog () {
-    debug.log(`[openDialog]`);
     getOptions().then( (options) => {
       this.checkbox.checked = !options.rerunDelayEnabled;
       for (let i = 0; i < this.select.options.length; i += 1) {
@@ -165,7 +165,6 @@ export default class RerunEvaluationButton extends HTMLElement {
           option.selected = true;
         }
       }
-      debug.log(`[openDialog]: showModal`);
       this.dialog.showModal();
       this.okButton.focus();
       this.rerunButton.setAttribute('aria-expanded', 'true');

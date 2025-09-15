@@ -339,7 +339,7 @@ class AISidePanel extends HTMLElement {
                                     info: info
                                   }
                                 });
-        debug.log(`[myResult]: ${myResult}`);
+        debug.flag && debug.log(`[myResult]: ${myResult}`);
       }
     }
 
@@ -362,7 +362,7 @@ class AISidePanel extends HTMLElement {
                                     style: options.highlightStyle
                                   }
                                 });
-        debug.log(`[myResult]: ${myResult}`);
+        debug.flag && debug.log(`[myResult]: ${myResult}`);
       }
     }
 
@@ -381,7 +381,7 @@ class AISidePanel extends HTMLElement {
       for (const tab of tabs) {
         const myResult = await myBrowser.tabs
           .sendMessage(tab.id, { focusPosition : ordinalPosition });
-        debug.log(`[myResult]: ${myResult}`);
+        debug.flag && debug.log(`[myResult]: ${myResult}`);
       }
     }
 

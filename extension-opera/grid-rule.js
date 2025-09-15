@@ -125,7 +125,6 @@ function renderResult (gridObj, count, options, result) {
     gridObj.addDataCell(row, result.action, '', 'action');
 
     gridObj.tbody.appendChild(row);
-    debug.log(`${count}: ${result.position} ${result.id} `);
     row.setAttribute('aria-label', rowAccName);
 
   }
@@ -183,8 +182,6 @@ export default class GridRule extends Grid {
   }
 
   update (website_result, page_result, element_results) {
-    debug.log(`[update]: ${element_results}`);
-
     let count = 0;
     removeChildContent(this.tbody);
 
@@ -231,7 +228,6 @@ export default class GridRule extends Grid {
   // Event handlers
 
   handleRowSelection(id) {
-    debug.log(`[handleRowSelection][id]: ${id}`);
     this.lastSelectedRowId = id;
     this.infoElementElem.show(id);
   }

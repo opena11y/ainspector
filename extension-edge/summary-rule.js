@@ -165,9 +165,6 @@ export default class SummaryRule extends HTMLElement {
   }
 
   update (summary) {
-    debug.log(`[update][violations]: ${summary.violations}`);
-    debug.log(`[update][    hidden]: ${summary.hidden}`);
-
     this.violationsTd.textContent   = summary.violations;
     this.violationsTd.title         = '';
 

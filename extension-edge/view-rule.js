@@ -7,7 +7,7 @@ import DebugLogging  from './debug.js';
 // Constants
 
 const debug = new DebugLogging('[view-rule]', false);
-debug.flag = true;
+debug.flag = false;
 
 const template = document.createElement('template');
 template.innerHTML = `

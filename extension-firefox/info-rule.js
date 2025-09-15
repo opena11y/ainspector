@@ -60,7 +60,6 @@ export default class InfoRule extends HTMLElement {
   }
 
   update (info_rules) {
-    debug.log(`[update]{start]: ${info_rules}`);
 
     function addRuleDiv(elem, id) {
       const divElem = document.createElement('div');
@@ -78,7 +77,7 @@ export default class InfoRule extends HTMLElement {
     }
 
     info_rules.forEach( (info_rule) => {
-      debug.log(`[update][info_rule]: ${info_rule.id}`);
+
       const divElem = addRuleDiv(this.infoRulesElem, info_rule.id);
       divElem.className = "info-rule";
 
@@ -110,13 +109,10 @@ export default class InfoRule extends HTMLElement {
       renderContent(divElem, info_rule.informational_links);
 
     });
-    debug.log(`[update][end]`);
   }
 
   show(id) {
-    debug.log(`[show][id]: ${id}`);
     const infoRules = Array.from(this.shadowRoot.querySelectorAll('.info-rule'));
-    debug.log(`[show][length]: ${infoRules.length}`);
 
     infoRules.forEach( (ir) => {
       if (ir.id === id) {

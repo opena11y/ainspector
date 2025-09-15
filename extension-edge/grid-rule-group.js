@@ -195,8 +195,6 @@ export default class GridRuleGroup extends Grid {
   }
 
   update (rule_results) {
-    debug.log(`[update]: ${rule_results}`);
-
     let count = 0;
 
     removeChildContent(this.tbody);
@@ -276,13 +274,11 @@ export default class GridRuleGroup extends Grid {
   // Event handlers
 
   handleRowSelection(id) {
-    debug.log(`[handleRowSelection][id]: ${id}`);
     this.lastSelectedRowId = id;
     this.infoRuleElem.show(id);
   }
 
   handleRowActivation(id) {
-    debug.log(`[handleRowActivation][id]: ${id}`);
     this.sidepanelElem.setView('rule', id);
   }
 

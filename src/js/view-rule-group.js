@@ -51,14 +51,12 @@ export default class ViewRuleGroup extends HTMLElement {
   }
 
   clear () {
-    debug.flag && debug.log(`[clear]`);
     this.summaryRulesElem.clear();
     this.gridRuleGroupElem.clear();
     this.infoRuleElem.clear();
   }
 
   update (result) {
-    debug.flag && debug.log(`[update]`);
     this.summaryRulesElem.update(result.rule_summary);
     this.gridRuleGroupElem.update(result.rule_results);
     this.infoRuleElem.update(result.info_rules);

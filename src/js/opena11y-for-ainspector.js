@@ -12758,8 +12758,6 @@
 
   }
 
-  /* common.js */
-
   const common = {
     aria13: ' (ARIA 1.3)',
     level: ['undefined', 'AAA', 'AA', 'undefined', 'A'],
@@ -40133,13 +40131,10 @@
   debug$1.flag = false;
 
   function aiRuleResult (all_rule_results, rule_id) {
-    debug$1.log(`[aiRuleResult][rule_id]: ${rule_id}`);
 
     const rule_result = all_rule_results.find( (rr) => {
       return rr.rule.getId() === rule_id;
     });
-
-    debug$1.log(`[aiRuleResult][rule_result]: ${rule_result}`);
 
     const ruleTitle       = rule_result.rule.getSummary();
 
@@ -40435,8 +40430,6 @@
   const evaluationLibrary = new EvaluationLibrary();
   let er;
 
-  console.log(`[content.js]: loading...`);
-
   // Load element highlight custom element
 
   const scriptNode = document.createElement('script');
@@ -40486,14 +40479,6 @@
       if(request.aiRunEvaluation) {
         const r = request.aiRunEvaluation;
 
-        console.log(`[       ruleset]: ${r.ruleset}`);
-        console.log(`[         level]: ${r.level}`);
-        console.log(`[  scope_filter]: ${r.scope_filter}`);
-        console.log(`[  aria_version]: ${r.aria_version}`);
-        console.log(`[   result_view]: ${r.result_view}`);
-        console.log(`[ rule_group_id]: ${r.rule_group_id}`);
-        console.log(`[       rule_id]: ${r.rule_id}`);
-
         const doc = window.document;
         er  = evaluationLibrary.evaluateWCAG(
                 doc,
@@ -40505,18 +40490,12 @@
                 r.aria_version,
                 true);
 
-        console.log(`[er]: ${er}`);
-
         let response = {
           title:         er.getTitle(),
           location:      er.getURL(),
           ruleset_label: er.getRulesetLabel(),
           result_view:   r.result_view
         };
-
-        console.log(`[response][      title]: ${response.title}`);
-        console.log(`[response][   location]: ${response.location}`);
-        console.log(`[response][result_view]: ${response.result_view}`);
 
         let group_title, rule_summary, rule_results, info_rules;
         let rule_title, element_summary, website_result, page_result, element_results;
@@ -40529,9 +40508,6 @@
             response.rule_summary          = er.ruleResultSummary.data;
             response.rc_rule_results_group = er.rcRuleGroupResults.data;
             response.gl_rule_results_group = er.glRuleGroupResults.data;
-            console.log(`[response][rule_summary]: ${response.rule_summary}`);
-            console.log(`[response][      rcData]: ${response.rc_rule_results_group}`);
-            console.log(`[response][      glData]: ${response.gl_rule_results_group}`);
             break;
 
           case 'rule-group':
@@ -40547,11 +40523,6 @@
             response.rule_results = rule_results;
             response.info_rules   = info_rules;
 
-            console.log(`[response][${parts[0]}][ group_title]: ${response.group_title}`);
-            console.log(`[response][${parts[0]}][rule_summary]: ${response.rule_summary}`);
-            console.log(`[response][${parts[0]}][rule_results]: ${response.rule_results}`);
-            console.log(`[response][${parts[0]}][  info_rules]: ${response.info_rules}`);
-
             break;
 
           case 'rule':
@@ -40562,12 +40533,6 @@
             response.website_result  = website_result;
             response.page_result     = page_result;
             response.element_results = element_results;
-
-            console.log(`[response][     rule_title]: ${response.rule_title}`);
-            console.log(`[response][element_summary]: ${response.element_summary.violations}`);
-            console.log(`[response][ website_result]: ${response.website_result}`);
-            console.log(`[response][    page_result]: ${response.page_result}`);
-            console.log(`[response][element_results]: ${response.element_results}`);
 
             break;
 

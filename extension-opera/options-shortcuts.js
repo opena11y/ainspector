@@ -192,8 +192,6 @@ class OptionsShortcuts extends HTMLElement {
 
     this.formControls =  Array.from(this.shadowRoot.querySelectorAll('[data-option]'));
 
-    debug.flag && debug.log(`[formControls]: ${this.formControls.length}`);
-
     this.updateOptions();
 
     this.shadowRoot.querySelector('#button-reset').addEventListener('click', () => {
@@ -217,8 +215,6 @@ class OptionsShortcuts extends HTMLElement {
     getOptions().then( (options) => {
 
       formControls.forEach( input => {
-        debug.flag && debug.log(`[update][${input.id}]: ${options[input.getAttribute('data-option')]} (${input.getAttribute('data-option')})`);
-
         const option = input.getAttribute('data-option');
 
         if (input.type === 'checkbox') {
@@ -243,7 +239,6 @@ class OptionsShortcuts extends HTMLElement {
   getOptions().then( (options) => {
 
       formControls.forEach( input => {
-        debug.flag && debug.log(`[update][${input.id}]: ${options[input.getAttribute('data-option')]} (${input.getAttribute('data-option')})`);
         const option = input.getAttribute('data-option');
         if (input.type === 'checkbox') {
           options[option] = input.checked;
@@ -286,7 +281,6 @@ class OptionsShortcuts extends HTMLElement {
   }
 
   handleChange () {
-    debug.flag && debug.log(`[saveOptions]`);
     this.saveShortcutsOptions();
   }
 

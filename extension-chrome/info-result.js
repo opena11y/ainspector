@@ -296,14 +296,12 @@ export default class InfoResult extends HTMLElement {
   }
 
   update (website_result, page_result, element_results) {
-    debug.log(`[update]: ${element_results}`);
     this.website_result = website_result;
     this.page_result = page_result;
     this.element_results = element_results;
   }
 
   show(id) {
-    debug.log(`[show][id]: ${id}`);
     this.clear();
 
     if (this.website_result && (id === this.website_result.id)) {

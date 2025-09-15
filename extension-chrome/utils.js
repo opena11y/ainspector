@@ -198,7 +198,6 @@ export function renderContent(elem, info, style='') {
     elem.appendChild(div);
   } else {
     if (info.url) {
-      debug.log(`[url]: ${info.title} ${info.url}`);
       div = document.createElement('div');
       div.className = style;
       a = document.createElement('a');

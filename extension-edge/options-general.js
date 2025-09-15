@@ -112,8 +112,6 @@ class OptionsGeneral extends HTMLElement {
 
     this.formControls =  Array.from(this.shadowRoot.querySelectorAll('[data-option]'));
 
-    debug.flag && debug.log(`[formControls]: ${this.formControls.length}`);
-
     this.updateOptions();
 
     this.shadowRoot.querySelector('#button-reset').addEventListener('click', () => {
