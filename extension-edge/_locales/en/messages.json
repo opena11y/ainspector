@@ -1386,56 +1386,116 @@
     "message": "Value",
     "description": "Column header in results information"
   },
-  "color_ccr": {
+  "ccr_ccr": {
     "message": "Color Cotrast Ratio",
     "description": "Property name in color contrast information"
   },
-  "color_background_color": {
-    "message": "Background color",
+  "ccr_background_color": {
+    "message": "Background",
     "description": "Property name in color contrast information"
   },
-  "color_background_color_hex": {
-    "message": "Background color (hex)",
+  "ccr_background_color_hex": {
+    "message": "Rendered background",
     "description": "Property name in color contrast information"
   },
-  "color_color": {
-    "message": "Color",
+  "ccr_color": {
+    "message": "Text",
     "description": "Property name in color contrast information"
   },
-  "color_color_hex": {
-    "message": "Color (hex)",
+  "ccr_color_hex": {
+    "message": "Rendered Text",
     "description": "Property name in color contrast information"
   },
-  "color_is_positioned": {
+  "ccr_opacity": {
+    "message": "Opacity",
+    "description": "Property name in color contrast information"
+  },
+  "ccr_is_positioned": {
     "message": "Is positioned",
     "description": "Property name in color contrast information"
   },
-  "color_font_family": {
+  "ccr_font_family": {
     "message": "Font family",
     "description": "Property name in color contrast information"
   },
-  "color_font_size": {
+  "ccr_font_size": {
     "message": "Font size",
     "description": "Property name in color contrast information"
   },
-  "color_font_weight": {
+  "ccr_font_weight": {
     "message": "Font weight",
     "description": "Property name in color contrast information"
   },
-  "color_is_large_font": {
+  "ccr_is_large_font": {
     "message": "Is large font",
     "description": "Property name in color contrast information"
   },
-  "color_background_image": {
+  "ccr_background_image": {
     "message": "Background image",
     "description": "Property name in color contrast information"
   },
-  "color_background_repeat": {
+  "ccr_background_repeat": {
     "message": "Background repeat",
     "description": "Property name in color contrast information"
   },
-  "color_background_position": {
+  "ccr_background_position": {
     "message": "Background position",
     "description": "Property name in color contrast information"
+  },
+  "cell_is_header": {
+    "message": "Is header cell",
+    "description": "Property name in table cell information"
+  },
+  "cell_start_row": {
+    "message": "Row",
+    "description": "Property name in table cell information"
+  },
+  "cell_start_column": {
+    "message": "Column",
+    "description": "Property name in table cell information"
+  },
+  "cell_row_span": {
+    "message": "Row span",
+    "description": "Property name in table cell information"
+  },
+  "cell_column_span": {
+    "message": "Column span",
+    "description": "Property name in table cell information"
+  },
+  "cell_headers": {
+    "message": "Headers",
+    "description": "Property name in table cell information"
+  },
+  "cell_headers_source": {
+    "message": "Headers from",
+    "description": "Property name in table cell information"
+  },
+  "cell_empty_cell": {
+    "message": "Cell is empty",
+    "description": "Property name in table cell information"
+  },
+  "table_type_nls": {
+    "message": "Type",
+    "description": "Property name in table information"
+  },
+  "table_rows": {
+    "message": "Rows",
+    "description": "Property name in table information"
+  },
+  "table_columns": {
+    "message": "Columns",
+    "description": "Property name in table information"
+  },
+  "table_spanned_data_cells": {
+    "message": "Spanned cells",
+    "description": "Property name in table information"
+  },
+  "table_cell_count": {
+    "message": "Total cells",
+    "description": "Property name in table information"
+  },
+  "table_header_cell_count": {
+    "message": "Total Header Cells",
+    "description": "Property name in table information"
   }
 }

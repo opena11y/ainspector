@@ -27,6 +27,7 @@ function addElementDiv(elem, id) {
   return divElem;
 }
 
+
 function addH3 (elem, content) {
   const h3Elem = document.createElement('h3');
   addContentToElement(h3Elem, content);
@@ -51,8 +52,28 @@ function addPropValue (elem, prop, value, className) {
   return div;
 }
 
+function addAction (elem, result_long, result_abbrev, action) {
+  const div = document.createElement('div');
+  div.className = `action`;
+
+  const spanResultElem = document.createElement('span');
+  addContentToElement(spanResultElem, `${result_long}`);
+  spanResultElem.className = `result ${result_abbrev}`;
+
+  const spanActionElem = document.createElement('span');
+  addContentToElement(spanActionElem, `: ${action}`);
+  spanActionElem.className = 'desc';
+
+  div.appendChild(spanResultElem);
+  div.appendChild(spanActionElem);
+  elem.appendChild(div);
+
+  return div;
+}
+
+
 function addPropertyList (elem, prop_list, firstHeader, className='') {
-  let trElem, thElem, tdElem;
+  let trElem, thElem, tdElem, spanElem;
 
   const tableElem = document.createElement('table');
   tableElem.className = className;
@@ -81,12 +102,30 @@ function addPropertyList (elem, prop_list, firstHeader, className='') {
 
     tdElem = document.createElement('td');
     tdElem.textContent = className === 'ccr' ?
-                         getMessage(`color_${prop}`) :
+                         getMessage(`ccr_${prop}`) :
+                         className === 'table' ?
+                         getMessage(`table_${prop}`) :
+                         className === 'cell' ?
+                         getMessage(`cell_${prop}`) :
                          prop;
     trElem.appendChild(tdElem);
 
     tdElem = document.createElement('td');
-    tdElem.textContent = prop_list[prop];
+    if (prop.includes('color')) {
+      spanElem = document.createElement('span');
+      spanElem.className = 'sample';
+      spanElem.style = `background-color: ${prop_list[prop]}`;
+      spanElem.textContent = ' ';
+      tdElem.append(spanElem);
+
+      spanElem = document.createElement('span');
+      spanElem.className = 'desc';
+      spanElem.textContent = prop_list[prop];
+      tdElem.append(spanElem);
+    }
+    else {
+      tdElem.textContent = prop_list[prop];
+    }
     trElem.appendChild(tdElem);
   }
 
@@ -106,7 +145,7 @@ function renderResultInfo (attachElem, result) {
 
   if (result.action) {
     addH3(divElem, getMessage('rule_action_label'));
-    renderContent(divElem, result.action, 'action');
+    addAction(divElem, result.result_long, result.result_abbrev, result.action);
   }
 
   if (result.role) {
@@ -163,11 +202,6 @@ function renderResultInfo (attachElem, result) {
     }
   }
 
-  if (result.tag_name) {
-    addH3(divElem, getMessage('element_result_tag_name'));
-    renderContent(divElem, result.tag_name, 'tag_name');
-  }
-
   if (result.color_contrast) {
     addH3(divElem, getMessage('element_result_ccr'));
     addPropertyList(divElem, result.color_contrast, 'Property', 'ccr');
@@ -175,22 +209,38 @@ function renderResultInfo (attachElem, result) {
 
   if (result.table) {
     addH3(divElem, 'Table Information');
-    addPropertyList(divElem, result.table, getMessage('header_property'), 'tables');
+    addPropertyList(divElem, result.table, getMessage('header_property'), 'table');
   }
 
   if (result.table_cell) {
     addH3(divElem, 'Table Cell Information');
-    addPropertyList(divElem, result.table_cell, getMessage('header_property'), 'cells');
+    addPropertyList(divElem, result.table_cell, getMessage('header_property'), 'cell');
   }
 
-  if (Object.keys(result.html_attributes).length) {
+  if (result.tag_name) {
+    addH3(divElem, getMessage('element_result_tag_name'));
+    renderContent(divElem, result.tag_name, 'tag_name');
+  }
+
+  if (result.role) {
     addH3(divElem, 'HTML Attributes');
-    addPropertyList(divElem, result.html_attributes, getMessage('header_attribute'), 'attrs');
+    if (Object.keys(result.html_attributes).length) {
+      addPropertyList(divElem, result.html_attributes, getMessage('header_attribute'), 'attrs');
+    }
+    else {
+      renderContent(divElem, getMessage('element_result_value_none'), 'tag_name');
+    }
   }
 
-  if (Object.keys(result.aria_attributes).length) {
+
+  if (result.role) {
     addH3(divElem, 'ARIA Attributes');
-    addPropertyList(divElem, result.aria_attributes, getMessage('header_attribute'), 'attrs');
+    if (Object.keys(result.aria_attributes).length) {
+      addPropertyList(divElem, result.aria_attributes, getMessage('header_attribute'), 'attrs');
+    }
+    else {
+      renderContent(divElem, getMessage('element_result_value_none'), 'tag_name');
+    }
   }
 
   if (result.scope) {

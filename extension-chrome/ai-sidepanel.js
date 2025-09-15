@@ -16,7 +16,7 @@ import {
 /* Constants */
 
 const debug = new DebugLogging('ai-sidepanel', false);
-debug.flag = true;
+debug.flag = false;
 
 // Browser Constants
 
@@ -234,7 +234,7 @@ class AISidePanel extends HTMLElement {
     debug.flag && debug.log(`[result][        title]: ${result.title}`);
     debug.flag && debug.log(`[result][     location]: ${result.location}`);
     debug.flag && debug.log(`[result][ruleset_label]: ${result.ruleset_label}`);
-    debug.flag && debug.log(`[result][. result_view]: ${result.result_view}`);
+    debug.flag && debug.log(`[result][  result_view]: ${result.result_view}`);
 
     switch (result.result_view) {
       case 'rules-all':

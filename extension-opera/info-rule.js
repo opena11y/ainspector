@@ -89,7 +89,7 @@ export default class InfoRule extends HTMLElement {
       renderContent(divElem, info_rule.definition);
 
       addH3(divElem, getMessage('rule_action_label'));
-      renderContent(divElem, info_rule.actions);
+      renderContent(divElem, info_rule.actions, 'action');
 
       addH3(divElem, getMessage('rule_purpose_label'));
       renderContent(divElem, info_rule.purposes);

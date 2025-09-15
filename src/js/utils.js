@@ -124,6 +124,46 @@ export function focusOrdinalPosition (ordinalPosition) {
   }
 }
 
+function addActionItems (elem, item) {
+
+  const parts = item.split(':');
+
+  const span1 = document.createElement('span');
+  switch (parts[0]) {
+
+    case 'V':
+      span1.textContent = getMessage('violations_label');
+      break;
+
+    case 'W':
+      span1.textContent = getMessage('warnings_label');
+      break;
+
+    case 'MC':
+      span1.textContent = getMessage('manual_checks_label');
+      break;
+
+    case 'P':
+      span1.textContent = getMessage('passed_label');
+      break;
+
+    case 'H':
+      span1.textContent = getMessage('hidden_label');
+      break;
+
+    default:
+      span1.textContent = 'unknown';
+      break;
+  }
+  span1.className = `result ${parts[0]}`;
+  elem.appendChild(span1);
+
+  const span2 = document.createElement('span');
+  addContentToElement(span2, `: ${parts[1]}`);
+  span2.className = `desc`;
+  elem.appendChild(span2);
+}
+
 /*
  * @function isOverElement
  *
@@ -176,7 +216,13 @@ export function renderContent(elem, info, style='') {
           li = document.createElement('li');
           item = info[i];
           if (typeof item === 'string') {
-            addContentToElement(li, item);
+            // Check for results messages
+            if (item[1] === ':' || item[2] === ':') {
+              addActionItems(li, item);
+            }
+            else {
+              addContentToElement(li, item);
+            }
           } else {
             if (item.url) {
               a = document.createElement('a');

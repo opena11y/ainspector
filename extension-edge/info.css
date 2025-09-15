@@ -24,6 +24,7 @@ h3 {
   margin-bottom: 0.125em;
   font-size: 110%;
   font-weight: bold;
+  color: light-dark(var(--primary-color-light), var(--primary-color-dark));
 }
 
 h3:first-child {
@@ -95,6 +96,10 @@ table thead th {
 }
 
 
+table.table thead th:first-child,
+table.table tbody td:first-child,
+table.cell thead th:first-child,
+table.cell tbody td:first-child,
 table.ccr thead th:first-child,
 table.ccr tbody td:first-child,
 table.vis thead th:first-child,
@@ -108,4 +113,55 @@ table.attrs tbody td:first-child {
 .info-results:focus {
   outline-style: var( --input-outline-style);
   outline-color: light-dark(var(--input-outline-color-light), var(--input-outline-color-dark));
+}
+
+.sample {
+  margin-top: 0.25em;
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  border: 1px solid light-dark(#333, #bbb);
+  margin-right: 0.25em;
+}
+
+.action .result,
+.action .desc {
+  padding: 0;
+  padding-top: 0.125em;
+  padding-bottom: 0.125em;
+}
+
+.action .result {
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+}
+
+.action .v,
+.action .V {
+  background-color: light-dark(var(--violations-color-light), var(--violations-color-dark));
+}
+
+.action .w,
+.action .W {
+  background-color: light-dark(var(--warnings-color-light), var(--warnings-color-dark));
+}
+
+.action .mc,
+.action .MC {
+  background-color: light-dark(var(--manual-checks-color-light), var(--manual-checks-color-dark));
+}
+
+.action .p,
+.action .P {
+  background-color: light-dark(var(--passed-color-light), var(--passed-color-dark));
+}
+
+.action .h,
+.action .H {
+  background-color: light-dark(var(--hidden-color-light), var(--hidden-color-dark));
+}
+
+.action .na,
+.action .NA {
+  background-color: light-dark(var(--not-applicable-color-light), var(--not-applicable-color-dark));
 }

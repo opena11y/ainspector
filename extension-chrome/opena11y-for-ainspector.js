@@ -28638,7 +28638,8 @@
       this.domElement = domElement;
       this.parentTableElement = parentTableElement;
 
-      this.tableType = TABLE_TYPE.UNKNOWN;
+      this.tableType    = TABLE_TYPE.UNKNOWN;
+      this.tableTypeNLS = getCommonMessage('tableType', this.tableType);
       this.hasCaption = false;
 
       this.nestingLevel = parentTableElement ?
@@ -28775,6 +28776,7 @@
                 }
                 if (cell.headers.length) {
                   cell.headerSource = HEADER_SOURCE.HEADERS_ATTR;
+                  cell.headersSourceNLS = getCommonMessage('headerSource', cell.headerSource);
                 }
               }
               else {
@@ -28802,6 +28804,7 @@
 
                 if (cell.headers.length) {
                   cell.headerSource = HEADER_SOURCE.ROW_COLUMN;
+                  cell.headersSourceNLS = getCommonMessage('headerSource', cell.headerSource);
                 }
               }
               debug$M.headerCalc && debug$M.log(`${cell}`);
@@ -29073,6 +29076,7 @@
 
       this.headers = [];
       this.headersSource = HEADER_SOURCE.NONE;
+      this.headersSourceNLS = getCommonMessage('headerSource', this.headerSource);
 
       this.hasContent = (node.textContent.trim().length > 0) || (node.firstElementChild !== null);
 
@@ -29216,7 +29220,8 @@
 
     computeTableTypes () {
       this.allTableElements.forEach( te => {
-        te.tableType = te.getTableType();
+        te.tableType    = te.getTableType();
+        te.tableTypeNLS = getCommonMessage('tableType', te.tableType);
       });
     }
 
@@ -40158,7 +40163,7 @@
         const element_result = {
           id:               er.getResultId(),
           element:          er.getResultIdentifier(),
-          scope:            er.getResultType(),
+          result_type:      er.getResultType(),
           result_value:     er.getResultValue(),
           result_abbrev:    er.getResultValueNLS(),
           result_long:      er.getResultValueLongNLS(),
@@ -40199,10 +40204,11 @@
                                                   '#' + cc.backgroundColorHex :
                                                   cc.backgroundColorHex;
           cc_result.color                  = cc.color;
-          cc_result.color_hex              = cc.colorHex;
           cc_result.color_hex              = isHex(cc.colorHex) ?
                                                   '#' + cc.colorHex :
                                                   cc.colorHex;
+
+          cc_result.opacity                = cc.opacity;
 
           cc_result.is_positioned          = cc.isPositioned;
 
@@ -40225,27 +40231,29 @@
 
           tc_result.start_row       = tc.startRow;
           tc_result.start_column    = tc.startColumn;
-          tc_result.end_row         = tc.endRow;
-          tc_result.end_column      = tc.endColumn;
+          tc_result.row_span        = tc.endRow - tc.startRow;
+          tc_result.column_span     = tc.endColumn - tc.startColumn;
 
-          tc_result.headers         = tc.headers;
-          tc_result.headers_source  = tc.headersSource;
+          tc_result.headers         = tc.headers.join(' | ');
+          tc_result.headers_source  = tc.headersSourceNLS;
 
-          tc_result.has_content     = tc.hasContent;
+          tc_result.empty_cell      = !tc.hasContent;
         }
 
         // For table rules related to purpose, naming and size information
-        if ((rule_id.indexOf('TABLE') === 0) && (rule_id !== 'TABLE_1')){
+        if (de.tableElement &&
+            (rule_id.indexOf('TABLE') === 0) &&
+            (rule_id !== 'TABLE_1')){
           const te = de.tableElement;
           const te_result = element_result.table = {};
-          te_result.table_type         = te.tableType;
+          te_result.type_nls           = te.tableTypeNLS;
 
           te_result.rows               = te.rowCount;
           te_result.columns            = te.colCount;
           te_result.spanned_data_cells = te.spannedDataCells;
 
-          te_result.cell_count         = te.cellCoount;
-          te_result.header_cell_count  = te.headerCellCoount;
+          te_result.cell_count         = te.cellCount;
+          te_result.header_cell_count  = te.headerCellCount;
         }
 
         element_results.push(element_result);
@@ -40255,7 +40263,7 @@
         page_result = {
           id:            er.getResultId(),
           element:       er.getResultIdentifier(),
-          scope:         er.getResultType(),
+          result_type:   er.getResultType(),
           result_value:  er.getResultValue(),
           result_abbrev: er.getResultValueNLS(),
           result_long:   er.getResultValueLongNLS(),
@@ -40271,7 +40279,7 @@
       if (er.isWebsiteResult) {
         website_result = {
           id:            er.getResultId(),
-          element:       er.getResultIdentifier(),
+          result_type:   er.getResultIdentifier(),
           scope:         er.getResultType(),
           result_value:  er.getResultValue(),
           result_abbrev: er.getResultValueNLS(),
