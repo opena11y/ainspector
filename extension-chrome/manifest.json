@@ -55,10 +55,12 @@
     "sidePanel",
     "storage"
   ],
-  "web_accessible_resources": [{
-    "resources": ["ai-highlight.js"],
-    "matches": ["<all_urls>"]
-  }],
+  "web_accessible_resources": [
+    {
+      "resources": ["ai-highlight.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "content_scripts": [
     {
       "js": [

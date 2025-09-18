@@ -42,7 +42,7 @@ export default class ViewRule extends HTMLElement {
     this.summaryRuleElem  = this.shadowRoot.querySelector(`summary-rule`);
     this.gridRuleElem     = this.shadowRoot.querySelector(`grid-rule`);
     this.infoResultElem  = this.shadowRoot.querySelector(`info-result`);
-    this.gridRuleElem.setInfoElement(this.infoResultElem);
+    this.gridRuleElem.setInfoResult(this.infoResultElem);
 
   }
 

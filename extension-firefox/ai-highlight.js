@@ -1,192 +1,5 @@
 /* ai-highlight.js */
 
-const minWidth = 68;
-const minHeight = 27;
-
-const HIGHLIGHT_SIZES = ['small', 'medium', 'large', 'x-large', 'xx-large'];
-const HIGHLIGHT_STYLE = ['solid', 'dashed', 'dotted'];
-
-const HIGHLIGHT_CLASS = 'ai-highlight';
-const HIGHLIGHT_ELEMENT_NAME = 'ai-highlight';
-
-const highlightSize = {
-  'small' : {
-    fontSize: '12pt',
-    borderRadius: 5,
-    borderWidth: 1,
-    contrastWidth: 1,
-    borderOffset: 2,
-    overlayAdjust: 2
-  },
-  'medium' : {
-    fontSize: '13pt',
-    borderRadius: 5,
-    borderWidth: 2,
-    contrastWidth: 1,
-    borderOffset: 3,
-    overlayAdjust: 2
-  },
-  'large' : {
-    fontSize: '14pt',
-    borderRadius: 7,
-    borderWidth: 3,
-    contrastWidth: 2,
-    borderOffset: 4,
-    overlayAdjust: 5
-  },
-  'x-large' : {
-    fontSize: '16pt',
-    borderRadius: 7,
-    borderWidth: 4,
-    contrastWidth: 2,
-    borderOffset: 5,
-    overlayAdjust: 6
-  },
-  'xx-large' : {
-    fontSize: '18pt',
-    borderRadius: 9,
-    borderWidth: 5,
-    contrastWidth: 3,
-    borderOffset: 5,
-    overlayAdjust: 7
-  }
-};
-
-const fontFamily = 'arial, verdana, tahoma, "trebuchet MS", sans-serif';
-
-const colorLightTextColor    = '#000000';
-const colorLightBorderColor  = '#13294b';
-const colorLightBackground   = '#dddddd';
-
-const colorDarkTextColor     = '#ffffff';
-const colorDarkBorderColor   = '#dddddd';
-const colorDarkBackground    = '#13294b';
-
-const colorLightHiddenText        = '#000000';
-const colorLightHiddenBackground  = '#ffcc00';
-
-const colorDarkHiddenText       = '#ffcc00';
-const colorDarkHiddenBackground = '#000000';
-
-const zIndexHighlight = '1999900';
-
-const styleHighlightTemplate = document.createElement('template');
-styleHighlightTemplate.textContent = `
-:root {
-  color-scheme: light dark;
-}
-
-.${HIGHLIGHT_CLASS} {
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  background: transparent;
-  border-radius: $borderRadiuspx;
-  border-width: $contrastWidthpx;
-  border-style: solid;
-  border-color: light-dark(${colorLightBackground}, ${colorDarkBackground});
-  box-sizing: border-box;
-  pointer-events:none;
-  z-index: ${zIndexHighlight};
-  display: none;
-}
-
-.${HIGHLIGHT_CLASS}.hasInfoBottom,
-.${HIGHLIGHT_CLASS} .overlay-border.hasInfoBottom {
-  border-radius: $borderRadiuspx $borderRadiuspx $borderRadiuspx 0;
-}
-
-.${HIGHLIGHT_CLASS}.hasInfoTop,
-.${HIGHLIGHT_CLASS} .overlay-border.hasInfoTop {
-    border-radius: 0 $borderRadiuspx $borderRadiuspx $borderRadiuspx;
-}
-
-.${HIGHLIGHT_CLASS} .overlay-border {
-  margin: 0;
-  padding: 0;
-  position: relative;
-  border-radius: $borderRadiuspx;
-  border-width: $borderWidthpx;
-  border-style: $borderStyle;
-  border-color: light-dark(${colorLightBorderColor}, ${colorDarkBorderColor});
-  z-index: ${zIndexHighlight};
-  box-sizing: border-box;
-  pointer-events:none;
-  background: transparent;
-}
-
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-.hidden-elem-msg {
-  position: absolute;
-  margin: 0;
-  padding: .25em;
-  border: none;
-  color: light-dark(${colorLightHiddenText}, ${colorDarkHiddenText});
-  background-color: light-dark(${colorLightHiddenBackground}, ${colorDarkHiddenBackground});
-  font-family: ${fontFamily};
-  font-size: $fontSize;
-  font-style: italic;
-  font-weight: bold;
-  text-align: center;
-  animation: fadeIn 1.5s;
-  z-index: ${zIndexHighlight};
-  display: none;
-}
-
-.${HIGHLIGHT_CLASS} .overlay-info {
-  margin: 0;
-  padding: 2px;
-  position: relative;
-  text-align: left;
-  font-size: $fontSize;
-  font-family: ${fontFamily};
-  border-width: $borderWidthpx;
-  border-style: $borderStyle;
-  border-color: light-dark(${colorLightBackground}, ${colorDarkBackground});
-  background-color: light-dark(${colorLightBackground}, ${colorDarkBackground});
-  color: light-dark(${colorLightTextColor}, ${colorDarkTextColor});
-  z-index: ${zIndexHighlight};
-  overflow: hidden;
-  text-overflow: ellipsis;
-  pointer-events:none;
-}
-
-.${HIGHLIGHT_CLASS} .overlay-info.hasInfoTop {
-  border-radius: $borderRadiuspx $borderRadiuspx 0 0;
-}
-
-.${HIGHLIGHT_CLASS} .overlay-info.hasInfoBottom {
-  border-radius: 0 0 $borderRadiuspx $borderRadiuspx;
-}
-
-@media (forced-colors: active) {
-
-  .${HIGHLIGHT_CLASS} {
-    border-color: ButtonBorder;
-  }
-
-  .${HIGHLIGHT_CLASS} .overlay-border {
-    border-color: ButtonBorder;
-  }
-
-  .${HIGHLIGHT_CLASS} .overlay-border.skip-to-hidden {
-    background-color: ButtonFace;
-    color: ButtonText;
-  }
-
-  .${HIGHLIGHT_CLASS} .overlay-info {
-    border-color: ButtonBorder;
-    background-color: ButtonFace;
-    color: ButtonText;
-  }
-
-}
-`;
-
 /*
  *   @class HighlightElement
  *
@@ -198,335 +11,421 @@ class AIHighlightELement extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
 
+    const template = document.createElement('template');
+    template.textContent = `
+:root {
+  color-scheme: light dark;
+}
+
+.ai-highlight {
+  --font-family: Arial, Verdana, Tahoma, "Trebuchet MS", sans-serif;
+  --font-size: 10pt;
+  --font-weight: bold;
+
+  --orange: hsl(21.6, 100%, 50.98%);      /* Illini Blue */
+  --orange-dark: hsl(21.6, 100%, 49.02%);
+
+  --violations-color-light:     hsl(0, 100%, 50%);
+  --violations-color-dark:      hsl(0, 100%, 50%);
+
+  --warnings-color-light:       hsl(49, 100%, 50%);
+  --warnings-color-dark:        hsl(49, 100%, 50%);
+
+  --manual-checks-color-light:  hsl(198, 52%, 40%);
+  --manual-checks-color-dark:   hsl(198, 52%, 60%);
+
+  --passed-color-light:         hsl(90, 67%, 40%);
+  --passed-color-dark:          hsl(90, 67%, 60%);
+
+  --hidden-color-light:         hsl(0, 0%, 87%);
+  --hidden-color-dark:          hsl(0, 0%, 13%);
+
+  --light-gray: hsl(0, 0%, 80%);
+  --light-gray-dark: hsl(0, 0%, 20%);
+
+  --yellow-color: hsl(42, 82%, 60%);
+  --yellow-color-dark: hsl(42, 82%, 40%);
+
+  --border-color-light: var(--blue);
+  --border-color-dark: var(--blue-dark);
+
+  --text-color-light: #fff;
+  --text-color-dark: #000;
+
+  --focus-color-light: var(--orange);
+  --focus-color-dark: var(--orange-dark);
+
+  --overlay-color-light: var(--light-gray);
+  --overlay-color-dark: var(--light-gray-dark);
+
+  --hidden-text-color-light: #000;
+  --hidden-text-color-dark: #fff;
+  --hidden-background-light: var(--yellow-color);
+  --hidden-background-dark: var(--yellow-color-dark);
+
+  --focus-color: var(--orange);
+  --focus-color-dark: var(--orange-dark);
+
+  --border-radius: 5px;
+  --border-width: 2px;
+  --border-style: solid;
+  --overlay-border-width: 4px;
+  --info-border-width: 1px;
+  --border-offset: -3px;
+  --overlay-adjust: 2px;
+
+
+  --z-index-highlight: 199999;
+}
+
+.overlay {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  background: transparent;
+  border-radius: var(--border-radius);
+  border-width: var(--overlay-border-width);
+  border-style: solid;
+  border-color: light-dark(var(--light-gray), var(--light-gray-dark));
+  pointer-events:none;
+  z-index: var(--z-index-highlight);
+}
+
+.overlay.focus {
+  outline: 2px dashed light-dark(var(--focus-color-light), var(--focus-color-dark));
+  outline-offset: 2px;
+}
+
+.overlay .border {
+  margin: 0;
+  padding: 0;
+  position: relative;
+  border-radius: var(--border-radius);
+  border-width: var(--border-width);
+  border-style: var(--border-style);
+  border-color: light-dark(var(--border-color-light), var(--border-color-dark));
+  z-index: var(--z-index-highlight);
+  pointer-events:none;
+  background: transparent;
+  top: -3px;
+  left: -3px;
+}
+
+.overlay .info {
+  display: inline-block;
+  margin: 0;
+  padding: 1px 5px 1px 7px;
+  position: relative;
+  text-align: center;
+  font-size: var(--font-size);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight);
+  background-color: light-dark(var(--border-color-light), var(--border-color-dark));
+  color: light-dark(var(--text-color-light), var(--text-color-dark));
+  z-index: var(--z-index-highlight);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.overlay .info.left {
+  border-left-width: var(--info-border-width);
+  border-left-style: var(--border-style);
+  border-left-color: light-dark(var(--light-gray), var(--light-gray-dark));
+}
+
+.overlay .info.bottom {
+  border-bottom-width: var(--info-border-width);
+  border-bottom-style: var(--border-style);
+  border-bottom-color: light-dark(var(--light-gray), var(--light-gray-dark));
+}
+
+.overlay .left.bottom {
+  border-bottom-left-radius: var(--border-radius);
+}
+
+.overlay .info.right {
+  border-right-width: var(--info-border-width);
+  border-right-style: var(--border-style);
+  border-right-color: light-dark(var(--light-gray), var(--light-gray-dark));
+}
+
+.overlay .info.right.bottom {
+  border-bottom-right-radius: var(--border-radius);
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.hidden-element {
+  position: absolute;
+  margin: 0;
+  padding: .25em;
+  border: none;
+  color: light-dark(var(--hidden-text-color-light), var(hidden-text-color-dark));
+  background-color: light-dark(var(--hidden-background-light), var(--hidden-background-dark));
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  font-style: italic;
+  font-weight: bold;
+  text-align: center;
+  animation: fadeIn 1.5s;
+  z-index: var(--z-index-highlight);
+  display: none;
+}
+
+    `;
+
+    const styleNode = document.createElement('style');
+    styleNode.textContent = template.textContent;
+    this.shadowRoot.appendChild(styleNode);
+
     // Get references
 
+    this.containerElem  = document.createElement('div');
+    this.containerElem.className = 'ai-highlight';
+    this.shadowRoot.appendChild(this.containerElem);
+    this.containerElem.style.display = 'none';
+
     this.overlayElem  = document.createElement('div');
-    this.overlayElem.className = HIGHLIGHT_CLASS;
-    this.shadowRoot.appendChild(this.overlayElem);
-    this.overlayElem.style.display = 'none';
+    this.overlayElem.className = 'overlay';
+    this.containerElem.appendChild(this.overlayElem);
 
     this.borderElem = document.createElement('div');
-    this.borderElem.className = 'overlay-border';
+    this.borderElem.className = 'border';
     this.overlayElem.appendChild(this.borderElem);
 
     this.infoElem = document.createElement('div');
-    this.infoElem.className = 'overlay-info';
+    this.infoElem.className = 'info';
     this.overlayElem.appendChild(this.infoElem);
 
     this.hiddenElem = document.createElement('div');
-    this.hiddenElem.className = 'hidden-elem-msg';
-    this.shadowRoot.appendChild(this.hiddenElem);
+    this.hiddenElem.className = 'hidden-element';
+    this.containerElem.appendChild(this.hiddenElem);
     this.hiddenElem.style.display = 'none';
 
-    this.highlightSize = highlightSize['medium'];
-    this.highlightStyle = 'solid';
-
-    this.dataAttr = 'data-opena11y-id';
-
-    this.msgHeadingIsHidden = 'Heading is hidden';
-    this.msgRegionIsHidden = 'Region is hidden';
-    this.msgElementIsHidden = 'Element is hidden';
-
-    this.lastElem = false;
-    this.lastinfo = '';
-
-    this.configStyle(highlightSize['medium']);
-
-
+    this.hiddenElementContent = 'hidden element';
   }
 
   static get observedAttributes() {
     return [
-      "data-attr",
-      "highlight-config",
-      "highlight-position",
-      "focus-position",
+      "set",
       ];
   }
 
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    const parts = newValue.split(';');
-    const pos   = parts[0].trim();
-    const info  = parts.length === 2 ? parts[1].trim() : '';
-    const values = newValue.split(' ');
+  attributeChangedCallback(name, old_value, new_value) {
 
-    let newSize  = this.highlightSize;
-    let newStyle = this.highlightStyle;
+    const rect = {};
+    let focus = false;
 
     switch (name) {
-      case "data-attr":
-        this.dataAttr = newValue;
-        return;
+      case "set":
+        if (new_value) {
+          const parts = new_value.split(' ');
 
-     case "focus-value":
-        if (newValue) {
-          const node = this.queryDOMForAttrValue(this.dataAttr, newValue);
-          if (node) {
-            this.removeHighlight();
-            window.focus();
-            node.setAttribute('tabindex', '-1');
-            node.focus();
+          this.setResultColor(parts[0]);
+          focus = parts[2].toLowerCase() === 'true';
+
+          switch (parts[1]) {
+            case 'website':
+              this.highlightPage('Website Result', parts[0], focus);
+             break;
+
+            case 'page':
+              this.highlightPage('Page Result', parts[0], focus);
+              break;
+
+            case 'element':
+
+              rect.left   = parseInt(parts[3]);
+              rect.top    = parseInt(parts[4]);
+              rect.width  = parseInt(parts[5]);
+              rect.height = parseInt(parts[6]);
+              rect.right  = rect.left + rect.width;
+              rect.bottom = rect.top + rect.height;
+
+              this.highlightElement(parts[0], rect, focus);
+              break;
+
           }
+
         }
-        return;
+        break;
 
-      case "highlight-position":
-        if (pos) {
-          const node = this.queryDOMForAttrValue(this.dataAttr, pos);
-          if (node) {
-            this.highlight(node, info);
-          }
-          else {
-            this.removeHighlight();
-          }
-        }
-        else {
-          this.removeHighlight();
-        }
-        return;
-
-      case "highlight-config":
-
-        values.forEach( (v) => {
-          const value = v.toLowerCase().trim();
-          if (HIGHLIGHT_SIZES.includes(value)) {
-            newSize = highlightSize[value];
-          }
-          if (HIGHLIGHT_STYLE.includes(value)) {
-            newStyle = value;
-          }
-        });
-
-        this.configStyle(newSize, newStyle);
-        return;
-
-      default:
+       default:
         break;
     }
   }
 
   /**
-   * @method configStyle
+   * @method setResultColor
    *
-   * @desc Updates style sheet based on border size and style
+   * @desc Setting CSS variables to change border and text colors for result
    *
-   * @param {Object}  bSize   - Object with border dimension information
-   * @param {String}  bStyle  - CSS border style property values (e.g. solid, dashed, dotted)
-   *
-   * @returns (Object) @desc
+   * @param {String}  resultvalue - Result value
    */
+  setResultColor (value) {
+    console.log(`[value]: ${value}`);
 
-  configStyle (hSize, hStyle) {
+    let color;
 
-    if (!hSize || !hSize.fontSize) {
-      hSize = this.highlightSize;
+    if (value) {
+      switch(value.toLowerCase()) {
+        case 'v':
+          color = 'violations';
+          break;
+
+        case 'w':
+          color = 'warnings';
+          break;
+
+        case 'mc':
+          color = 'manual-checks';
+          break;
+
+        case 'p':
+          color = 'passed';
+          break;
+
+        case 'h':
+          this.setResultColor('hidden');
+          break;
+
+        default:
+          break;
+      }
     }
 
-    if (!hStyle) {
-      hStyle = this.highlightStyle;
-    }
+    this.containerElem.style.setProperty('--border-color-light', `var(--${color}-color-light)`);
+    this.containerElem.style.setProperty('--border-color-dark', `var(--${color}-color-dark)`);
 
-    // Copy style template
-    let styleContent = styleHighlightTemplate.textContent.slice(0);
-
-    const contrastWidth = hSize.borderWidth + 2 * hSize.contrastWidth;
-
-    styleContent = styleContent.replaceAll('$fontSize',      hSize.fontSize);
-    styleContent = styleContent.replaceAll('$borderRadius',  hSize.borderRadius);
-    styleContent = styleContent.replaceAll('$borderWidth',   hSize.borderWidth);
-    styleContent = styleContent.replaceAll('$contrastWidth', contrastWidth);
-
-    styleContent = styleContent.replaceAll('$borderStyle', hStyle);
-
-    this.highlightSize  = hSize;
-    this.highlightStyle = hStyle;
-
-    let styleNode = this.shadowRoot.querySelector('style');
-
-    if (styleNode) {
-      styleNode.remove();
-    }
-
-    styleNode = document.createElement('style');
-    styleNode.textContent = styleContent;
-    this.shadowRoot.appendChild(styleNode);
-
-    if (this.lastElem) {
-      this.highlight(this.lastElem, this.lastinfo);
-    }
-
-  }
-
-
-  /**
-   * @method queryDOMForAttrValue
-   *
-   * @desc Returns DOM node associated with the id, if id not found returns null
-   *
-   * @param {String}  dataAttr   -
-   * @param {String}  dataValue  -
-   *
-   * @returns (Object) @desc
-   */
-  queryDOMForAttrValue (dataAttr, dataValue) {
-
-    const skipableElements = [
-      'base',
-      'content',
-      'input[type=hidden]',
-      'link',
-      'meta',
-      'noscript',
-      'script',
-      'style',
-      'template',
-      'shadow',
-      'title',
-      HIGHLIGHT_ELEMENT_NAME
-    ];
-
-    // Tests if a tag name can be skipped
-    function isSkipableElement(node) {
-      const tagName = node.tagName.toLowerCase();
-      const type = node.type;
-      const elemSelector = (tagName === 'input') && (typeof type === 'string') ?
-                           `${tagName}[type=${type.toLowerCase()}]` :
-                           tagName;
-      return skipableElements.includes(elemSelector);
-    }
-
-    // Tests if a tag name is a custom element
-    function isCustomElement(node) {
-      return node.tagName.indexOf('-') >= 0;
-    }
-
-    // Tests if a node is a slot element
-    function isSlotElement(node) {
-      return (node instanceof HTMLSlotElement);
-    }
-
-    function transverseDOMForAttrValue(startingNode) {
-      var targetNode = null;
-      for (let node = startingNode.firstChild; node !== null; node = node.nextSibling ) {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          if (node.getAttribute(dataAttr) === dataValue) {
-            return node;
-          }
-          if (!isSkipableElement(node)) {
-            // check for slotted content
-            if (isSlotElement(node)) {
-                // if no slotted elements, check for default slotted content
-              const assignedNodes = node.assignedNodes().length ?
-                                    node.assignedNodes() :
-                                    node.assignedNodes({ flatten: true });
-              for (let i = 0; i < assignedNodes.length; i += 1) {
-                const assignedNode = assignedNodes[i];
-                if (assignedNode.nodeType === Node.ELEMENT_NODE) {
-                  if (assignedNode.getAttribute(dataAttr) === dataValue) {
-                    return assignedNode;
-                  }
-                  targetNode = transverseDOMForAttrValue(assignedNode);
-                  if (targetNode) {
-                    return targetNode;
-                  }
-                }
-              }
-            } else {
-              // check for custom elements
-              if (isCustomElement(node)) {
-                if (node.shadowRoot) {
-                  targetNode = transverseDOMForAttrValue(node.shadowRoot);
-                  if (targetNode) {
-                    return targetNode;
-                  }
-                }
-                else {
-                  targetNode = transverseDOMForAttrValue(node);
-                  if (targetNode) {
-                    return targetNode;
-                  }
-                }
-              } else {
-                targetNode = transverseDOMForAttrValue(node);
-                if (targetNode) {
-                  return targetNode;
-                }
-              }
-            }
-          }
-        } // end if
-      } // end for
-      return false;
-    } // end function
-
-    return transverseDOMForAttrValue(document.body);
   }
 
   /*
-   *   @method highlight
+   *   @method highlightPage
+   *
+   *   @desc  Highlights the page
+   *
+   */
+
+  highlightPage(label, resultType, focus) {
+    const scrollBehavior = 'instant';
+
+    const contentElem = document.body ?
+                        document.body :
+                        document.documentElement;
+
+    const bodyRect = contentElem.getBoundingClientRect();
+
+    const rect = {};
+
+    rect.left   = 12;
+    rect.top    = 12;
+    rect.width  = bodyRect.width - 24;
+    rect.height = bodyRect.height - 12;
+    rect.right  = rect.left + rect.width;
+    rect.bottom = rect.top + rect.height;
+
+    const overlayOffset = 4;
+
+    this.containerElem.style.display = 'block';
+    this.hiddenElem.style.display = 'none';
+
+    this.infoElem.textContent = `${label}: ${resultType}`;
+    const infoElemRect    = this.infoElem.getBoundingClientRect();
+
+    focus ?
+      this.overlayElem.classList.add('focus') :
+      this.overlayElem.classList.remove('focus');
+
+    this.overlayElem.style.left   = rect.left - overlayOffset  + 'px';
+    this.overlayElem.style.top    = rect.top  - overlayOffset  + 'px';
+    this.overlayElem.style.width  = Math.max(rect.width, infoElemRect.width) + 'px';
+    this.overlayElem.style.height = rect.height - 12 + 'px';
+
+    const overlayElemRect = this.overlayElem.getBoundingClientRect();
+
+    this.borderElem.style.width   = overlayElemRect.width  - 6 + 'px';
+    this.borderElem.style.height  = overlayElemRect.height - 6 +'px';
+
+    const borderElemRect = this.borderElem.getBoundingClientRect();
+
+    this.infoElem.classList.remove('left');
+    this.infoElem.classList.add('right');
+    this.infoElem.classList.add('bottom');
+
+    this.infoElem.style.left      =  -1 + 'px';
+    this.infoElem.style.top       = (-1 * borderElemRect.height) - 1 + 'px';
+
+    contentElem.scrollIntoView({ behavior: scrollBehavior, block: 'start', inline: 'nearest' });
+
+  }
+
+  /*
+   *   @method highlightElement
    *
    *   @desc  Highlights the element on the page
    *
-   *   @param {Object}  elem           : DOM node of element to highlight
-   *   @param {String}  scrollBehavior : 'instant', 'auto', 'smooth'
-   *   @param {String}  info           : Information about target
-   *   @param {Boolean} force          : If true override isRduced
    */
 
-  highlight(elem, info='', scrollBehavior='instant', force=false) {
+  highlightElement(label, rect, focus) {
+
+    const force = true;
+
+    const borderOffset  = 1;
+    const overlayWidth  = 4;
+
+    const scrollBehavior = 'instant';
     let scrollElement;
     const mediaQuery = window.matchMedia(`(prefers-reduced-motion: reduce)`);
     const isReduced = !mediaQuery || mediaQuery.matches;
 
-    if (elem && scrollBehavior) {
+    if (rect && scrollBehavior) {
 
-      this.lastElem = elem;
-      this.lastinfo = info;
-
-      const elemRect = elem.getBoundingClientRect();
-
-      if (this.isElementHidden(elem)) {
+      if (this.isElementHidden(rect)) {
         // If element is hidden make hidden element message visible
-        // and use for highlighing
-        this.hiddenElem.textContent = this.getHiddenMessage(elem);
+        // and use for highlighting
+
+        this.hiddenElem.textContent = this.hiddenElementContent;
         this.hiddenElem.style.display = 'block';
 
-        const minValue = this.highlightSize.borderOffset + 2 * this.highlightSize.contrastWidth;
+        const minValue =borderOffset + 2 * overlayWidth;
 
-        const left = elemRect.left > minValue ?
-                            elemRect.left + window.scrollX :
+        rect.left = rect.left > minValue ?
+                            rect.left + window.scrollX :
                             minValue;
-        const top  = elemRect.top > minValue ?
-                            elemRect.top + window.scrollY :
+        rect.top  = rect.top > minValue ?
+                            rect.top + window.scrollY :
                             minValue;
 
-        this.hiddenElem.style.left = left + 'px';
-        this.hiddenElem.style.top = top + 'px';
-        scrollElement = this.updateHighlightElement(this.hiddenElem,
-                                                    info,
-                                                    0,
-                                                    this.highlightSize.borderWidth,
-                                                    this.highlightSize.contrastWidth,
-                                                    this.highlightSize.overlayAdjust);
+        this.hiddenElem.style.left = rect.left + 'px';
+        this.hiddenElem.style.top = rect.top + 'px';
+
+        const hiddenRect = this.hiddenElem.getBoundingClientRect();
+
+        scrollElement = this.updateHighlightElement(hiddenRect,
+                                                    label, focus);
       }
       else {
         this.hiddenElem.style.display = 'none';
-        scrollElement = this.updateHighlightElement(elem,
-                                                    info,
-                                                    this.highlightSize.borderOffset,
-                                                    this.highlightSize.borderWidth,
-                                                    this.highlightSize.contrastWidth,
-                                                    this.highlightSize.overlayAdjust);
+
+        rect.left = rect.left + window.scrollX;
+        rect.top = rect.top + window.scrollY;
+
+        scrollElement = this.updateHighlightElement(rect,
+                                                    label, focus);
       }
 
-      if (this.isElementInHeightLarge(elem)) {
-        if (!this.isElementStartInViewport(elem) && (!isReduced || force)) {
+      if (this.isElementInHeightLarge(rect)) {
+        if (!this.isElementStartInViewport(rect) && (!isReduced || force)) {
           scrollElement.scrollIntoView({ behavior: scrollBehavior, block: 'start', inline: 'nearest' });
         }
       }
       else {
-        if (!this.isElementInViewport(elem)  && (!isReduced || force)) {
+        if (!this.isElementInViewport(rect)  && (!isReduced || force)) {
           scrollElement.scrollIntoView({ behavior: scrollBehavior, block: 'center', inline: 'nearest' });
         }
       }
@@ -538,149 +437,57 @@ class AIHighlightELement extends HTMLElement {
    *
    *  @desc  Create an overlay element and set its position on the page.
    *
-   *  @param  {Object}  elem           -  DOM element node to highlight
-   *  @param  {String}  info           -  Description of the element
-   *  @param  {Number}  borderOffset   -  Number of pixels for offset
-   *  @param  {Number}  borderWidth    -  Number of pixels for border width
-   *  @param  {Number}  contrastWidth  -  Number of pixels to provide border contrast
+   *  @param  {Object}   rect         -  Object with rect properties
+   *  @param  {String}   resultType   -  Result abbreviation
+   *  @param  {Boolean}  focus.       -  Focus outline
    *
    */
 
-   updateHighlightElement (elem, info, borderOffset, borderWidth, contrastWidth, overlayAdjust) {
+   updateHighlightElement (rect, resultType, focus) {
 
-    const adjRect = this.getAdjustedRect(elem, borderOffset, borderWidth, contrastWidth);
+    const overlayOffset = 4;
 
-    const a = -1 * overlayAdjust;
-    const b = 2 * contrastWidth;
+    this.containerElem.style.display = 'block';
 
-//    elem.style.outline               = '1px dotted red';
-//    this.overlayElem.style.outline   = '1px dotted green';
-//    this.borderElem.style.outline    = '1px dashed blue';
+    this.infoElem.textContent = resultType;
+    const infoElemRect    = this.infoElem.getBoundingClientRect();
 
-    this.overlayElem.style.left   = adjRect.left   + 'px';
-    this.overlayElem.style.top    = adjRect.top    + 'px';
-    this.borderElem.style.left    = a + 'px';
-    this.borderElem.style.top     = a + 'px';
+    focus ?
+      this.overlayElem.classList.add('focus') :
+      this.overlayElem.classList.remove('focus');
 
+    this.overlayElem.style.left   = rect.left - overlayOffset  + 'px';
+    this.overlayElem.style.top    = rect.top  - overlayOffset  + 'px';
+    this.overlayElem.style.width  = rect.width  + infoElemRect.width + 'px';
+    this.overlayElem.style.height = rect.height + 'px';
 
-    this.overlayElem.style.width  = adjRect.width  + 'px';
-    this.overlayElem.style.height = adjRect.height + 'px';
-    this.borderElem.style.width   = (adjRect.width - b) + 'px';
-    this.borderElem.style.height  = (adjRect.height - b) + 'px';
+    this.borderElem.style.width   = rect.width + infoElemRect.width + 2 +'px';
+    this.borderElem.style.height  = rect.height + 2 +'px';
 
-    this.overlayElem.style.display = 'block';
-    this.borderElem.style.display = 'block';
+    const borderElemRect = this.borderElem.getBoundingClientRect();
 
-    if (info) {
+    this.infoElem.classList.remove('right');
+    this.infoElem.classList.add('left');
+    this.infoElem.classList.add('bottom');
+    this.infoElem.style.left      =  borderElemRect.width - infoElemRect.width - 5 + 'px';
+    this.infoElem.style.top       = (-1 * borderElemRect.height) - 1 + 'px';
 
-      this.infoElem.style.display = 'inline-block';
-      this.infoElem.textContent   = info;
-
-      const infoElemOffsetLeft = -1 * (borderWidth + 2 * contrastWidth);
-      this.infoElem.style.left = infoElemOffsetLeft + 'px';
-
-      const infoElemRect    = this.infoElem.getBoundingClientRect();
-
-      // Is info displayed above or below the highlighted element
-      if (adjRect.top >= infoElemRect.height) {
-        // Info is displayed above the highlighted element (e.g. most of the time)
-        this.overlayElem.classList.remove('hasInfoBottom');
-        this.borderElem.classList.remove('hasInfoBottom');
-        this.infoElem.classList.remove('hasInfoBottom');
-        this.overlayElem.classList.add('hasInfoTop');
-        this.borderElem.classList.add('hasInfoTop');
-        this.infoElem.classList.add('hasInfoTop');
-        this.infoElem.style.top =  (-1 * (adjRect.height +
-                                         infoElemRect.height +
-                                         borderWidth))  + 'px';
-      }
-      else {
-        // Info is displayed below the highlighted element when it is at the top of
-        // the window
-
-        const infoElemOffsetTop  = -1 * (borderWidth + contrastWidth);
-
-        this.overlayElem.classList.remove('hasInfoTop');
-        this.borderElem.classList.remove('hasInfoTop');
-        this.infoElem.classList.remove('hasInfoTop');
-        this.overlayElem.classList.add('hasInfoBottom');
-        this.borderElem.classList.add('hasInfoBottom');
-        this.infoElem.classList.add('hasInfoBottom');
-        this.infoElem.style.top  = infoElemOffsetTop + 'px';
-      }
-      return this.infoElem;
-    }
-    else {
-      this.overlayElem.classList.remove('hasInfoTop');
-      this.overlayElem.classList.remove('hasInfoBottom');
-      this.borderElem.classList.remove('hasInfoTop');
-      this.borderElem.classList.remove('hasInfoBottom');
-      this.infoElem.style.display = 'none';
-      return this.overlayElem;
-    }
+    return this.infoElem;
   }
 
-  /*
-   *   @method getAdjustedRect
-   *
-   *   @desc  Returns a object with dimensions adjusted for highlighting element
-   *
-   *  @param  {Object}  elem            -  DOM node of element to be highlighted
-   *  @param  {Number}  borderOffset    -  Number of pixels for offset
-   *  @param  {Number}  borderWidth     -  Number of pixels for border width
-   *  @param  {Number}  contrastWidth   -  Number of pixels to provide border contrast
-   *
-   *   @returns see @desc
-   */
-   getAdjustedRect(elem, borderOffset, borderWidth, contrastWidth) {
-
-    const elemRect  = elem.getBoundingClientRect();
-
-    const adjRect = {
-      left: 0,
-      top: 0,
-      width: 0,
-      height: 0
-    };
-
-    const minOffset = borderOffset + 2 * contrastWidth + borderWidth;
-
-    adjRect.left    = elemRect.left > minOffset ?
-                      Math.round(elemRect.left + (-1 * minOffset) + window.scrollX) :
-                      Math.round(elemRect.left + window.scrollX);
-
-    adjRect.width   = Math.round(Math.max(elemRect.width  + (2 * minOffset), minWidth));
-
-    adjRect.top     = elemRect.top > minOffset ?
-                      Math.round(elemRect.top  + (-1 * minOffset) + window.scrollY) :
-                      Math.round(elemRect.top + window.scrollY);
-
-    adjRect.height  = Math.round(Math.max(elemRect.height + (2 * minOffset), minHeight));
-
-    // Element is near top or left side of screen
-    if (adjRect.top < 0) {
-      adjRect.top = minOffset;
-    }
-    if (adjRect.left < 0) {
-      adjRect.left = minOffset;
-    }
-
-    return adjRect;
-  }
 
   /*
    *   @method isElementInViewport
    *
    *   @desc  Returns true if element is already visible in view port,
-   *          otheriwse false
+   *          otherwise false
    *
-   *   @param {Object} elem : DOM node of element to highlight
+   *   @param {Object} rect : Object withh Rect properties
    *
    *   @returns see @desc
    */
 
-  isElementInViewport(elem) {
-    const rect = elem.getBoundingClientRect();
+  isElementInViewport(rect) {
     return (
       rect.top >= window.screenY &&
       rect.left >= window.screenX &&
@@ -701,8 +508,7 @@ class AIHighlightELement extends HTMLElement {
    *   @returns see @desc
    */
 
-  isElementStartInViewport(elem) {
-    const rect = elem.getBoundingClientRect();
+  isElementStartInViewport(rect) {
     return (
         rect.top >= window.screenY &&
         rect.top <= ((window.screenY + window.innerHeight) ||
@@ -718,13 +524,12 @@ class AIHighlightELement extends HTMLElement {
    *   @desc  Returns true if element client height is larger than clientHeight,
    *          otheriwse false
    *
-   *   @param {Object} elem : DOM node of element to highlight
+   *   @param {Number} heaight : Height of element
    *
    *   @returns see @desc
    */
 
-  isElementInHeightLarge(elem) {
-    var rect = elem.getBoundingClientRect();
+  isElementInHeightLarge(rect) {
     return (1.2 * rect.height) > (window.innerHeight || document.documentElement.clientHeight);
   }
 
@@ -738,37 +543,11 @@ class AIHighlightELement extends HTMLElement {
    *
    *   @returns see @desc
    */
-  isElementHidden(elem) {
-    const rect = elem.getBoundingClientRect();
+  isElementHidden(rect) {
     return (rect.height < 3) ||
            (rect.width  < 3) ||
-           ((rect.left + rect.width)  < (rect.width / 2)) ||
+           ((rect.left + rect.width) < (rect.width / 2)) ||
            ((rect.top  + rect.height) < (rect.height / 2));
-  }
-
-  /*
-   *   @method getHiddenMessage
-   *
-   *   @desc  Returns string describing the hidden element
-   *
-   *   @param  {Object}  elem   : DOM node
-   *
-   *   @returns see @desc
-   */
-  getHiddenMessage(elem) {
-    if (elem.hasAttribute('data-skip-to-info')) {
-      const info = elem.getAttribute('data-skip-to-info');
-
-      if (info.includes('heading')) {
-        return this.msgHeadingIsHidden;
-      }
-
-      if (info.includes('landmark')) {
-        return this.msgRegionIsHidden;
-      }
-    }
-
-    return this.msgElementIsHidden;
   }
 
   /*
@@ -778,15 +557,14 @@ class AIHighlightELement extends HTMLElement {
    */
   removeHighlight() {
     if (this.overlayElem) {
-      this.overlayElem.style.display = 'none';
-      this.hiddenElem.style.display = 'none';
+      this.containerElem.style.display = 'none';
     }
   }
 
 }
 
 // Create highlight element
-window.customElements.define(HIGHLIGHT_ELEMENT_NAME, AIHighlightELement);
-document.body.appendChild(document.createElement(HIGHLIGHT_ELEMENT_NAME));
+window.customElements.define('opena11y-ai-highlight', AIHighlightELement);
+document.body.appendChild(document.createElement('opena11y-ai-highlight'));
 
 

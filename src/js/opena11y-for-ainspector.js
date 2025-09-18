@@ -23619,10 +23619,6 @@
       let c, parts, r1, g1, b1;
       let o1 = 1.0;
 
-      if (isSRGB(color)) {
-        debug$$.log(`[color]: ${color} [isRGB]: ${isRGB(color)} [isSRGB]: ${isSRGB(color)}`);
-      }
-
       if (!isRGB(color) && !isSRGB(color)) return "";
 
       if (isRGB(color)) {
@@ -23643,9 +23639,6 @@
         r1 = parseFloat(parts[0]) * 255;
         g1 = parseFloat(parts[1]) * 255;
         b1 = parseFloat(parts[2]) * 255;
-        debug$$.log(`[srgb][r1]: ${r1}`);
-        debug$$.log(`[srgb][g1]: ${g1}`);
-        debug$$.log(`[srgb][c1]: ${b1}`);
       }
 
       if (!isHex(backgroundHex)) {
@@ -23681,10 +23674,6 @@
         r1 = Math.round(r1 * opacity + r2 * (1 - opacity));
         g1 = Math.round(g1 * opacity + g2 * (1 - opacity));
         b1 = Math.round(b1 * opacity + b2 * (1 - opacity));
-      }
-
-      if (isSRGB(color)) {
-        debug$$.log(`[r1]: ${hexToString(r1)} [g1]: ${hexToString(g1)} [b1]: ${hexToString(b1)}`);
       }
 
       return hexToString(r1) + hexToString(g1) + hexToString(b1);
@@ -27133,7 +27122,7 @@
                               '';
 
       if (addDataId) {
-        elementNode.setAttribute('data-opena11y-id', ordinalPosition);
+        elementNode.dataset.opena11yPosition = ordinalPosition.toString();
       }
 
       this.ariaInHTMLInfo  = getAriaInHTMLInfo(elementNode);
@@ -29390,7 +29379,7 @@
    *                                     document.body
    * @param  {String}  ariaVersion     - Version of ARIA to use for roles,
    *                                     props and state info
-   * @param  {Boolean} addDataId       - If true, create a data-opena11y-oridinal-position attribute
+   * @param  {Boolean} addDataId       - If true, create a data-opena11y-ordinal-position attribute
    *                                     on element nodes for use in navigation and highlighting
    */
 
@@ -30942,6 +30931,18 @@
       return this.resultId;
     }
 
+   /**
+     * @method getResultIdentifier
+     *
+     * @desc Returns a string identifying the element as page level
+     *
+     * @return {String} see description
+     */
+
+    getResultIdentifier () {
+      return 'page';
+    }
+
   }
 
   /* websiteResult.js */
@@ -31014,6 +31015,20 @@
     getResultId () {
       return this.resultId;
     }
+
+   /**
+     * @method getResultIdentifier
+     *
+     * @desc Returns a string identifying the element as website level
+     *
+     * @return {String} see description
+     */
+
+    getResultIdentifier () {
+      return 'website';
+    }
+
+
 
   }
 
@@ -39750,6 +39765,30 @@
     }
 
     /**
+     * @method getDomElementByPosition
+     * @desc Returns an DomElement object with the associated position
+     *
+     * @param  {Number}  position  -  Position of the element in the DOM
+     *
+     * @return {DomElement}  see @desc
+     */
+
+    getDomElementByPosition (position) {
+
+      if (typeof position !== 'number') {
+        position = parseInt(position);
+      }
+
+      for (let i = 0; i < this.allDomElements.length; i += 1) {
+        if (this.allDomElements[i].ordinalPosition === position) {
+          return this.allDomElements[i];
+        }
+      }
+      return null;
+    }
+
+
+    /**
      * @method getRuleResultsAll
      *
      * @desc Returns an object containing a set of all rule results
@@ -40264,7 +40303,7 @@
           result_long:   er.getResultValueLongNLS(),
           action:        er.getResultMessage(),
           definition:    getRuleDefinition(rule_id),
-          position:      '',
+          position:      'page',
           is_element: false,
           is_page: true,
           is_website: false
@@ -40274,6 +40313,7 @@
       if (er.isWebsiteResult) {
         website_result = {
           id:            er.getResultId(),
+          element:       er.getResultIdentifier(),
           result_type:   er.getResultIdentifier(),
           scope:         er.getResultType(),
           result_value:  er.getResultValue(),
@@ -40281,7 +40321,7 @@
           result_long:   er.getResultValueLongNLS(),
           action:        er.getResultMessage(),
           definition:    getRuleDefinition(rule_id),
-          position:      '',
+          position:      'website',
           is_element: false,
           is_page: false,
           is_website: true
@@ -40421,8 +40461,6 @@
 
   /* opena11y-for-ainspector.js */
 
-  const HIGHLIGHT_ELEMENT_NAME = 'ai-highlight';
-
   const browserRuntime = typeof browser === 'object' ?
                 browser.runtime :
                 chrome.runtime;
@@ -40438,42 +40476,100 @@
   scriptNode.src = browserRuntime.getURL('ai-highlight.js');
   document.body.appendChild(scriptNode);
 
-
+  let lastEvaluationResult = false;
 
   // Listen for messages from side panel
   browserRuntime.onMessage.addListener(
     function(request, sender, sendResponse) {
 
-      // Highlight elements
+      const contentElem = document.body ?
+                          document.body :
+                          document.documentElement;
+
+      function removeHighlightElements () {
+        const hes = document.querySelectorAll('opena11y-ai-highlight');
+        hes.forEach( (he) => { he.remove(); });
+      }
+
+      function hightlightResults(evaluation_result, results, option) {
+        console.log(`[results]: ${results.length} [option]: ${option}`);
+
+        results.forEach( (r) => {
+          const he = document.createElement('opena11y-ai-highlight');
+          he.id = `opena11y-pos-${r.position}`;
+          he.setAttribute(`data-result`, r.result_abbrev);
+
+          if (r.isWebsite) {
+            he.setAttribute('set', `${r.result_abbrev} website false`);
+          }
+          else {
+            if (r.isPage) {
+              he.setAttribute('set', `${r.result_abbrev} page false`);
+            }
+            else {
+              const node =  evaluation_result.getDomElementByPosition(r.position);
+              if (node) {
+                const rect = node.getBoundingClientRect();
+                he.setAttribute('set', `${r.result_abbrev} element false ${Math.round(rect.left)} ${Math.round(rect.top)} ${Math.round(rect.width)} ${Math.round(rect.height)}`);
+              }
+            }
+          }
+
+          contentElem.appendChild(he);
+        });
+      }
+
+      let rect = {};
+      let de = false;
+
+      // Highlight result
       if(request.highlight) {
-        const he = document.querySelector(HIGHLIGHT_ELEMENT_NAME);
+        const isWebsite   = request.highlight.position === 'website';
+        const isPage      = request.highlight.position === 'page';
+        const position    = parseInt(request.highlight.position);
+        const result_type = request.highlight.result_type;
+        const option      = request.highlight.option;
+        const id          = request.highlight.id;
 
-        if (he) {
-          he.setAttribute('data-attr', 'data-opena11y-id');
-          he.setAttribute('highlight-position', request.highlight.position + ';' + request.highlight.info);
+        const focus       = option !== 'selected' && request.highlight.focus;
+
+        console.log(`[option]: ${option} [focus]: ${focus}`);
+
+        if (!isNaN(position)) {
+          de = lastEvaluationResult.getDomElementByPosition(position);
+        }
+
+        if (de && de.node) {
+          rect = de.node.getBoundingClientRect();
+        }
+
+        let he = document.querySelector(`opena11y-ai-highlight#${id}`);
+
+        if (option === 'selected' && !he) {
+          removeHighlightElements();
+        }
+
+        if (!he) {
+          he = document.createElement('opena11y-ai-highlight');
+          he.id = id;
+          he.setAttribute(`data-result`, result_type);
+          contentElem.appendChild(he);
+        }
+
+        if (option !== 'none' && he) {
+          if (isWebsite) {
+            he.setAttribute('set', `${result_type} website ${focus}`);
+          }
+          else {
+            if (isPage) {
+              he.setAttribute('set', `${result_type} page ${focus}`);
+            }
+            else {
+              he.setAttribute('set', `${result_type} element ${focus} ${Math.round(rect.left)} ${Math.round(rect.top)} ${Math.round(rect.width)} ${Math.round(rect.height)}`);
+            }
+          }
         }
       }
-
-      // Removed highlight
-      if(request.removeHighlight) {
-        const he = document.querySelector(HIGHLIGHT_ELEMENT_NAME);
-
-        if (he) {
-          he.setAttribute('highlight-position', '');
-        }
-      }
-
-      // Update Highlight configuration
-      if(request.updateHighlightConfig) {
-        const hc = request.updateHighlightConfig;
-
-        const he = document.querySelector(HIGHLIGHT_ELEMENT_NAME);
-
-        if (he) {
-          he.setAttribute('highlight-config', `${hc.size} ${hc.style}`);
-        }
-      }
-
 
       // Update heading, region and link information
       if(request.aiRunEvaluation) {
@@ -40488,7 +40584,9 @@
                 r.level,
                 r.scope_filter,
                 r.aria_version,
-                true);
+                false);
+
+        lastEvaluationResult = er;
 
         let response = {
           title:         er.getTitle(),
@@ -40503,14 +40601,20 @@
         const parts = r.rule_group_id.split('-');
         const group_id = parseInt(parts[1]);
 
+        const results = [];
+
         switch (response.result_view) {
           case 'rules-all':
+            removeHighlightElements();
+
             response.rule_summary          = er.ruleResultSummary.data;
             response.rc_rule_results_group = er.rcRuleGroupResults.data;
             response.gl_rule_results_group = er.glRuleGroupResults.data;
             break;
 
           case 'rule-group':
+            removeHighlightElements();
+
             if (parts[0] === 'rc') {
               [group_title, rule_summary, rule_results, info_rules] = aiRuleResultsByCategory(er.allRuleResults, group_id);
             }
@@ -40526,6 +40630,7 @@
             break;
 
           case 'rule':
+            removeHighlightElements();
             [rule_title, element_summary, website_result, page_result, element_results] = aiRuleResult(er.allRuleResults, r.rule_id);
 
             response.rule_title      = rule_title;
@@ -40533,6 +40638,20 @@
             response.website_result  = website_result;
             response.page_result     = page_result;
             response.element_results = element_results;
+
+            if (website_result) {
+              results.push(website_result);
+            }
+
+            if (page_result) {
+              results.push(website_result);
+            }
+
+            if (element_results) {
+              results.push(element_results);
+            }
+
+            hightlightResults(er, results, r.highlight_option);
 
             break;
 

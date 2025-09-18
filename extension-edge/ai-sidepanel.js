@@ -170,11 +170,14 @@ class AISidePanel extends HTMLElement {
     this.viewRuleGroupElem = this.shadowRoot.querySelector(`view-rule-group`);
     this.viewRuleGroupElem.setSidepanel(this);
     this.viewRuleElem      = this.shadowRoot.querySelector(`view-rule`);
+    this.viewRuleElem.setSidepanel(this);
 
     // Side panel states
-    this.resultView = 'rules-all';
+    this.resultView  = 'rules-all';
     this.ruleGroupId = '';
-    this.ruleId = '';
+    this.ruleId      = '';
+    this.highlightOption = 'selection';
+    this.highlightPosition = '';
 
     // Update side panel title
 
@@ -224,6 +227,7 @@ class AISidePanel extends HTMLElement {
 
     this.viewRulesAllElem.clear();
     this.viewRuleGroupElem.clear();
+    this.viewRuleElem.clear();
   }
 
   updateView(result) {
@@ -302,10 +306,12 @@ class AISidePanel extends HTMLElement {
 
       aiSidePanelObj.request = {
         aiRunEvaluation: {
-          ruleset:       options.ruleset,
-          level :        options.level,
-          scope_filter:  options.scopeFilter,
-          aria_version:  options.ariaVersion,
+          ruleset:          options.ruleset,
+          level :           options.level,
+          scope_filter:     options.scopeFilter,
+          aria_version:     options.ariaVersion,
+          highlight_option: options.highlightOption,
+
           result_view:   aiSidePanelObj.resultView,
           rule_group_id: aiSidePanelObj.ruleGroupId,
           rule_id:       aiSidePanelObj.ruleId
@@ -324,87 +330,33 @@ class AISidePanel extends HTMLElement {
 
   }
 
-  highlightOrdinalPosition(ordinalPosition, info='') {
+  highlightResult(position='', resultId, resultType='', focus=true) {
 
-    if (!ordinalPosition) {
-      ordinalPosition='';
-      info='';
-    }
+    getOptions().then( (options) => {
 
-    async function sendHighlightMessage(tabs) {
-      for (const tab of tabs) {
-        const myResult = await myBrowser.tabs
-          .sendMessage(tab.id, {highlight: {
-                                    position: ordinalPosition,
-                                    info: info
-                                  }
-                                });
-        debug.flag && debug.log(`[myResult]: ${myResult}`);
+      async function sendHighlightMessage(tabs) {
+        for (const tab of tabs) {
+          const myResult = await myBrowser.tabs
+            .sendMessage(tab.id, {highlight: {
+                                      id: `opena11y-pos-${position}`,
+                                      option: options.highlightOption,
+                                      position: position,
+                                      result_type: resultType,
+                                      focus: focus,
+                                    }
+                                  });
+          debug.flag && debug.log(`[myResult]: ${myResult}`);
+        }
       }
-    }
 
-    myBrowser.tabs
-      .query({
-        currentWindow: true,
-        active: true,
-      })
-      .then(sendHighlightMessage)
-      .catch(onError);
-  }
-
-  updateHighlightConfig(options) {
-
-    async function sendHighlightMessage(tabs) {
-      for (const tab of tabs) {
-        const myResult = await myBrowser.tabs
-          .sendMessage(tab.id, { updateHighlightConfig: {
-                                    size: options.highlightSize,
-                                    style: options.highlightStyle
-                                  }
-                                });
-        debug.flag && debug.log(`[myResult]: ${myResult}`);
-      }
-    }
-
-    myBrowser.tabs
-      .query({
-        currentWindow: true,
-        active: true,
-      })
-      .then(sendHighlightMessage)
-      .catch(onError);
-  }
-
-  focusOrdinalPosition(ordinalPosition) {
-
-    async function sendFocusMessage(tabs) {
-      for (const tab of tabs) {
-        const myResult = await myBrowser.tabs
-          .sendMessage(tab.id, { focusPosition : ordinalPosition });
-        debug.flag && debug.log(`[myResult]: ${myResult}`);
-      }
-    }
-
-    myBrowser.tabs
-      .query({
-        currentWindow: true,
-        active: true,
-      })
-      .then(sendFocusMessage)
-      .catch(onError);
-  }
-
-
-  handleGetInformationClick () {
-    this.clearView(getMessage('loading_content'));
-
-    myBrowser.tabs
-      .query({
-        currentWindow: true,
-        active: true,
-      })
-      .then(this.sendMessageToTabs.bind(this))
-      .catch(onError);
+      myBrowser.tabs
+        .query({
+          currentWindow: true,
+          active: true,
+        })
+        .then(sendHighlightMessage)
+        .catch(onError);
+    });
 
   }
 
@@ -439,9 +391,6 @@ class AISidePanel extends HTMLElement {
     browserTabs.onActivated.addListener(this.handleTabActivated.bind(this));
     myBrowser.windows.onFocusChanged.addListener(this.handleWindowFocusChanged.bind(this));
 
-    getOptions().then( (options) => {
-      this.updateHighlightConfig(options);
-    });
     this.runEvaluation();
   }
 

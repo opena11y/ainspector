@@ -306,10 +306,12 @@ export default class InfoResult extends HTMLElement {
 
     if (this.website_result && (id === this.website_result.id)) {
       renderResultInfo(this.infoElementsElem, this.website_result);
+      return this.website_result;
     }
     else {
       if (this.page_result && (id === this.page_result.id)) {
         renderResultInfo(this.infoElementsElem, this.page_result);
+        return this.page_result;
       }
       else {
         const er = this.element_results.find( (er) => {
@@ -318,9 +320,11 @@ export default class InfoResult extends HTMLElement {
 
         if (er) {
           renderResultInfo(this.infoElementsElem, er);
+          return er;
         }
       }
     }
+    return {};
   }
 
   getCopyText () {

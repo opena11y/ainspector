@@ -65,10 +65,12 @@
       }
     }
   },
-  "web_accessible_resources": [{
-    "resources": ["ai-highlight.js"],
-    "matches": ["<all_urls>"]
-  }],
+  "web_accessible_resources": [
+    {
+      "resources": ["ai-highlight.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "background": {
     "scripts": ["service-worker.js"],
     "type": "module"

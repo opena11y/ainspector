@@ -148,7 +148,7 @@ export default class GridRule extends Grid {
     this.thead   = this.table.querySelector('thead');
     this.tbody   = this.table.querySelector('tbody');
 
-    this.infoElementElem = false;
+    this.infoResultElem = false;
     this.sidepanelElem = false;
 
     this.lastSelectedRowId = '';
@@ -162,8 +162,8 @@ export default class GridRule extends Grid {
     this.sidepanelElem = sidepanelElem;
   }
 
-  setInfoElement (infoElementElem) {
-    this.infoElementElem = infoElementElem;
+  setInfoResult (infoResultElem) {
+    this.infoResultElem = infoResultElem;
   }
 
   clear (message1="", message2="") {
@@ -229,7 +229,25 @@ export default class GridRule extends Grid {
 
   handleRowSelection(id) {
     this.lastSelectedRowId = id;
-    this.infoElementElem.show(id);
+    const result = this.infoResultElem.show(id);
+    if (this.sidepanelElem) {
+      if (result.is_website) {
+        this.sidepanelElem.highlightResult('website', result.id, result.result_abbrev, true);
+      }
+      else {
+        if (result.is_page) {
+          this.sidepanelElem.highlightResult('page', result.id, result.result_abbrev, true);
+        }
+        else {
+          if (result.is_element) {
+            this.sidepanelElem.highlightResult(result.position, result.id, result.result_abbrev, true);
+          }
+          else {
+            this.sidepanelElem.highlightResult('', '', false);
+          }
+        }
+      }
+    }
   }
 
 
