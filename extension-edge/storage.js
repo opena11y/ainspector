@@ -43,7 +43,7 @@ export const generalOptions = {
   rerunDelayValue: '5',
   viewsMenuIncludeGuidelines: true,
   isSidebarOpen: false,
-  highlightOption: 'selected',
+  highlightOption: 'all', /* none selected vw all */
   documentationURL: 'https://opena11y.github.io/evaluation-library/concepts.html',
   lastTabId: '',
   lastAllRulesTabId: '',

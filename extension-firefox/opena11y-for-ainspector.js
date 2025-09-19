@@ -29312,7 +29312,9 @@
     'style',
     'template',
     'shadow',
-    'title'
+    'title',
+    'h2l-highlight',
+    'opena11y-ai-highlight'
   ];
 
   /**
@@ -40202,6 +40204,7 @@
           result_abbrev:    er.getResultValueNLS(),
           result_long:      er.getResultValueLongNLS(),
           position:         er.getOrdinalPosition(),
+          highlightId:      `opena11y-pos-${er.getOrdinalPosition()}`,
           action:           er.getResultMessage(),
           definition:       getRuleDefinition(rule_id),
           implied_role:     !de.hasRole,
@@ -40303,7 +40306,8 @@
           result_long:   er.getResultValueLongNLS(),
           action:        er.getResultMessage(),
           definition:    getRuleDefinition(rule_id),
-          position:      '',
+          position:      'page',
+          highlightId:   'opena11y-pos-page',
           is_element: false,
           is_page: true,
           is_website: false
@@ -40321,7 +40325,8 @@
           result_long:   er.getResultValueLongNLS(),
           action:        er.getResultMessage(),
           definition:    getRuleDefinition(rule_id),
-          position:      '',
+          position:      'website',
+          highlightId:   'opena11y-pos-website',
           is_element: false,
           is_page: false,
           is_website: true
@@ -40478,18 +40483,75 @@
 
   let lastEvaluationResult = false;
 
+  const contentElem = document.body ?
+                      document.body :
+                      document.documentElement;
+
+  const highlightElements = [];
+
+  // Helper functions
+
+  function hideHighlightElements (option='none') {
+    highlightElements.forEach( (he) => {
+      if ((option === 'all') ||
+          ((option === 'vw') &&
+            ((he.getAttribute('data-result') === 'V') ||
+             ((he.getAttribute('data-result') === 'W'))))) {
+        he.setAttribute('focus', 'false');
+      }
+      else {
+        he.setAttribute('set', '');
+      }
+    });
+  }
+
+  function removeFocusFromHighlightElements () {
+    highlightElements.forEach( (he) => { he.setAttribute('focus', 'false'); });
+  }
+
+  function getHighlightElement(highlightId, result_abbrev) {
+    let he = document.getElementById(highlightId);
+    if (!he) {
+      he = document.createElement('opena11y-ai-highlight');
+      he.id = highlightId;
+      he.setAttribute(`data-result`, result_abbrev);
+      contentElem.appendChild(he);
+      highlightElements.push(he);
+    }
+    return he;
+  }
+
+  function hightlightResults(evaluation_result, results, option) {
+    results.forEach( (r) => {
+      if ((option === 'all') ||
+          ((option === 'vw') && ((r.result_abbrev === 'V') || (r.result_abbrev === 'W')))) {
+
+        const he = getHighlightElement(r.highlightId, r.result_abbrev);
+
+        if (r.isWebsite) {
+          he.setAttribute('set', `${r.result_abbrev} website false`);
+        }
+        else {
+          if (r.isPage) {
+            he.setAttribute('set', `${r.result_abbrev} page false`);
+          }
+          else {
+            const de = evaluation_result.getDomElementByPosition(r.position);
+            if (de) {
+              const rect = de.node.getBoundingClientRect();
+              he.setAttribute('set', `${r.result_abbrev} element false ${Math.round(rect.left)} ${Math.round(rect.top)} ${Math.round(rect.width)} ${Math.round(rect.height)}`);
+            }
+          }
+        }
+      }
+    });
+  }
+
+
+
   // Listen for messages from side panel
   browserRuntime.onMessage.addListener(
     function(request, sender, sendResponse) {
-
-      const contentElem = document.body ?
-                          document.body :
-                          document.documentElement;
-
-      function removeHighlightElements () {
-        const hes = document.querySelectorAll('opena11y-ai-highlight');
-        hes.forEach( (he) => { he.remove(); });
-      }
 
       let rect = {};
       let de = false;
@@ -40501,11 +40563,10 @@
         const position    = parseInt(request.highlight.position);
         const result_type = request.highlight.result_type;
         const option      = request.highlight.option;
-        const id          = request.highlight.id;
+        const highlightId = request.highlight.highlightId;
+        const focus       = request.highlight.focus;
 
-        const focus       = option !== 'selected' && request.highlight.focus;
-
-        console.log(`[option]: ${option} [focus]: ${focus}`);
+        hideHighlightElements(option);
 
         if (!isNaN(position)) {
           de = lastEvaluationResult.getDomElementByPosition(position);
@@ -40515,21 +40576,10 @@
           rect = de.node.getBoundingClientRect();
         }
 
-
-        let he = document.querySelector(`opena11y-ai-highlight#${id}`);
-
-        if (option === 'selected' && !he) {
-          removeHighlightElements();
-        }
-
-        if (!he) {
-          he = document.createElement('opena11y-ai-highlight');
-          he.id = id;
-          he.setAttribute(`data-result`, result_type);
-          contentElem.appendChild(he);
-        }
+        const he = getHighlightElement(highlightId, result_type);
 
         if (option !== 'none' && he) {
+          removeFocusFromHighlightElements();
           if (isWebsite) {
             he.setAttribute('set', `${result_type} website ${focus}`);
           }
@@ -40546,6 +40596,7 @@
 
       // Update heading, region and link information
       if(request.aiRunEvaluation) {
+        openFlag = true;
         const r = request.aiRunEvaluation;
 
         const doc = window.document;
@@ -40574,9 +40625,11 @@
         const parts = r.rule_group_id.split('-');
         const group_id = parseInt(parts[1]);
 
+        let results = [];
+
         switch (response.result_view) {
           case 'rules-all':
-            removeHighlightElements();
+            hideHighlightElements();
 
             response.rule_summary          = er.ruleResultSummary.data;
             response.rc_rule_results_group = er.rcRuleGroupResults.data;
@@ -40584,7 +40637,7 @@
             break;
 
           case 'rule-group':
-            removeHighlightElements();
+            hideHighlightElements();
 
             if (parts[0] === 'rc') {
               [group_title, rule_summary, rule_results, info_rules] = aiRuleResultsByCategory(er.allRuleResults, group_id);
@@ -40601,6 +40654,7 @@
             break;
 
           case 'rule':
+            hideHighlightElements();
             [rule_title, element_summary, website_result, page_result, element_results] = aiRuleResult(er.allRuleResults, r.rule_id);
 
             response.rule_title      = rule_title;
@@ -40608,6 +40662,20 @@
             response.website_result  = website_result;
             response.page_result     = page_result;
             response.element_results = element_results;
+
+            if (website_result) {
+              results.push(website_result);
+            }
+
+            if (page_result) {
+              results.push(website_result);
+            }
+
+            if (element_results) {
+              results = results.concat(element_results);
+            }
+
+            hightlightResults(er, results, r.highlight_option);
 
             break;
 
@@ -40624,25 +40692,22 @@
    */
 
   // Check if side panel is open
-  /*
-  let openFlag = true;
+
+  let openFlag = false;
 
   setInterval(() => {
     chrome.runtime
-      .sendMessage({ ['ai-sidepanel-open']: true })
-      .then((msgRes) => {
-        if (msgRes !== true && openFlag) {
-          openFlag = false;
-        }
+      .sendMessage({ ['h2l-sidepanel-open']: true })
+      .then(() => {
+          openFlag = true;
       })
       .catch( () => {
-        const he = document.querySelector(HIGHLIGHT_ELEMENT_NAME);
-        if (he) {
-          he.setAttribute('highlight-position', '');
+        if (openFlag) {
+          console.log(`Sidebar closed: ${openFlag}`);
+          hideHighlightElements();
+          openFlag = false;
         }
-        openFlag = true;
     });
-  }, 50);
-  */
+  }, 100);
 
 })();

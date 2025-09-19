@@ -212,6 +212,7 @@ class AIHighlightELement extends HTMLElement {
   static get observedAttributes() {
     return [
       "set",
+      "focus"
       ];
   }
 
@@ -225,7 +226,6 @@ class AIHighlightELement extends HTMLElement {
       case "set":
         if (new_value) {
           const parts = new_value.split(' ');
-
           this.setResultColor(parts[0]);
           focus = parts[2].toLowerCase() === 'true';
 
@@ -251,13 +251,33 @@ class AIHighlightELement extends HTMLElement {
               break;
 
           }
-
+        }
+        else {
+          // hide element
+          this.hideHighlight();
         }
         break;
 
-       default:
+        case "focus":
+          if (new_value.toLowerCase() === 'true') {
+            this.addFocus();
+          }
+          else {
+            this.removeFocus();
+          }
+          break;
+
+      default:
         break;
     }
+  }
+
+  addFocus() {
+    this.overlayElem.classList.add('focus');
+  }
+
+  removeFocus() {
+    this.overlayElem.classList.remove('focus');
   }
 
   /**
@@ -268,7 +288,6 @@ class AIHighlightELement extends HTMLElement {
    * @param {String}  resultvalue - Result value
    */
   setResultColor (value) {
-    console.log(`[value]: ${value}`);
 
     let color;
 
@@ -551,20 +570,17 @@ class AIHighlightELement extends HTMLElement {
   }
 
   /*
-   *   @method removeHighlight
+   *   @method hideHighlight
    *
    *   @desc  Hides the highlight element on the page
    */
-  removeHighlight() {
-    if (this.overlayElem) {
-      this.containerElem.style.display = 'none';
-    }
+  hideHighlight() {
+    this.containerElem.style.display = 'none';
   }
 
 }
 
 // Create highlight element
 window.customElements.define('opena11y-ai-highlight', AIHighlightELement);
-document.body.appendChild(document.createElement('opena11y-ai-highlight'));
 
 

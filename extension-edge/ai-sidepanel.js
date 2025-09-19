@@ -330,7 +330,7 @@ class AISidePanel extends HTMLElement {
 
   }
 
-  highlightResult(position='', resultId, resultType='', focus=true) {
+  highlightResult(position, highlightId, resultType,  focus=true) {
 
     getOptions().then( (options) => {
 
@@ -338,11 +338,11 @@ class AISidePanel extends HTMLElement {
         for (const tab of tabs) {
           const myResult = await myBrowser.tabs
             .sendMessage(tab.id, {highlight: {
-                                      id: `opena11y-pos-${position}`,
                                       option: options.highlightOption,
                                       position: position,
                                       result_type: resultType,
                                       focus: focus,
+                                      highlightId: highlightId
                                     }
                                   });
           debug.flag && debug.log(`[myResult]: ${myResult}`);

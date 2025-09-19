@@ -16,7 +16,8 @@ import {
 } from './grid.js';
 
 import {
-  getOptions
+  getOptions,
+  saveOption
 } from './storage.js';
 
 
@@ -148,6 +149,9 @@ export default class GridRule extends Grid {
     this.thead   = this.table.querySelector('thead');
     this.tbody   = this.table.querySelector('tbody');
 
+    this.selectHighlightElem = this.shadowRoot.querySelector('select');
+    this.selectHighlightOptions = this.selectHighlightElem.querySelectorAll('option');
+
     this.infoResultElem = false;
     this.sidepanelElem = false;
 
@@ -155,6 +159,8 @@ export default class GridRule extends Grid {
     this.activationDisabled = false;
 
     this.setRowSelectionEventHandler(this.handleRowSelection.bind(this));
+
+    this.selectHighlightElem.addEventListener('change', this.handleSelectHighlight.bind(this));
 
   }
 
@@ -213,6 +219,10 @@ export default class GridRule extends Grid {
           this.handleRowSelection(tr.id);
         }
 
+        this.selectHighlightOptions.forEach( (option) => {
+          option.selected = option.value === options.highlightOption;
+        });
+
       });
 
     }
@@ -232,15 +242,15 @@ export default class GridRule extends Grid {
     const result = this.infoResultElem.show(id);
     if (this.sidepanelElem) {
       if (result.is_website) {
-        this.sidepanelElem.highlightResult('website', result.id, result.result_abbrev, true);
+        this.sidepanelElem.highlightResult('website', result.highlightId, result.result_abbrev, true);
       }
       else {
         if (result.is_page) {
-          this.sidepanelElem.highlightResult('page', result.id, result.result_abbrev, true);
+          this.sidepanelElem.highlightResult('page', result.highlightId, result.result_abbrev, true);
         }
         else {
           if (result.is_element) {
-            this.sidepanelElem.highlightResult(result.position, result.id, result.result_abbrev, true);
+            this.sidepanelElem.highlightResult(result.position, result.highlightId, result.result_abbrev, true);
           }
           else {
             this.sidepanelElem.highlightResult('', '', false);
@@ -250,7 +260,11 @@ export default class GridRule extends Grid {
     }
   }
 
-
+  handleSelectHighlight() {
+    saveOption('highlightOption', this.selectHighlightElem.value).then( () => {
+      this.sidepanelElem.runEvaluation();
+    });
+  }
 
 }
 
