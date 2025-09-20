@@ -430,7 +430,8 @@ export default class ViewsMenuButton extends HTMLElement {
   }
 
   handleBackgroundPointerdown(event) {
-    if (!isOverElement(this.containerDiv, event.clientX, event.clientY)) {
+    if (!isOverElement(this.button, event.clientX, event.clientY) &&
+        !isOverElement(this.menuDiv, event.clientX, event.clientY)) {
       if (this.isOpen()) {
         this.closePopup();
       }

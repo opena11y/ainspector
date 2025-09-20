@@ -253,10 +253,20 @@ export default class GridRuleGroup extends Grid {
           this.addMessageRow(getMessage('no_violations_warnings_mc_results_msg'));
         }
 
-        const tr = this.tbody.firstElementChild;
-        if (tr) {
-          this.setSelectedRow(tr);
-          this.handleRowSelection(tr.id);
+        const rows = this.tbody.querySelectorAll('tr');
+        let found = false;
+        for (let i = 0; i < rows.length; i += 1) {
+          const row = rows[i];
+          if (row.id === this.lastSelectedRowId) {
+            this.setSelectedRow(row);
+            this.handleRowSelection(row.id);
+            found = true;
+          }
+        }
+
+        if (!found) {
+          this.setSelectedRow(rows[0]);
+          this.handleRowSelection(rows[0].id);
         }
 
       });

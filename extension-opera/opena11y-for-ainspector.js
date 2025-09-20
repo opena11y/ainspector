@@ -14369,6 +14369,7 @@
           ELEMENT_MC_4:     'CCR of %1 is less than 3 for large and bolded text, but background image may improve color contrast.',
           ELEMENT_MC_5:     'CCR cannot be reliably computed due to the repositioning of the text on the page by the author and the background of the text being transparent (e.g. no specific color), you will need to use another method to verify the color contrast.',
           ELEMENT_MC_6:     'CCR cannot be computed due the computed color format not supported for conversion to a hex number, you will need to use another method to verify the color contrast.',
+          ELEMENT_MC_7:     'CCR requirements do not apply to content related to disabled or inert controls.',
           ELEMENT_HIDDEN_1: 'CCR was not tested since the text is hidden from assistive technologies.'
         },
         PURPOSES:       [ 'The higher the color contrast of text the more easy it is to read, especially for people with visual impairments.'
@@ -14464,6 +14465,7 @@
           ELEMENT_MC_4:     'CCR of %1 is less than 4.5 for large and bolded text, but background image may improve color contrast.',
           ELEMENT_MC_5:     'CCR cannot be reliably computed due to the repositioning of the text on the page by the author and the background of the text being transparent (e.g. no specific color), you will need to use another method to verify the color contrast.',
           ELEMENT_MC_6:     'CCR cannot be computed due the computed color format not supported for conversion to a hex number, you will need to use another method to verify the color contrast.',
+          ELEMENT_MC_7:     'CCR requirements do not apply to content related to disabled or inert controls.',
          ELEMENT_HIDDEN_1: 'CCR was not tested since the text is hidden from assistive technologies.'
         },
         PURPOSES:       [ 'The higher the color contrast of text the more easy it is to read, especially for people with visual impairments.'
@@ -27153,6 +27155,14 @@
                        elementNode.inert :
                        parentInfo.isInert;
 
+      const ariaDisabled = elementNode.hasAttribute('aria-disabled') ?
+                           elementNode.getAttribute('aria-disabled').toLowerCase() === 'true' :
+                          false;
+
+      const disabled =  elementNode.disabled === true;
+
+      this.isDisabled  = ariaDisabled || disabled ? true : parentInfo.isDisabled;
+
       this.tabIndex             = checkTabIndex(elementNode);
       this.isTabStop            = checkIsTabStop(elementNode);
       this.isInteractiveElement = checkForInteractiveElement(elementNode);
@@ -29354,6 +29364,7 @@
         this.documentIndex   = info.documentIndex;
         this.domElement      = info.domElement;
         this.isInert         = info.isInert;
+        this.isDisdabled     = info.isDisabled;
         this.landmarkElement = info.landmarkElement;
         this.listElement     = info.listElement;
         this.mapElement      = info.mapElement;
@@ -29635,6 +29646,8 @@
       newParentInfo.domElement = domElement;
 
       newParentInfo.isInert         = domElement.isInert;
+      newParentInfo.isDisabled      = domElement.isDisabled;
+
       newParentInfo.controlElement  = this.controlInfo.update(controlElement, domElement);
       newParentInfo.mapElement      = this.imageInfo.update(mapElement, domElement);
       newParentInfo.inLink          = this.linkInfo.update(domElement, parentInfo.inLink);
@@ -31931,15 +31944,20 @@
           }
           else {
             // Fails color contrast requirements
-            if (cc.hasBackgroundImage) {
-              rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_4', [ccr]);
+            if (de.isDisabled || de.isInert) {
+              rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_7', []);
             }
             else {
-              if (cc.isPositioned && cc.isTransparent) {
-                rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_5', []);
+              if (cc.hasBackgroundImage) {
+                rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_4', [ccr]);
               }
               else {
-                rule_result.addElementResult(TEST_RESULT.FAIL, domText, 'ELEMENT_FAIL_2', [ccr]);
+                if (cc.isPositioned && cc.isTransparent) {
+                  rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, domText, 'ELEMENT_MC_5', []);
+                }
+                else {
+                  rule_result.addElementResult(TEST_RESULT.FAIL, domText, 'ELEMENT_FAIL_2', [ccr]);
+                }
               }
             }
           }
