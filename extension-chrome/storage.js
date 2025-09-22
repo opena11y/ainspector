@@ -59,10 +59,10 @@ export const exportOptions = {
   projectTitle: '',
   evaluatorName: '',
   exportFormat: 'CSV',  // other option is JSON
-  filenamePrefix: 'ainspector-{index}',
+  filenamePrefix: 'ainspector',
   filenameAllRules: 'all-rules',
-  filenameRuleGroup: 'rule-group-{group}-{rg}',
-  filenameRuleResult: 'rule-result-{rule}-{rule}',
+  filenameRuleGroup: 'rule-group-{groupId}',
+  filenameRule: 'rule-{ruleId}',
   includeDate: false,
   includeTime: false,
   includeIndex: true,

@@ -10,8 +10,14 @@ import {
 } from './utils.js';
 
 import {
-  getOptions
+  getOptions,
+  saveOptions
 } from './storage.js';
+
+import {
+  getRuleCategoryFilenameId,
+  getGuidelineFilenameId
+} from './constants.js';
 
 /* Constants */
 
@@ -34,6 +40,9 @@ const browserRuntime = typeof browser === 'object' ?
               browser.runtime :
               chrome.runtime;
 
+const browserDownloads   = typeof browser === 'object' ?
+                       browser.downloads :
+                       chrome.downloads;
 
 let myWindowId = -1;  // used for checking if a tab is in the same window as the sidebar
 
@@ -118,11 +127,17 @@ template.innerHTML = `
         <rerun-evaluation-button></rerun-evaluation-button>
       </div>
       <div class="third">
-        <export-button></export-button>
+        <button id="export-data"
+          aria-haspop="true"
+          aria-controls="dialog"
+          aria-live="off"
+          data-i18n="export_data_button_label">
+          Export
+        </button>
       </div>
     </div>
-
   </footer>
+  <export-dialog></export-dialog>
 </div>
 `;
 
@@ -190,6 +205,13 @@ class AISidePanel extends HTMLElement {
 
     this.backButtonElem   = this.shadowRoot.querySelector(`#back-button`);
     this.backButtonElem.addEventListener('click', this.handleBackButtonClick.bind(this));
+
+    this.exportButtonElem   = this.shadowRoot.querySelector(`#export-data`);
+    this.exportButtonElem.addEventListener('click', this.handleExportButtonClick.bind(this));
+
+    this.exportDialogElem = this.shadowRoot.querySelector('export-dialog');
+    this.exportDialogElem.dialog.addEventListener("close", this.handleExportDialogClose.bind(this));
+
 
     const viewsMenuButton = this.shadowRoot.querySelector(`views-menu-button`);
     viewsMenuButton.setActivationCallback(this.setView.bind(this));
@@ -381,6 +403,16 @@ class AISidePanel extends HTMLElement {
     this.runEvaluation();
   }
 
+  handleExportButtonClick () {
+    getOptions().then( (options) => {
+      if (options.promptForExportOptions) {
+        this.exportDialogElem.openDialog();
+      } else {
+        this.handleExportDialogClose(true);
+      }
+    });
+  }
+
   //-----------------------------------------------
   //  Methods that handle tab and window events
   //-----------------------------------------------
@@ -483,6 +515,83 @@ class AISidePanel extends HTMLElement {
       debug.flag && debug.log(`onInvalidId: ${error}`);
     }
   }
+
+  handleExportDialogClose (force=false) {
+
+    function incrementIndex() {
+      getOptions().then( (options) => {
+        options.filenameIndex = parseInt(options.filenameIndex) + 1;
+        saveOptions(options);
+      });
+    }
+
+    function onFailed(error) {
+      console.error(`Download failed: ${error}`);
+    }
+
+    let blob;
+    const returnValue = force || this.exportButtonElem.dialog.returnValue === 'export';
+
+    if (returnValue) {
+      getOptions().then( (options) => {
+        let filename = options.filenamePrefix + '-';
+        filename += options.filenameIndex.toString().padStart(4, "0") + '-';
+
+        const parts = this.ruleGroupId.split('-');
+        const isRuleCategory = parts[0] === 'rc';
+        const ruleId = parseInt(parts[1]);
+
+
+        switch (this.resultView) {
+          case 'rules-all':
+            filename += options.filenameAllRules;
+            break;
+
+          case 'rule-group':
+            filename += isRuleCategory ?
+                    options.filenameRuleGroup.replace('{groupId}', getRuleCategoryFilenameId(ruleId)) :
+                    options.filenameRuleGroup.replace('{groupId}', getGuidelineFilenameId(ruleId));
+            break;
+
+          case 'rule':
+            filename += options.filenameRule.replace('{ruleId}', this.ruleId.toLowerCase());
+            break;
+        }
+
+
+        filename += '.' + options.exportFormat.toLowerCase();
+
+        if (options.exportFormat === 'CSV') {
+          blob = new Blob([this.getCSVContent()], {
+           type: "text/csv;charset=utf-8"
+          });
+        }
+        else {
+          blob = new Blob([this.getJSONContent()], {
+           type: "application/json;charset=utf-8"
+          });
+        }
+
+
+        let downloading = browserDownloads.download({
+          url : URL.createObjectURL(blob),
+          filename : filename,
+          saveAs: true,
+          conflictAction : 'uniquify'
+        });
+        downloading.then(incrementIndex, onFailed);
+      });
+    }
+  }
+
+  getCSVContent() {
+    return 'CSV Content';
+  }
+
+  getJSONContent() {
+    return JSON.stringify({ "title": "JSON Content"});
+  }
+
 
   handleResize () {
     const screenHeight = window.innerHeight;

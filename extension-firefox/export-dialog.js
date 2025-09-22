@@ -31,112 +31,102 @@ debug.flag = false;
 
 const template = document.createElement('template');
 template.innerHTML = `
-    <div class="export-button">
-      <button id="export-data"
-        aria-haspop="true"
-        aria-controls="dialog"
-        aria-live="off"
-        data-i18n="export_data_button_label">
-        Export
+  <dialog
+    class="export"
+    aria-labelledby="title">
+    <div class="header">
+      <div id="title"
+           data-i18n="export_data_dialog_title">
+      </div>
+      <button id="close-button"
+              data-i18n-aria-label="cancel_button_label"
+              tabindex="-1">
+        ✕
       </button>
-
-      <dialog
-        class="export"
-        aria-labelledby="title">
-        <div class="header">
-          <div id="title"
-               data-i18n="export_data_dialog_title">
-          </div>
-          <button id="close-button"
-                  data-i18n-aria-label="cancel_button_label"
-                  tabindex="-1">
-            ✕
-          </button>
-        </div>
-        <div class="content">
-          <fieldset>
-            <legend data-i18n="options_data_export_format_legend">
-              Export Format
-            </legend>
-            <label>
-              <input type="radio"
-                     name="export-format"
-                     id="options-export-csv"/>
-              <span data-i18n="options_data_export_csv_label">
-                CSV
-              </span>
-            </label>
-            <label>
-              <input type="radio"
-                     name="export-format"
-                     id="options-export-json"/>
-              <span data-i18n="options_data_export_json_label">
-                JSON
-              </span>
-            </label>
-          </fieldset>
-
-          <fieldset>
-            <legend data-i18n="options_data_export_filename_legend">
-              Filename Options
-            </legend>
-
-            <label class="input"
-                  data-i18n="options_data_export_prefix_label"
-                  for="options-export-prefix">
-                  Export File Prefix
-            </label>
-
-            <div class="input">
-              <input id="options-export-prefix"
-                     type="text" size="20"
-                     aria-describedby="option-export-prefix-desc options-export-prefix-note" />
-              <div class="feedback prefix">
-                <img src="../icons/error-icon-15.png" alt=""/>
-                <span id="options-export-prefix-desc" aria-live="assertive"></span>
-              </div>
-            </div>
-            <div class="note"
-                 data-i18nid="options_data_export_prefix_note_desc">
-            </div>
-
-            <label for="options-export-index"
-                   data-i18n="options_data_export_index_label">
-              File name index
-            </label>
-
-            <div class="input">
-              <input id="options-export-index"
-                     type="number"
-                     min="1"
-                     data-option="filenameIndex"/>
-            </div>
-
-          </fieldset>
-
-          <label>
-            <input type="checkbox"
-                  id="options-export-prompt">
-              <span data-i18n="options_data_export_prompt_label">
-                Do not prompt me for export options.
-              </span>
-          </label>
-        </div>
-        <div class="buttons">
-          <button id="cancel-button"
-                  data-i18n="cancel_button_label">
-            Cancel
-          </button>
-          <button id="ok-button"
-                  data-i18n="ok_button_label">
-            OK
-          </button>
-        </div>
-      </dialog>
     </div>
+    <div class="content">
+      <fieldset>
+        <legend data-i18n="options_data_export_format_legend">
+          Export Format
+        </legend>
+        <label>
+          <input type="radio"
+                 name="export-format"
+                 id="options-export-csv"/>
+          <span data-i18n="options_data_export_csv_label">
+            CSV
+          </span>
+        </label>
+        <label>
+          <input type="radio"
+                 name="export-format"
+                 id="options-export-json"/>
+          <span data-i18n="options_data_export_json_label">
+            JSON
+          </span>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend data-i18n="options_data_export_filename_legend">
+          Filename Options
+        </legend>
+
+        <label class="input"
+              data-i18n="options_data_export_prefix_label"
+              for="options-export-prefix">
+              Export File Prefix
+        </label>
+
+        <div class="input">
+          <input id="options-export-prefix"
+                 type="text" size="20"
+                 aria-describedby="option-export-prefix-desc options-export-prefix-note" />
+          <div class="feedback prefix">
+            <img src="../icons/error-icon-15.png" alt=""/>
+            <span id="options-export-prefix-desc" aria-live="assertive"></span>
+          </div>
+        </div>
+        <div class="note"
+             data-i18nid="options_data_export_prefix_note_desc">
+        </div>
+
+        <label for="options-export-index"
+               data-i18n="options_data_export_index_label">
+          File name index
+        </label>
+
+        <div class="input">
+          <input id="options-export-index"
+                 type="number"
+                 min="1"
+                 data-option="filenameIndex"/>
+        </div>
+
+      </fieldset>
+
+      <label>
+        <input type="checkbox"
+              id="options-export-prompt">
+          <span data-i18n="options_data_export_prompt_label">
+            Do not prompt me for export options.
+          </span>
+      </label>
+    </div>
+    <div class="buttons">
+      <button id="cancel-button"
+              data-i18n="cancel_button_label">
+        Cancel
+      </button>
+      <button id="ok-button"
+              data-i18n="ok_button_label">
+        OK
+      </button>
+    </div>
+  </dialog>
 `;
 
-export default class ExportButton extends HTMLElement {
+export default class ExportDialog extends HTMLElement {
   constructor () {
     super();
 
@@ -164,12 +154,6 @@ export default class ExportButton extends HTMLElement {
     // Get references
 
     this.callback = null;
-    this.promptForDelay = true;
-    this.delayValue = 5;
-    this.timerValue = 0;
-
-    this.exportButton  = this.shadowRoot.querySelector('#export-data');
-    this.exportButton.addEventListener('click', this.handleExportButtonClick.bind(this));
 
     this.dialog = this.shadowRoot.querySelector('dialog');
     this.dialog.addEventListener('keydown', this.handleDialogKeydown.bind(this));
@@ -218,32 +202,24 @@ export default class ExportButton extends HTMLElement {
     setI18nLabels(this.shadowRoot, debug.flag);
   }
 
-  set disabled (value) {
-    this.exportButton.disabled = value;
-  }
-
-  get disabled () {
-    return this.exportButton.disabled;
-  }
-
-  setActivationCallback (callback) {
-    this.callback = callback;
-  }
-
-  tryActivationCallback () {
-    if (this.callback) {
-      this.callback();
-    }
-  }
-
   openDialog () {
-    this.dialog.showModal();
-    this.okButton.focus();
+    const exportDialog = this;
+    getOptions().then( (options) => {
+      if (options.promptForExportOptions) {
+        exportDialog.exportCSV.checked     = options.exportFormat === 'CSV';
+        exportDialog.exportJSON.checked    = options.exportFormat === 'JSON';
+        exportDialog.exportPrefix.value    = options.filenamePrefix;
+        exportDialog.exportIndex.value     = options.filenameIndex;
+        exportDialog.exportPrompt.checked  = !options.promptForExportOptions;
+
+        exportDialog.dialog.showModal();
+        exportDialog.okButton.focus();
+      }
+    });
   }
 
   closeDialog (value) {
     this.dialog.close(value);
-    this.exportButton.focus();
   }
 
   hidePrefixError () {
@@ -281,21 +257,6 @@ export default class ExportButton extends HTMLElement {
       }
     }
     this.exportPrefix.value = value;
-  }
-
-  handleExportButtonClick () {
-    getOptions().then( (options) => {
-      if (options.promptForExportOptions) {
-        this.exportCSV.checked     = options.exportFormat === 'CSV';
-        this.exportJSON.checked    = options.exportFormat === 'JSON';
-        this.exportPrefix.value    = options.filenamePrefix;
-        this.exportIndex.value     = options.filenameIndex;
-        this.exportPrompt.checked  = !options.promptForExportOptions;
-        this.openDialog();
-      } else {
-        this.tryActivationCallback();
-      }
-    });
   }
 
   handleCancelButtonClick () {
@@ -376,4 +337,4 @@ export default class ExportButton extends HTMLElement {
   }
 }
 
-window.customElements.define("export-button", ExportButton);
+window.customElements.define("export-dialog", ExportDialog);

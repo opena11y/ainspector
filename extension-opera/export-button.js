@@ -216,15 +216,6 @@ export default class ExportButton extends HTMLElement {
     );
 
     setI18nLabels(this.shadowRoot, debug.flag);
-
-    getOptions().then( (options) => {
-      // Set form element values and states
-      this.exportCSV.checked     = options.exportFormat === 'CSV';
-      this.exportJSON.checked    = options.exportFormat === 'JSON';
-      this.exportPrefix.value    = options.filenamePrefix;
-      this.exportIndex.checked    = options.includeIndex;
-      this.exportPrompt.checked  = !options.promptForExportOptions;
-    });
   }
 
   set disabled (value) {
@@ -250,8 +241,8 @@ export default class ExportButton extends HTMLElement {
     this.okButton.focus();
   }
 
-  closeDialog () {
-    this.dialog.close();
+  closeDialog (value) {
+    this.dialog.close(value);
     this.exportButton.focus();
   }
 
@@ -295,6 +286,11 @@ export default class ExportButton extends HTMLElement {
   handleExportButtonClick () {
     getOptions().then( (options) => {
       if (options.promptForExportOptions) {
+        this.exportCSV.checked     = options.exportFormat === 'CSV';
+        this.exportJSON.checked    = options.exportFormat === 'JSON';
+        this.exportPrefix.value    = options.filenamePrefix;
+        this.exportIndex.value     = options.filenameIndex;
+        this.exportPrompt.checked  = !options.promptForExportOptions;
         this.openDialog();
       } else {
         this.tryActivationCallback();
@@ -303,18 +299,18 @@ export default class ExportButton extends HTMLElement {
   }
 
   handleCancelButtonClick () {
-    this.closeDialog();
+    this.closeDialog('cancel');
   }
 
   handleOkButtonClick () {
-    this.closeDialog();
+    this.closeDialog('export');
     const options = {
       exportFormat: (this.exportCSV.checked ? 'CSV' :    'JSON'),
       filenamePrefix: validatePrefix(this.exportPrefix.value),
-      includeIndex: this.exportIndex.checked,
+      filenameIndex: this.exportIndex.value,
       promptForExportOptions: !this.exportPrompt.checked
     };
-    saveOptions(options).then(this.tryActivationCallback());
+    saveOptions(options).then(this.tryActivationCallback(options));
   }
 
   handleDialogKeydown(event) {
@@ -331,7 +327,7 @@ export default class ExportButton extends HTMLElement {
     }
 
     if (event.key === 'Escape') {
-      this.closeDialog();
+      this.closeDialog('cancel');
     }
   }
 
@@ -365,7 +361,7 @@ export default class ExportButton extends HTMLElement {
 
   handleBackgroundPointerdown(event) {
     if (!isOverElement(this.dialog, event.clientX, event.clientY)) {
-      this.closeDialog();
+      this.closeDialog('cancel');
     }
   }
 

@@ -1219,7 +1219,7 @@
     "description": "Legend for export data button options"
   },
   "options_data_export_prompt_label": {
-    "message": "Prompt for data export options",
+    "message": "Do not prompt for data export options",
     "description": "Label for prompt for data export checkbox"
   },
   "options_data_export_format_legend": {

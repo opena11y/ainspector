@@ -188,7 +188,7 @@ class OptionsDataExport extends HTMLElement {
         const option = input.getAttribute('data-option');
 
         if (input.type === 'checkbox') {
-          input.checked = options[option];
+          input.checked = !options[option];
         }
         else {
           if (input.type === 'radio') {
@@ -210,7 +210,7 @@ class OptionsDataExport extends HTMLElement {
         debug.flag && debug.log(`[update][${input.id}]: ${options[input.getAttribute('data-option')]} (${input.getAttribute('data-option')})`);
         const option = input.getAttribute('data-option');
         if (input.type === 'checkbox') {
-          options[option] = input.checked;
+          options[option] = !input.checked;
         }
         else {
           if (input.type === 'radio') {
