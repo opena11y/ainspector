@@ -81,7 +81,8 @@
     "permissions": [
     "activeTab",
     "downloads",
-    "storage"
+    "storage",
+    "clipboardWrite"
   ],
   "content_scripts": [
     {

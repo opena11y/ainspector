@@ -514,12 +514,12 @@
   },
 
   "rule_compliance_label": {
-    "message": "Compliance",
+    "message": "Primary WCAG Compliance",
     "description": "Compliance section label for rule information"
   },
 
   "rule_sc_Label": {
-    "message": "WCAG Success Criteria",
+    "message": "Other Related WCAG Success Criteria",
     "description": "WCAG Success Criteria section label for rule information"
   },
 
@@ -1387,7 +1387,7 @@
     "description": "Column header in results information"
   },
   "ccr_ccr": {
-    "message": "Color Cotrast Ratio",
+    "message": "Color Contrast Ratio",
     "description": "Property name in color contrast information"
   },
   "ccr_background_color": {
@@ -1473,6 +1473,22 @@
   "cell_empty_cell": {
     "message": "Cell is empty",
     "description": "Property name in table cell information"
+  },
+  "table_information": {
+    "message": "Table Information",
+    "description": "Property name in table information"
+  },
+  "table_cell_information": {
+    "message": "Table Cell Information",
+    "description": "Property name in table information"
+  },
+  "html_attrs_information": {
+    "message": "HTML Attributes",
+    "description": "Label for HTML Attributes table"
+  },
+  "aria_attrs_information": {
+    "message": "ARIA Attributes",
+    "description": "Label for ARIA Attributes table"
   },
   "table_type_nls": {
     "message": "Type",

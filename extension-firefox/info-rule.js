@@ -7,6 +7,7 @@ import DebugLogging  from './debug.js';
 import {
   renderContent,
   addContentToElement,
+  getCopyTextContent,
   getMessage,
   removeChildContent,
   setI18nLabels
@@ -16,6 +17,8 @@ import {
 
 const debug = new DebugLogging('info-rule', false);
 debug.flag = false;
+
+let currentCopyText = '';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -53,6 +56,8 @@ export default class InfoRule extends HTMLElement {
     const copyButtonElem = this.shadowRoot.querySelector('copy-button');
     copyButtonElem.setGetTextFunct(this.getCopyText);
 
+    this.copyText = {};
+
   }
 
   clear () {
@@ -78,35 +83,56 @@ export default class InfoRule extends HTMLElement {
 
     info_rules.forEach( (info_rule) => {
 
-      const divElem = addRuleDiv(this.infoRulesElem, info_rule.id);
+      const id = info_rule.id;
+      this.copyText[id] = '';
+
+      // HTML Content
+      const divElem = addRuleDiv(this.infoRulesElem, id);
       divElem.className = "info-rule";
 
       addH3(divElem, getMessage('rule_summary_label'));
       renderContent(divElem, info_rule.summary);
+      this.copyText[id] += getCopyTextContent('rule_summary_label', info_rule.summary);
 
       addH3(divElem, getMessage('rule_definition_label'));
       renderContent(divElem, info_rule.definition);
+      this.copyText[id] += getCopyTextContent('rule_definition_label', info_rule.definition);
 
       addH3(divElem, getMessage('rule_action_label'));
       renderContent(divElem, info_rule.actions, 'action');
+      this.copyText[id] += getCopyTextContent('rule_action_label', info_rule.actions);
 
       addH3(divElem, getMessage('rule_purpose_label'));
       renderContent(divElem, info_rule.purposes);
+      this.copyText[id] += getCopyTextContent('rule_purpose_label', info_rule.purposes);
 
       addH3(divElem, getMessage('rule_techniques_label'));
       renderContent(divElem, info_rule.techniques);
+      this.copyText[id] += getCopyTextContent('rule_techniques_label', info_rule.techniques);
 
       addH3(divElem, getMessage('rule_target_label'));
       renderContent(divElem, info_rule.targets);
+      this.copyText[id] += getCopyTextContent('rule_target_label', info_rule.targets);
 
       addH3(divElem, getMessage('rule_compliance_label'));
       renderContent(divElem, info_rule.wcag_primary);
+      this.copyText[id] += getCopyTextContent('rule_compliance_label', info_rule.wcag_primary);
 
       addH3(divElem, getMessage('rule_sc_label'));
-      renderContent(divElem, info_rule.wcag_related);
+      if (info_rule.wcag_related.length) {
+        renderContent(divElem, info_rule.wcag_related);
+        this.copyText[id] += getCopyTextContent('rule_sc_label', info_rule.wcag_related);
+      }
+      else {
+        renderContent(divElem, getMessage('element_result_value_none'));
+        this.copyText[id] += getCopyTextContent('rule_sc_label',  getMessage('element_result_value_none'));
+      }
 
       addH3(divElem, getMessage('rule_additional_label'));
       renderContent(divElem, info_rule.informational_links);
+      this.copyText[id] += getCopyTextContent('rule_additional_label', info_rule.informational_links);
+
+//      debug.log(`[id]: ${id}\n${this.copyText[id]}`);
 
     });
   }
@@ -117,6 +143,10 @@ export default class InfoRule extends HTMLElement {
     infoRules.forEach( (ir) => {
       if (ir.id === id) {
         ir.removeAttribute('hidden');
+        currentCopyText = this.copyText[id] ?
+                          this.copyText[id] :
+                          '';
+//        debug.log(`[show][currentCopyText]: ${currentCopyText}`);
       }
       else {
         ir.setAttribute('hidden', '');
@@ -125,17 +155,14 @@ export default class InfoRule extends HTMLElement {
   }
 
   getCopyText () {
-    return "Test";
+    debug.log(`[show][currentCopyText]: ${currentCopyText}`);
+    return currentCopyText;
   }
 
   setHeight (height) {
-
     const h2Elem = this.shadowRoot.querySelector('h2');
-
     const h2Height = h2Elem.getBoundingClientRect().height;
-
     this.infoRulesElem.style.height = (height - h2Height) + 'px';
-
   }
 
 }

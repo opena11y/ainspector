@@ -7,6 +7,9 @@ import DebugLogging  from './debug.js';
 import {
   renderContent,
   addContentToElement,
+  getCopyTextContent,
+  getCopyTextHeading,
+  getCopyTextProps,
   getMessage,
   removeChildContent,
   setI18nLabels
@@ -16,6 +19,8 @@ import {
 
 const debug = new DebugLogging('[info-result]', false);
 debug.flag = false;
+
+let currentCopyText = '';
 
 // Helper functions
 
@@ -137,20 +142,24 @@ function renderResultInfo (attachElem, result) {
 
   const divElem = addElementDiv(attachElem, result.id);
   divElem.className = "info-element";
+  currentCopyText = '';
 
   if (result.definition) {
     addH3(divElem, getMessage('rule_definition_label'));
     renderContent(divElem, result.definition, 'definition');
+    currentCopyText += getCopyTextContent('rule_definition_label', result.definition);
   }
 
   if (result.action) {
     addH3(divElem, getMessage('rule_action_label'));
     addAction(divElem, result.result_long, result.result_abbrev, result.action);
+    currentCopyText += getCopyTextContent('rule_action_label', result.action);
   }
 
   if (result.role) {
     addH3(divElem, getMessage('element_result_role'));
     renderContent(divElem, result.role, 'role');
+    currentCopyText += getCopyTextContent('element_result_role', result.role);
   }
 
   if (result.accessible_name) {
@@ -159,25 +168,36 @@ function renderResultInfo (attachElem, result) {
     if (acc_name.name || result.accessible_name_required) {
       if (result.accessible_name_required) {
         addH3(divElem, getMessage('element_result_acc_name_required'));
+        currentCopyText += getCopyTextHeading('element_result_acc_name_required');
         if (result.accessible_name.name) {
           addPropValue(divElem, getMessage('element_result_prop_text'), acc_name.name);
+          currentCopyText += `${getMessage('element_result_prop_text')}: ${acc_name.name}\n`;
           addPropValue(divElem, getMessage('element_result_prop_source'), acc_name.source);
+          currentCopyText += `${getMessage('element_result_prop_source')}: ${acc_name.source}\n\n`;
         }
         else {
           addPropValue(divElem, getMessage('element_result_prop_text'), getMessage('element_result_value_none'), 'missing');
+          currentCopyText += `${getMessage('element_result_prop_text')}: ${getMessage('element_result_value_none')}\n`;
           addPropValue(divElem, getMessage('element_result_prop_source'), '');
+          currentCopyText += `${getMessage('element_result_prop_source')}: '\n'`;
         }
       }
       else {
         if (result.accessible_name_prohibited) {
           addH3(divElem, getMessage('element_result_acc_name_prohibited'));
+          currentCopyText += getCopyTextHeading('element_result_acc_name_prohibited');
           addPropValue(divElem, getMessage('element_result_prop_text'),   acc_name.name, 'prohibited');
+          currentCopyText += `${getMessage('element_result_prop_text')}: ${acc_name.name}\n`;
           addPropValue(divElem, getMessage('element_result_prop_source'), acc_name.source, 'prohibited');
+          currentCopyText += `${getMessage('element_result_prop_source')}: ${acc_name.source}\n\n`;
         }
         else {
           addH3(divElem, getMessage('element_result_acc_name'));
+          currentCopyText += getCopyTextHeading('element_result_acc_name');
           addPropValue(divElem, getMessage('element_result_prop_text'),   acc_name.name);
+          currentCopyText += `${getMessage('element_result_prop_text')}: ${acc_name.name}\n`;
           addPropValue(divElem, getMessage('element_result_prop_source'), acc_name.source);
+          currentCopyText += `${getMessage('element_result_prop_source')}: ${acc_name.source}\n\n`;
         }
       }
     }
@@ -188,8 +208,11 @@ function renderResultInfo (attachElem, result) {
     const acc_desc = result.accessible_description;
     if (acc_desc.name) {
       addH3(divElem, getMessage('element_result_acc_desc'));
+      currentCopyText += getCopyTextHeading('element_result_acc_desc');
       addPropValue(divElem, getMessage('element_result_prop_text'),   acc_desc.name);
+      currentCopyText += `${getMessage('element_result_prop_text')}: ${acc_desc.name}\n`;
       addPropValue(divElem, getMessage('element_result_prop_source'), acc_desc.source);
+      currentCopyText += `${getMessage('element_result_prop_source')}: ${acc_desc.source}\n\n`;
     }
   }
 
@@ -197,55 +220,72 @@ function renderResultInfo (attachElem, result) {
     const err_msg = result.error_message;
     if (err_msg.name) {
       addH3(divElem, getMessage('element_result_error_desc'));
+      currentCopyText += getCopyTextHeading('element_result_error_desc');
       addPropValue(divElem, getMessage('element_result_prop_text'),   err_msg.name);
+      currentCopyText += `${getMessage('element_result_prop_text')}: ${err_msg.name}\n`;
       addPropValue(divElem, getMessage('element_result_prop_source'), err_msg.source);
+      currentCopyText += `${getMessage('element_result_prop_source')}: ${err_msg.source}\n\n`;
     }
   }
 
   if (result.color_contrast) {
     addH3(divElem, getMessage('element_result_ccr'));
-    addPropertyList(divElem, result.color_contrast, 'Property', 'ccr');
+    currentCopyText += getCopyTextHeading('element_result_ccr');
+    addPropertyList(divElem, result.color_contrast, getMessage('header_property'), 'ccr');
+    currentCopyText += getCopyTextProps(result.color_contrast, 'ccr');
   }
 
   if (result.table) {
-    addH3(divElem, 'Table Information');
+    addH3(divElem, getMessage('table_information'));
+    currentCopyText += getCopyTextHeading('table_information');
     addPropertyList(divElem, result.table, getMessage('header_property'), 'table');
+    currentCopyText += getCopyTextProps(result.table, 'table');
   }
 
   if (result.table_cell) {
-    addH3(divElem, 'Table Cell Information');
+    addH3(divElem, getMessage('table_cell_information'));
+    currentCopyText += getCopyTextHeading('table_cell_information');
     addPropertyList(divElem, result.table_cell, getMessage('header_property'), 'cell');
+    currentCopyText += getCopyTextProps(result.table_cell, 'cell');
   }
 
   if (result.tag_name) {
     addH3(divElem, getMessage('element_result_tag_name'));
     renderContent(divElem, result.tag_name, 'tag_name');
+    currentCopyText += getCopyTextContent('element_result_tag_name', result.tag_name);
   }
 
   if (result.role) {
-    addH3(divElem, 'HTML Attributes');
+    addH3(divElem, getMessage('html_attrs_information'));
+    currentCopyText += getCopyTextHeading('html_attrs_information');
     if (Object.keys(result.html_attributes).length) {
       addPropertyList(divElem, result.html_attributes, getMessage('header_attribute'), 'attrs');
+      currentCopyText += getCopyTextProps(result.html_attributes);
     }
     else {
       renderContent(divElem, getMessage('element_result_value_none'), 'tag_name');
+      currentCopyText += `${getMessage('element_result_value_none')}\n\n`;
     }
   }
 
 
   if (result.role) {
-    addH3(divElem, 'ARIA Attributes');
+    addH3(divElem,  getMessage('aria_attrs_information'));
+    currentCopyText += getCopyTextHeading('aria_attrs_information');
     if (Object.keys(result.aria_attributes).length) {
       addPropertyList(divElem, result.aria_attributes, getMessage('header_attribute'), 'attrs');
+      currentCopyText += getCopyTextProps(result.aria_attributes);
     }
     else {
       renderContent(divElem, getMessage('element_result_value_none'), 'tag_name');
+      currentCopyText += `${getMessage('element_result_value_none')}\n\n`;
     }
   }
 
   if (result.scope) {
     addH3(divElem, getMessage('element_result_type'));
     renderContent(divElem, result.result_type, 'result-type');
+    currentCopyText += getCopyTextContent('element_result_type', result.result_type);
   }
 }
 
@@ -328,7 +368,7 @@ export default class InfoResult extends HTMLElement {
   }
 
   getCopyText () {
-    return "Test";
+    return currentCopyText;
   }
 
   setHeight (height) {

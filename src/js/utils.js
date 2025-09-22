@@ -320,27 +320,103 @@ export function addContentToElement (elem, content, clear=false) {
 
 
 export function getResultAccessibleName (result) {
-    let accName = getMessage('not_applicable_label');
+  let accName = getMessage('not_applicable_label');
 
-    switch (result){
-      case 'MC':
-        accName = getMessage('manual_check_label');
-        break;
+  switch (result) {
+    case 'MC':
+      accName = getMessage('manual_check_label');
+      break;
 
-      case 'P':
-        accName = getMessage('passed_label');
-        break;
+    case 'P':
+      accName = getMessage('passed_label');
+      break;
 
-      case 'V':
-        accName = getMessage('violationLabel');
-        break;
+    case 'V':
+      accName = getMessage('violationLabel');
+      break;
 
-      case 'W':
-        accName = getMessage('warning_label');
-        break;
+    case 'W':
+      accName = getMessage('warning_label');
+      break;
 
-      default:
-        break;
-    }
-    return accName;
+    default:
+      break;
   }
+  return accName;
+}
+
+function convertString (s) {
+  let rs = '';
+  let capitalize = false;
+  for (let i = 0; i < s.length; i += 1) {
+    if (s[i] === '@') {
+      capitalize = !capitalize;
+    }
+    else {
+      rs += capitalize ? s[i].toUpperCase() : s[i];
+    }
+  }
+  return rs;
+}
+
+export function getCopyTextHeading(label) {
+  let copyText = `${getMessage(label)}\n`;
+  const len = getMessage(label).length;
+  for(let i = 0; i < len; i += 1) {
+    copyText += '-';
+  }
+  copyText += `\n`;
+  return copyText;
+}
+
+  // if the info is a string just use textContent
+  // if the info is an array, create a list of items
+  // Some items maybe an object containing a 'url' and 'title' properties
+export function getCopyTextContent(label, info) {
+  let copyText = getCopyTextHeading(label);
+
+  if (typeof info === 'string') {
+    copyText += `${convertString(info)}\n`;
+  } else {
+    if (info.url) {
+      copyText += `${convertString(info.title)}\nURL: ${info.url}\n`;
+    }
+    else {
+      if (info.length) {
+        for (let i = 0; i < info.length; i += 1) {
+          const item = info[i];
+          if (typeof item === 'string') {
+            copyText += `* ${convertString(item)}\n`;
+          }
+          else {
+            if (item.url) {
+              copyText += `* ${convertString(item.title)} (${item.url})\n`;
+            } else {
+              copyText += `* ${convertString(item)}\n`;
+            }
+          }
+        }
+      }
+    }
+  }
+  return copyText + '\n';
+}
+
+export function getCopyTextProps (prop_list, type='') {
+  let copyText = '';
+  for(let prop in prop_list) {
+
+    const prop_name = type === 'ccr' ?
+                      getMessage(`ccr_${prop}`) :
+                      type === 'table' ?
+                      getMessage(`table_${prop}`) :
+                      type === 'cell' ?
+                      getMessage(`cell_${prop}`) :
+                      prop;
+
+
+    copyText += `${prop_name}: ${prop_list[prop]}\n`;
+  }
+  return copyText + '\n';
+}
+

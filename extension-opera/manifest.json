@@ -47,7 +47,8 @@
     "activeTab",
     "sidePanel",
     "downloads",
-    "storage"
+    "storage",
+    "clipboardWrite"
   ],
   "web_accessible_resources": [
     {
