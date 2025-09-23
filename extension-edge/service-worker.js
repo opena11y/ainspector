@@ -7,19 +7,13 @@ debug && console.log(`[chrome ][    sidePanel]: ${typeof chrome} ${ chrome ? typ
 debug && console.log(`[opr    ]: ${typeof opr}`);
 debug && console.log(`[browser]: ${typeof browser}`);
 
-/*
-const myBrowser = typeof browser === 'object' ?
-              browser :
-              chrome;
-
 const browserRuntime = typeof browser === 'object' ?
                        browser.runtime :
                        chrome.runtime;
 
-const browserTabs = typeof browser === 'object' ?
-            browser.tabs :
-            chrome.tabs;
-*/
+const browserAction = typeof browser === 'object' ?
+            browser.action :
+            chrome.action;
 
 /*
  * Toggle sidebar from toolbar icon for Chrome
@@ -41,7 +35,30 @@ if (typeof browser === 'object' && browser.action) {
   });
 }
 
-// NOTE: Opera does not seem to support opening and
-// closing the sidebar using a toolbar icon
+browserRuntime.onMessage.addListener( (request) => {
+  if (request.scheme) {
+    if (request.scheme === 'dark') {
+      browserAction.setIcon({
+        path: {
+           32: "icons/dark-ai-sidebar-32.png",
+           48: "icons/dark-ai-sidebar-48.png",
+           64: "icons/dark-ai-sidebar-64.png",
+          128: "icons/dark-ai-sidebar-128.png",
+        }
+      });
+    }
+    if (request.scheme === 'light') {
+      browserAction.setIcon({
+        path: {
+           32: "icons/light-ai-sidebar-32.png",
+           48: "icons/light-ai-sidebar-48.png",
+           64: "icons/light-ai-sidebar-64.png",
+          128: "icons/light-ai-sidebar-128.png",
+        }
+      });
+    }
+  }
+});
+
 
 

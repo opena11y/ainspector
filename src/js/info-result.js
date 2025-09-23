@@ -322,8 +322,8 @@ export default class InfoResult extends HTMLElement {
 
     this.infoElementsElem = this.shadowRoot.querySelector('.info-results');
 
-    const copyButtonElem   = this.shadowRoot.querySelector('copy-button');
-    copyButtonElem.setGetTextFunct(this.getCopyText);
+    this.copyButtonElem   = this.shadowRoot.querySelector('copy-button');
+    this.copyButtonElem.setGetTextFunct(this.getCopyText);
 
     this.website_result = false;
     this.page_result = false;
@@ -339,6 +339,13 @@ export default class InfoResult extends HTMLElement {
     this.website_result = website_result;
     this.page_result = page_result;
     this.element_results = element_results;
+
+    // Update copy icon based on light dark mode
+    if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+      this.copyButtonElem.setDarkMode();
+    } else {
+      this.copyButtonElem.setLightMode();
+    }
   }
 
   show(id) {

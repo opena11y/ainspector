@@ -51,16 +51,12 @@ export default class ViewRule extends HTMLElement {
   }
 
   clear () {
-    debug.flag && debug.log(`[clear]`);
     this.summaryRuleElem.clear();
     this.gridRuleElem.clear();
     this.infoResultElem.clear();
   }
 
   update (result) {
-    debug.flag && debug.log(`[update]`);
-    debug.flag && debug.log(`[update][element_summary]: ${result.element_summary}`);
-    debug.flag && debug.log(`[update][violations]: ${result.element_summary.violations}`);
     this.summaryRuleElem.update(result.element_summary);
     this.gridRuleElem.update(result.website_result, result.page_result, result.element_results);
     this.infoResultElem.update(result.website_result, result.page_result, result.element_results);

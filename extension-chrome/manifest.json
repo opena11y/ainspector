@@ -18,24 +18,7 @@
       "64":  "icons/light-ai-sidebar-64.png",
       "128": "icons/light-ai-sidebar-128.png"
     },
-    "default_title": "__MSG_toggle_menu__",
-    "theme_icons": [{
-      "light": "icons/light-ai-sidebar-32.png",
-      "dark": "icons/dark-ai-sidebar-32.png",
-      "size": 32
-    }, {
-      "light": "icons/light-ai-sidebar-48.png",
-      "dark": "icons/dark-ai-sidebar-48.png",
-      "size": 48
-    }, {
-      "light": "icons/light-ai-sidebar-64.png",
-      "dark": "icons/dark-ai-sidebar-64.png",
-      "size": 64
-    }, {
-      "light": "icons/light-ai-sidebar-128.png",
-      "dark": "icons/dark-sai-sidebar-128.png",
-      "size": 128
-    }]
+    "default_title": "__MSG_toggle_menu__"
   },
   "background": {
     "service_worker": "service-worker.js",
@@ -54,7 +37,8 @@
     "downloads",
     "sidePanel",
     "storage",
-    "clipboardWrite"
+    "clipboardWrite",
+    "action"
   ],
   "web_accessible_resources": [
     {
@@ -65,7 +49,8 @@
   "content_scripts": [
     {
       "js": [
-        "opena11y-for-ainspector.js"
+        "opena11y-for-ainspector.js",
+        "toggle-icon.js"
       ],
       "matches": ["<all_urls>"]
     }

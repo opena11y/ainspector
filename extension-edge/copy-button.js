@@ -46,6 +46,8 @@ export default class CopyButton extends HTMLElement {
     this.copyButton.addEventListener('click', this.onCopyButtonClick.bind(this));
     this.getTextFunct = false;
 
+    this.copyImg = this.shadowRoot.querySelector('img.copy');
+
   }
 
   set disabled (value) {
@@ -68,8 +70,17 @@ export default class CopyButton extends HTMLElement {
     this.copyButton.setAttribute('aria-label', value);
   }
 
+
   get ariaLabel () {
     return this.copyButton.getAttribute('aria-label');
+  }
+
+  setDarkMode () {
+    this.copyImg.src = 'icons/icon-copy-dark.png';
+  }
+
+  setLightMode () {
+    this.copyImg.src = 'icons/icon-copy.png';
   }
 
   click () {

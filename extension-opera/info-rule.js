@@ -53,8 +53,8 @@ export default class InfoRule extends HTMLElement {
 
     this.infoRulesElem = this.shadowRoot.querySelector('.info-rules');
 
-    const copyButtonElem = this.shadowRoot.querySelector('copy-button');
-    copyButtonElem.setGetTextFunct(this.getCopyText);
+    this.copyButtonElem = this.shadowRoot.querySelector('copy-button');
+    this.copyButtonElem.setGetTextFunct(this.getCopyText);
 
     this.copyText = {};
 
@@ -132,9 +132,15 @@ export default class InfoRule extends HTMLElement {
       renderContent(divElem, info_rule.informational_links);
       this.copyText[id] += getCopyTextContent('rule_additional_label', info_rule.informational_links);
 
-//      debug.log(`[id]: ${id}\n${this.copyText[id]}`);
-
     });
+
+    // Update copy icon based on light dark mode
+    if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+      this.copyButtonElem.setDarkMode();
+    } else {
+      this.copyButtonElem.setLightMode();
+    }
+
   }
 
   show(id) {
