@@ -61,7 +61,7 @@ export const exportOptions = {
   exportFormat: 'CSV',  // other option is JSON
   filenamePrefix: 'ainspector',
   filenameAllRules: 'all-rules',
-  filenameRuleGroup: 'rule-group-{groupId}',
+  filenameRuleGroup: '{groupId}',
   filenameRule: 'rule-{ruleId}',
   includeDate: false,
   includeTime: false,

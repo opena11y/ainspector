@@ -44,6 +44,7 @@
   ],
   "options_page": "ai-options.html",
   "permissions": [
+    "action",
     "activeTab",
     "sidePanel",
     "downloads",
@@ -52,7 +53,10 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["ai-highlight.js"],
+      "resources": [
+        "ai-highlight.js",
+        "toggle-icon.js"
+      ],
       "matches": ["<all_urls>"]
     },
     {

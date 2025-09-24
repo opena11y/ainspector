@@ -143,31 +143,31 @@ export function getRuleCategoryLabelId (id) {
 export function getRuleCategoryFilenameId (id) {
   switch (id) {
   case RULE_CATEGORIES.LANDMARKS:
-    return 'landmarks';
+    return 'rc-landmarks';
   case RULE_CATEGORIES.HEADINGS:
-    return 'headings';
+    return 'rc-headings';
   case RULE_CATEGORIES.COLOR_CONTENT:
-    return 'styles-content';
+    return 'rc-styles-content';
   case RULE_CATEGORIES.IMAGES:
-    return 'images';
+    return 'rc-images';
   case RULE_CATEGORIES.LINKS:
-    return 'links';
+    return 'rc-links';
   case RULE_CATEGORIES.FORMS:
-    return 'tables';
+    return 'rc-tables';
   case RULE_CATEGORIES.TABLES_LAYOUT:
-    return 'forms';
+    return 'rc-forms';
   case RULE_CATEGORIES.WIDGETS_SCRIPTS:
-    return 'widgets-scripts';
+    return 'rc-widgets-scripts';
   case RULE_CATEGORIES.AUDIO_VIDEO:
-    return 'audio-video';
+    return 'rc-audio-video';
   case RULE_CATEGORIES.KEYBOARD_SUPPORT:
-    return 'keyboard';
+    return 'rc-keyboard';
   case RULE_CATEGORIES.TIMING:
-    return 'timing';
+    return 'rc-timing';
   case RULE_CATEGORIES.SITE_NAVIGATION:
-    return 'site-navigation';
+    return 'rc-site-navigation';
   case RULE_CATEGORIES.ALL:
-    return 'all-rules';
+    return 'rc-all-rules';
   default:
     return 'undefined';
   }
@@ -217,33 +217,33 @@ export function getGuidelineFilenameId (id) {
   switch(id) {
 
   case GUIDELINES.G_1_1:
-    return 'g1-1';
+    return 'g-11-text-alternatives';
   case GUIDELINES.G_1_2:
-    return 'g1-2';
+    return 'g-12-time-based-media';
   case GUIDELINES.G_1_3:
-    return 'g1-3';
+    return 'g-13-adaptable';
   case GUIDELINES.G_1_4:
-    return 'g1-4';
+    return 'g-14-distinguishable';
   case GUIDELINES.G_2_1:
-    return 'g2-1';
+    return 'g-21-keyboard-accessible';
   case GUIDELINES.G_2_2:
-    return 'g2-2';
+    return 'g-22-enough-time';
   case GUIDELINES.G_2_3:
-    return 'g2-3';
+    return 'g-23-seizures';
   case GUIDELINES.G_2_4:
-    return 'g2-4';
+    return 'g-24-navigable';
   case GUIDELINES.G_2_5:
-    return 'g2-5';
+    return 'g-25-input-modalities';
   case GUIDELINES.G_3_1:
-    return 'g3-1';
+    return 'g-31-readable';
   case GUIDELINES.G_3_2:
-    return 'g3-2';
+    return 'g-32-predictable';
   case GUIDELINES.G_3_3:
-    return 'g3-3';
+    return 'g-33-input-assistance';
   case GUIDELINES.G_4_1:
-    return 'g4-1';
+    return 'g-41-compatible';
   case GUIDELINES.ALL:
-    return 'all-rules';
+    return 'g-all-rules';
   default:
     return 'undefined';
 

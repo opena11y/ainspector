@@ -19,6 +19,19 @@ import {
   getGuidelineFilenameId
 } from './constants.js';
 
+import {
+  getCSVForAllRules
+} from './csv-all-rules.js';
+
+import {
+  getCSVForRuleGroup
+} from './csv-rule-group.js';
+
+import {
+  getCSVForRule
+} from './csv-rule.js';
+
+
 /* Constants */
 
 const debug = new DebugLogging('ai-sidepanel', false);
@@ -193,6 +206,7 @@ class AISidePanel extends HTMLElement {
     this.ruleId      = '';
     this.highlightOption = 'selection';
     this.highlightPosition = '';
+    this.lastResult = {};
 
     // Update side panel title
 
@@ -230,7 +244,6 @@ class AISidePanel extends HTMLElement {
         sendResponse(true);
       }
     });
-
     this.handleResize();
   }
 
@@ -261,6 +274,8 @@ class AISidePanel extends HTMLElement {
     debug.flag && debug.log(`[result][     location]: ${result.location}`);
     debug.flag && debug.log(`[result][ruleset_label]: ${result.ruleset_label}`);
     debug.flag && debug.log(`[result][  result_view]: ${result.result_view}`);
+
+    this.lastResult = result;
 
     switch (result.result_view) {
       case 'rules-all':
@@ -539,8 +554,9 @@ class AISidePanel extends HTMLElement {
 
         const parts = this.ruleGroupId.split('-');
         const isRuleCategory = parts[0] === 'rc';
-        const ruleId = parseInt(parts[1]);
+        const groupId = parseInt(parts[1]);
 
+        const ruleId = this.ruleId.toLowerCase().replace('_', '-');
 
         switch (this.resultView) {
           case 'rules-all':
@@ -549,12 +565,12 @@ class AISidePanel extends HTMLElement {
 
           case 'rule-group':
             filename += isRuleCategory ?
-                    options.filenameRuleGroup.replace('{groupId}', getRuleCategoryFilenameId(ruleId)) :
-                    options.filenameRuleGroup.replace('{groupId}', getGuidelineFilenameId(ruleId));
+                    options.filenameRuleGroup.replace('{groupId}', getRuleCategoryFilenameId(groupId)) :
+                    options.filenameRuleGroup.replace('{groupId}', getGuidelineFilenameId(groupId));
             break;
 
           case 'rule':
-            filename += options.filenameRule.replace('{ruleId}', this.ruleId.toLowerCase());
+            filename += options.filenameRule.replace('{ruleId}', ruleId);
             break;
         }
 
@@ -572,7 +588,6 @@ class AISidePanel extends HTMLElement {
           });
         }
 
-
         let downloading = browserDownloads.download({
           url : URL.createObjectURL(blob),
           filename : filename,
@@ -585,11 +600,19 @@ class AISidePanel extends HTMLElement {
   }
 
   getCSVContent() {
-    return 'CSV Content';
+    if (this.resultView === 'rules-all') {
+      return getCSVForAllRules(this.lastResult);
+    }
+    else {
+      if (this.resultView === 'rule-group') {
+        return getCSVForRuleGroup(this.ruleGroupId, this.lastResult);
+      }
+    }
+    return getCSVForRule(this.lastResult);
   }
 
   getJSONContent() {
-    return JSON.stringify({ "title": "JSON Content"});
+    return JSON.stringify(this.lastResult, null, 2);
   }
 
 

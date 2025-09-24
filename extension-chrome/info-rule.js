@@ -90,6 +90,10 @@ export default class InfoRule extends HTMLElement {
       const divElem = addRuleDiv(this.infoRulesElem, id);
       divElem.className = "info-rule";
 
+      addH3(divElem, getMessage('rule_id_label'));
+      renderContent(divElem, info_rule.rule_nls_id);
+      this.copyText[id] += getCopyTextContent('rule_id_label', info_rule.rule_nls_id);
+
       addH3(divElem, getMessage('rule_summary_label'));
       renderContent(divElem, info_rule.summary);
       this.copyText[id] += getCopyTextContent('rule_summary_label', info_rule.summary);

@@ -467,7 +467,7 @@
     "description": "Description of button to copy element information"
   },
 
-  "ruleIdLabel": {
+  "rule_id_label": {
     "message": "Rule ID",
     "description": "Rule ID label for rule information"
   },

@@ -57,7 +57,7 @@ export default class ViewRule extends HTMLElement {
   }
 
   update (result) {
-    this.summaryRuleElem.update(result.element_summary);
+    this.summaryRuleElem.update(result.result_summary);
     this.gridRuleElem.update(result.website_result, result.page_result, result.element_results);
     this.infoResultElem.update(result.website_result, result.page_result, result.element_results);
   }
