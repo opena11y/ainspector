@@ -618,8 +618,8 @@ class AISidePanel extends HTMLElement {
 
   handleResize () {
 
-    const osAdjustHeight = 20;
-    const osAdjustWidth = 20;
+    const osAdjustHeight = 10;
+    const osAdjustWidth = 10;
 
     const screenHeight = window.innerHeight - osAdjustHeight;
     const screenWidth  = window.innerWidth - osAdjustWidth;
