@@ -29,6 +29,12 @@
     "description": "Message when content cannot be evaluated"
   },
 
+  "unable_to_retrieve" : {
+    "message": "Unable to retrieve content information",
+    "description": "Message when content cannot be evaluated"
+  },
+
+
   "view_title_all_rules_Label": {
     "message": "Summary: All Rules",
     "description": "Label for all rules view"

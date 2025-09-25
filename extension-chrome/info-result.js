@@ -148,7 +148,6 @@ function renderResultInfo (attachElem, result) {
   renderContent(divElem, result.rule_nls_id);
   currentCopyText += getCopyTextContent('rule_id_label', result.rule_nls_id);
 
-
   if (result.definition) {
     addH3(divElem, getMessage('rule_definition_label'));
     renderContent(divElem, result.definition, 'definition');
@@ -305,10 +304,10 @@ function renderResultInfo (attachElem, result) {
     }
   }
 
-  if (result.scope) {
-    addH3(divElem, getMessage('element_result_type'));
-    renderContent(divElem, result.result_type, 'result-type');
-    currentCopyText += getCopyTextContent('element_result_type', result.result_type);
+  if (result.rule_scope) {
+      addH3(divElem, getMessage('rule_scope_label'));
+      renderContent(divElem, result.rule_scope);
+      currentCopyText += getCopyTextContent('rule_scope_label', result.rule_scope);
   }
 }
 

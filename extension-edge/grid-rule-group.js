@@ -181,15 +181,18 @@ export default class GridRuleGroup extends Grid {
     this.infoRuleElem = infoRuleElem;
   }
 
-  clear (message1="", message2="") {
+  clear (message1='', message2='') {
     removeChildContent(this.tbody);
 
     if (message1) {
       debug.flag && debug.log(`[clear][message1]: ${message1}`);
+      this.addMessageRow('msg1', message1);
+      this.tbody.firstElementChild.tabIndex = 0;
     }
 
     if (message2) {
       debug.flag && debug.log(`[clear][message2]: ${message2}`);
+      this.addMessageRow('msg2', message2);
     }
 
   }

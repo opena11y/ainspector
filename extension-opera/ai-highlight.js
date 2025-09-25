@@ -247,7 +247,12 @@ class AIHighlightELement extends HTMLElement {
               rect.right  = rect.left + rect.width;
               rect.bottom = rect.top + rect.height;
 
-              this.highlightElement(parts[0], rect, focus);
+              if (parts[0].toLowerCase() !== 'h') {
+                this.highlightElement(parts[0], rect, focus);
+              }
+              else {
+                this.hideHighlight();
+              }
               break;
 
           }
@@ -310,7 +315,7 @@ class AIHighlightELement extends HTMLElement {
           break;
 
         case 'h':
-          this.setResultColor('hidden');
+          color = 'hidden';
           break;
 
         default:

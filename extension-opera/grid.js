@@ -177,6 +177,7 @@ export class Grid extends HTMLElement {
     return this.theadTr.querySelectorAll('th').length;
   }
 
+/*
   addMessageRow (message) {
     let tr = document.createElement('tr');
     tr.tabIndex = 0;
@@ -189,11 +190,13 @@ export class Grid extends HTMLElement {
     tr.appendChild(td);
     this.tbody.appendChild(tr);
   }
+*/
 
   // The id is used by event handlers for actions related to the row content
   addRow (id) {
     let tr = document.createElement('tr');
     tr.id = id;
+    tr.tabIndex = -1;
     this.tbody.appendChild(tr);
 
     tr.addEventListener('keydown', this.handleRowKeydown.bind(this));
@@ -201,6 +204,20 @@ export class Grid extends HTMLElement {
     tr.addEventListener('dblclick', this.handleRowDoubleClick.bind(this));
     return tr;
   }
+
+  addMessageRow (id, message) {
+    const row = this.addRow(id);
+    row.setAttribute('aria-label', message);
+    let td = document.createElement('td');
+    td.className = 'message';
+    td.setAttribute('colspan', this.getNumberOfColumns());
+    td.textContent = message;
+    td.tabIndex = -1;
+    row.appendChild(td);
+    td.addEventListener('keydown', this.onCellKeydown.bind(this));
+    return td;
+  }
+
 
   addDataCell (row, txt, accName, cName, sortValue) {
     let span1, span2;
@@ -271,11 +288,11 @@ export class Grid extends HTMLElement {
     }
 
     if (message1) {
-      this.addMessageRow(message1);
+      this.addMessageRow('msg1', message1);
     }
 
     if (message2) {
-      this.addMessageRow(message2);
+      this.addMessageRow('msg2', message2);
     }
 
     this.setDetailsButtonDisabled(true);

@@ -30133,7 +30133,7 @@
    */
 
   class BaseResult {
-    constructor (ruleResult, resultValue, msgId, msgArgs, result_identifier) {
+    constructor (ruleResult, resultValue, msgId, msgArgs, resultIdentifier) {
 
       const msg = ruleResult.rule.base_result_msgs[msgId];
 
@@ -30144,7 +30144,7 @@
       debug$H.flag && debug$H.log(`[    msg]: ${msg}`);
       debug$H.flag && debug$H.log(`[msgArgs]: ${msgArgs}`);
       this.result_message    = getBaseResultMessage(msg, msgArgs);
-      this.result_identifier = result_identifier;
+      this.result_identifier = resultIdentifier;
 
     }
 
@@ -40213,8 +40213,9 @@
       return rr.rule.getId() === rule_id;
     });
 
-    const rule_title       = rule_result.rule.getSummary();
-    const rule_id_nls      = rule_result.rule.getIdNLS();
+    const rule_title  = rule_result.rule.getSummary();
+    const rule_id_nls = rule_result.rule.getIdNLS();
+    const rule_scope  = rule_result.rule.getScopeNLS();
 
     const s = rule_result.getResultsSummary();
     const result_summary = {
@@ -40247,6 +40248,7 @@
           action:           er.getResultMessage(),
           rule_id:          rule_id,
           rule_nls_id:      getRuleId(rule_id),
+          rule_scope:       rule_scope,
           definition:       getRuleDefinition(rule_id),
 
           implied_role:     !de.hasRole,
@@ -40352,6 +40354,9 @@
           result_long:   er.getResultValueLongNLS(),
           action:        er.getResultMessage(),
           definition:    getRuleDefinition(rule_id),
+          rule_id:       rule_id,
+          rule_nls_id:   getRuleId(rule_id),
+          rule_scope:    rule_scope,
           position:      'page',
           highlightId:   'opena11y-pos-page',
           is_element: false,
@@ -40370,6 +40375,9 @@
           result_long:   er.getResultValueLongNLS(),
           action:        er.getResultMessage(),
           definition:    getRuleDefinition(rule_id),
+          rule_id:       rule_id,
+          rule_nls_id:   getRuleId(rule_id),
+          rule_scope:    rule_scope,
           position:      'website',
           highlightId:   'opena11y-pos-website',
           is_element: false,

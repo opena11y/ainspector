@@ -50,9 +50,9 @@ export default class ViewRuleGroup extends HTMLElement {
     this.gridRuleGroupElem.setSidepanel(sidepanelElem);
   }
 
-  clear () {
+  clear (message1='', message2='') {
     this.summaryRulesElem.clear();
-    this.gridRuleGroupElem.clear();
+    this.gridRuleGroupElem.clear(message1, message2);
     this.infoRuleElem.clear();
   }
 

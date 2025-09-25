@@ -255,14 +255,14 @@ class AISidePanel extends HTMLElement {
     this.ruleId = rule_id;
   }
 
-  clearView(message = '') {
-    this.infoTitleElem.textContent    = message;
-    this.infoLocationElem.textContent = '';
+  clearView(message1 = '', message2 = '') {
+    this.infoTitleElem.textContent    = message2;
+    this.infoLocationElem.textContent = message1;
     this.infoRulesetElem.textContent  = '';
 
-    this.viewRulesAllElem.clear();
-    this.viewRuleGroupElem.clear();
-    this.viewRuleElem.clear();
+    this.viewRulesAllElem.clear(message1, message2);
+    this.viewRuleGroupElem.clear(message1, message2);
+    this.viewRuleElem.clear(message1, message2);
   }
 
   updateView(result) {
@@ -335,7 +335,7 @@ class AISidePanel extends HTMLElement {
     const aiSidePanelObj = this;
 
     function onRunEvaluationError() {
-      aiSidePanelObj.clearView(getMessage('protocol_not_supported'));
+      aiSidePanelObj.clearView(getMessage('protocol_not_supported'),getMessage('unable_to_retrieve'));
       onError();
     }
 
@@ -473,7 +473,7 @@ class AISidePanel extends HTMLElement {
     const that = this;
 
     function onErrorPotocol(error) {
-      that.clearView(getMessage('protocol_not_supported'));
+      that.clearView(getMessage('protocol_not_supported'),getMessage('unable_to_retrieve'));
       onError(error);
     }
 
