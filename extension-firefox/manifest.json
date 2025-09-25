@@ -5,7 +5,7 @@
       "id": "ainspector-firefox@openweba11y.com"
     }
   },
-  "name": "__MSG_extension_name_firefox__",
+  "name": "__MSG_extension_name__",
   "version": "4.0.0",
   "description": "__MSG_extension_description__",
   "homepage_url": "https://opena11y.github.io/ainspector/",
@@ -34,7 +34,7 @@
       "64":  "icons/light-ai-sidebar-64.png",
       "128": "icons/light-ai-sidebar-128.png"
     },
-    "default_title": "__MSG_extension_name_firefox__",
+    "default_title": "__MSG_extension_name__",
     "default_panel": "ai-sidepanel.html",
     "open_at_install": false
   },
@@ -62,7 +62,6 @@
     "page": "ai-options.html"
   },
     "permissions": [
-      "action",
       "activeTab",
       "downloads",
       "storage",

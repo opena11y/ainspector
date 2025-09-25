@@ -9,7 +9,7 @@ Evaluates web pages for features and issues related to WCAG 2.2 level A and AA r
 Description
 -----------
 
-AInspector evaluates the accessibility compliance of web pages based on WCAG 2.0, WCAG 2.1 or WCAG 2.2 Level A and AA requirements using OpenA11y Evaluation Library. There is at least one rule in the evaluation library for each Level A and AA requirement. It organizes the evaluation results by Rule Categories and WCAG Guidelines. Evaluation results can be exported in CSV or JSON formats. The tool is designed to help people learn about accessibility requirements, web accessibility standards and the best practices to make website more usable by people with disabilities. Web accessibility standards include the W3C Web Content Accessibility Guidelines Accessible Rich Internet Application (ARIA) specification and the ARIA in HTML specification.
+AInspector for WCAG evaluates the accessibility compliance of web pages based on WCAG 2.0, WCAG 2.1 or WCAG 2.2 Level A and AA requirements using OpenA11y Evaluation Library. There is at least one rule in the evaluation library for each Level A and AA requirement. It organizes the evaluation results by Rule Categories and WCAG Guidelines. Evaluation results can be exported in CSV or JSON formats. The tool is designed to help people learn about accessibility requirements, web accessibility standards and the best practices to make website more usable by people with disabilities. Web accessibility standards include the W3C Web Content Accessibility Guidelines Accessible Rich Internet Application (ARIA) specification and the ARIA in HTML specification.
 
 NOTE: The extension does NOT collect any user or evaluation information or require a login for operation.
 
@@ -44,13 +44,13 @@ Side Panel Justification
 The side panel provides a persistent view of accessibility evaluation of a web page.  As the user changes tabs or updates the current tab the evaluation information is automatically updated.
 
 Storage Justification
-User preferences on the items in the menu, styling and internationalization of menu labels.
+User preferences for web accessibility evaluation and export options.
 
 Host Permission Justification
 The extension provides evaluation of web pages for accessibility to people with disabilities and therefore it is important to evaluate any web page.
 
 Clipboard Write
-COpying result information into other documents, only supports plain text copying
+Copying rule and element result information into other documents, only supports plain text copying
 
 Downloads
 Can download evaluation results in either CSV or JSON format.
