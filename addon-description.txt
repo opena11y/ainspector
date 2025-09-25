@@ -31,8 +31,8 @@ zip -r ../docs/dist/ainspector-chrome-4.0.0.zip . -x ".*" -x "__MACOSX"
 Questions
 ---------
 
-Tabs Justification
-As tabs change the side bar is updated with information from the tab and the highlight is removed from tabs that are no longer in view.
+Action
+Used to update the toolbar icon for light and dark appearances
 
 ActiveTab Justification
 The active table is used to toggle the side panel open and closed when the user clicks the extension icon in the toolbar.
@@ -41,12 +41,17 @@ Scripting Justification
 Scripting is used to toggle the side panel menu open and closed when user clicks extension icon and for highlighting content in the page.
 
 Side Panel Justification
-The side panel provides a persistent view of headings, landmark regions and links on a web page.  As the user changes tabs or updates the cureent tab the information is automatically updated.
+The side panel provides a persistent view of accessibility evaluation of a web page.  As the user changes tabs or updates the current tab the evaluation information is automatically updated.
 
 Storage Justification
 User preferences on the items in the menu, styling and internationalization of menu labels.
 
 Host Permission Justification
-The extension provides keyboard navigation to the landmark regions and headings of web pages to support accessibility testing of web pages for people with disabilities.
+The extension provides evaluation of web pages for accessibility to people with disabilities and therefore it is important to evaluate any web page.
 
+Clipboard Write
+COpying result information into other documents, only supports plain text copying
+
+Downloads
+Can download evaluation results in either CSV or JSON format.
 
