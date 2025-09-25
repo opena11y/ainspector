@@ -468,8 +468,8 @@
   },
 
   "rule_id_label": {
-    "message": "Rule ID",
-    "description": "Rule ID label for rule information"
+    "message": "Rule Id",
+    "description": "Rule Id label for rule information"
   },
 
   "rule_summary_label": {
@@ -477,7 +477,7 @@
     "description": "Summary section label for rule information"
   },
 
-  "ruleScopeLabel": {
+  "rule_scope_label": {
     "message": "Rule Scope",
     "description": "Rule Scope section label for rule information"
   },
@@ -689,6 +689,16 @@
     "description": "Role heading in element results view."
   },
 
+  "element_result_role_description": {
+    "message": "Role Description",
+    "description": "Role description heading in element results view."
+  },
+
+  "element_result_braille_role_description": {
+    "message": "Braille Role Description",
+    "description": "Braille Role description heading in element results view."
+  },
+
   "element_result_tag_name": {
     "message": "Tag Name",
     "description": "Tag name heading in element results view."
@@ -697,6 +707,11 @@
   "element_result_acc_name": {
     "message": "Accessible Name",
     "description": "Accessible name heading in element results view."
+  },
+
+  "element_result_braille_name": {
+    "message": "Braille Name",
+    "description": "Braille name heading in element results view."
   },
 
   "element_result_acc_name_required": {

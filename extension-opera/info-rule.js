@@ -136,6 +136,10 @@ export default class InfoRule extends HTMLElement {
       renderContent(divElem, info_rule.informational_links);
       this.copyText[id] += getCopyTextContent('rule_additional_label', info_rule.informational_links);
 
+      addH3(divElem, getMessage('rule_scope_label'));
+      renderContent(divElem, info_rule.rule_scope);
+      this.copyText[id] += getCopyTextContent('rule_scope_label', info_rule.rule_scope);
+
     });
 
     // Update copy icon based on light dark mode

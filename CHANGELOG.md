@@ -4,7 +4,8 @@
 
 | Version      |    Date     | Notes |
 |--------------|:-----------:|-----------------------------------------------------|
-| 3.1.         |   4/25/24   | Updated evaluation library to version 2.0.5 and added ARIA 1.3 option
+| 4.0          |   9/25/25   | Updated evaluation library to version 2.0.6 and support for Chrome
+| 3.1          |   4/25/24   | Updated evaluation library to version 2.0.5 and added ARIA 1.3 option
 | 3.0.4        |   3/4/24    | Updated evaluation library to version 2.0.4
 | 3.0.2        |   2/29/24   | Updated evaluation library to version 2.0.3
 | 3.0.1        |   2/7/24    | Updated evaluation library
@@ -24,6 +25,12 @@
 | 0.96.0       |  10/30/19   | Fixes bug in highlight option not being remembered
 
 =======
+
+### 4.0
+* Support for Chrome, Edge and Opera browser
+* Updated CSV and JSON export formats
+* Updated to OpenA11y Evaluation Library 2.0.6
+
 
 ### 3.1
 * Fixed bug with element result details showing another result for the same element

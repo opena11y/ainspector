@@ -27142,6 +27142,11 @@
                                 elementNode.getAttribute('aria-roledescription') :
                                 '';
 
+      this.brailleRoleDescription = elementNode.hasAttribute('aria-brailleroledescription') ?
+                                    elementNode.getAttribute('aria-brailleroledescription') :
+                                    '';
+
+
       this.accesskey = elementNode.hasAttribute('accesskey') ? elementNode.getAttribute('accesskey') : '';
 
       // used for button and form control related rules
@@ -27173,6 +27178,10 @@
       this.accName        = getAccessibleName(accNameDoc, elementNode);
       this.accDescription = getAccessibleDesc(accNameDoc, elementNode, (this.accName.source !== 'title'));
       this.errMessage     = getErrMessage(accNameDoc, elementNode);
+
+      this.brailleName    = elementNode.hasAttribute('aria-braillelabel') ?
+                            elementNode.getAttribute('aria-braillelabel') :
+                            '';
 
 
       this.colorContrast = new ColorContrast(parentDomElement, elementNode);
@@ -28761,6 +28770,7 @@
       const tableElement = this;
       this.rows.forEach( row => {
         row.cells.forEach( cell => {
+          const domElementsUsed = [];
           debug$M.headerCalc && debug$M.log(`${cell}`, 1);
           if (cell.headerSource === HEADER_SOURCE.HEADER_NONE) {
             if (!cell.isHeader) {
@@ -28786,8 +28796,10 @@
                   debug$M.headerCalc && debug$M.log(`[columnHeaders][${i}][${cell.startColumn}]: ${hc}`);
                   if (hc && hc.isHeader &&
                       (!hc.hasScope || hc.isScopeColumn) &&
-                      hc.domElement.accName.name) {
+                      hc.domElement.accName.name &&
+                      !domElementsUsed.includes(hc.domElement)) {
                     cell.headers.push(hc.domElement.accName.name);
+                    domElementsUsed.push(hc.domElement);
                   }
                 }
 
@@ -28797,8 +28809,10 @@
                   debug$M.headerCalc && debug$M.log(`[rowHeaders][${row.rowNumber}][${i}]: ${hc}`);
                   if (hc && hc.isHeader &&
                       (!hc.hasScope || hc.isScopeRow) &&
-                      hc.domElement.accName.name) {
+                      hc.domElement.accName.name &&
+                      !domElementsUsed.includes(hc.domElement)) {
                     cell.headers.push(hc.domElement.accName.name);
+                    domElementsUsed.push(hc.domElement);
                   }
                 }
 
@@ -39737,6 +39751,7 @@
 
         if (rule.isFirstStep) {
           const ruleResult = new RuleResult(rule);
+
           ruleResult.validate(domCache);
           this._allRuleResults.push(ruleResult);
           this._ruleResultsSummary.update(ruleResult);
@@ -39745,9 +39760,9 @@
         }
       });
 
-      this._headings.update(domCache.structureInfo);
-      this._landmarkRegions.update(domCache.structureInfo);
-      this._links.update(domCache.linkInfo, this.url);
+      this._headings.update(domCache);
+      this._landmarkRegions.update(domCache);
+      this._links.update(domCache, this.url);
 
       const endTime = new Date();
       debug$3.flag && debug$3.log(`[evaluateWCAG][Run Time]: ${endTime.getTime() - startTime.getTime()} msecs`);
@@ -40221,6 +40236,8 @@
         const element_result = {
           id:               er.getResultId(),
           element:          er.getResultIdentifier(),
+          element_id:       er.getId(),
+          element_class:    er.getClassName(),
           result_type:      er.getResultType(),
           result_value:     er.getResultValue(),
           result_abbrev:    er.getResultValueNLS(),
@@ -40228,10 +40245,15 @@
           position:         er.getOrdinalPosition(),
           highlightId:      `opena11y-pos-${er.getOrdinalPosition()}`,
           action:           er.getResultMessage(),
+          rule_id:          rule_id,
+          rule_nls_id:      getRuleId(rule_id),
           definition:       getRuleDefinition(rule_id),
+
           implied_role:     !de.hasRole,
           role:             de.role,
           role_description: de.roleDescription,
+          braille_role_description: de.brailleRoleDescription,
+
           tag_name:         de.elemName.includes('#') ?
                             de.elemName.split('#')[0] :
                             de.elemName,
@@ -40242,6 +40264,8 @@
           accessible_name:            de.accName,
           accessible_description:     de.accDescription,
           error_message:              de.errMessage,
+
+          braille_name:               de.brailleName,
 
           html_attributes:            de.htmlAttrs,
           aria_attributes:            de.ariaAttrs,
@@ -40340,8 +40364,7 @@
         website_result = {
           id:            er.getResultId(),
           element:       er.getResultIdentifier(),
-          result_type:   er.getResultIdentifier(),
-          scope:         er.getResultType(),
+          result_type:   er.getResultType(),
           result_value:  er.getResultValue(),
           result_abbrev: er.getResultValueNLS(),
           result_long:   er.getResultValueLongNLS(),
@@ -40466,7 +40489,6 @@
     const id = rule.getId();
     return {
         id: id,
-        id_nls: rule.getIdNLS(),
         rule_category_info:    getRuleCategoryInfo(rule.rule_category_id), // Object with keys to strings
         guideline_info:        getGuidelineInfo(rule.wcag_guideline_id), // Object with keys to strings
         rule_scope:            getScope(rule.rule_scope_id), // String
@@ -40624,15 +40646,26 @@
         const r = request.aiRunEvaluation;
 
         const doc = window.document;
-        er  = evaluationLibrary.evaluateWCAG(
-                doc,
-                doc.title,
-                doc.location.href,
-                r.ruleset,
-                r.level,
-                r.scope_filter,
-                r.aria_version,
-                false);
+
+        if (r.ruleset === 'FIRSTSTEP') {
+          er  = evaluationLibrary.evaluateFirstStepRules(
+                  doc,
+                  doc.title,
+                  doc.location.href,
+                  r.aria_version,
+                  false);
+        }
+        else {
+          er  = evaluationLibrary.evaluateWCAG(
+                  doc,
+                  doc.title,
+                  doc.location.href,
+                  r.ruleset,
+                  r.level,
+                  r.scope_filter,
+                  r.aria_version,
+                  false);
+        }
 
         lastEvaluationResult = er;
 

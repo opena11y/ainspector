@@ -144,6 +144,11 @@ function renderResultInfo (attachElem, result) {
   divElem.className = "info-element";
   currentCopyText = '';
 
+  addH3(divElem, getMessage('rule_id_label'));
+  renderContent(divElem, result.rule_nls_id);
+  currentCopyText += getCopyTextContent('rule_id_label', result.rule_nls_id);
+
+
   if (result.definition) {
     addH3(divElem, getMessage('rule_definition_label'));
     renderContent(divElem, result.definition, 'definition');
@@ -160,6 +165,18 @@ function renderResultInfo (attachElem, result) {
     addH3(divElem, getMessage('element_result_role'));
     renderContent(divElem, result.role, 'role');
     currentCopyText += getCopyTextContent('element_result_role', result.role);
+  }
+
+  if (result.role_description) {
+    addH3(divElem, getMessage('element_result_role_description'));
+    renderContent(divElem, result.role_description, 'role');
+    currentCopyText += getCopyTextContent('element_result_role_description', result.role_description);
+  }
+
+  if (result.braille_role_description) {
+    addH3(divElem, getMessage('element_result_braille_role_description'));
+    renderContent(divElem, result.braille_role_description, 'role');
+    currentCopyText += getCopyTextContent('element_result_braille_role_description', result.braille_role_description);
   }
 
   if (result.accessible_name) {
@@ -201,8 +218,14 @@ function renderResultInfo (attachElem, result) {
         }
       }
     }
-
   }
+
+  if (result.braille_name) {
+    addH3(divElem, getMessage('element_result_braille_name'));
+    renderContent(divElem, result.braille_name, 'name');
+    currentCopyText += getCopyTextContent('element_result_braille_name', result.braille_name);
+  }
+
 
   if (result.accessible_description) {
     const acc_desc = result.accessible_description;

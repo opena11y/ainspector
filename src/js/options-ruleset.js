@@ -80,7 +80,7 @@ optionsRulesetTemplate.innerHTML = `
         <input type="radio"
                data-option="ruleset"
                name="ruleset"
-               value="FIRSTSTEP""/>
+               value="FIRSTSTEP"/>
         <span data-i18n="options_ruleset_first_step_label">
           First Step Rules
         </span>

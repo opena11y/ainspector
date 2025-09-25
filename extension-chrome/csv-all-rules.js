@@ -17,6 +17,14 @@ export function getCSVForAllRules (result) {
 
   let csv = pageInfoToCVS(result);
 
+  csv += `\n\n"All Rule Results Summary"\n`;
+
+  const rs = result.rule_summary;
+  csv += `"Violations","${rs.violations}"\n`;
+  csv += `"Warnings","${rs.warnings}"\n`;
+  csv += `"Manual Checks","${rs.manual_checks}"\n`;
+  csv += `"Passed","${rs.passed}"\n`;
+
   csv += `\n\n"Rule Category","Violations","Warnings","Manual Checks","Passed"\n`;
 
   result.rc_rule_results_group.forEach( (rcr) => {

@@ -53,6 +53,7 @@ template.innerHTML = `
                </span>
             </span>
         </div>
+<!--
         <div class="tab"
              role="tab"
              id="tab-shortcut-keys"
@@ -63,6 +64,7 @@ template.innerHTML = `
               </span>
             </span>
         </div>
+-->
       </div>
 
       <div class="tabpanel"
@@ -86,12 +88,14 @@ template.innerHTML = `
            <options-data-export></options-data-export>
       </div>
 
+<!--
       <div class="tabpanel"
            role="tabpanel"
            id="tabpanel-shortcut-keys"
            aria-labelledby="tab-shortcut-keys">
            <options-shortcuts></options-shortcuts>
       </div>
+  -->
   </div>
 `;
 
