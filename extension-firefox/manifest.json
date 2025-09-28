@@ -2,7 +2,10 @@
   "manifest_version": 3,
   "browser_specific_settings": {
     "gecko": {
-      "id": "ainspector-firefox@openweba11y.com"
+      "id": "{b59fbdaf-28d8-453b-a333-8e55cd07869d}",
+      "data_collection_permissions": {
+        "required": ["websiteContent"]
+      }
     }
   },
   "name": "__MSG_extension_name__",

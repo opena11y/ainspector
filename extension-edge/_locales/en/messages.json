@@ -1335,10 +1335,6 @@
     "message": "Activates Back button.",
     "description": "Label for back shortcut key"
   },
-  "options_shortcuts_export": {
-    "message": "Activates Export button.",
-    "description": "Label for export shortcut key"
-  },
   "options_shortcuts_rerun": {
     "message": "Activates Rerun button.",
     "description": "Label for rerun shortcut key"
