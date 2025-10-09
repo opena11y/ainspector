@@ -94,12 +94,13 @@ optionsDataExportTemplate.innerHTML = `
 
       </div>
 
-      <div class="desc"
+      <div class="desc">
         <span data-i18n="options_data_export_prefix_note_desc">
           Note: Prefix cannot contain spaces or the following characters
         </span>
         : <code>&lt;&gt;:"/|?*[]</code>.
       </div>
+
 
       <label for="options-export-index"
              data-i18n="options_data_export_index_label">
@@ -112,6 +113,23 @@ optionsDataExportTemplate.innerHTML = `
                min="1"
                data-option="filenameIndex"/>
       </div>
+
+      <label>
+        <input type="checkbox"
+               data-option="includeIndex"/>
+        <span data-i18n="options_data_export_include_index_label">
+          Include index in file name
+        </span>
+      </label>
+
+      <label>
+        <input type="checkbox"
+               data-option="includeDateTime"/>
+        <span data-i18n="options_data_export_include_date_time_label">
+          Include date and time in file name
+        </span>
+      </label>
+
 
     </fieldset>
 
@@ -188,7 +206,9 @@ class OptionsDataExport extends HTMLElement {
         const option = input.getAttribute('data-option');
 
         if (input.type === 'checkbox') {
-          input.checked = !options[option];
+          input.checked = (option === 'promptForExportOptions') ?
+                                      !options[option] :
+                                      options[option];
         }
         else {
           if (input.type === 'radio') {

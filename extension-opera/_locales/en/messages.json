@@ -1271,6 +1271,14 @@
     "message": "File name index",
     "description": "Label for export index number field"
   },
+  "options_data_export_include_index_label": {
+    "message": "Include index value in file name",
+    "description": "Label for including index value in file name"
+  },
+  "options_data_export_include_date_time_label": {
+    "message": "Include date and time in file name",
+    "description": "Label for including date and time in file name"
+  },
   "options_data_export_prefix_error_to_long": {
     "message": "Prefix can only be $length$ characters long.",
     "description": "Error feedback for prefix string being too long",

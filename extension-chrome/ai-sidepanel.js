@@ -550,7 +550,20 @@ class AISidePanel extends HTMLElement {
     if (returnValue) {
       getOptions().then( (options) => {
         let filename = options.filenamePrefix + '-';
-        filename += options.filenameIndex.toString().padStart(4, "0") + '-';
+
+        if (options.includeIndex) {
+          filename += options.filenameIndex.toString().padStart(4, "0") + '-';
+        }
+
+        if (options.includeDateTime) {
+          const today = new Date();
+
+          // Add today's date
+          filename += `${String(today.getFullYear())}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-`;
+
+          // Add time of day
+          filename += `${today.getHours()}h-${today.getMinutes()}m-${today.getSeconds()}s-`;
+        }
 
         const parts = this.ruleGroupId.split('-');
         const isRuleCategory = parts[0] === 'rc';

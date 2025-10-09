@@ -103,6 +103,23 @@ template.innerHTML = `
                  data-option="filenameIndex"/>
         </div>
 
+        <label>
+          <input id="options-export-include-index"
+                 type="checkbox"/>
+          <span data-i18n="options_data_export_include_index_label">
+            Include index in file name
+          </span>
+        </label>
+
+        <label>
+          <input id="options-export-include-date-time"
+                 type="checkbox"/>
+          <span data-i18n="options_data_export_include_date_time_label">
+            Include date and time in file name
+          </span>
+        </label>
+
+
       </fieldset>
 
       <label>
@@ -179,6 +196,14 @@ export default class ExportDialog extends HTMLElement {
     this.exportIndex.addEventListener('focus', this.handleFocus.bind(this));
     this.exportIndex.addEventListener('blur', this.handleBlur.bind(this));
 
+    this.exportIncludeIndex = this.shadowRoot.querySelector('#options-export-include-index');
+    this.exportIncludeIndex.addEventListener('focus', this.handleFocus.bind(this));
+    this.exportIncludeIndex.addEventListener('blur', this.handleBlur.bind(this));
+
+    this.exportIncludeDateTime = this.shadowRoot.querySelector('#options-export-include-date-time');
+    this.exportIncludeDateTime.addEventListener('focus', this.handleFocus.bind(this));
+    this.exportIncludeDateTime.addEventListener('blur', this.handleBlur.bind(this));
+
     this.exportPrompt   = this.shadowRoot.querySelector('#options-export-prompt');
     this.exportPrompt.addEventListener('focus', this.handleFocus.bind(this));
     this.exportPrompt.addEventListener('blur', this.handleBlur.bind(this));
@@ -211,6 +236,9 @@ export default class ExportDialog extends HTMLElement {
         exportDialog.exportPrefix.value    = options.filenamePrefix;
         exportDialog.exportIndex.value     = options.filenameIndex;
         exportDialog.exportPrompt.checked  = !options.promptForExportOptions;
+
+        exportDialog.this.exportIncludeIndex.checked     = options.includeIndex;
+        exportDialog.this.exportIncludeDateTime.checked  = options.includeDateTime;
 
         exportDialog.dialog.showModal();
         exportDialog.okButton.focus();

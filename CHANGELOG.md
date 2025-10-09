@@ -4,6 +4,7 @@
 
 | Version      |    Date     | Notes |
 |--------------|:-----------:|-----------------------------------------------------|
+| 4.1          |   10/xx/25   | Updated evaluation library to version 2.0.7
 | 4.0          |   9/25/25   | Updated evaluation library to version 2.0.6 and support for Chrome
 | 3.1          |   4/25/24   | Updated evaluation library to version 2.0.5 and added ARIA 1.3 option
 | 3.0.4        |   3/4/24    | Updated evaluation library to version 2.0.4
@@ -25,6 +26,12 @@
 | 0.96.0       |  10/30/19   | Fixes bug in highlight option not being remembered
 
 =======
+
+### 4.1
+* Restored date and time as an option for exported file names
+* Updated CSV and JSON export formats for greater compatibility with Version 3.x information
+* Added shortcut support for sidebar navigation
+
 
 ### 4.0
 * Support for Chrome, Edge and Opera browser
