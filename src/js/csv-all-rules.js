@@ -5,7 +5,9 @@
 import DebugLogging  from './debug.js';
 
 import {
-  pageInfoToCVS
+  pageInfoToCVS,
+  ruleResultsToCVS,
+  ruleSummaryToCVS
 } from './csv-common.js';
 
 // Constants
@@ -16,14 +18,9 @@ debug.flag = false;
 export function getCSVForAllRules (result) {
 
   let csv = pageInfoToCVS(result);
+  const title = "All Rules";
 
-  csv += `\n\n"All Rule Results Summary"\n`;
-
-  const rs = result.rule_summary;
-  csv += `"Violations","${rs.violations}"\n`;
-  csv += `"Warnings","${rs.warnings}"\n`;
-  csv += `"Manual Checks","${rs.manual_checks}"\n`;
-  csv += `"Passed","${rs.passed}"\n`;
+  csv += ruleSummaryToCVS(title, result.rule_summary);
 
   csv += `\n\n"Rule Category","Violations","Warnings","Manual Checks","Passed"\n`;
 
@@ -36,6 +33,8 @@ export function getCSVForAllRules (result) {
   result.gl_rule_results_group.forEach( (glr) => {
     csv += `"${glr.title}","${glr.violations}","${glr.warnings}","${glr.manual_checks}","${glr.passed}",\n`;
   });
+
+  csv += ruleResultsToCVS(title, result.rule_results);
 
   return csv;
 

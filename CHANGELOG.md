@@ -29,10 +29,10 @@
 
 ### 4.1
 * Restored date and time as an option for exported file names
-* Updated CSV and JSON export formats for greater compatibility with Version 3.x information
+* Updated CSV and JSON export formats for greater compatibility with Version 3.x export information
 * Fixed misleading information in Firefox manifest.json file
-* Added shortcut support for sidebar moving focus to sidebar controls
-
+* Fixed bug in cancelling export dialog
+* Added shortcut support for activating side panel controls
 
 ### 4.0
 * Support for Chrome, Edge and Opera browser

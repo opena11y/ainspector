@@ -408,8 +408,8 @@
     "description": "Required column header for rule group view grid"
   },
 
-  "requiredValue": {
-    "message": "Y",
+  "required_value": {
+    "message": "Yes",
     "description": "Value for required column in rule group grid"
   },
 
@@ -850,22 +850,27 @@
     "description": "Group title label for CSV export."
   },
 
-  "csvRuleId": {
+  "csv_rule_id": {
     "message": "Rule ID",
     "description": "Rule ID columns header for CSV export."
   },
 
-  "csvRuleSummary": {
+  "csv_rule_summary": {
     "message": "Rule Summary",
     "description": "Rule Summary columns header for CSV export."
   },
 
-  "csvResultValue": {
+  "csv_result_label": {
+    "message": "Result",
+    "description": "Rule result columns header for CSV export."
+  },
+
+  "csv_result_value": {
     "message": "Result Value",
     "description": "Result Value column header for CSV export"
   },
 
-  "csvSuccessCriteria": {
+  "csv_success_criteria": {
     "message": "Success Criteria",
     "description": "Success Criteria column header for CSV export"
   },

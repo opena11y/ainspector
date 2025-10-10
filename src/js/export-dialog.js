@@ -170,8 +170,6 @@ export default class ExportDialog extends HTMLElement {
 
     // Get references
 
-    this.callback = null;
-
     this.dialog = this.shadowRoot.querySelector('dialog');
     this.dialog.addEventListener('keydown', this.handleDialogKeydown.bind(this));
 
@@ -308,7 +306,7 @@ export default class ExportDialog extends HTMLElement {
       includeIndex:           this.exportIncludeIndex.checked,
       includeDateTime:        this.exportIncludeDateTime.checked
     };
-    saveOptions(options).then(this.tryActivationCallback(options));
+    saveOptions(options);
   }
 
   handleDialogKeydown(event) {
