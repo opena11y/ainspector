@@ -629,6 +629,7 @@ class AISidePanel extends HTMLElement {
   }
 
   getJSONContent() {
+    this.lastResult.ainspector_version = browserRuntime.getManifest().version;
     return JSON.stringify(this.lastResult, null, 2);
   }
 

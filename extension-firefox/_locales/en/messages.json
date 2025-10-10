@@ -62,7 +62,12 @@
 
   "info_title_label": {
     "message": "Title: ",
-    "description": "Label for title value"
+    "description": "Label for page title"
+  },
+
+  "info_url_label": {
+    "message": "URL: ",
+    "description": "Label for url"
   },
 
   "info_ruleset_label": {
@@ -70,9 +75,20 @@
     "description": "Label for ruleset value"
   },
 
+  "info_view_label": {
+    "message": "View: ",
+    "description": "Label for side panel view"
+  },
+
+
   "info_scope_label": {
     "message": "Scope",
     "description": "Label for scope filter value"
+  },
+
+  "options_title": {
+    "message": "Options for AInspector WCAG Version ",
+    "description": "Title for options"
   },
 
   "options_info_dialog_title": {
@@ -413,7 +429,7 @@
     "description": "Value for required column in rule group grid"
   },
 
-  "ruleResultsLabel": {
+  "rule_results_label": {
     "message": "Rule Results",
     "description": "Label for rule result grid"
   },
@@ -825,17 +841,22 @@
     "description": "Used in element, page and website results for CSV export for labeling summary results."
   },
 
-  "csvRuleset": {
+  "csv_ainspector_version": {
+    "message": "AInspector Version:",
+    "description": "AInspector version label"
+  },
+
+  "csv_ruleset": {
     "message": "Ruleset:",
     "description": "Ruleset label for CSV export."
   },
 
-  "csvDate": {
+  "csv_date": {
     "message": "Date:",
     "description": "Date label for CSV export."
   },
 
-  "csvTime": {
+  "csv_time": {
     "message": "Time:",
     "description": "Time label for CSV export."
   },

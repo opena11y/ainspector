@@ -13,6 +13,12 @@ import {
 const debug = new DebugLogging('csv-common', false);
 debug.flag = false;
 
+const browserRuntime = typeof browser === 'object' ?
+              browser.runtime :
+              chrome.runtime;
+
+/* Helper Functions */
+
 export function convertStringCSV (s) {
   let rs = '';
   let capitalize = false;
@@ -89,13 +95,16 @@ export function arrayOrStringToCSV(items) {
 
 export function pageInfoToCVS(result) {
 
+  const version = browserRuntime.getManifest().version;
+
   let csv = '';
-  csv+= `"title","${escapeForCSV(result.title)}"\n`;
-  csv+= `"url","${escapeForCSV(result.location)}"\n`;
-  csv+= `"ruleset","${escapeForCSV(result.ruleset_label)}"\n`;
-  csv+= `"view","${escapeForCSV(result.result_view)}"\n`;
-  csv+= `"date","${escapeForCSV(result.date)}"\n`;
-  csv+= `"time","${escapeForCSV(result.time)}"\n`;
+  csv+= `"${getMessage('info_title_label')}","${escapeForCSV(result.title)}"\n`;
+  csv+= `"${getMessage('info_url_label')}","${escapeForCSV(result.location)}"\n`;
+  csv+= `"${getMessage('info_ruleset_label')}","${escapeForCSV(result.ruleset_label)}"\n`;
+  csv+= `"${getMessage('info_view_label')}","${escapeForCSV(result.result_view)}"\n`;
+  csv+= `"${getMessage('csv_date')}","${escapeForCSV(result.date)}"\n`;
+  csv+= `"${getMessage('csv_time')}","${escapeForCSV(result.time)}"\n`;
+  csv+= `"${getMessage('csv_ainspector_version')}","${version}"\n`;
 
   return csv;
 }
@@ -103,12 +112,12 @@ export function pageInfoToCVS(result) {
 export function ruleSummaryToCVS(title, rule_summary) {
   let csv = '';
 
-  csv += `\n\n"Rule Summary: ${title}"\n`;
+  csv += `\n\n"${getMessage('csv_rule_summary')}: ${title}"\n`;
 
-  csv += `"Violations","${rule_summary.violations}"\n`;
-  csv += `"Warnings","${rule_summary.warnings}"\n`;
-  csv += `"Manual Checks","${rule_summary.manual_checks}"\n`;
-  csv += `"Passed","${rule_summary.passed}"\n`;
+  csv += `"${getMessage('violations_label')}","${rule_summary.violations}"\n`;
+  csv += `"${getMessage('warnings_label')}","${rule_summary.warnings}"\n`;
+  csv += `"${getMessage('manual_checks_label')}","${rule_summary.manual_checks}"\n`;
+  csv += `"${getMessage('passed_label')}","${rule_summary.passed}"\n`;
 
   return csv;
 }
@@ -116,7 +125,7 @@ export function ruleSummaryToCVS(title, rule_summary) {
 export function ruleResultsToCVS(title, rule_results) {
   let csv = '';
 
-  csv += `\n\n"Rule Results: ${title}"\n`;
+  csv += `\n\n"${getMessage('rule_results_label')}: ${title}"\n`;
   csv += `"${getMessage('csv_rule_id')}",`;
   csv += `"${getMessage('csv_rule_summary')}",`;
   csv += `"${getMessage('csv_result_label')}",`;

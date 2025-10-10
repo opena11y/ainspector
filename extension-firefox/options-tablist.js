@@ -18,9 +18,17 @@ import {
 const debug = new DebugLogging('options-tablist', false);
 debug.flag = false;
 
+const browserRuntime = typeof browser === 'object' ?
+              browser.runtime :
+              chrome.runtime;
+
 /* templates */
 const template = document.createElement('template');
 template.innerHTML = `
+  <h1>
+    <span data-i18n="options_title"></span>
+    <span class="version"></span>
+  </h1>
   <div class="tablist">
       <div role="tablist">
         <div class="tab"
@@ -114,11 +122,13 @@ class OptionsTablist extends HTMLElement {
     link.setAttribute('href', './tablist.css');
     this.shadowRoot.appendChild(link);
 
-
     // Add DOM tree from template
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-    this.divTitle        = this.shadowRoot.querySelector('#id-div-title');
+
+    const spanVersion     = this.shadowRoot.querySelector('span.version');
+    spanVersion.textContent = browserRuntime.getManifest().version;
+
     this.divTablist      = this.shadowRoot.querySelector('[role="tablist"]');
 
     this.optionsRuleset    = this.shadowRoot.querySelector('options-ruleset');
