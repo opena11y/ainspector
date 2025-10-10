@@ -40818,7 +40818,8 @@
           ruleset_label: er.getRulesetLabel(),
           result_view:   r.result_view,
           date:          now.toLocaleDateString(),
-          time:          now.toLocaleTimeString()
+          time:          now.toLocaleTimeString(),
+          ainspector_version: ''
         };
 
         let group_title, rule_summary, rule_results, info_rules;
