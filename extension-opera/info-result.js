@@ -353,6 +353,10 @@ export default class InfoResult extends HTMLElement {
 
   }
 
+  copy () {
+    this.copyButtonElem.click();
+  }
+
   clear () {
     removeChildContent(this.infoElementsElem);
   }

@@ -40,10 +40,10 @@ export const rulesetOptions = {
 export const generalOptions = {
   resultsIncludePassNa: true,
   rerunDelayEnabled: true,
-  rerunDelayValue: '5',
+  rerunDelayValue: '0',
   viewsMenuIncludeGuidelines: true,
   isSidebarOpen: false,
-  highlightOption: 'all', /* none selected vw all */
+  highlightOption: 'selected', /* none selected vw all */
   documentationURL: 'https://opena11y.github.io/evaluation-library/concepts.html',
   lastTabId: '',
   lastAllRulesTabId: '',

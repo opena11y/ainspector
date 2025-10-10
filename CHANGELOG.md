@@ -30,7 +30,8 @@
 ### 4.1
 * Restored date and time as an option for exported file names
 * Updated CSV and JSON export formats for greater compatibility with Version 3.x information
-* Added shortcut support for sidebar navigation
+* Fixed misleading information in Firefox manifest.json file
+* Added shortcut support for sidebar moving focus to sidebar controls
 
 
 ### 4.0

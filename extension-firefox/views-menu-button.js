@@ -101,6 +101,10 @@ export default class ViewsMenuButton extends HTMLElement {
     this.callback = callback;
   }
 
+  click () {
+    this.button.click();
+  }
+
   addGroup(node, label) {
     const groupDiv = document.createElement('div');
     groupDiv.setAttribute('role', 'group');

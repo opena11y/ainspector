@@ -152,6 +152,14 @@ export default class RerunEvaluationButton extends HTMLElement {
     return this.rerunButton.disabled;
   }
 
+  isOpen () {
+    return this.dialog.hasAttribute('open');
+  }
+
+  click () {
+    this.rerunButton.click();
+  }
+
   setActivationCallback (callback) {
     this.callback = callback;
   }

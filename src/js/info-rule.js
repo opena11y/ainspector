@@ -60,6 +60,10 @@ export default class InfoRule extends HTMLElement {
 
   }
 
+  copy () {
+    this.copyButtonElem.click();
+  }
+
   clear () {
     removeChildContent(this.infoRulesElem);
   }

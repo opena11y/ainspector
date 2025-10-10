@@ -46,6 +46,10 @@ export default class ViewRuleGroup extends HTMLElement {
 
   }
 
+  copy() {
+    this.infoRuleElem.copy();
+  }
+
   setSidepanel (sidepanelElem) {
     this.gridRuleGroupElem.setSidepanel(sidepanelElem);
   }

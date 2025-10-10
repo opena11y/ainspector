@@ -126,15 +126,15 @@ template.innerHTML = `
       let valueA = a.result_value;
       let valueB = b.result_value;
       if (valueA === valueB) {
-        valueA = getLevelSortingValue(a.level);
-        valueB = getLevelSortingValue(b.level);
+        valueA = getLevelSortingValue(a.wcag_level);
+        valueB = getLevelSortingValue(b.wcag_level);
         if (valueA === valueB) {
-          valueA = getSCSortingValue(a.sc);
-          valueB = getSCSortingValue(b.sc);
+          valueA = getSCSortingValue(a.success_criteria_code);
+          valueB = getSCSortingValue(b.success_criteria_code);
         } else {
           if (valueA === valueB) {
-            valueA = getRequiredSortingValue(a.required);
-            valueB = getRequiredSortingValue(b.required);
+            valueA = getRequiredSortingValue(a.rule_required);
+            valueB = getRequiredSortingValue(b.rule_required);
           }
         }
       }
@@ -210,9 +210,9 @@ export default class GridRuleGroup extends Grid {
         rule_results.forEach( (rr) => {
 
           if (options.resultsIncludePassNa ||
-              rr.result === 'V' ||
-              rr.result === 'W' ||
-              rr.result === 'MC'
+              rr.result_value_nls === 'V' ||
+              rr.result_value_nls === 'W' ||
+              rr.result_value_nls === 'MC'
             ) {
 
             count += 1;
@@ -223,28 +223,28 @@ export default class GridRuleGroup extends Grid {
 
             const row = this.addRow(rr.id);
 
-            rowAccName += rr.summary;
-            this.addDataCell(row, rr.summary, rr.summary, 'rule');
+            rowAccName += rr.rule_summary;
+            this.addDataCell(row, rr.rule_summary, rr.rule_summary, 'rule');
 
-            cellAccName = getResultAccessibleName(rr.result);
-            sortValue = getResultSortingValue(rr.result);
+            cellAccName = getResultAccessibleName(rr.result_value_nls);
+            sortValue = getResultSortingValue(rr.result_value_nls);
             rowAccName += ', ' + cellAccName;
-            this.addDataCell(row, rr.result, cellAccName, `result ${rr.result}`, sortValue);
+            this.addDataCell(row, rr.result_value_nls, cellAccName, `result ${rr.result_value_nls}`, sortValue);
 
-            cellAccName = getMessage('success_criteria_label') + ' ' + rr.sc;
-            sortValue = getSCSortingValue(rr.sc);
+            cellAccName = getMessage('success_criteria_label') + ' ' + rr.success_criteria_code;
+            sortValue = getSCSortingValue(rr.success_criteria_code);
             rowAccName += ', ' + cellAccName;
-            this.addDataCell(row, rr.sc, '', 'sc', cellAccName, sortValue);
+            this.addDataCell(row, rr.success_criteria_code, '', 'sc', cellAccName, sortValue);
 
-            cellAccName = getLevelAccessibleName(rr.level);
-            sortValue = getLevelSortingValue(rr.level);
+            cellAccName = getLevelAccessibleName(rr.wcag_level);
+            sortValue = getLevelSortingValue(rr.wcag_level);
             rowAccName += ', ' + cellAccName;
-            this.addDataCell(row, rr.level, '', 'level');
+            this.addDataCell(row, rr.wcag_level, '', 'level');
 
-            cellAccName = rr.required ? getMessage('required_label') : '';
-            sortValue = getRequiredSortingValue(rr.required);
-            rowAccName += rr.required ? ', ' + cellAccName : '';
-            this.addDataCell(row, rr.required ? 'Y' : '', '', 'required');
+            cellAccName = rr.rule_required ? getMessage('required_label') : '';
+            sortValue = getRequiredSortingValue(rr.rule_required);
+            rowAccName += rr.rule_required ? ', ' + cellAccName : '';
+            this.addDataCell(row, rr.rule_required ? 'Y' : '', '', 'required');
 
             row.setAttribute('aria-label', rowAccName);
 

@@ -41,7 +41,7 @@ export function getCSVForRuleGroup (groupId, result) {
   csv += `"Rule ID","Rule Summary","Success Criteria","Level","Result","Required"\n`;
 
   result.rule_results.forEach( (rr) => {
-    csv += `"${rr.id_nls}","${escapeForCSV(convertStringCSV(rr.summary))}","${rr.sc}","${rr.level}","${rr.result}","${rr.required ? 'Yes' : ''}"\n`;
+    csv += `"${rr.id_nls}","${escapeForCSV(convertStringCSV(rr.summary))}","${rr.sc}","${rr.wcag_level}","${rr.result}","${rr.required ? 'Yes' : ''}"\n`;
   });
 
   // Rule Result Details

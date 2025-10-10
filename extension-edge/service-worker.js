@@ -19,7 +19,7 @@ const browserAction = typeof browser === 'object' ?
  * Toggle sidebar from toolbar icon for Chrome
  */
 
-/*
+
 // Toggle sidebar from toolbar icon for Chrome
 if (typeof chrome  === 'object' && chrome.sidePanel) {
   debug && console.log(`[Added Chrome sidePanel]`);
@@ -27,7 +27,6 @@ if (typeof chrome  === 'object' && chrome.sidePanel) {
     chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
   });
 }
-*/
 
 // Toggle sidebar from toolbar icon for Firefox
 if (typeof browser === 'object' && browser.action) {

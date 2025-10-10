@@ -227,21 +227,28 @@ export default class ExportDialog extends HTMLElement {
     setI18nLabels(this.shadowRoot, debug.flag);
   }
 
+  get returnValue () {
+    return this.dialog.returnValue;
+  }
+
+  isOpen () {
+    return this.dialog.hasAttribute('open');
+  }
+
   openDialog () {
-    const exportDialog = this;
     getOptions().then( (options) => {
       if (options.promptForExportOptions) {
-        exportDialog.exportCSV.checked     = options.exportFormat === 'CSV';
-        exportDialog.exportJSON.checked    = options.exportFormat === 'JSON';
-        exportDialog.exportPrefix.value    = options.filenamePrefix;
-        exportDialog.exportIndex.value     = options.filenameIndex;
-        exportDialog.exportPrompt.checked  = !options.promptForExportOptions;
+        this.exportCSV.checked     = options.exportFormat === 'CSV';
+        this.exportJSON.checked    = options.exportFormat === 'JSON';
+        this.exportPrefix.value    = options.filenamePrefix;
+        this.exportIndex.value     = options.filenameIndex;
+        this.exportPrompt.checked  = !options.promptForExportOptions;
 
-        exportDialog.this.exportIncludeIndex.checked     = options.includeIndex;
-        exportDialog.this.exportIncludeDateTime.checked  = options.includeDateTime;
+        this.exportIncludeIndex.checked     = options.includeIndex;
+        this.exportIncludeDateTime.checked  = options.includeDateTime;
 
-        exportDialog.dialog.showModal();
-        exportDialog.okButton.focus();
+        this.dialog.showModal();
+        this.okButton.focus();
       }
     });
   }
@@ -294,10 +301,12 @@ export default class ExportDialog extends HTMLElement {
   handleOkButtonClick () {
     this.closeDialog('export');
     const options = {
-      exportFormat: (this.exportCSV.checked ? 'CSV' :    'JSON'),
-      filenamePrefix: validatePrefix(this.exportPrefix.value),
-      filenameIndex: this.exportIndex.value,
-      promptForExportOptions: !this.exportPrompt.checked
+      exportFormat:           (this.exportCSV.checked ? 'CSV' :    'JSON'),
+      filenamePrefix:         validatePrefix(this.exportPrefix.value),
+      filenameIndex:          this.exportIndex.value,
+      promptForExportOptions: !this.exportPrompt.checked,
+      includeIndex:           this.exportIncludeIndex.checked,
+      includeDateTime:        this.exportIncludeDateTime.checked
     };
     saveOptions(options).then(this.tryActivationCallback(options));
   }

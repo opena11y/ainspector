@@ -178,8 +178,8 @@ class AISidePanel extends HTMLElement {
     optionsButton.addEventListener('click', this.handleOptionsClick.bind(this));
 
     // Rerun button
-    const rerunButton = this.shadowRoot.querySelector(`rerun-evaluation-button`);
-    rerunButton.setActivationCallback(this.runEvaluation.bind(this));
+    this.rerunButtonElem = this.shadowRoot.querySelector(`rerun-evaluation-button`);
+    this.rerunButtonElem.setActivationCallback(this.runEvaluation.bind(this));
 
     // Element references
 
@@ -226,15 +226,16 @@ class AISidePanel extends HTMLElement {
     this.exportDialogElem = this.shadowRoot.querySelector('export-dialog');
     this.exportDialogElem.dialog.addEventListener("close", this.handleExportDialogClose.bind(this));
 
-
-    const viewsMenuButton = this.shadowRoot.querySelector(`views-menu-button`);
-    viewsMenuButton.setActivationCallback(this.setView.bind(this));
+    this.viewsMenuButtonElem = this.shadowRoot.querySelector(`views-menu-button`);
+    this.viewsMenuButtonElem.setActivationCallback(this.setView.bind(this));
 
     /*
     *   Add Window event listeners
     */
     window.addEventListener('load', this.handleWindowLoad.bind(this));
     window.addEventListener("resize", this.handleResize.bind(this));
+
+    document.body.addEventListener('keydown', this.handleShortcutsKeydown.bind(this));
 
     // Setup a port to identify when side panel is open
     browserRuntime.connect({ name: 'ai-sidepanel-open' });
@@ -423,7 +424,7 @@ class AISidePanel extends HTMLElement {
       if (options.promptForExportOptions) {
         this.exportDialogElem.openDialog();
       } else {
-        this.handleExportDialogClose(true);
+        this.exportData();
       }
     });
   }
@@ -468,7 +469,7 @@ class AISidePanel extends HTMLElement {
   handleTabActivated (activeInfo) {
     debug.flag && debug.log(`[handleTabActivated]`);
 
-    this.logTabUrl(activeInfo);
+    debug.flag && this.logTabUrl(activeInfo);
 
     const that = this;
 
@@ -531,7 +532,13 @@ class AISidePanel extends HTMLElement {
     }
   }
 
-  handleExportDialogClose (force=false) {
+  handleExportDialogClose() {
+    if (this.exportDialogElem.returnValue === 'export') {
+      this.exportData();
+    }
+  }
+
+  exportData () {
 
     function incrementIndex() {
       getOptions().then( (options) => {
@@ -545,71 +552,68 @@ class AISidePanel extends HTMLElement {
     }
 
     let blob;
-    const returnValue = force || this.exportButtonElem.dialog.returnValue === 'export';
 
-    if (returnValue) {
-      getOptions().then( (options) => {
-        let filename = options.filenamePrefix + '-';
+    getOptions().then( (options) => {
+      let filename = options.filenamePrefix + '-';
 
-        if (options.includeIndex) {
-          filename += options.filenameIndex.toString().padStart(4, "0") + '-';
-        }
+      if (options.includeIndex) {
+        filename += options.filenameIndex.toString().padStart(4, "0") + '-';
+      }
 
-        if (options.includeDateTime) {
-          const today = new Date();
+      if (options.includeDateTime) {
+        const today = new Date();
 
-          // Add today's date
-          filename += `${String(today.getFullYear())}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-`;
+        // Add today's date
+        filename += `${String(today.getFullYear())}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}-`;
 
-          // Add time of day
-          filename += `${today.getHours()}h-${today.getMinutes()}m-${today.getSeconds()}s-`;
-        }
+        // Add time of day
+        filename += `${today.getHours()}h-${today.getMinutes()}m-${today.getSeconds()}s-`;
+      }
 
-        const parts = this.ruleGroupId.split('-');
-        const isRuleCategory = parts[0] === 'rc';
-        const groupId = parseInt(parts[1]);
+      const parts = this.ruleGroupId.split('-');
+      const isRuleCategory = parts[0] === 'rc';
+      const groupId = parseInt(parts[1]);
 
-        const ruleId = this.ruleId.toLowerCase().replace('_', '-');
+      const ruleId = this.ruleId.toLowerCase().replace('_', '-');
 
-        switch (this.resultView) {
-          case 'rules-all':
-            filename += options.filenameAllRules;
-            break;
+      switch (this.resultView) {
+        case 'rules-all':
+          filename += options.filenameAllRules;
+          break;
 
-          case 'rule-group':
-            filename += isRuleCategory ?
-                    options.filenameRuleGroup.replace('{groupId}', getRuleCategoryFilenameId(groupId)) :
-                    options.filenameRuleGroup.replace('{groupId}', getGuidelineFilenameId(groupId));
-            break;
+        case 'rule-group':
+          filename += isRuleCategory ?
+                  options.filenameRuleGroup.replace('{groupId}', getRuleCategoryFilenameId(groupId)) :
+                  options.filenameRuleGroup.replace('{groupId}', getGuidelineFilenameId(groupId));
+          break;
 
-          case 'rule':
-            filename += options.filenameRule.replace('{ruleId}', ruleId);
-            break;
-        }
+        case 'rule':
+          filename += options.filenameRule.replace('{ruleId}', ruleId);
+          break;
+      }
 
 
-        filename += '.' + options.exportFormat.toLowerCase();
+      filename += '.' + options.exportFormat.toLowerCase();
 
-        if (options.exportFormat === 'CSV') {
-          blob = new Blob([this.getCSVContent()], {
-           type: "text/csv;charset=utf-8"
-          });
-        }
-        else {
-          blob = new Blob([this.getJSONContent()], {
-           type: "application/json;charset=utf-8"
-          });
-        }
-
-        let downloading = browserDownloads.download({
-          url : URL.createObjectURL(blob),
-          filename : filename,
-          saveAs: true,
-          conflictAction : 'uniquify'
+      if (options.exportFormat === 'CSV') {
+        blob = new Blob([this.getCSVContent()], {
+         type: "text/csv;charset=utf-8"
         });
-        downloading.then(incrementIndex, onFailed);
+      }
+      else {
+        blob = new Blob([this.getJSONContent()], {
+         type: "application/json;charset=utf-8"
+        });
+      }
+
+      let downloading = browserDownloads.download({
+        url : URL.createObjectURL(blob),
+        filename : filename,
+        saveAs: true,
+        conflictAction : 'uniquify'
       });
-    }
+      downloading.then(incrementIndex, onFailed);
+    });
   }
 
   getCSVContent() {
@@ -626,6 +630,71 @@ class AISidePanel extends HTMLElement {
 
   getJSONContent() {
     return JSON.stringify(this.lastResult, null, 2);
+  }
+
+
+  handleShortcutsKeydown (event) {
+    let flag = false;
+
+    if (!event.metaKey &&
+        !event.ctrlKey &&
+        !this.rerunButtonElem.isOpen() &&
+        !this.exportDialogElem.isOpen() &&
+        !this.viewsMenuButtonElem.isOpen()) {
+      getOptions().then( (options) => {
+
+        if (options.shortcutsEnabled) {
+
+          if (event.key === options.shortcutBack) {
+            if (!this.backButtonElem.disabled) {
+              this.backButtonElem.click();
+            }
+            flag = true;
+          }
+
+          if (event.key === options.shortcutCopy) {
+            switch (this.resultView) {
+
+              case 'rule-group':
+                this.viewRuleGroupElem.copy();
+                break;
+
+              case 'rule':
+                this.viewRuleElem.copy();
+                break;
+            }
+            flag = true;
+          }
+
+          if (event.key === options.shortcutExport) {
+            if (!this.exportButtonElem.disabled) {
+              this.exportButtonElem.click();
+            }
+            flag = true;
+          }
+
+          if (event.key === options.shortcutRerun) {
+            if (!this.rerunButtonElem.disabled) {
+              this.rerunButtonElem.click();
+            }
+            flag = true;
+          }
+
+          if (event.key === options.shortcutViews) {
+            if (!this.viewsMenuButtonElem.disabled) {
+              this.viewsMenuButtonElem.click();
+            }
+            flag = true;
+          }
+
+          if (flag) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }
+
+      });
+    }
   }
 
 
