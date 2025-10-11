@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "__MSG_extension_name_opera__",
+  "name": "__MSG_extension_name__",
   "version": "4.1.0",
   "description": "__MSG_extension_description__",
   "homepage_url": "https://opena11y.github.io/ainspector/",
@@ -19,7 +19,7 @@
       "64":  "icons/light-ai-sidebar-64.png",
       "128": "icons/light-ai-sidebar-128.png"
     },
-    "default_title": "__MSG_extension_name_firefox__",
+    "default_title": "__MSG_extension_name__",
     "default_panel": "ai-sidepanel.html",
     "open_at_install": false
   },

@@ -24,8 +24,9 @@ Opera: recommended 612×408, maximum 800x600
 
 Creating Zip Files
 ------------------
-zip -r ../docs/dist/ainspector-firefox-4.0.0.zip . -x ".*" -x "__MACOSX"
-zip -r ../docs/dist/ainspector-chrome-4.0.0.zip . -x ".*" -x "__MACOSX"
+zip -r ../docs/dist/ainspector-firefox-4.1.0.zip . -x ".*" -x "__MACOSX"
+zip -r ../docs/dist/ainspector-chrome-4.1.0.zip . -x ".*" -x "__MACOSX"
+zip -r ../docs/dist/ainspector-edge-4.1.0.zip . -x ".*" -x "__MACOSX"
 
 
 Questions
