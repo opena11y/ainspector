@@ -22,7 +22,7 @@ export function validatePrefix (value) {
     if (isCharacterAllowed(c)) {
       v += c;
     }
-  };
+  }
   v = v.substring(0, 16);
   return v;
 }
