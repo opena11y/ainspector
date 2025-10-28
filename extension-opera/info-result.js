@@ -178,6 +178,12 @@ function renderResultInfo (attachElem, result) {
     currentCopyText += getCopyTextContent('element_result_braille_role_description', result.braille_role_description);
   }
 
+  if (result.page_title) {
+    addH3(divElem, "Page Title");
+    renderContent(divElem, result.page_title, '');
+    currentCopyText += getCopyTextContent('Page Title', result.page_title);
+  }
+
   if (result.accessible_name) {
     const acc_name = result.accessible_name;
 

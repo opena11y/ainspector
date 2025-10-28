@@ -9804,11 +9804,11 @@
             PAGE_FAIL_1: 'Add a @title@ element to the page to enable the evaluation of @h1@ elements for similarity.',
             PAGE_FAIL_2: 'Add an @h1@ element to the page at the beginning of the main content.',
             PAGE_FAIL_3: 'Update the @h1@ element to have the same or similar content as the @title@ element.',
-            PAGE_FAIL_4: 'Update the @h1@ elements to have the same or similar content as the @title@ element.',
+            PAGE_FAIL_4: 'Update the @h1@ elements or the @title@ element so the content of the @h1@ element is included in the title.',
             ELEMENT_MC_1:   'Verify @h1@ element identifies and describes a major section of the page.',
-            ELEMENT_PASS_1: 'The @h1@ element has the same or similar content as the @title@ element.',
-            ELEMENT_FAIL_1: 'The @h1@ element does NOT have the same or similar content as the @title@ element.',
-            ELEMENT_FAIL_2: 'Add content to the @h1@ element, or remove it from the page.',
+            ELEMENT_PASS_1: 'The content of the @h1@ element is the same or similar to the @title@ element content.',
+            ELEMENT_FAIL_1: 'Only %1 of the %2 words in the @h1@ element are part of the @title@ element content.',
+            ELEMENT_FAIL_2: 'Add content to the @h1@ element the describes the content of the page, or remove it from the page.',
             ELEMENT_HIDDEN_1: 'The @h1@ element is hidden from assistive technology and therefore does not describe the purpose or content of the page.'
           },
           PURPOSES: [
@@ -37715,7 +37715,9 @@
             }
           });
 
-          return count > ((wordsH1.length * 8) / 10);
+          const result = count >= ((wordsH1.length * 8) / 10);
+
+          return [result, count, wordsH1.length];
         }
 
         const visibleH1Elements = [];
@@ -37735,9 +37737,12 @@
 
           const visibleH1Count = visibleH1Elements.length;
 
+          let result, wordsInTitleCount, wordsInH1;
+
           visibleH1Elements.forEach( de => {
             if (de.accName.name) {
-              if (similiarContent(dom_cache.title, de.accName.name)) {
+              [result, wordsInTitleCount, wordsInH1] = similiarContent(dom_cache.title, de.accName.name);
+              if (result) {
                 rule_result.addElementResult(TEST_RESULT.PASS, de, 'ELEMENT_PASS_1', []);
                 passedH1Count += 1;
               }
@@ -37746,7 +37751,7 @@
                   rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, de, 'ELEMENT_MC_1', []);
                 }
                 else {
-                  rule_result.addElementResult(TEST_RESULT.FAIL, de, 'ELEMENT_FAIL_1', []);
+                  rule_result.addElementResult(TEST_RESULT.FAIL, de, 'ELEMENT_FAIL_1', [wordsInTitleCount, wordsInH1]);
                 }
               }
             }
@@ -40868,12 +40873,19 @@
             response.page_result     = page_result;
             response.element_results = element_results;
 
+            if (r.rule_id.includes('TITLE')) {
+              response.page_result.page_title = response.title;
+              response.element_results.forEach( (er) => {
+                er.page_title = response.title;
+              });
+            }
+
             if (website_result) {
               results.push(website_result);
             }
 
             if (page_result) {
-              results.push(website_result);
+              results.push(page_result);
             }
 
             if (element_results) {
