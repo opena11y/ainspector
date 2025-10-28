@@ -1,5 +1,9 @@
 /* info.css */
 
+.container {
+  width: 100%;
+}
+
 h2 {
   margin: 0;
   padding: 0;
@@ -71,7 +75,7 @@ code {
 table {
   margin: 0;
   border-collapse: collapse;
-  width: 100%;
+  width: auto;
 }
 
 table thead tr {
@@ -94,7 +98,6 @@ table tbody td {
 table thead th {
   font-weight: bold;
 }
-
 
 table.table thead th:first-child,
 table.table tbody td:first-child,
