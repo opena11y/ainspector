@@ -695,6 +695,10 @@
     "description": "Result type heading in element, page or website results view."
   },
 
+  "element_result_page_title": {
+    "message": "Page Title",
+    "description": "Heading for page title information."
+  },
 
   "elementResultAction": {
     "message": "Action",

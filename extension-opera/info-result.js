@@ -179,9 +179,9 @@ function renderResultInfo (attachElem, result) {
   }
 
   if (result.page_title) {
-    addH3(divElem, "Page Title");
+    addH3(divElem, getMessage("element_result_page_title"));
     renderContent(divElem, result.page_title, '');
-    currentCopyText += getCopyTextContent('Page Title', result.page_title);
+    currentCopyText += getCopyTextContent(getMessage("element_result_page_title"), result.page_title);
   }
 
   if (result.accessible_name) {

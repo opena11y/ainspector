@@ -10,6 +10,10 @@ import {
   pageInfoToCVS
 } from './csv-common.js';
 
+import {
+  getMessage
+} from './utils.js';
+
 // Constants
 
 const debug = new DebugLogging('[csv-rule]', false);
@@ -20,17 +24,23 @@ function convertFontFamilyForCSV(font_family) {
 }
 
 function isColorContrastRule (result) {
-  return (result.element_results && result.element_results[0].color_contrast)
+  return (result.element_results &&
+          result.element_results[0] &&
+          result.element_results[0].color_contrast)
          || result.color_contrast;
 }
 
 function isTableRule (result) {
-  return (result.element_results && result.element_results[0].table)
+  return (result.element_results &&
+          result.element_results[0] &&
+          result.element_results[0].table)
          || result.table;
 }
 
 function isTableCellRule (result) {
-  return (result.element_results && result.element_results[0].table_cell)
+  return (result.element_results &&
+          result.element_results[0] &&
+          result.element_results[0].table_cell)
          || result.table_cell;
 }
 
@@ -47,6 +57,10 @@ function resultToCSV(result) {
     csv += `,"${result.accessible_name.source !== 'none' ? result.accessible_name.source : ''}"`;
     csv += `,"${escapeForCSV(result.accessible_description.name)}"`;
     csv += `,"${result.accessible_description.source !== 'none' ? result.accessible_description.source : ''}"`;
+
+    if (result.page_title) {
+      csv += `,"${result.page_title}"`;
+    }
 
     if (isColorContrastRule(result)) {
       const cc = result.color_contrast;
@@ -116,6 +130,10 @@ export function getCSVForRule (result) {
     csv += `\n\n"Results"\n`;
     csv += `"Element","Result","Action","id","class",Role","Accessible Name","Name Source","Accessible Description","Description Source"`;
 
+    if (result.page_result && result.page_result.page_title) {
+      csv += `${getMessage("element_result_page_title")}`;
+    }
+
     if (isColorContrastRule(result)) {
       csv += `,"Color Contrast Ratio","Background Color","Rendered Background Color","Text Color","Rendered Text Color","Opacity","Positioned","Font Family","Font Size","Font Weight","Is Large Font","Background Image", "Background Repeat", "Background Position"`;
     }
@@ -135,7 +153,7 @@ export function getCSVForRule (result) {
     }
 
     if (result.page_result) {
-      csv += resultToCSV(result.website_result);
+      csv += resultToCSV(result.page_result);
     }
 
     result.element_results.forEach( (er) => {
