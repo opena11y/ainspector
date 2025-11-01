@@ -1,7 +1,7 @@
         <header>
           <!-- Navigation-->
           <nav class="navbar
-               navbar-expand-lg navbar-light bg-light"
+               navbar-expand-lg"
                aria-label="Primary"
                id="mainNav">
               <div class="container px-4">
@@ -39,13 +39,9 @@
                   </button>
                   <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav ms-auto">
-                      {% for p in pages %}
-                        {% if p.link %}
-                          <li class="nav-item">
-                            <a class="nav-link" href="{{p.filename}}">{{p.link}}</a>
-                          </li>
-                        {% endif %}
-                      {% endfor %}
+
+                    {{ navigation | safe }}
+
                     </ul>
                   </div>
               </div>

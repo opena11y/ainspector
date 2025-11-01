@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Browser Extension | AInspector for WCAG Evaluation Browser Extension</title>
+    <title>Firefox Browser | AInspector for WCAG Evaluation Browser Extension</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
     <!-- Core theme CSS (includes Bootstrap)-->
@@ -126,72 +126,86 @@
 
             
 
-              <h1>Browser Extension</h1>
+              <h1>Firefox Browser</h1>
 
                 
+          <p>An introduction to using <a href="https://addons.mozilla.org/en-US/firefox/addon/ainspector-wcag/">AInspector for Firefox</a> browser add on for web accessibility evaluation.  A list of the <a href="https://fae.disability.illinois.edu/rulesets/ruleset/ARIA_STRICT/">current rules</a> can be found in <a href="https://fae.disability.illinois.edu">Functional Accessibility Evaluator</a>.</p>
 
-               <figure class="image">
-                  <img  src="images/chrome-all-rules.png" alt="">
-                  <figcaption>Screen shot of AInspector Side panel open in chrome webb browser</figcaption>
-                </figure>
+          <h2 id="how-does-ainspector-sidebar-work-">How does AInspector for WCAG Evaluation Work</h2>
 
-               <h2>AInspector for WCAG 4.1 Released!</h2>
+          <p>When AInspector is opened into the browser window, it automatically evaluates the current page and each subsequent page that you load into the content area of the browser.</p>
 
-               <ul>
-                  <li><a href="https://addons.mozilla.org/en-US/firefox/addon/ainspector-wcag/">AInspector WCAG 4.1 for Firefox</a></li>
-                  <li><a href="https://chromewebstore.google.com/detail/ainspector-for-wcag-evalu/dhllbiaionalkdpankidadkoaaenenie">AInspector WCAG 4.1 for Chrome</a></li>
-               </ul>
+          <p>When you open new tabs or windows the side panel stays open. If you have AInspector open in more than one window, closing it in one of the windows does not effect the sidebar in any other windows.</p>
 
-               <h2>New Features in 4.x:</h2>
+          <p>When AInspector for WCAG Evaluation is closed, it becomes inactive, and no evaluations are performed.</p>
 
-               <ul>
-                  <li>Support for Side Panel in Chrome Web Browser</li>
-                  <li>Updated in version 4.1 JSON and CSV export formats for greater compatibility with 3.x export formats</li>
-                  <li>Updated to OpenA11y Evaluation Library 2.07</li>
-               </ul>
+          <h2>Opening AInspector for WCAG Evaluation</h2>
 
-               <h2>Features in 3.x:</h2>
+          <p>There are three methods for opening and closing AInspector in the current browser tab:</p>
+          <ul>
+            <li>Click the ‘AI’ button in the browser toolbar</li>
+            <li>Use the <em>Toggle sidebar</em> keyboard shortcut: Win: <code class="kbd">ctrl</code>+<code class="kbd">shift</code>+<code class="kbd">u</code> / Mac: <code class="kbd" aria-label="command">cmd</code>+<code class="kbd">shift</code>+<code class="kbd">u</code></li>
+            <li>From the Firefox main menu, choose <em>View : Sidebar : AInspector
+          </em></li>
+          </ul>
 
-               <ul>
-                  <li>
-                     Updated to use OpenA11y Evaluation Library 2.0 to support:
-                     <ul>
-                        <li><a href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines 2.1</a></li>
-                        <li><a href="https://www.w3.org/TR/WCAG22/">Web Content Accessibility Guidelines 2.2</a></li>
-                        <li><a href="https://www.w3.org/TR/wai-aria/">Accessible Rich Internet Applications 1.2</a></li>
-                        <li><a href="https://www.w3.org/TR/wai-aria-1.3">Accessible Rich Internet Applications 1.3</a></li>
-                        <li><a href="https://www.w3.org/TR/html-aria/">ARIA in HTML</a></li>
-                        <li>Improved<a href="https://www.w3.org/TR/accname-1.2/"> accessible name computation</a></li>
-                        <li>Improved table rules</li>
-                        <li>Updated keyboard rules</li>
-                        <li>Updated video and audio rules</li>
-                        <li>Fixed minor bugs in many other rules</li>
-                        <li><a href="https://opena11y.github.io/evaluation-library/rulesets.html">Rule information on OpenA11y Evaluation Library website</a></li>
-                     </ul>
-                  </li>
-                  <li>New ruleset and rule scope filtering options</li>
-                  <li>New “First Step” Ruleset option for people just starting out with accessibility</li>
-                  <li>Improved element information in Rule Results View</li>
-                  <li>Improved element highlighting</li>
-               </ul>
+          <p><strong>Note:</strong> When you first install AInspector, the ‘AI’ toolbar button is placed in the navigation toolbar of Firefox. If you have many buttons there already, it may not be immediately apparent or even visible.</p>
 
-               <h2>Help Make AInspector Better</h2>
+          <p>To reposition or remove the button from the toolbar, choose <em>View : Toolbars : Customize...</em></p>
 
-               <p>If you find a problem with AInspector for WCAG please let us know by creating an <a href="https://github.com/opena11y/ainspector/issues">issue in the GitHib repository for AInspector</a>.&nbsp; Please provide the following information:</p>
+          <h2 >Options dialog</h2>
 
-               <ol>
-                  <li>A URL to were the problem can be replicated.</li>
-                  <li>A short description of the issue.</li>
-                  <li>How we can contact you for more information and verification the issue is resolved.</li>
-               </ol>
+          <p>The Preferences dialog contains important settings for evaluation options, exporting evaluation results and enabling keyboard shortcuts.</p>
 
-               <h2>Purpose</h2>
+          <h3>Ruleset Options</h3>
 
-               <p>The purpose of AInspector is to help people understand the <a href="https://w3.org/TR/WCAG">W3C Web Content Accessibility Guidelines (WCAG)</a>. To accomplish this, it provides detailed evaluation data that not only indicate pass or fail results for some rules, but also whether manual checking is needed for certain other rules that cannot be programmatically evaluated.</p>
+          <ul>
+            <li><a href="https://opena11y.github.io/evaluation-library/rulesets.html">Ruleset Options</a>:
+          WCAG 2.0 rules
+          WCAG 2.1 rules
+          WCAG 2.2 rules
+          First Step rules</li>
+            <li>Choose success criteria level A or AA.</li>
+            <li>Filter results by rules with page or website scope.</li>
+            <li>Choose ARIA 1.2 or ARIA 1.3 requirements.</li>
+          </ul>
 
-               <p>AInspector is different from other tools in the number of rules that result in manual checking.&nbsp; Manual checks are important to help people understand that there is more to accessibility requirements than can be understood by only focusing on rules that either pass or fail, and that even if there are no failing rules there are additional requirements that need to be understood to ensure accessibility.</p>
+          <h3>General Options</h3>
 
-               <p>For people learning about accessibility, AInspector gives them an understanding of the accessibility considerations needed for a specific web page. For experienced accessibility professionals, it helps them ensure they have crossed their t’s and dotted their i’s on accessibility.</p>
+          <ul>
+            <li>Choose to Include <em>Pass</em> and <em>Not Applicable (N/A)</em> results in Rule Result and Element Result views.</li>
+            <li>Choose to enable a timed delay when activating the <em>Rerun Evaluation</em> button.</li>
+            <li>Choose to include WCAG Guidleine options in the <em>Views</em> menu.</li>
+          </ul>
+
+          <h3>Export Options</h3>
+
+          <ul>
+            <li>Prompt for export options.</li>
+            <li>File format (e.g. CSV or JSON).</li>
+            <li>File naming options.</li>
+          </ul>
+
+          <h3>Keyboard shortcuts</h3>
+
+          <dl>
+            <dt>Toggle sidebar (always enabled)</dt>
+            <dd>Win: <code class="kbd">ctrl</code>+<code class="kbd">shift</code>+<code class="kbd">u</code> / Mac: <code class="kbd" aria-label="command">cmd</code>+<code class="kbd">shift</code>+<code class="kbd">u</code></dd>
+          </dl>
+
+          <h4>Optional keyboard shortcuts</h4>
+          <p>Optionally the following additional keyboard shortcuts can also be enabled:</p>
+          <dl>
+            <dt>Back one level</dt>
+            <dd>Win / Mac: <code class="kbd">backspace / Delete</code></dd>
+            <dt>Open Views menu</dt>
+            <dd>Win / Mac: <code class="kbd">v</code></dd>
+            <dt>Export Report</dt>
+            <dd>Win / Mac: <code class="kbd">x</code></dd>
+            <dt>Re-run Evaluation</dt>
+            <dd>Win / Mac: <code class="kbd">r</code></dd>
+          </dl>
+          <p><strong>NOTE:</strong> Single character keyboard shortcuts can be customized.</p>
 
 
 

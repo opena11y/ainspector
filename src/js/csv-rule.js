@@ -23,6 +23,11 @@ function convertFontFamilyForCSV(font_family) {
   return font_family.replaceAll('"', '\'');
 }
 
+function isTitleRule(result) {
+  return (result.page_result && result.page_result.page_title) ||
+          result.page_title;
+}
+
 function isColorContrastRule (result) {
   return (result.element_results &&
           result.element_results[0] &&
@@ -44,6 +49,28 @@ function isTableCellRule (result) {
          || result.table_cell;
 }
 
+function websiteOrPageToCSV(result) {
+  let csv = `\n\n`;
+
+  if (result.is_website) {
+    csv += `"${getMessage('website_label')} Result"\n`;
+  }
+
+  if (result.is_page) {
+    csv += `"${getMessage('page_label')} Result"\n`;
+  }
+
+  csv += `"Rule ID","${escapeForCSV(convertStringCSV(result.rule_nls_id))}"\n`;
+  csv += `"Definition","${escapeForCSV(convertStringCSV(result.definition))}"\n`;
+  csv += `"Action","${escapeForCSV(convertStringCSV(result.action))}"\n`;
+
+  if (result.page_title) {
+    csv += `"Page Title","${escapeForCSV(convertStringCSV(result.page_title))}"\n`;
+  }
+
+  return csv;
+}
+
 function resultToCSV(result) {
   let csv = ``;
   csv += `"${result.element}"`;
@@ -58,7 +85,7 @@ function resultToCSV(result) {
     csv += `,"${escapeForCSV(result.accessible_description.name)}"`;
     csv += `,"${result.accessible_description.source !== 'none' ? result.accessible_description.source : ''}"`;
 
-    if (result.page_title) {
+    if (isTitleRule(result)) {
       csv += `,"${result.page_title}"`;
     }
 
@@ -116,7 +143,7 @@ export function getCSVForRule (result) {
 
   csv += `\n\n"Rule ID","${result.rule_id_nls}"\n`;
   csv += `"Rule Summary","${result.rule_title}"\n`;
-  csv += `\n"Results Summary"\n`;
+  csv += `\n\n"Results Summary"\n`;
 
   const rs = result.result_summary;
   csv += `"Violations","${rs.violations}"\n`;
@@ -125,12 +152,19 @@ export function getCSVForRule (result) {
   csv += `"Passed","${rs.passed}"\n`;
   csv += `"Hidden","${rs.hidden}"\n`;
 
+  if (result.website_result) {
+    csv += websiteOrPageToCSV(result.website_result);
+  }
 
-  if (result.element_results) {
-    csv += `\n\n"Results"\n`;
+  if (result.page_result) {
+    csv += websiteOrPageToCSV(result.page_result);
+  }
+
+  csv += `\n\n"Element Results"\n`;
+  if (result.element_results && result.element_results.length) {
     csv += `"Element","Result","Action","id","class",Role","Accessible Name","Name Source","Accessible Description","Description Source"`;
 
-    if (result.page_result && result.page_result.page_title) {
+    if (isTitleRule(result)) {
       csv += `${getMessage("element_result_page_title")}`;
     }
 
@@ -148,17 +182,12 @@ export function getCSVForRule (result) {
 
     csv += `\n`;
 
-    if (result.website_result) {
-      csv += resultToCSV(result.website_result);
-    }
-
-    if (result.page_result) {
-      csv += resultToCSV(result.page_result);
-    }
-
     result.element_results.forEach( (er) => {
       csv += resultToCSV(er);
     });
+  }
+  else {
+    csv += `"None"\n`;
   }
 
   return csv;

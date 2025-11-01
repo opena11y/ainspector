@@ -5,11 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>About | Table of Contents Browser Extension</title>
+    <title>About | AInspector for WCAG Evaluation Browser Extension</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-
-    <!-- Choose Light or Dark Theme -->
-    <script src="./js/light-dark-scheme.js"></script>
 
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="./css/ainspector.css" rel="stylesheet" />
@@ -25,7 +22,7 @@
             <header>
           <!-- Navigation-->
           <nav class="navbar
-               navbar-expand-lg navbar-light bg-light"
+               navbar-expand-lg"
                aria-label="Primary"
                id="mainNav">
               <div class="container px-4">
@@ -48,7 +45,7 @@
                       </svg>
                     </span>
                     <span class="version">
-                      Version 4.0
+                      Version 4.1
                     </span>
                   </span>
 
@@ -63,38 +60,52 @@
                   </button>
                   <div class="collapse navbar-collapse" id="mainNavbar">
                     <ul class="navbar-nav ms-auto">
-                      
-                        
-                          <li class="nav-item">
-                            <a class="nav-link" href="index.html">Home</a>
-                          </li>
-                        
-                      
-                        
-                          <li class="nav-item">
-                            <a class="nav-link" href="options.html">Options</a>
-                          </li>
-                        
-                      
-                        
-                          <li class="nav-item">
-                            <a class="nav-link" href="faq.html">FAQ</a>
-                          </li>
-                        
-                      
-                        
-                          <li class="nav-item">
-                            <a class="nav-link" href="about.html">About</a>
-                          </li>
-                        
-                      
+
+                    
+
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Home</a>
+        </li>
+      
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Getting Started</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="getting-started-chrome.html">Chrome</a></li><li><a class="dropdown-item" href="getting-started-edge.html">Edge</a></li><li><a class="dropdown-item" href="getting-started-firefox.html">Firefox</a></li><li><a class="dropdown-item" href="getting-started-opera.html">Opera</a></li>
+          </ul>
+        </li>
+      
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Options</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="option-rulesets.html">Rulesets</a></li><li><a class="dropdown-item" href="option-general.html">General</a></li><li><a class="dropdown-item" href="option-export.html">Export</a></li><li><a class="dropdown-item" href="option-shortcuts.html">Shortcuts</a></li>
+          </ul>
+        </li>
+      
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Views</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="view-all-rules.html">All Rules</a></li><li><a class="dropdown-item" href="view-rule-group.html">Rule Group</a></li><li><a class="dropdown-item" href="view-rule-result.html">Rule Result</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="view-rule-result-ccr.html">Color Contrast Rules</a></li><li><a class="dropdown-item" href="view-rule-result-table.html">Table Rules</a></li><li><a class="dropdown-item" href="view-rule-result-table-cell.html">Table Cell Rules</a></li><li><a class="dropdown-item" href="view-rule-result-title.html">Title Rules</a></li>
+          </ul>
+        </li>
+      
+        <li class="nav-item">
+          <a class="nav-link" href="concepts.html">Concepts and Terms</a>
+        </li>
+      
+        <li class="nav-item">
+          <a class="nav-link" href="faq.html">FAQ</a>
+        </li>
+      
+        <li class="nav-item">
+          <a class="nav-link" href="about.html">About</a>
+        </li>
+      
+
+
                     </ul>
                   </div>
               </div>
           </nav>
           <div class="tagline">
             <div class="container px-4" >
-              Accessibility Inspector for WCAG, ARIA and ARIA in HTML specifications
+              Accessibility Inspector for WCAG Evaluation
             </div>
           </div>
        </header>
@@ -107,17 +118,17 @@
       <nav aria-label="Breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item active">About</li>
         </ol>
       </nav>
-      <main class="row gx-4 justify-content-center">
-        <div class="col-lg-10">
-          
-          <h1>About</h1>
-          
+      <main class="container px-4">
+        <div class="row gx-4 justify-content-center">
+          <div class="col-lg-10">
 
-          <div id="about">
+            
 
+              <h1>About</h1>
+
+                
           <h2>Contributors</h2>
           <ul>
             <li>Jon Gunderson, <a href="https://openweba11y.com">Open Web Accessibility Services</a></li>
@@ -127,7 +138,10 @@
 
           <p>Support for the AInspector for WCAG Evaluation project is provided by the <a href="https://dres.illinois.edu/">Division of Disability Resources and Educational Services</a> in the <a href="https://ahs.illinoie.edu">College of Applied Life Studies</a> at the <a href="htts://illinois.edu">University of Illinois at Urbana/Champaign</a>.
 
-                        <section class="feedback" aria-label="Privacy and Feedback">
+
+
+
+                         <section class="feedback" aria-label="Privacy and Feedback">
 
               <h2 id="privacy">Privacy</h2>
              <p>AInspector for WCAG Evaluation <em>does not</em> collect or store any information about users or work with any other parties to collect or share user browsing information.</p>
@@ -141,14 +155,15 @@
 
 
 
+            
           </div>
         </div>
       </main>
     </div>
             <!-- Footer-->
-        <footer class="py-5 bg-light">
+        <footer class="py-5">
 
-            <div class="container px-4 text-center">AInspector for WCAG Evaluation Copyright (c) 2025 Jon Gunderson; Licensed Mozilla Public License 2.0, All rights reserved</div>
+            <div class="container px-4 text-center">AInspector for WCAG Evaluation Copyright (c) 2025; Licensed Mozilla Public License 2.0, All rights reserved</div>
 
             <div class="container px-4 text-center"><a href="https://www.mozilla.org/en-US/MPL/2.0/">Mozilla Public License 2.0</a> allows for <em>AInspector for WCAG Evaluation</em> to be freely used (e.g. no cost), copied or modified.</div>
 
@@ -160,12 +175,6 @@
 
             <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-
-        <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
-
-        <!-- Bookmarklets-->
-        <script src="js/createBookmarklets.js"></script>
 
         <!-- SkipTo.js -->
         <script data-skipto="positionLeft: 30%" src="https://skipto-landmarks-headings.github.io/page-script-5/dist/skipto.min.js"></script>

@@ -1,12 +1,58 @@
 /* Define standard variables and values for website */
+
 :root {
   color-scheme: light dark;
+
+  --iconBlue: hsl(216, 60%, 18%);
+  --iconBlueDark: hsl(216, 60%, 82%);
+
+  --iconOrange: hsl(22, 100%, 51%);
+  --iconOrangeDark: hsl(22, 100%, 49%);
+
+  --iconBackground: hsl(0, 0%, 93%);
+  --iconBackgroundDark: hsl(0, 0%, 7%);
+
+  --iconWhite: hsl(0, 0%, 100%);
+  --iconWhiteDark: hsl(0, 0%, 0%);
+
+  --link: hsl(195, 100%, 42%);
+  --linkDark: hsl(195, 100%, 58%);
+
+  --linkCurrentColor: #000;
+  --linkCurrentColorDark: #eee;
+
+  --linkIcon: hsl(195, 100%, 42%);
+  --linkIconDark: hsl(195, 100%, 58%);
+
+  --backgroundColor: hsl(0, 0%, 100%);
+  --backgroundColorDark: hsl(0, 0%, 0%);
+
+  --textColor:  hsl(0, 0%, 7%);
+  --textColorDark:  hsl(0, 0%, 93%);
+
+  --headingColor: hsl(214, 70%, 38%);
+  --headingColorDark:  hsl(214, 70%, 62%);
+
+  --imageBorder:  hsl(0, 0%, 87%);
+  --imageBorderDark:  hsl(0, 0%, 13%);
+
+  --faqBackground: hsl(0, 0%, 87%);
+  --faqBackgroundDark: hsl(0, 0%, 13%);
+
+  --font-family: arial, verdana, tahoma, "trebuchet MS", sans-serif;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: arial, verdana, tahoma, "trebuchet MS", sans-serif;
+  color: light-dark(var(--textColor), var(--textColorDark)) !important;
+  background-color: light-dark(var(--backgroundColor), var(--backgroundColorDark)) !important;
+  font-family: var(--font-family);
+}
+
+header,
+header nav {
+  background-color: light-dark(var(--backgroundColor), var(--backgroundColorDark)) !important;
 }
 
 .icon {
@@ -18,32 +64,21 @@ body {
 }
 
 .icon path.border {
-  stroke: light-dark(#13294B, white);
+  stroke: light-dark(var(--iconBlue), var(--iconBlueDark));
   fill: none;
   stroke-width: 2;
-  stroke: light-dark(#13294B, white);
+  stroke: light-dark(var(--iconBlue), var(--iconBlueDark));
 }
 
 .icon polygon.text {
   stroke-width: 2;
-  stroke: light-dark(#13294B, white);
-  fill: light-dark(#13294B, white);
+  stroke: light-dark(var(--iconBlue), var(--iconBlueDark));
+  fill: light-dark(var(--iconBlue), var(--iconBlueDark));
 }
 
 main a,
 main a:visited {
-  color: #2e64b7;
-}
-
-nav.second-level,
-nav.navbar.bg-light {
-  background-color: light-dark(#eeeeee, #101010) !important;
-  border-bottom: 1px solid light-dark(transparent, #eeeeee);
-}
-
-footer.bg-light {
-  background-color: light-dark(#eeeeee, #101010) !important;
-  border-top: 1px solid light-dark(transparent, #eeeeee);
+  color: light-dark(var(--linkColor), var(--linkColorDark));
 }
 
 .brand {
@@ -62,14 +97,14 @@ footer.bg-light {
   padding: 0;
   margin: 0;
   height: 32px;
-  border: 1px solid #13294B;
+  border: 1px solid light-dark(var(--iconBlue), var(--iconBlueDark));
 }
 
 .brand .version {
   display: inline-block;
   padding: 0;
   margin: 0;
-  color: #13294B;
+  color: light-dark(var(--iconBlue), var(--iconBlueDark));
 }
 
 .tagline {
@@ -78,17 +113,13 @@ footer.bg-light {
   font-family: "Fjalla One", sans-serif;
   font-weight: 400;
   font-size: 2em;
-  color: #ffffff;
-  background: #13294B;
+  color: light-dark(var(--iconWhite), var(--iconWhiteDark));
+  background: light-dark(var(--iconBlue), var(--iconBlueDark));
 }
 
 blockquote {
   margin: 1em 15%;
   text-align: center;
-}
-
-.text-blue {
-  color: #005797;
 }
 
 nav ol.breadcrumb {
@@ -131,8 +162,8 @@ nav.second-level a:focus,
 .navbar-nav .nav-link,
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link:focus {
-  color: light-dark(#005797, rgb(110, 168, 254));
-  outline-color: light-dark(#005797, rgb(110, 168, 254));
+  color: light-dark(var(--linkColor), var(--linkColorDark));
+  outline-color: light-dark(var(--linkColor), var(--linkColorDark));
 }
 
 .breadcrumb a[aria-current],
@@ -140,7 +171,7 @@ nav.second-level a[aria-current],
 .navbar-nav .nav-link[aria-current],
 .navbar-nav .nav-link:hover[aria-current],
 .navbar-nav .nav-link:focus {
-  color: light-dark(#000000, #888);
+  color: light-dark(var(--linkCurrentColor), var(--linkCurrentColorDark));
 }
 
 .tab-pane {
@@ -229,7 +260,7 @@ figure.image {
 }
 
 figure.image img {
-  border: 2px solid light-dark(#dddddd, #333333);
+  border: 2px solid light-dark(var(--imageBorder), var(--imageBorderDark));
   width: 100%;
 }
 
@@ -238,7 +269,7 @@ figure.image figcaption {
   padding: 0.25em;
   font-weight: bold;
   font-size: 110%;
-  background-color: light-dark(#dddddd, #333333);
+  background-color: light-dark(var(--imageBorder), var(--imageBorderDark));
   width: 100%;
   text-align: center;
 }
@@ -344,7 +375,13 @@ main .feature {
   margin: 0;
   padding: 0;
   margin-top: 2em;
-  border-top: 2px solid #99b7e5;
+  border-top: 2px solid light-dark(var(--headingColor), var(--headingColorDark));
+}
+
+main h1,
+main h2,
+main h3 {
+  color: light-dark(var(--headingColor), var(--headingColorDark));
 }
 
 main h2 {
@@ -431,7 +468,7 @@ main .faq details .content {
   margin: 0;
   margin-left: 1em;
   padding: 0.125em;
-  background-color: #eee;
+  background-color: light-dark(var(--faqBackground), var(--faqBackgroundDark));
   margin-bottom: 0.5em;
   border: #eee solid 1 px;
   border-radius: 5px;

@@ -11,19 +11,21 @@
       <nav aria-label="Breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item active">{{title | safe}}</li>
         </ol>
       </nav>
-      <main class="row gx-4 justify-content-center">
-        <div class="col-lg-10">
-          {% block title %}
-          <h1>{{title}}</h1>
-          {% endblock %}
+      <main class="container px-4">
+        <div class="row gx-4 justify-content-center">
+          <div class="col-lg-10">
 
-          <div id="options">
+            {% block content %}
 
-          {% include "./feedback.njk" %}
+              <h1>{{title}}</h1>
 
+                {% include './' + content %}
+
+             {% include "./feedback.njk" %}
+
+            {% endblock %}
           </div>
         </div>
       </main>
