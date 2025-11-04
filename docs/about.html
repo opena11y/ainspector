@@ -128,17 +128,118 @@
 
               <h1>About</h1>
 
-                
-          <h2>Contributors</h2>
-          <ul>
-            <li>Jon Gunderson, <a href="https://openweba11y.com">Open Web Accessibility Services</a></li>
-          </ul>
+                  <p>AInspector was a project of the <a href="https://accessibleit.disability.illinois.edu/">DRES  Accessible IT Group</a> part of the <a href="http://dres.illinois.edu">Disability Resources and Education Services</a> at the <a href="">University of Illinois at Urbana/Champaign</a>.  While the original members of group has moved on to other endeavors, Jon Gunderson continues to support and develop AInspector for WCAG Evaluation.</p>
 
-          <h2>Support</h2>
+  <h2>People</h2>
 
-          <p>Support for the AInspector for WCAG Evaluation project is provided by the <a href="https://dres.illinois.edu/">Division of Disability Resources and Educational Services</a> in the <a href="https://ahs.illinoie.edu">College of Applied Life Studies</a> at the <a href="htts://illinois.edu">University of Illinois at Urbana/Champaign</a>.
+  <ul>
+      <li>Nicholas Hoyt: User experience design and software development</li>
+      <li>Jon Gunderson: Project management and software development</li>
+  </ul>
 
+  <h2>Source Code</h2>
 
+  <ul>
+      <li><a href="https://github.com/ainspector/ainspector">AInspector on GitHub</a></li>
+      <li><a href="https://opena11y.github.io/evaluation-library">OpenA11y Evaluation Library on GitHub</a></li>
+  </ul>
+
+  <h2>Version History</h2>
+
+  <h3>Version 4.0</h3>
+
+  <ul>
+      <li>Support for Chrome web browser in addition to Firefox</li>
+      <li>Updated JSON and CSV export formats to improve consistency</li>
+      <li>Update to Opena11y Evaluation Library 2.0.6 fixing bugs in several rules</li>
+  </ul>
+
+  <h3>Version 3.1</h3>
+
+  <ul>
+      <li>Fixed bug with element result details showing another result for the same element</li>
+      <li>Updated evaluation library to version 2.05</li>
+      <li>Added option to use ARIA 1.3 requirements for ARIA validation</li>
+  </ul>
+
+  <h3>Version 3.0</h3>
+
+  <ul>
+      <li>Updated video and audio rules</li>
+      <li>Fixed some bugs in table rules</li>
+      <li>Added additional rules for WCAG 2.1 and 2.2 requirements</li>
+      <li>Updated preferences and added help icon</li>
+  </ul>
+
+  <h3>Version 2.99</h3>
+
+  <ul>
+      <li>Using new OpenA11y Evaluation Library 2.0</li>
+      <li>Includes rules for WCAG 2.0, WCAG 2.1 and WCAG 2.2</li>
+      <li>Ruleset feature to choose evaluation based on WCAG 2.0, WCAG 2.1, WCAG 2.2 or “First Step” rules.</li>
+  </ul>
+
+  <h3 >Version 2.2.1</h3>
+
+  <ul>
+      <li>Updated info icon and dialog labeling</li>
+      <li>Added information icon activation animation</li>
+  </ul>
+
+  <h3> Version 2.2.0</h3>
+
+  <ul>
+      <li>Added information button to rule summary and element summary grids to provide documentation on the meaning of the symbols</li>
+      <li>Updating labeling of views to improve orientation to information in each view</li>
+  </ul>
+
+  <h3>Version 2.1.2</h3>
+
+  <ul>
+      <li>Updated evaluation library to fix the ccr calculation bug for rgba values</li>
+      <li>Updated CCR details to include computed hex colors for foreground and background</li>
+  </ul>
+
+  <h3>Version 2.1.1</h3>
+
+  <ul>
+      <li>Fixed bug rerunning evaluations</li>
+      <li>Rerun evaluation is now initialized with delay option enabled</li>
+      <li>Added home page link to manifest file</li>
+  </ul>
+
+  <h3>Version 2.1</h3>
+
+  <ul>
+      <li>Updated Summary tabpanel labeling to improve consistency (Rule Categories/WCAG Guidelines)</li>
+      <li>Updated position and labeling of “Export Data” button</li>
+      <li>Fixed bug in highlighting module that prevented some evaluations from being completed</li>
+  </ul>
+
+  <h3>Version 2.0.1</h3>
+
+  <ul>
+      <li>Provides a message in the title and location information for pages that do not allow evaluation</li>
+  </ul>
+
+  <h3>Version 2.0</h3>
+
+  <ul>
+      <li>Renamed extension from “AInspector WCAG” to “AInspector”, since most people just call it AInspector.</li>
+      <li>Rewrote the entire code base to use web components for creating user interface controls.</li>
+      <li>Removed ARIA Transitional ruleset from the options, since the reduced requirement are no relevant to modern web design. This change simplifies the user interface.</li>
+      <li>Export evaluation result in either CSV or JSON file formats</li>
+      <li>Added element results details view in Rule Result view to provide more information on a particular element result</li>
+      <li>Removed the “Details/Action” tab from the element results view</li>
+      <li>Enabled text in the selected rule or element information areas “selectable” for copying to the clipboard</li>
+      <li>Added copy rule information button to copy information to the clipboard</li>
+      <li>Added copy element information button to copy information to the clipboard</li>
+      <li>Added user keyboard shortcuts for Back, View, Export, Rerun and Copy buttons, and the shortcuts are configurable by the user.</li>
+      <li>Updated to A11y Evaluation Library 1.3 to support custom elements and provide additional element result information.</li>
+      <li>Improved element highlight feature in rule result view</li>
+      <li>Improved keyboard focus styling indicator to support high contrast modes</li>
+      <li>The header section with the title, back and view buttons is now sticky, so always visible as browser height changes</li>
+  </ul>
 
 
                          <section class="feedback" aria-label="Privacy and Feedback">
@@ -147,9 +248,15 @@
              <p>AInspector for WCAG Evaluation <em>does not</em> collect or store any information about users or work with any other parties to collect or share user browsing information.</p>
 
 
-              <h2 id="of-course-we-want-feedback">Feedback and Reporting Issues</h2>
+             <h2>Help Make AInspector for WCAG Evaluation Better</h2>
 
-              <p>We welcome your feedback!  Please do not hesitate to <a href="https://github.com/opena11y/ainspector/issues/">raise issues and comment on Github</a> if something doesn’t work or you have ideas on how to improve AInspector for WCAG Evaluation.</p>
+             <p>If you find a problem with AInspector for WCAG Evaluation please let us know by creating an <a href="https://github.com/opena11y/ainspector/issues">issue in the GitHib repository for AInspector</a>.&nbsp; Please provide the following information:</p>
+
+             <ol>
+                <li>A URL to were the problem can be replicated.</li>
+                <li>A short description of the issue.</li>
+                <li>How we can contact you for more information and verification the issue is resolved.</li>
+             </ol>
 
             </section>
 

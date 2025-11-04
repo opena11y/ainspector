@@ -15,6 +15,24 @@
   --iconWhite: hsl(0, 0%, 100%);
   --iconWhiteDark: hsl(0, 0%, 0%);
 
+  --resultV: hsl(0, 100%, 84%);
+  --resultVDark: hsl(0, 100%, 16%);
+
+  --resultW: hsl(49, 100%, 79%);
+  --resultWDark: hsl(49, 100%, 21%);
+
+  --resultMC: hsl(198, 53%, 81%);
+  --resultMCDark: hsl(198, 53%, 19%);
+
+  --resultP: hsl(90, 67%, 69%);
+  --resultPDark: hsl(90, 67%, 31%);
+
+  --resultNA: hsl(240, 100%, 96.7%);
+  --resultNADark: hsl(240, 100%, 3.3%);
+
+  --resultH: hsl(0, 0%, 87%);
+  --resultHDark: hsl(0, 0%, 3%);
+
   --link: hsl(195, 100%, 42%);
   --linkDark: hsl(195, 100%, 58%);
 
@@ -33,11 +51,11 @@
   --headingColor: hsl(214, 70%, 38%);
   --headingColorDark:  hsl(214, 70%, 62%);
 
+  --footerBackground: #eee;
+  --footerBackgroundDark: #222;
+
   --imageBorder:  hsl(0, 0%, 87%);
   --imageBorderDark:  hsl(0, 0%, 13%);
-
-  --faqBackground: hsl(0, 0%, 87%);
-  --faqBackgroundDark: hsl(0, 0%, 13%);
 
   --font-family: arial, verdana, tahoma, "trebuchet MS", sans-serif;
 }
@@ -465,10 +483,10 @@ main .faq details summary {
 }
 
 main .faq details .content {
-  margin: 0;
-  margin-left: 1em;
-  padding: 0.125em;
-  background-color: light-dark(var(--faqBackground), var(--faqBackgroundDark));
+  margin: 0.25em;
+  padding: 0.5em;
+  padding-left: 1em;
+  background-color: light-dark(var(--footerBackground), var(--footerBackgroundDark));
   margin-bottom: 0.5em;
   border: #eee solid 1 px;
   border-radius: 5px;
@@ -487,6 +505,59 @@ main .faq details .content li {
   margin-bottom: 0.5em;
 }
 
+main .table > :not(caption) > * > * {
+  color: light-dark(var(--textColor), var(--textColorDark));
+  background-color: light-dark(var(--textBackground), var(--textBackGroundDark));
+}
+
+main .table-striped > tbody > tr:nth-child(odd) > * {
+  color: light-dark(var(--textColor), var(--textColorDark));
+  background-color: light-dark(#eee, #333);
+}
+
 main .faq .content h2 {
   font-size: 110%;
+}
+main code.result {
+  padding: 1px 0.125em ;
+  display: inline-block;
+  width: 3em;
+  text-align: center;
+}
+
+main code.v {
+  color: light-dark(var(--textColor), var(--textColorDark));
+  background-color: light-dark(var(--resultV), var(--resultVDark));
+}
+
+main code.w {
+  color: light-dark(var(--textColor), var(--textColorDark));
+  background-color: light-dark(var(--resultW), var(--resultWDark));
+}
+
+main code.mc {
+  color: light-dark(var(--textColor), var(--textColorDark));
+  background-color: light-dark(var(--resultMC), var(--resultMCDark));
+}
+
+main code.p {
+  color: light-dark(var(--textColor), var(--textColorDark));
+  background-color: light-dark(var(--resultP), var(--resultPDark));
+}
+
+main code.na {
+  color: light-dark(var(--textColor), var(--textColorDark));
+  background-color: light-dark(var(--resultNA), var(--resultNADark));
+}
+
+main code.h {
+  color: light-dark(var(--textColor), var(--textColorDark));
+  background-color: light-dark(var(--resultH), var(--resultHDark));
+}
+
+
+
+footer {
+  margin: 0;
+  background-color: light-dark(var(--footerBackground), var(--footerBackgroundDark));
 }

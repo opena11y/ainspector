@@ -1,2 +1,166 @@
 
-  <p>Need content for concepts and terms.</p>
+  <h2 id="basic-concepts">Basic Concepts</h2>
+  <dl>
+      <dt>Rule</dt>
+      <dd>
+          A low-level accessibility conformance requirement with numerous components, the most basic of which are a definition, an evaluation function, and result messages. When a rule is evaluated, it is assigned a rule result
+          value.&nbsp; <a href="https://opena11y.github.io/evaluation-library/rules-rc.html">List of current rules</a>.
+      </dd>
+
+      <dt>Target resources</dt>
+      <dd>
+          The set of HTML elements to which a particular rule applies. These include familiar elements such as&nbsp;<code>div</code>,&nbsp;<code>img</code>&nbsp;and&nbsp;<code>input</code>, as well as a pseudo-element designated
+          as&nbsp;<code>page</code>, which is a placeholder for the document element. When a rule is evaluated, each of its target resources is assigned an element result value.
+      </dd>
+
+      <dt>Evaluation</dt>
+      <dd>
+          The application of all evaluation functions of all rules in the selected ruleset to their corresponding target resources in a web page, and the subsequent collection of all evaluation results and messages, at both the rule
+          and element levels, into a dataset.
+      </dd>
+
+      <dt>Rule result</dt>
+      <dd>The aggregate result of a rule evaluation with respect to its target resources (all of its target elements and/or the entire page).</dd>
+
+      <dt>Element result</dt>
+      <dd>The result of a rule evaluation with respect to one of its target elements.</dd>
+
+      <dt>Rule scope</dt>
+      <dd><em>element</em>: A WCAG requirement for a specific html element or an element with an ARIA role, property or state.&nbsp; For example, an <code>img</code> element must have an <code>alt</code> attribute.</dd>
+      <dd><em>page</em>: A WCAG requirement that applies to a feature of a web page.&nbsp; For example, a web page must have a <code>main</code> landmark.</dd>
+      <dd><em>website</em>: A WCAG requrement that applied to pages in a website.&nbsp; For example, consistent navigational links in each web page.</dd>
+  </dl>
+
+  <h2>Rule and element result values</h2>
+
+  <dl>
+      <dt><code class="result v">V</code>&nbsp;Violation</dt>
+      <dd>One or more target elements fail the requirements of a required rule</dd>
+
+      <dt><code class="result w">W</code>&nbsp;Warning</dt>
+      <dd>One or more target elements fail the requirements of a recommended rule</dd>
+
+      <dt><code class="result mc">MC</code>&nbsp;Manual check</dt>
+      <dd>Unable to programmatically determine a result – evaluation requires human inspection</dd>
+
+      <dt><code class="result p">P</code>&nbsp;Pass</dt>
+      <dd>All rule requirements were satisfied</dd>
+
+      <dt><code class="result na">N/A</code>&nbsp;Not applicable</dt>
+      <dd>Rule was not applied because there were no relevant target elements</dd>
+
+      <dt><code class="result h">H</code>&nbsp;Hidden</dt>
+      <dd>Target element was not evaluated because it is hidden (either visually or from assistive technologies)</dd>
+  </dl>
+
+  <h2>Rule Categories</h2>
+
+  <p>
+      Rule categories are an alternative to WCAG Guidelines for grouping related rules. The Rule Categories are based on HTML element types to make it easier for web designers and developers to understand WCAG accessibility
+      requirements.
+  </p>
+
+  <dl style="margin-top: 1em;">
+      <dt>Landmarks</dt>
+      <dd>
+          Use <a href="https://www.w3.org/TR/wai-aria-practices/examples/landmarks/index.html">ARIA landmark roles</a> to structure the content of each page and identify major sections of content, thus making them more findable and
+          navigable.
+      </dd>
+      <dd>The use of landmarks will, in many cases, reflect the visual styling and page layouts that web designers utilize to set apart various sections of content.</dd>
+      <dt>Headings</dt>
+      <dd>Use heading elements (H1-H6) to identify sections and subsections of content in a web page.</dd>
+      <dd>Headings can also be used to provide accessible names for landmarks using the <code>aria-labelledby</code> attribute.</dd>
+      <dt>Color/Content</dt>
+      <dd>
+          Use proper HTML markup to identify the semantics and language of text content. Ensure that text is readable by adhering to color contrast requirements, and that information is not conveyed solely by the use of color, shape,
+          location or sound.
+      </dd>
+      <dt>Images</dt>
+      <dd>Provide appropriate text alternatives for static images and graphics.</dd>
+      <dt>Links</dt>
+      <dd>Use link text that properly describes the target of each link. Ensure consistency and uniqueness for links that are usable, predictable and understandable.</dd>
+      <dt>Tables/Layout</dt>
+      <dd>Provide table captions or other meta-information as needed. Provide row and column header references for data cells of data tables. Ensure that tables used for layout properly linearize text content.</dd>
+      <dt>Forms</dt>
+      <dd>Provide meaningful labels for form elements and usable and understandable error feedback as needed.</dd>
+      <dt>Widgets/Scripts</dt>
+      <dd>Use appropriate event handlers on elements to support native interactivity using JavaScript.</dd>
+      <dd>Ensure that custom widgets created using JavaScript support keyboard interaction and include ARIA markup to describe their roles, properties and states.</dd>
+      <dt>Audio/Video</dt>
+      <dd>Provide appropriate text transcripts, captions or audio descriptions for elements used in rendering audio and video content.</dd>
+      <dt>Keyboard Support</dt>
+      <dd>
+          Provide logical and sequential keyboard navigation among interactive elements such as links and form controls. Use standard models of keyboard interaction for custom widgets, guidance and examples can be found in the
+          <a href="https://www.w3.org/TR/wai-aria-practices-1.2/#keyboard">ARIA Authoring Practices</a>.
+      </dd>
+      <dt>Timing/Live Regions</dt>
+      <dd>Identify accessibility problems caused by time limits on input and by content that moves, scrolls, flashes or auto-updates.</dd>
+      <dt>Site Navigation</dt>
+      <dd>Ensure the consistent labeling and ordering of recurrent page sections across all pages within a website. Provide a meaningful title for each page within a website.</dd>
+  </dl>
+
+  <h2>Ruleset</h2>
+
+  <p>
+      The<a href="https://opena11y.github.io/evaluation-library/rulesets.html"> Rulesets of the OpenA11y Evaluation Library</a> identifies the rules used to evaluate a web page based on the requirements of the version of the W3C Web
+      Content Accessibility Guidelines (WCAG). The “First Step” Ruleset is for people new to accessibility and identifies 27 rules as a stating point for meeting WCAG requirements.
+  </p>
+
+  <h3>Number of Rules by WCAG Version and Level</h3>
+
+  <table class="table table-striped">
+      <thead>
+          <tr class="row-1 odd">
+              <th class="column-1">Ruleset</th>
+              <th class="column-2">Level A</th>
+              <th class="column-3">Level AA</th>
+              <th class="column-4">Level AAA</th>
+              <th class="column-5">Total</th>
+          </tr>
+      </thead>
+      <tbody class="row-hover">
+          <tr class="row-2 even">
+              <td class="column-1">WCAG 2.0 (2008)</td>
+              <td class="column-2">95</td>
+              <td class="column-3">21</td>
+              <td class="column-4">1</td>
+              <td class="column-5">118</td>
+          </tr>
+          <tr class="row-3 odd">
+              <td class="column-1">WCAG 2.1 (2018)</td>
+              <td class="column-2">102</td>
+              <td class="column-3">30</td>
+              <td class="column-4">4</td>
+              <td class="column-5">136</td>
+          </tr>
+          <tr class="row-4 even">
+              <td class="column-1">WCAG 2.2 (2023)</td>
+              <td class="column-2">103</td>
+              <td class="column-3">37</td>
+              <td class="column-4">4</td>
+              <td class="column-5">144</td>
+          </tr>
+          <tr class="row-5 odd">
+              <td class="column-1">First Step</td>
+              <td class="column-2">22</td>
+              <td class="column-3">5</td>
+              <td class="column-4">0</td>
+              <td class="column-5">27</td>
+          </tr>
+      </tbody>
+  </table>
+
+
+  <h3>More about rules, target resources and result values</h3>
+  <ul>
+      <li>A rule tests target resources for specific accessibility features.</li>
+      <li>Some rules are fully automated and return pass or fail results and messages.</li>
+      <li>Other rules can only identify the need for human judgement to determine whether an accessibility requirement has been met. These return manual check results and messages.</li>
+      <li>If target resources are not found on the page, the rule result is designated as not applicable.</li>
+      <li>
+          If target resources for a rule are hidden, their element results are designated as hidden. Although hidden elements are not evaluated, they are listed at the element results level to enable developers to consider their
+          accessibility if and when they become available to users.
+      </li>
+      <li>Rules also include information on accessibility techniques and links to related resources to help developers understand how to meet the requirements of a rule.</li>
+  </ul>
+
