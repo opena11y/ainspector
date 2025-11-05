@@ -99,17 +99,17 @@ const pages = [
     dropdown: 'Views',
     pages: [
       { content: 'content-view-all-rules.njk',
-        title: 'All Rules',
+        title: 'All Rules View',
         link: 'All Rules',
         filename: 'view-all-rules.html'
       },
       { content: 'content-view-rule-group.njk',
-        title: 'Rule Group',
+        title: 'Rule Group View',
         link: 'Rule Group',
         filename: 'view-rule-group.html'
       },
       { content: 'content-view-rule-result.njk',
-        title: 'Rule Result',
+        title: 'Rule Result View',
         link: 'Rule Result',
         filename: 'view-rule-result.html'
       },
@@ -117,31 +117,50 @@ const pages = [
         spacer: ''
       },
       { content: 'content-view-rule-result-ccr.njk',
-        title: 'Color Contrast Rules',
+        title: 'Rule Result View: Color Contrast Rules',
         link: 'Color Contrast Rules',
         filename: 'view-rule-result-ccr.html'
       },
       { content: 'content-view-rule-result-table.njk',
-        title: 'Table Rule Results',
+        title: 'Rule Result View: Table Rule Results',
         link: 'Table Rules',
         filename: 'view-rule-result-table.html'
       },
       { content: 'content-view-rule-result-table-cell.njk',
-        title: 'Table Cell Rule Results',
+        title: 'Rule Result View: Table Cell Rule Results',
         link: 'Table Cell Rules',
         filename: 'view-rule-result-table-cell.html'
       },
       { content: 'content-view-rule-result-title.njk',
-        title: 'Title Rule Results',
+        title: 'Rule Result View: Title Rule Results',
         link: 'Title Rules',
         filename: 'view-rule-result-title.html'
       }
     ]
   },
-  { content: 'content-concepts.njk',
-    title: 'Concepts and Terms',
-    link: 'Concepts and Terms',
-    filename: 'concepts.html'
+  { dropdown: 'Concepts and Terms',
+    pages: [
+      { content: 'content-concepts-basic.njk',
+        title: 'Basic Concepts and Terms',
+        link: 'Basic Concepts',
+        filename: 'concepts-basic.html'
+      },
+      { content: 'content-concepts-results.njk',
+        title: 'Result Values',
+        link: 'Result Values',
+        filename: 'concepts-results.html'
+      },
+      { content: 'content-concepts-categories.njk',
+        title: 'Rule Categories',
+        link: 'Rule Categories',
+        filename: 'concepts-categories.html'
+      },
+      { content: 'content-concepts-rulesets.njk',
+        title: 'Rulesets',
+        link: 'Rulesets',
+        filename: 'concepts-rulesets.html'
+      }
+    ]
   },
   { content: 'content-faq.njk',
     title: 'Frequently Asked Questions',

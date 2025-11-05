@@ -1,0 +1,32 @@
+
+  <dl>
+      <dt>Rule</dt>
+      <dd>
+          A low-level accessibility conformance requirement with numerous components, the most basic of which are a definition, an evaluation function, and result messages. When a rule is evaluated, it is assigned a rule result
+          value.&nbsp; <a href="https://opena11y.github.io/evaluation-library/rules-rc.html">List of current rules</a>.
+      </dd>
+
+      <dt>Target resources</dt>
+      <dd>
+          The set of HTML elements to which a particular rule applies. These include familiar elements such as&nbsp;<code>div</code>,&nbsp;<code>img</code>&nbsp;and&nbsp;<code>input</code>, as well as a pseudo-element designated
+          as&nbsp;<code>page</code>, which is a placeholder for the document element. When a rule is evaluated, each of its target resources is assigned an element result value.
+      </dd>
+
+      <dt>Evaluation</dt>
+      <dd>
+          The application of all evaluation functions of all rules in the selected ruleset to their corresponding target resources in a web page, and the subsequent collection of all evaluation results and messages, at both the rule
+          and element levels, into a dataset.
+      </dd>
+
+      <dt>Rule result</dt>
+      <dd>The aggregate result of a rule evaluation with respect to its target resources (all of its target elements and/or the entire page).</dd>
+
+      <dt>Element result</dt>
+      <dd>The result of a rule evaluation with respect to one of its target elements.</dd>
+
+      <dt>Rule scope</dt>
+      <dd><em>element</em>: A WCAG requirement for a specific html element or an element with an ARIA role, property or state.&nbsp; For example, an <code>img</code> element must have an <code>alt</code> attribute.</dd>
+      <dd><em>page</em>: A WCAG requirement that applies to a feature of a web page.&nbsp; For example, a web page must have a <code>main</code> landmark.</dd>
+      <dd><em>website</em>: A WCAG requrement that applied to pages in a website.&nbsp; For example, consistent navigational links in each web page.</dd>
+  </dl>
+

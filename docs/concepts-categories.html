@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Chrome Browser | AInspector for WCAG Evaluation Browser Extension</title>
+    <title>Rule Categories | AInspector for WCAG Evaluation Browser Extension</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
     <!-- Core theme CSS (includes Bootstrap)-->
@@ -128,15 +128,52 @@
 
             
 
-              <h1>Chrome Browser</h1>
+              <h1>Rule Categories</h1>
 
-                
-  <figure class="image">
-    <img  src="images/webstore-chrome.png" alt="">
-    <figcaption>Screen shot of AInspector for WCAG Evaluation in chrome web store</figcaption>
-  </figure>
+                  <p>
+      Rule categories are an alternative to WCAG Guidelines for grouping related rules. The Rule Categories are based on HTML element types to make it easier for web designers and developers to understand WCAG accessibility
+      requirements.
+  </p>
 
-  <p><a href="https://chromewebstore.google.com/detail/ainspector-for-wcag-evalu/dhllbiaionalkdpankidadkoaaenenie">AInspector for WCAG Evaluation in chrome web store</a></p>
+  <dl style="margin-top: 1em;">
+      <dt>Landmarks</dt>
+      <dd>
+          Use <a href="https://www.w3.org/TR/wai-aria-practices/examples/landmarks/index.html">ARIA landmark roles</a> to structure the content of each page and identify major sections of content, thus making them more findable and
+          navigable.
+      </dd>
+      <dd>The use of landmarks will, in many cases, reflect the visual styling and page layouts that web designers utilize to set apart various sections of content.</dd>
+      <dt>Headings</dt>
+      <dd>Use heading elements (H1-H6) to identify sections and subsections of content in a web page.</dd>
+      <dd>Headings can also be used to provide accessible names for landmarks using the <code>aria-labelledby</code> attribute.</dd>
+      <dt>Color/Content</dt>
+      <dd>
+          Use proper HTML markup to identify the semantics and language of text content. Ensure that text is readable by adhering to color contrast requirements, and that information is not conveyed solely by the use of color, shape,
+          location or sound.
+      </dd>
+      <dt>Images</dt>
+      <dd>Provide appropriate text alternatives for static images and graphics.</dd>
+      <dt>Links</dt>
+      <dd>Use link text that properly describes the target of each link. Ensure consistency and uniqueness for links that are usable, predictable and understandable.</dd>
+      <dt>Tables/Layout</dt>
+      <dd>Provide table captions or other meta-information as needed. Provide row and column header references for data cells of data tables. Ensure that tables used for layout properly linearize text content.</dd>
+      <dt>Forms</dt>
+      <dd>Provide meaningful labels for form elements and usable and understandable error feedback as needed.</dd>
+      <dt>Widgets/Scripts</dt>
+      <dd>Use appropriate event handlers on elements to support native interactivity using JavaScript.</dd>
+      <dd>Ensure that custom widgets created using JavaScript support keyboard interaction and include ARIA markup to describe their roles, properties and states.</dd>
+      <dt>Audio/Video</dt>
+      <dd>Provide appropriate text transcripts, captions or audio descriptions for elements used in rendering audio and video content.</dd>
+      <dt>Keyboard Support</dt>
+      <dd>
+          Provide logical and sequential keyboard navigation among interactive elements such as links and form controls. Use standard models of keyboard interaction for custom widgets, guidance and examples can be found in the
+          <a href="https://www.w3.org/TR/wai-aria-practices-1.2/#keyboard">ARIA Authoring Practices</a>.
+      </dd>
+      <dt>Timing/Live Regions</dt>
+      <dd>Identify accessibility problems caused by time limits on input and by content that moves, scrolls, flashes or auto-updates.</dd>
+      <dt>Site Navigation</dt>
+      <dd>Ensure the consistent labeling and ordering of recurrent page sections across all pages within a website. Provide a meaningful title for each page within a website.</dd>
+  </dl>
+
 
 
                          <section class="feedback" aria-label="Privacy and Feedback">
