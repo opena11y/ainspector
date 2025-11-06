@@ -150,7 +150,7 @@
   /* Constants */
   const debug$18 = new DebugLogging('constants', false);
 
-  const VERSION = '2.0.7';
+  const VERSION = '2.0.8';
 
   /**
    * @constant RULESET
@@ -1401,6 +1401,10 @@
     rulesetLevelA:   'Level A only',
     rulesetLevelAA:  'Levels A and AA',
     rulesetLevelAAA: 'Levels A, AA and enhanced CCR',
+
+    ruleScopeAll: "All rules",
+    ruleScopePage: "Page only rules",
+    ruleScopeWebsite: "Website only rules",
 
     rulesetFirstStep: 'First Step Rules',
     rulesetWCAG22:    'WCAG 2.2, ',
@@ -9753,7 +9757,7 @@
             FAIL_S: 'Add a @title@ element to the @head@ element section with text content that identifies both the website (if applicable) and the page content.'
           },
           BASE_RESULT_MESSAGES: {
-            PAGE_MC_1:   'Verify that the @title@ content "%1" identifies both the website (if applicable) and the page content.',
+            PAGE_MC_1:   'Verify that the @title@ content identifies both the website (if applicable) and the page content.',
             PAGE_FAIL_1: 'Add content to the @title@ element in the @head@ element of the document to identify both the website (if applicable) and the page content.',
           },
           PURPOSES: [
@@ -11326,7 +11330,7 @@
   /**
    * @function getRulesetLabel
    *
-   * @desc Retuns a localize string describing the options
+   * @desc Returns a localize string describing the options
    *       used in the evaluation
    *
    * @param {String} rulesetId      - Used to identify the ruleset
@@ -11378,6 +11382,44 @@
 
         default:
           label = messages[locale].common.rulesetWCAG20 + addLevel() + addAria();
+          break;
+      }
+
+    return label;
+  }
+
+  /**
+   * @function getRuleScopeLabel
+   *
+   * @desc Returns a localize string describing the scope filter option
+   *
+   * @param {String} rulesetId      - Used to identify the ruleset
+   * @param {String} level          - Used to identify the WCAG level
+   * @param {String} ariaVersionId  - Used to identify the ARIA version
+   *
+   * @return {String}  see @desc
+   */
+
+  function getRuleScopeLabel(scopeFilter) {
+
+      let label = '';
+
+      switch (scopeFilter) {
+
+        case 'ALL':
+          label = messages[locale].common.ruleScopeAll;
+          break;
+
+        case 'PAGE':
+          label = messages[locale].common.ruleScopePage;
+          break;
+
+        case 'WEBSITE':
+          label = messages[locale].common.ruleScopeWebsite;
+          break;
+
+        default:
+          label = 'undefined';
           break;
       }
 
@@ -37668,7 +37710,7 @@
       target_resources    : ['Page', 'title'],
       validate            : function (dom_cache, rule_result) {
         if (dom_cache.hasTitle) {
-          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', [dom_cache.title]);
+          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
         }
         else {
           rule_result.addPageResult(TEST_RESULT.FAIL, dom_cache, 'PAGE_FAIL_1', []);
@@ -39695,7 +39737,20 @@
      */
 
     getRulesetLabel () {
-      return getRulesetLabel(this.ruleset, this.level, this.ariaVersion);  }
+      return getRulesetLabel(this.ruleset, this.level, this.ariaVersion);
+    }
+
+    /**
+     * @method getRuleScopeFilterLabel
+     *
+     * @desc Get the rule scope filter
+     *
+     * @return {String}  String representing rule scope filter
+     */
+
+    getRuleScopeFilterLabel () {
+      return getRuleScopeLabel(this.scopeFilter);
+    }
 
     /**
      * @method runWCAGRules
@@ -40818,12 +40873,13 @@
         const now = new Date();
 
         let response = {
-          title:         er.getTitle(),
-          location:      er.getURL(),
-          ruleset_label: er.getRulesetLabel(),
-          result_view:   r.result_view,
-          date:          now.toLocaleDateString(),
-          time:          now.toLocaleTimeString(),
+          title:             er.getTitle(),
+          location:          er.getURL(),
+          ruleset_label:     er.getRulesetLabel(),
+          rule_scope_filter: er.getRuleScopeFilterLabel(),
+          result_view:       r.result_view,
+          date:              now.toLocaleDateString(),
+          time:              now.toLocaleTimeString(),
           ainspector_version: ''
         };
 

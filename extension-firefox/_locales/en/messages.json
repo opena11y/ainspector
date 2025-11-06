@@ -75,6 +75,11 @@
     "description": "Label for ruleset value"
   },
 
+  "info_rule_scope_label": {
+    "message": "Scope: ",
+    "description": "Label for scope filter value"
+  },
+
   "info_view_label": {
     "message": "View: ",
     "description": "Label for side panel view"
@@ -402,6 +407,11 @@
   "no_results_msg": {
     "message": "No results",
     "description": "Message for no results"
+  },
+
+  "check_options_msg": {
+    "message": "Check ruleset and filter options",
+    "description": "Message to check ruleset options and filters"
   },
 
   "no_violations_warnings_mc_results_msg": {

@@ -4,6 +4,8 @@
 
 | Version      |    Date     | Notes |
 |--------------|:-----------:|-----------------------------------------------------|
+| 4.1.2        |   11/01/25  | Updated some rule result views
+| 4.1.1        |   11/01/25  | Updated some rule result views
 | 4.1          |   10/06/25  | Updated evaluation library to version 2.0.7
 | 4.0          |   9/25/25   | Updated evaluation library to version 2.0.6 and support for Chrome
 | 3.1          |   4/25/24   | Updated evaluation library to version 2.0.5 and added ARIA 1.3 option
@@ -26,6 +28,11 @@
 | 0.96.0       |  10/30/19   | Fixes bug in highlight option not being remembered
 
 =======
+
+### 4.1.2
+* Updated title rule messaging
+* Added message when a rule group has no results when filters are applied
+* Fixed no results messaging
 
 ### 4.1.1
 * Added page title information to rule view results for title rules

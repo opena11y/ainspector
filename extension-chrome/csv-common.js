@@ -101,6 +101,7 @@ export function pageInfoToCVS(result) {
   csv+= `"${getMessage('info_title_label')}","${escapeForCSV(result.title)}"\n`;
   csv+= `"${getMessage('info_url_label')}","${escapeForCSV(result.location)}"\n`;
   csv+= `"${getMessage('info_ruleset_label')}","${escapeForCSV(result.ruleset_label)}"\n`;
+  csv+= `"${getMessage('info_rule_scope_label')}","${escapeForCSV(result.rule_scope_filter)}"\n`;
   csv+= `"${getMessage('info_view_label')}","${escapeForCSV(result.result_view)}"\n`;
   csv+= `"${getMessage('csv_date')}","${escapeForCSV(result.date)}"\n`;
   csv+= `"${getMessage('csv_time')}","${escapeForCSV(result.time)}"\n`;

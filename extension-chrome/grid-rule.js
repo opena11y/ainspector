@@ -210,7 +210,7 @@ export default class GridRule extends Grid {
         });
 
         if (count === 0) {
-          this.addMessageRow(getMessage('no_violations_warnings_mc_results_msg'));
+          this.addMessageRow('msg1', getMessage('no_violations_warnings_mc_results_msg'));
         }
 
         const rows = this.tbody.querySelectorAll('tr');
@@ -236,7 +236,7 @@ export default class GridRule extends Grid {
 
     }
     else {
-      this.addMessageRow(getMessage('no_results_msg'));
+      this.addMessageRow('msg1', getMessage('no_results_msg'));
     }
   }
 

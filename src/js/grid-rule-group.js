@@ -201,6 +201,7 @@ export default class GridRuleGroup extends Grid {
     let count = 0;
 
     removeChildContent(this.tbody);
+
     if (rule_results.length) {
 
       getOptions().then( (options) => {
@@ -253,7 +254,7 @@ export default class GridRuleGroup extends Grid {
         });
 
         if (count === 0) {
-          this.addMessageRow(getMessage('no_violations_warnings_mc_results_msg'));
+          this.addMessageRow('msg1', getMessage('no_violations_warnings_mc_results_msg'));
         }
 
         const rows = this.tbody.querySelectorAll('tr');
@@ -276,7 +277,8 @@ export default class GridRuleGroup extends Grid {
 
     }
     else {
-      this.addMessageRow(getMessage('no_results_msg'));
+      this.addMessageRow('msg1', getMessage('no_results_msg'));
+      this.addMessageRow('msg2', getMessage('check_options_msg'));
     }
   }
 

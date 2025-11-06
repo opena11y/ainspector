@@ -130,6 +130,16 @@ template.innerHTML = `
       </span>
     </div>
 
+    <div class="info">
+      <span class="label"
+            data-i18n="info_rule_scope_label">
+      </span>
+      <span id="info-rule-scope"
+            class="value">
+      </span>
+    </div>
+
+
     <div class="buttons">
       <div class="first">
         <button id="options-button"
@@ -188,10 +198,11 @@ class AISidePanel extends HTMLElement {
     this.mainElem       = this.shadowRoot.querySelector(`main`);
     this.footerElem     = this.shadowRoot.querySelector(`footer`);
 
-    this.viewTitleElem    = this.shadowRoot.querySelector(`#view-title`);
-    this.infoTitleElem    = this.shadowRoot.querySelector(`#info-title`);
-    this.infoLocationElem = this.shadowRoot.querySelector(`#info-location`);
-    this.infoRulesetElem  = this.shadowRoot.querySelector(`#info-ruleset`);
+    this.viewTitleElem      = this.shadowRoot.querySelector(`#view-title`);
+    this.infoTitleElem      = this.shadowRoot.querySelector(`#info-title`);
+    this.infoLocationElem   = this.shadowRoot.querySelector(`#info-location`);
+    this.infoRulesetElem    = this.shadowRoot.querySelector(`#info-ruleset`);
+    this.infoRuleScopeElem  = this.shadowRoot.querySelector(`#info-rule-scope`);
 
     this.viewRulesAllElem  = this.shadowRoot.querySelector(`view-rules-all`);
     this.viewRulesAllElem.setSidepanel(this);
@@ -260,6 +271,7 @@ class AISidePanel extends HTMLElement {
     this.infoTitleElem.textContent    = message2;
     this.infoLocationElem.textContent = message1;
     this.infoRulesetElem.textContent  = '';
+    this.infoRuleScopeElem.textContent = '';
 
     this.viewRulesAllElem.clear(message1, message2);
     this.viewRuleGroupElem.clear(message1, message2);
@@ -267,9 +279,10 @@ class AISidePanel extends HTMLElement {
   }
 
   updateView(result) {
-    this.infoTitleElem.textContent    = result.title;
-    this.infoLocationElem.textContent = result.location;
-    this.infoRulesetElem.textContent  = result.ruleset_label;
+    this.infoTitleElem.textContent      = result.title;
+    this.infoLocationElem.textContent   = result.location;
+    this.infoRulesetElem.textContent    = result.ruleset_label;
+    this.infoRuleScopeElem.textContent  = result.rule_scope_filter;
 
     debug.flag && debug.log(`[result][        title]: ${result.title}`);
     debug.flag && debug.log(`[result][     location]: ${result.location}`);

@@ -98,6 +98,10 @@ export default class InfoRule extends HTMLElement {
       renderContent(divElem, info_rule.rule_nls_id);
       this.copyText[id] += getCopyTextContent('rule_id_label', info_rule.rule_nls_id);
 
+      addH3(divElem, getMessage('rule_scope_label'));
+      renderContent(divElem, info_rule.rule_scope);
+      this.copyText[id] += getCopyTextContent('rule_scope_label', info_rule.rule_scope);
+
       addH3(divElem, getMessage('rule_summary_label'));
       renderContent(divElem, info_rule.summary);
       this.copyText[id] += getCopyTextContent('rule_summary_label', info_rule.summary);
@@ -139,10 +143,6 @@ export default class InfoRule extends HTMLElement {
       addH3(divElem, getMessage('rule_additional_label'));
       renderContent(divElem, info_rule.informational_links);
       this.copyText[id] += getCopyTextContent('rule_additional_label', info_rule.informational_links);
-
-      addH3(divElem, getMessage('rule_scope_label'));
-      renderContent(divElem, info_rule.rule_scope);
-      this.copyText[id] += getCopyTextContent('rule_scope_label', info_rule.rule_scope);
 
     });
 
