@@ -108,7 +108,7 @@ optionsRulesetTemplate.innerHTML = `
 
     </fieldset>
 
-    <fieldset>
+    <fieldset id="level">
       <legend>
         <span data-i18n="options_ruleset_wcag_levels_legend">
           WCAG Rule Levels
@@ -164,7 +164,7 @@ optionsRulesetTemplate.innerHTML = `
 
     </fieldset>
 
-    <fieldset>
+    <fieldset id="scope">
       <legend>
         <span data-i18n="options_rule_scope_legend">
           Rule Scope filter
@@ -299,6 +299,13 @@ class OptionsRuleset extends HTMLElement {
 
     this.formControls =  Array.from(this.shadowRoot.querySelectorAll('[data-option]'));
 
+    this.firstStepRadioButton   = this.shadowRoot.querySelector('[value="FIRSTSTEP');
+    this.relatedAxeRadioButton  = this.shadowRoot.querySelector('[value="AXE');
+    this.relatedWaveRadioButton = this.shadowRoot.querySelector('[value="WAVE');
+
+    this.levelFieldset = this.shadowRoot.querySelector('#level');
+    this.scopeFieldset = this.shadowRoot.querySelector('#scope');
+
     this.updateOptions();
 
     this.shadowRoot.querySelector('#button-reset').addEventListener('click', () => {
@@ -316,6 +323,15 @@ class OptionsRuleset extends HTMLElement {
 
     this.handleResize();
     window.addEventListener('resize', this.handleResize.bind(this));
+  }
+
+  setDisabled () {
+    const disable = this.firstStepRadioButton.checked ||
+                    this.relatedAxeRadioButton.checked ||
+                    this.relatedWaveRadioButton.checked;
+
+    this.levelFieldset.disabled = disable;
+    this.scopeFieldset.disabled = disable;
   }
 
   updateOptions () {
@@ -338,6 +354,7 @@ class OptionsRuleset extends HTMLElement {
           }
         }
       });
+      this.setDisabled();
     });
   }
 
@@ -384,6 +401,9 @@ class OptionsRuleset extends HTMLElement {
 
   handleChange () {
     debug && console.log(`[saveOptions]`);
+
+    this.setDisabled();
+
     this.saveRulesetOptions();
   }
 

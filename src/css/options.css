@@ -16,6 +16,10 @@ fieldset {
   border: none;
 }
 
+fieldset:disabled label {
+  color: gray;
+}
+
 legend {
   font-size: var(--legend-font-size);
   font-weight: bold;
