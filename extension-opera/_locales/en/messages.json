@@ -34,9 +34,8 @@
     "description": "Message when content cannot be evaluated"
   },
 
-
-  "view_title_all_rules_Label": {
-    "message": "Summary: All Rules",
+  "view_title_summary_Label": {
+    "message": "Summary: ",
     "description": "Label for all rules view"
   },
 
@@ -78,6 +77,16 @@
   "info_rule_scope_label": {
     "message": "Scope: ",
     "description": "Label for scope filter value"
+  },
+
+  "rule_related_axe": {
+    "message": "Related aXe rules:",
+    "description": "Label for related WAVE rules"
+  },
+
+  "rule_related_wave": {
+    "message": "Related WAVE/popetech rules:",
+    "description": "Label for related WAVE/popetech rules"
   },
 
   "info_view_label": {
@@ -1202,6 +1211,14 @@
   "options_ruleset_first_step_label": {
     "message": "First Step Rules",
     "description": "Label for first step ruleset radio"
+  },
+  "options_ruleset_axe_label": {
+    "message": "Related aXe Rules",
+    "description": "Label for WAVE/popetech ruleset radio"
+  },
+  "options_ruleset_wave_label": {
+    "message": "Related WAVE/popetech Rules",
+    "description": "Label for WAVE/popetech ruleset radio"
   },
   "options_ruleset_wcag_levels_legend": {
     "message": "WCAG Rule Levels",

@@ -148,7 +148,7 @@
   /* constants.js */
 
   /* Constants */
-  const debug$18 = new DebugLogging('constants', false);
+  const debug$1a = new DebugLogging('constants', false);
 
   const VERSION = '2.0.8';
 
@@ -651,13 +651,13 @@
    */
 
   function getGuidelineId(sc) {
-    debug$18.flag && debug$18.log(`[getGuidelineId][sc]: ${sc}`);
+    debug$1a.flag && debug$1a.log(`[getGuidelineId][sc]: ${sc}`);
     const parts = sc.split('.');
     const gl = (parts.length === 3) ? `G_${parts[0]}_${parts[1]}` : ``;
     if (!gl) {
       return 0;
     }
-    debug$18.flag && debug$18.log(`[getGuidelineId][gl]: ${gl}`);
+    debug$1a.flag && debug$1a.log(`[getGuidelineId][gl]: ${gl}`);
     return WCAG_GUIDELINE[gl];
   }
 
@@ -1015,11 +1015,31 @@
     return typeof test === 'string' && test.length == 6;
   }
 
+
+  /**
+   * @function convertRuleTitle
+   *
+   * @desc Removes common entities for rendering as text
+   *
+   * @param {String}  str - String remove entities
+   *
+   * @return {String}  see @desc
+   */
+
+  function convertRuleTitle (str) {
+    let newStr = str.replace('&lt;', '@');
+    newStr = newStr.replace('&gt;', '@');
+    newStr = newStr.replaceAll('&quot;', '"');
+    newStr = newStr.replaceAll('[', '@[');
+    newStr = newStr.replaceAll(']', ']@');
+    return newStr;
+  }
+
   /* headingResults.js */
 
   /* constants */
-  const debug$17 = new DebugLogging('headingResults', false);
-  debug$17.flag = false;
+  const debug$19 = new DebugLogging('headingResults', false);
+  debug$19.flag = false;
 
   /**
    * @class headingResults
@@ -1040,11 +1060,11 @@
 
       this.headingData = [];
 
-      debug$17.flag && debug$17.log(`[        structureInfo]: ${domCache.structureInfo}`);
-      debug$17.flag && debug$17.log(`[allHeadingDomElements]: ${domCache.structureInfo.allHeadingDomElements.length}`);
+      debug$19.flag && debug$19.log(`[        structureInfo]: ${domCache.structureInfo}`);
+      debug$19.flag && debug$19.log(`[allHeadingDomElements]: ${domCache.structureInfo.allHeadingDomElements.length}`);
 
       domCache.structureInfo.allHeadingDomElements.forEach( de => {
-        debug$17.flag && debug$17.log(`[tagName]: ${de.tagName}`);
+        debug$19.flag && debug$19.log(`[tagName]: ${de.tagName}`);
 
         const dataItem = {
           level:             de.ariaInfo.ariaLevel,
@@ -1075,8 +1095,8 @@
   /* landmarkRegionResults.js */
 
   /* constants */
-  const debug$16 = new DebugLogging('landmarkRegionResults', false);
-  debug$16.flag = false;
+  const debug$18 = new DebugLogging('landmarkRegionResults', false);
+  debug$18.flag = false;
 
   /**
    * @class landmarkRegionResults
@@ -1095,14 +1115,14 @@
 
     update(domCache) {
 
-      debug$16.flag && debug$16.log(`[        structureInfo]: ${domCache.structureInfo}`);
-      debug$16.flag && debug$16.log(`[allLandmarkDomElements]: ${domCache.structureInfo.allLandmarkElements.length}`);
+      debug$18.flag && debug$18.log(`[        structureInfo]: ${domCache.structureInfo}`);
+      debug$18.flag && debug$18.log(`[allLandmarkDomElements]: ${domCache.structureInfo.allLandmarkElements.length}`);
 
       this.regionData = [];
 
       domCache.structureInfo.allLandmarkElements.forEach( le => {
         const de = le.domElement;
-        debug$16.flag && debug$16.log(`[role]: ${de.role}`);
+        debug$18.flag && debug$18.log(`[role]: ${de.role}`);
 
         const dataItem = {
           role:              de.role.toLowerCase(),
@@ -1133,8 +1153,8 @@
   /* linkResults.js */
 
   /* constants */
-  const debug$15 = new DebugLogging('linkResults', false);
-  debug$15.flag = false;
+  const debug$17 = new DebugLogging('linkResults', false);
+  debug$17.flag = false;
 
   const pdfExtensions = [
     'pdf'   // Protable document format
@@ -1293,8 +1313,8 @@
   /* ruleResultsSummary.js */
 
   /* constants */
-  const debug$14 = new DebugLogging('ruleResultsSummary', false);
-  debug$14.flag = false;
+  const debug$16 = new DebugLogging('ruleResultsSummary', false);
+  debug$16.flag = false;
 
   /**
    * @class ruleResultsSummary
@@ -1402,11 +1422,13 @@
     rulesetLevelAA:  'Levels A and AA',
     rulesetLevelAAA: 'Levels A, AA and enhanced CCR',
 
-    ruleScopeAll: "All rules",
-    ruleScopePage: "Page only rules",
-    ruleScopeWebsite: "Website only rules",
+    ruleScopeAll: "All Rules",
+    ruleScopePage: "Page Rules",
+    ruleScopeWebsite: "Website Rules",
 
+    rulesetAxe:       'Related aXe Rules',
     rulesetFirstStep: 'First Step Rules',
+    rulesetWave:      'Related Wave Rules',
     rulesetWCAG22:    'WCAG 2.2, ',
     rulesetWCAG21:    'WCAG 2.1, ',
     rulesetWCAG20:    'WCAG 2.0, ',
@@ -11178,7 +11200,7 @@
   /* locale.js */
 
   /* Constants */
-  const debug$13 = new DebugLogging('locale', false);
+  const debug$15 = new DebugLogging('locale', false);
 
   // const globalUseCodeTags = true;
 
@@ -11234,7 +11256,7 @@
     if (!message) {
       message = `[common][error]: id="${id}"`;
     }
-    debug$13.flag && debug$13.log(`[${id}][${value}]: ${message}`);
+    debug$15.flag && debug$15.log(`[${id}][${value}]: ${message}`);
     return message;
   }
 
@@ -11368,8 +11390,16 @@
 
       switch (rulesetId) {
 
+        case 'AXE':
+          label = messages[locale].common.rulesetAxe + addAria();
+          break;
+
         case 'FIRSTSTEP':
           label = messages[locale].common.rulesetFirstStep + addAria();
+          break;
+
+        case 'WAVE':
+          label = messages[locale].common.rulesetWave + addAria();
           break;
 
         case 'WCAG22':
@@ -11417,10 +11447,6 @@
         case 'WEBSITE':
           label = messages[locale].common.ruleScopeWebsite;
           break;
-
-        default:
-          label = 'undefined';
-          break;
       }
 
     return label;
@@ -11445,7 +11471,7 @@
       for (const g in principle.guidelines) {
         const guideline = principle.guidelines[g];
         if (guideline.id === guidelineId) {
-          debug$13.flag && debug$13.log(`[getGuidelineInfo][${guidelineId}]: ${guideline.title}`);
+          debug$15.flag && debug$15.log(`[getGuidelineInfo][${guidelineId}]: ${guideline.title}`);
           return {
             num: g,
             title: guideline.title,
@@ -11455,7 +11481,7 @@
         }
       }
     }
-    debug$13.flag && debug$13.log(`[getGuidelineInfo][${guidelineId}][ERROR]: `);
+    debug$15.flag && debug$15.log(`[getGuidelineInfo][${guidelineId}][ERROR]: `);
     // Assume all rules
     return {
       title: messages[locale].common.allRules,
@@ -11488,7 +11514,7 @@
         for (const sc in guideline.success_criteria) {
           const success_criterion = guideline.success_criteria[sc];
           if (sc === successCriterionId) {
-            debug$13.flag && debug$13.log(`[getSuccessCriterionInfo][${successCriterionId}]: ${success_criterion.title}`);
+            debug$15.flag && debug$15.log(`[getSuccessCriterionInfo][${successCriterionId}]: ${success_criterion.title}`);
             return {
               id: successCriterionId,
               level: success_criterion.level,
@@ -11500,7 +11526,7 @@
         }
       }
     }
-    debug$13.flag && debug$13.log(`[getSuccessCriterionInfo][${successCriterionId}]: ERROR`);
+    debug$15.flag && debug$15.log(`[getSuccessCriterionInfo][${successCriterionId}]: ERROR`);
     return null;
   }
 
@@ -11520,7 +11546,7 @@
    */
 
   function getSuccessCriteriaInfo(successCriteriaIds) {
-    debug$13.flag && debug$13.log(`[getSuccessCriteriaInfo]: ${successCriteriaIds.length}`);
+    debug$15.flag && debug$15.log(`[getSuccessCriteriaInfo]: ${successCriteriaIds.length}`);
     const scInfoArray = [];
     successCriteriaIds.forEach( sc => {
       scInfoArray.push(getSuccessCriterionInfo(sc));
@@ -11568,7 +11594,7 @@
    */
 
   function getRuleDefinition (ruleId, transform=false) {
-    debug$13.flag && debug$13.log(`[getRuleDefinition][${ruleId}]: ${messages[locale].rules[ruleId].DEFINITION}`);
+    debug$15.flag && debug$15.log(`[getRuleDefinition][${ruleId}]: ${messages[locale].rules[ruleId].DEFINITION}`);
     let m = messages[locale].rules[ruleId].DEFINITION;
     if (transform) m = transformToCode(m);
     return m;
@@ -11586,7 +11612,7 @@
    */
 
   function getRuleSummary (ruleId, transform=false) {
-    debug$13.flag && debug$13.log(`[getRuleSummary][${ruleId}]: ${messages[locale].rules[ruleId].SUMMARY}`);
+    debug$15.flag && debug$15.log(`[getRuleSummary][${ruleId}]: ${messages[locale].rules[ruleId].SUMMARY}`);
     let m = messages[locale].rules[ruleId].SUMMARY;
     if (transform) m = transformToCode(m);
     return m;
@@ -11604,7 +11630,7 @@
    */
 
   function getTargetResourcesDesc (ruleId, transform=false) {
-    debug$13.flag && debug$13.log(`[getTargetResourcesDesc][${ruleId}]: ${messages[locale].rules[ruleId].TARGET_RESOURCES_DESC}`);
+    debug$15.flag && debug$15.log(`[getTargetResourcesDesc][${ruleId}]: ${messages[locale].rules[ruleId].TARGET_RESOURCES_DESC}`);
     let m = messages[locale].rules[ruleId].TARGET_RESOURCES_DESC;
     if (transform) m = transformToCode(m);
     return m;
@@ -11627,7 +11653,7 @@
       if (transform) p = transformToCode(p);
       purposes.push(p);
     });
-    debug$13.flag && debug$13.log(`[getPurposes][${ruleId}]: ${purposes.join('; ')}`);
+    debug$15.flag && debug$15.log(`[getPurposes][${ruleId}]: ${purposes.join('; ')}`);
     return purposes;
   }
 
@@ -11648,7 +11674,7 @@
       if (transform) t = transformToCode(t);
       techniques.push(t);
     });
-    debug$13.flag && debug$13.log(`[getTechniques][${ruleId}]: ${techniques.join('; ')}`);
+    debug$15.flag && debug$15.log(`[getTechniques][${ruleId}]: ${techniques.join('; ')}`);
     return techniques;
   }
 
@@ -11677,8 +11703,8 @@
           url: infoLink.url
         }
       );
-      debug$13.flag && debug$13.log(`[infoLink][title]: ${infoLink.title}`);
-      debug$13.flag && debug$13.log(`[infoLink][  url]: ${infoLink.url}`);
+      debug$15.flag && debug$15.log(`[infoLink][title]: ${infoLink.title}`);
+      debug$15.flag && debug$15.log(`[infoLink][  url]: ${infoLink.url}`);
     });
     return infoLinks;
   }
@@ -11700,7 +11726,7 @@
       if (transform) mc = transformToCode(mc);
       manualChecks.push(mc);
     });
-    debug$13.flag && debug$13.log(`[getManualChecks][${ruleId}]: ${manualChecks.join('; ')}`);
+    debug$15.flag && debug$15.log(`[getManualChecks][${ruleId}]: ${manualChecks.join('; ')}`);
     return manualChecks;
   }
 
@@ -11720,7 +11746,7 @@
     const msgs = messages[locale].rules[ruleId].RULE_RESULT_MESSAGES;
     for ( const key in msgs ) {
       resultMessages[key] = transform ? transformToCode(msgs[key]) : msgs[key];
-      debug$13.flag && debug$13.log(`[getRuleResultMessages][${ruleId}][${key}]: ${resultMessages[key]}`);
+      debug$15.flag && debug$15.log(`[getRuleResultMessages][${ruleId}][${key}]: ${resultMessages[key]}`);
     }
     return resultMessages;
   }
@@ -11741,7 +11767,7 @@
     const msgs = messages[locale].rules[ruleId].BASE_RESULT_MESSAGES;
     for ( const key in msgs ) {
       resultMessages[key] = transform ? transformToCode(msgs[key]) : msgs[key];
-      debug$13.flag && debug$13.log(`[getBaseResultMessages][${ruleId}][${key}]: ${resultMessages[key]}`);
+      debug$15.flag && debug$15.log(`[getBaseResultMessages][${ruleId}][${key}]: ${resultMessages[key]}`);
     }
     return resultMessages;
   }
@@ -11885,8 +11911,8 @@
   /* ruleResultsGroup.js */
 
   /* constants */
-  const debug$12 = new DebugLogging('ruleResultsGroup', false);
-  debug$12.flag = false;
+  const debug$14 = new DebugLogging('ruleResultsGroup', false);
+  debug$14.flag = false;
 
   /**
    * @class ruleResultsGroup
@@ -11946,8 +11972,8 @@
   /* controlInfo.js */
 
   /* Constants */
-  const debug$11 = new DebugLogging('ControlInfo', false);
-  debug$11.flag = false;
+  const debug$13 = new DebugLogging('ControlInfo', false);
+  debug$13.flag = false;
 
   /**
    * @class ControlElement
@@ -12151,7 +12177,7 @@
         prefix = '';
       }
       this.childControlElements.forEach( ce => {
-        debug$11.domElement(ce.domElement, prefix);
+        debug$13.domElement(ce.domElement, prefix);
         ce.showControlInfo(prefix + '  ');
       });
     }
@@ -12347,6 +12373,10 @@
           ce.updateLegendInfo(ce);
           break;
 
+        case 'summary':
+          ce = new ButtonElement(domElement, parentControlElement);
+          break;
+
         default:
           if ((tagName !== 'input') && (role === 'button')) {
             ce = new ButtonElement(domElement, parentControlElement);
@@ -12433,15 +12463,15 @@
      */
 
     showControlInfo () {
-      if (debug$11.flag) {
-        debug$11.log('== Control Tree ==', 1);
+      if (debug$13.flag) {
+        debug$13.log('== Control Tree ==', 1);
         this.childControlElements.forEach( ce => {
-          debug$11.domElement(ce.domElement);
+          debug$13.domElement(ce.domElement);
           ce.showControlInfo('  ');
         });
-        debug$11.log('== Forms ==', 1);
+        debug$13.log('== Forms ==', 1);
         this.allFormElements.forEach( ce => {
-          debug$11.domElement(ce.domElement);
+          debug$13.domElement(ce.domElement);
         });
       }
     }
@@ -22879,8 +22909,8 @@
   let designPatterns    = designPatterns$2;
 
   /* Constants */
-  const debug$10 = new DebugLogging('AriaInfo', false);
-  debug$10.flag = false;
+  const debug$12 = new DebugLogging('AriaInfo', false);
+  debug$12.flag = false;
 
   /* Debug helper functions */
 
@@ -23166,15 +23196,15 @@
       }
 
 
-      if (debug$10.flag) {
-        node.attributes.length && debug$10.log(`${node.outerHTML}`, 1);
-        debug$10.log(`[         isWidget]: ${this.isWidget}`);
-        debug$10.log(`[invalidAttrValues]: ${debugAttrs(this.invalidAttrValues)}`);
-        debug$10.log(`[      invalidRefs]: ${debugRefs(this.invalidRefs)}`);
-        debug$10.log(`[ unsupportedAttrs]: ${debugAttrs(this.unsupportedAttrs)}`);
-        debug$10.log(`[  deprecatedAttrs]: ${debugAttrs(this.deprecatedAttrs)}`);
-        debug$10.log(`[    requiredAttrs]: ${debugAttrs(this.requiredAttrs)} (${Array.isArray(this.requiredAttrs)})`);
-        debug$10.log(`[     invalidAttrs]: ${debugAttrs(this.invalidAttrs)}`);
+      if (debug$12.flag) {
+        node.attributes.length && debug$12.log(`${node.outerHTML}`, 1);
+        debug$12.log(`[         isWidget]: ${this.isWidget}`);
+        debug$12.log(`[invalidAttrValues]: ${debugAttrs(this.invalidAttrValues)}`);
+        debug$12.log(`[      invalidRefs]: ${debugRefs(this.invalidRefs)}`);
+        debug$12.log(`[ unsupportedAttrs]: ${debugAttrs(this.unsupportedAttrs)}`);
+        debug$12.log(`[  deprecatedAttrs]: ${debugAttrs(this.deprecatedAttrs)}`);
+        debug$12.log(`[    requiredAttrs]: ${debugAttrs(this.requiredAttrs)} (${Array.isArray(this.requiredAttrs)})`);
+        debug$12.log(`[     invalidAttrs]: ${debugAttrs(this.invalidAttrs)}`);
       }
     }
 
@@ -23379,8 +23409,8 @@
   /* colorContrast.js */
 
   /* Constants */
-  const debug$$ = new DebugLogging('colorContrast', false);
-  debug$$.flag = false;
+  const debug$11 = new DebugLogging('colorContrast', false);
+  debug$11.flag = false;
 
   const defaultFontSize = 16;    // In pixels (px)
   const biggerFontSize  = 18.66; // In pixels (px)
@@ -23438,9 +23468,9 @@
       let parentColorContrast = parentDomElement ? parentDomElement.colorContrast : false;
       let style = window.getComputedStyle(elementNode, null);
 
-      if (debug$$.flag) {
-        debug$$.separator();
-        debug$$.tag(elementNode);
+      if (debug$11.flag) {
+        debug$11.separator();
+        debug$11.tag(elementNode);
       }
 
       this.hasTextNodes = this.getHasTextNodes(elementNode);
@@ -23480,18 +23510,18 @@
       this.isPositioned  = this.isPositioned(style, parentColorContrast);
       this.isTransparent = this.isTransparent(this.backgroundColor);
 
-      if (debug$$.flag) {
+      if (debug$11.flag) {
 
-        debug$$.log(`[                 parent color]: ${parentColorContrast.color}`);
-        debug$$.log(`[      parent background color]: ${parentColorContrast.backgroundColor}`);
+        debug$11.log(`[                 parent color]: ${parentColorContrast.color}`);
+        debug$11.log(`[      parent background color]: ${parentColorContrast.backgroundColor}`);
 
-        debug$$.log(`[                        color]: ${this.color}`);
-        debug$$.log(`[             background color]: ${this.backgroundColor}`);
+        debug$11.log(`[                        color]: ${this.color}`);
+        debug$11.log(`[             background color]: ${this.backgroundColor}`);
 
-        debug$$.log(`[                      opacity]: ${this.opacity}`);
-        debug$$.log(`[             Background Image]: ${this.backgroundImage} (${this.hasBackgroundImage})`);
-        debug$$.log(`[   Family/Size/Weight/isLarge]: "${this.fontFamily}"/${this.fontSize}/${this.fontWeight}/${this.isLargeFont}`);
-        debug$$.color(`[   CCR for Color/Background]: ${this.colorContrastRatio} for #${this.colorHex}/#${this.backgroundColorHex}`, this.color, this.backgroundColor);
+        debug$11.log(`[                      opacity]: ${this.opacity}`);
+        debug$11.log(`[             Background Image]: ${this.backgroundImage} (${this.hasBackgroundImage})`);
+        debug$11.log(`[   Family/Size/Weight/isLarge]: "${this.fontFamily}"/${this.fontSize}/${this.fontWeight}/${this.isLargeFont}`);
+        debug$11.color(`[   CCR for Color/Background]: ${this.colorContrastRatio} for #${this.colorHex}/#${this.backgroundColorHex}`, this.color, this.backgroundColor);
       }
     }
 
@@ -23601,10 +23631,10 @@
           (backgroundColor == 'transparent') ||
           (backgroundColor == 'inherit')) {
 
-        debug$$.flag && debug$$.log(`[normalizeBackgroundColor][parentColorContrast]: ${parentColorContrast}`);
+        debug$11.flag && debug$11.log(`[normalizeBackgroundColor][parentColorContrast]: ${parentColorContrast}`);
 
         if (parentColorContrast) {
-          debug$$.flag && debug$$.log(`[normalizeBackgroundColor][backgroundColor]: ${parentColorContrast.backgroundColor}`);
+          debug$11.flag && debug$11.log(`[normalizeBackgroundColor][backgroundColor]: ${parentColorContrast.backgroundColor}`);
           backgroundColor   = parentColorContrast.backgroundColor;
         }
       }
@@ -23879,7 +23909,7 @@
   /* eventInfo.js */
 
   /* Constants */
-  const debug$_ = new DebugLogging('EventInfo', false);
+  const debug$10 = new DebugLogging('EventInfo', false);
 
   /**
    * @class EventInfo
@@ -23892,7 +23922,7 @@
       this.hasClick  = node.hasAttribute('onclick');
       this.hasChange = node.hasAttribute('onchange');
 
-      if (debug$_.flag) {
+      if (debug$10.flag) {
         console.log(`[hasClick ]: ${this.hasClick}`);
         console.log(`[hasChange]: ${this.hasChange}`);
       }
@@ -25274,7 +25304,7 @@
       },
       summary: {
         tagName: 'summary',
-        defaultRole: 'summary',
+        defaultRole: 'button',
         noRoleAllowed: true,
         anyRoleAllowed: true,
         id: 'summary'
@@ -25492,7 +25522,7 @@
   /* ariaInHtml.js */
 
   /* Constants */
-  const debug$Z = new DebugLogging('ariaInHtml', false);
+  const debug$$ = new DebugLogging('ariaInHtml', false);
   const higherLevelElements = [
     'article',
     'aside',
@@ -25693,11 +25723,11 @@
       };
     }
 
-    if (debug$Z.flag) {
+    if (debug$$.flag) {
       if (tagName === 'h2') {
-        debug$Z.tag(node);
+        debug$$.tag(node);
       }
-      debug$Z.log(`[elemInfo][id]: ${elemInfo.id} (${tagName})`);
+      debug$$.log(`[elemInfo][id]: ${elemInfo.id} (${tagName})`);
     }
 
     return elemInfo;
@@ -25817,7 +25847,7 @@
   /* visibility.js */
 
   /* Constants */
-  const debug$Y = new DebugLogging('visibility', false);
+  const debug$_ = new DebugLogging('visibility', false);
 
   /**
    * @class Visibility
@@ -25867,18 +25897,18 @@
         this.isVisibleToAT = false;
       }
 
-      if (debug$Y.flag) {
-        debug$Y.separator();
-        debug$Y.tag(elementNode);
-        debug$Y.log('[          isHidden]: ' + this.isHidden);
-        debug$Y.log('[      isAriaHidden]: ' + this.isAriaHidden);
-        debug$Y.log('[     isDisplayNone]: ' + this.isDisplayNone);
-        debug$Y.log('[isVisibilityHidden]: ' + this.isVisibilityHidden);
-        debug$Y.log('[     isSmallHeight]: ' + this.isSmallHeight);
-        debug$Y.log('[       isSmallFont]: ' + this.isSmallFont);
-        debug$Y.log('[ isInClosedDetails]: ' + this.isInClosedDetails);
-        debug$Y.log('[ isVisibleOnScreen]: ' + this.isVisibleOnScreen);
-        debug$Y.log('[     isVisibleToAT]: ' + this.isVisibleToAT);
+      if (debug$_.flag) {
+        debug$_.separator();
+        debug$_.tag(elementNode);
+        debug$_.log('[          isHidden]: ' + this.isHidden);
+        debug$_.log('[      isAriaHidden]: ' + this.isAriaHidden);
+        debug$_.log('[     isDisplayNone]: ' + this.isDisplayNone);
+        debug$_.log('[isVisibilityHidden]: ' + this.isVisibilityHidden);
+        debug$_.log('[     isSmallHeight]: ' + this.isSmallHeight);
+        debug$_.log('[       isSmallFont]: ' + this.isSmallFont);
+        debug$_.log('[ isInClosedDetails]: ' + this.isInClosedDetails);
+        debug$_.log('[ isVisibleOnScreen]: ' + this.isVisibleOnScreen);
+        debug$_.log('[     isVisibleToAT]: ' + this.isVisibleToAT);
       }
     }
 
@@ -26212,8 +26242,8 @@
   /*
   *   namefrom.js
   */
-  const debug$X = new DebugLogging('nameFrom', false);
-  debug$X.flag = false;
+  const debug$Z = new DebugLogging('nameFrom', false);
+  debug$Z.flag = false;
 
   /*
   *   @function getElementContents
@@ -26396,7 +26426,7 @@
                                    };
         }
       } catch (error) {
-        debug$X.log(`[nameFromLabelElement][error]: ${error}`);
+        debug$Z.log(`[nameFromLabelElement][error]: ${error}`);
       }
     }
 
@@ -26868,17 +26898,17 @@
   'h6',
   'summary'
   ];
-  const debug$W = new DebugLogging('getAccName', false);
-  debug$W.flag = false;
+  const debug$Y = new DebugLogging('getAccName', false);
+  debug$Y.flag = false;
 
   function debugAccName (accName) {
-    if (debug$W.flag && accName.name) {
-      debug$W.log(`====================`);
-      debug$W.log(`[             name]: ${accName.name}`);
-      debug$W.log(`[           source]: ${accName.source}`);
-      debug$W.log(`[      includesAlt]: ${accName.includesAlt}`);
-      debug$W.log(`[includesAriaLabel]: ${accName.includesAriaLabel}`);
-      debug$W.log(`[ nameIsNotVisible]: ${accName.nameIsNotVisible}`);
+    if (debug$Y.flag && accName.name) {
+      debug$Y.log(`====================`);
+      debug$Y.log(`[             name]: ${accName.name}`);
+      debug$Y.log(`[           source]: ${accName.source}`);
+      debug$Y.log(`[      includesAlt]: ${accName.includesAlt}`);
+      debug$Y.log(`[includesAriaLabel]: ${accName.includesAriaLabel}`);
+      debug$Y.log(`[ nameIsNotVisible]: ${accName.nameIsNotVisible}`);
     }
   }
 
@@ -26907,7 +26937,7 @@
     if (accName === null) accName = nameFromAttribute(element, 'aria-label');
     if (accName === null) accName = nameFromNativeSemantics(doc, element);
     if (accName === null) accName = noAccName;
-    debug$W.flag && debugAccName(accName);
+    debug$Y.flag && debugAccName(accName);
     return accName;
   }
 
@@ -27200,8 +27230,8 @@
   /* domElement.js */
 
   /* Constants */
-  const debug$V = new DebugLogging('DOMElement', false);
-  debug$V.flag = false;
+  const debug$X = new DebugLogging('DOMElement', false);
+  debug$X.flag = false;
 
   const elementsWithContent = [
     'area',
@@ -27606,12 +27636,12 @@
       if (typeof prefix !== 'string') {
         prefix = '';
       }
-      if (debug$V.flag) {
+      if (debug$X.flag) {
         this.children.forEach( domItem => {
           if (domItem.isDomText) {
-            debug$V.domText(domItem, prefix);
+            debug$X.domText(domItem, prefix);
           } else {
-            debug$V.domElement(domItem, prefix);
+            debug$X.domElement(domItem, prefix);
             domItem.showDomElementTree(prefix + '   ');
           }
         });
@@ -27704,7 +27734,7 @@
   /* domText.js */
 
   /* Constants */
-  const debug$U = new DebugLogging('domText', false);
+  const debug$W = new DebugLogging('domText', false);
 
   /**
    * @class DOMText
@@ -27723,8 +27753,8 @@
     constructor (parentDomElement, textNode) {
       this.parentDomElement = parentDomElement;
       this.text = textNode.textContent.trim();
-      if (debug$U.flag) {
-        debug$U.log(`[text]: ${this.text}`);
+      if (debug$W.flag) {
+        debug$W.log(`[text]: ${this.text}`);
       }
     }
 
@@ -27787,7 +27817,7 @@
   /* iframeInfo.js */
 
   /* Constants */
-  const debug$T = new DebugLogging('iframeInfo', false);
+  const debug$V = new DebugLogging('iframeInfo', false);
 
   /**
    * @class IFrameElement
@@ -27805,9 +27835,9 @@
     }
 
     showInfo () {
-      if (debug$T.flag) {
-        debug$T.log(`[          src]: ${this.src}`);
-        debug$T.log(`[isCrossDomain]: ${this.isCrossDomain}`);
+      if (debug$V.flag) {
+        debug$V.log(`[          src]: ${this.src}`);
+        debug$V.log(`[isCrossDomain]: ${this.isCrossDomain}`);
       }
     }
   }
@@ -27843,8 +27873,8 @@
      */
 
     showIFrameInfo () {
-      if (debug$T.flag) {
-        debug$T.log(`== ${this.allIFrameElements.length} IFrames ==`, 1);
+      if (debug$V.flag) {
+        debug$V.log(`== ${this.allIFrameElements.length} IFrames ==`, 1);
         this.allIFrameElements.forEach( ife => {
           ife.showInfo();
         });
@@ -27855,7 +27885,7 @@
   /* linkInfo.js */
 
   /* Constants */
-  const debug$S = new DebugLogging('idInfo', false);
+  const debug$U = new DebugLogging('idInfo', false);
 
   /**
    * @class idInfo
@@ -27898,10 +27928,10 @@
      */
 
     showIdInfo () {
-      if (debug$S.flag) {
-        debug$S.log('== All Links ==', 1);
+      if (debug$U.flag) {
+        debug$U.log('== All Links ==', 1);
         this.idCounts.for( id => {
-          debug$S.log(`[${id}]: ${this.idCounts[id]}`);
+          debug$U.log(`[${id}]: ${this.idCounts[id]}`);
         });
       }
     }
@@ -27910,7 +27940,7 @@
   /* imageInfo.js */
 
   /* Constants */
-  const debug$R = new DebugLogging('imageInfo', false);
+  const debug$T = new DebugLogging('imageInfo', false);
 
   /**
    * @class ImageElement
@@ -28104,22 +28134,22 @@
      */
 
     showImageInfo () {
-      if (debug$R.flag) {
-        debug$R.log('== All Image elements ==', 1);
+      if (debug$T.flag) {
+        debug$T.log('== All Image elements ==', 1);
         this.allImageElements.forEach( ie => {
-          debug$R.log(`[fileName]: ${ie.fileName}`, true);
-          debug$R.log(`[    role]: ${ie.domElement.role}`);
-          debug$R.log(`[    name]: ${ie.domElement.accName.name}`);
-          debug$R.log(`[  source]: ${ie.domElement.accName.source}`);
-          debug$R.log(`[  length]: ${ie.domElement.accName.name.length}`);
+          debug$T.log(`[fileName]: ${ie.fileName}`, true);
+          debug$T.log(`[    role]: ${ie.domElement.role}`);
+          debug$T.log(`[    name]: ${ie.domElement.accName.name}`);
+          debug$T.log(`[  source]: ${ie.domElement.accName.source}`);
+          debug$T.log(`[  length]: ${ie.domElement.accName.name.length}`);
         });
-        debug$R.log('== All SVG domElements  ==', 1);
+        debug$T.log('== All SVG domElements  ==', 1);
         this.allSVGDomElements.forEach( de => {
-          debug$R.domElement(de);
+          debug$T.domElement(de);
         });
-        debug$R.log('== All MapElements ==', 1);
+        debug$T.log('== All MapElements ==', 1);
         this.allMapElements.forEach( me => {
-          debug$R.domElement(me.domElement);
+          debug$T.domElement(me.domElement);
         });
       }
     }
@@ -28128,7 +28158,7 @@
   /* linkInfo.js */
 
   /* Constants */
-  const debug$Q = new DebugLogging('linkInfo', false);
+  const debug$S = new DebugLogging('linkInfo', false);
 
   /**
    * @class LinkInfo
@@ -28177,10 +28207,10 @@
      */
 
     showLinkInfo () {
-      if (debug$Q.flag) {
-        debug$Q.log('== All Links ==', 1);
+      if (debug$S.flag) {
+        debug$S.log('== All Links ==', 1);
         this.allLinkDomElements.forEach( de => {
-          debug$Q.domElement(de);
+          debug$S.domElement(de);
         });
       }
     }
@@ -28189,8 +28219,8 @@
   /* listInfo.js */
 
   /* Constants */
-  const debug$P = new DebugLogging('ListInfo', false);
-  debug$P.flag = false;
+  const debug$R = new DebugLogging('ListInfo', false);
+  debug$R.flag = false;
   const allListitemRoles = ['list', 'listitem', 'menu', 'menuitem', 'menuitemcheckbox', 'menuitemradio'];
   const listRoles = ['list', 'menu'];
 
@@ -28235,9 +28265,9 @@
       if (typeof prefix !== 'string') {
         prefix = '';
       }
-      debug$P.log(`${prefix}[List Count]: ${this.childListElements.length} [Link Count]: ${this.linkCount}`);
+      debug$R.log(`${prefix}[List Count]: ${this.childListElements.length} [Link Count]: ${this.linkCount}`);
       this.childListElements.forEach( le => {
-        debug$P.domElement(le.domElement, prefix);
+        debug$R.domElement(le.domElement, prefix);
         le.showListInfo(prefix + '  ');
       });
     }
@@ -28345,20 +28375,20 @@
      */
 
     showListInfo () {
-      if (debug$P.flag) {
-        debug$P.log('== All ListElements ==', 1);
-        debug$P.log(`[linkCount]: ${this.linkCount}`);
+      if (debug$R.flag) {
+        debug$R.log('== All ListElements ==', 1);
+        debug$R.log(`[linkCount]: ${this.linkCount}`);
         this.allListElements.forEach( le => {
-          debug$P.log(`[textContent]: ${le.textContent}`);
-          debug$P.log(`[linkTextContent]: ${le.linkTextContent}`);
-          debug$P.domElement(le.domElement);
+          debug$R.log(`[textContent]: ${le.textContent}`);
+          debug$R.log(`[linkTextContent]: ${le.linkTextContent}`);
+          debug$R.domElement(le.domElement);
         });
-        debug$P.log('== List Tree ==', 1);
-        debug$P.log(`[linkCount]: ${this.linkCount}`);
+        debug$R.log('== List Tree ==', 1);
+        debug$R.log(`[linkCount]: ${this.linkCount}`);
         this.childListElements.forEach( le => {
-          debug$P.log(`[textContent]: ${le.textContent}`);
-          debug$P.log(`[linkTextContent]: ${le.linkTextContent}`);
-          debug$P.domElement(le.domElement);
+          debug$R.log(`[textContent]: ${le.textContent}`);
+          debug$R.log(`[linkTextContent]: ${le.linkTextContent}`);
+          debug$R.domElement(le.domElement);
           le.showListInfo('  ');
         });
       }
@@ -28368,8 +28398,8 @@
   /* listInfo.js */
 
   /* Constants */
-  const debug$O = new DebugLogging('MediaInfo', false);
-  debug$O.flag = false;
+  const debug$Q = new DebugLogging('MediaInfo', false);
+  debug$Q.flag = false;
 
   /**
    * @class MediaElement
@@ -28537,10 +28567,10 @@
      */
 
     showListInfo () {
-      if (debug$O.flag) {
-        debug$O.log('== Media Elements ==', 1);
+      if (debug$Q.flag) {
+        debug$Q.log('== Media Elements ==', 1);
         this.allElements.forEach( me => {
-          debug$O.log(me);
+          debug$Q.log(me);
         });
 
       }
@@ -28550,7 +28580,7 @@
   /* structureInfo.js */
 
   /* Constants */
-  const debug$N = new DebugLogging('structureInfo', false);
+  const debug$P = new DebugLogging('structureInfo', false);
 
   /**
    * @class LandmarkElement
@@ -28589,11 +28619,11 @@
         prefix = '';
       }
       this.childLandmarkElements.forEach( le => {
-        debug$N.domElement(le.domElement, prefix);
+        debug$P.domElement(le.domElement, prefix);
         le.showLandmarkInfo(prefix + '  ');
       });
       this.childHeadingDomElements.forEach( h => {
-        debug$N.domElement(h, prefix);
+        debug$P.domElement(h, prefix);
       });
     }
 
@@ -28723,27 +28753,27 @@
      */
 
     showStructureInfo () {
-      if (debug$N.flag) {
-        debug$N.log('== All Headings ==', 1);
+      if (debug$P.flag) {
+        debug$P.log('== All Headings ==', 1);
         this.allHeadingDomElements.forEach( h => {
-          debug$N.domElement(h);
+          debug$P.domElement(h);
         });
-        debug$N.log('== All Landmarks ==', 1);
+        debug$P.log('== All Landmarks ==', 1);
         this.allLandmarkElements.forEach( le => {
-          debug$N.domElement(le.domElement);
+          debug$P.domElement(le.domElement);
         });
-        debug$N.log('== Landmarks By Doc ==', 1);
+        debug$P.log('== Landmarks By Doc ==', 1);
         this.landmarkElementsByDoc.forEach( (les, index) => {
-          debug$N.log(`Document Index: ${index} (${Array.isArray(les)})`);
+          debug$P.log(`Document Index: ${index} (${Array.isArray(les)})`);
           if (Array.isArray(les)) {
             les.forEach(le => {
-              debug$N.domElement(le.domElement);
+              debug$P.domElement(le.domElement);
             });
           }
         });
-        debug$N.log('== Structure Tree ==', 1);
+        debug$P.log('== Structure Tree ==', 1);
         this.childLandmarkElements.forEach( le => {
-          debug$N.domElement(le.domElement);
+          debug$P.domElement(le.domElement);
           le.showLandmarkInfo('  ');
         });
       }
@@ -28753,12 +28783,12 @@
   /* tableInfo.js */
 
   /* Constants */
-  const debug$M = new DebugLogging('tableInfo', false);
-  debug$M.flag = false;
-  debug$M.rows = false;
-  debug$M.cells = false;
-  debug$M.tableTree = false;
-  debug$M.headerCalc = false;
+  const debug$O = new DebugLogging('tableInfo', false);
+  debug$O.flag = false;
+  debug$O.rows = false;
+  debug$O.cells = false;
+  debug$O.tableTree = false;
+  debug$O.headerCalc = false;
 
   /**
    * @class TableElement
@@ -28899,13 +28929,13 @@
       this.rows.forEach( row => {
         row.cells.forEach( cell => {
           const domElementsUsed = [];
-          debug$M.headerCalc && debug$M.log(`${cell}`, 1);
+          debug$O.headerCalc && debug$O.log(`${cell}`, 1);
           if (cell.headerSource === HEADER_SOURCE.HEADER_NONE) {
             if (!cell.isHeader) {
               const node = cell.domElement.node;
               if (node.hasAttribute('headers')) {
                 const ids = node.getAttribute('headers').split(' ');
-                debug$M.headesCalc && debug$M.log(`[headers]: ${ids.join(' ')}`);
+                debug$O.headesCalc && debug$O.log(`[headers]: ${ids.join(' ')}`);
                 for (let i = 0; i < ids.length; i += 1) {
                   const de = domCache.getDomElementById(ids[i]);
                   if (de && de.accName.name) {
@@ -28921,7 +28951,7 @@
                 // get Column Headers
                 for (let i = 1; i < row.rowNumber; i += 1) {
                   const hc = tableElement.getCell(i, cell.startColumn);
-                  debug$M.headerCalc && debug$M.log(`[columnHeaders][${i}][${cell.startColumn}]: ${hc}`);
+                  debug$O.headerCalc && debug$O.log(`[columnHeaders][${i}][${cell.startColumn}]: ${hc}`);
                   if (hc && hc.isHeader &&
                       (!hc.hasScope || hc.isScopeColumn) &&
                       hc.domElement.accName.name &&
@@ -28934,7 +28964,7 @@
                 // get Row Headers
                 for (let i = 1; i < cell.startColumn; i += 1) {
                   const hc = tableElement.getCell(row.rowNumber, i);
-                  debug$M.headerCalc && debug$M.log(`[rowHeaders][${row.rowNumber}][${i}]: ${hc}`);
+                  debug$O.headerCalc && debug$O.log(`[rowHeaders][${row.rowNumber}][${i}]: ${hc}`);
                   if (hc && hc.isHeader &&
                       (!hc.hasScope || hc.isScopeRow) &&
                       hc.domElement.accName.name &&
@@ -28949,7 +28979,7 @@
                   cell.headersSourceNLS = getCommonMessage('headerSource', cell.headerSource);
                 }
               }
-              debug$M.headerCalc && debug$M.log(`${cell}`);
+              debug$O.headerCalc && debug$O.log(`${cell}`);
             }
           }
           cell.interactiveDomElements.forEach( de => {
@@ -29023,7 +29053,7 @@
     }
 
     debugRowGroup (prefix, item) {
-      debug$M.log(`${prefix}${item}`);
+      debug$O.log(`${prefix}${item}`);
       if (item.isGroup) {
         item.children.forEach( child => {
           if (child) {
@@ -29034,14 +29064,14 @@
     }
 
     debug () {
-      if (debug$M.flag) {
-        debug$M.log(`${this}`);
-        if (debug$M.tableTree) {
+      if (debug$O.flag) {
+        debug$O.log(`${this}`);
+        if (debug$O.tableTree) {
           this.children.forEach( child => {
             this.debugRowGroup('  ', child);
           });
         }
-        debug$M.separator();
+        debug$O.separator();
         for (let i = 0; i < this.rows.length; i += 1) {
           this.rows[i].debug('  ');
         }
@@ -29156,15 +29186,15 @@
     }
 
     debug (prefix='') {
-      if (debug$M.flag && debug$M.rows) {
-        debug$M.log(`${prefix}${this}`);
+      if (debug$O.flag && debug$O.rows) {
+        debug$O.log(`${prefix}${this}`);
         for (let i = 0; i < this.cells.length; i += 1) {
           const cell = this.cells[i];
           if (cell) {
             cell.debug(prefix + '  ');
           }
           else {
-            debug$M.log(`${prefix}[${this.rowNumber}][${i+1}]: undefined`);
+            debug$O.log(`${prefix}[${this.rowNumber}][${i+1}]: undefined`);
           }
         }
       }
@@ -29250,8 +29280,8 @@
     }
 
     debug (prefix='') {
-      if (debug$M.flag) {
-        debug$M.log(`${prefix}${this}`);
+      if (debug$O.flag) {
+        debug$O.log(`${prefix}${this}`);
       }
     }
 
@@ -29375,8 +29405,8 @@
      */
 
     showTableInfo () {
-      if (debug$M.flag) {
-        debug$M.log('== All Tables ==', 1);
+      if (debug$O.flag) {
+        debug$O.log('== All Tables ==', 1);
           this.allTableElements.forEach( te => {
             te.debug();
           });
@@ -29387,7 +29417,7 @@
   /* timingInfo.js */
 
   /* Constants */
-  const debug$L = new DebugLogging('TimingInfo', false);
+  const debug$N = new DebugLogging('TimingInfo', false);
 
   /**
    * @class TimingInfo
@@ -29438,10 +29468,10 @@
      */
 
     showTimingInfo () {
-      if (debug$L.flag) {
-        debug$L.log('== All Timing elements ==', 1);
+      if (debug$N.flag) {
+        debug$N.log('== All Timing elements ==', 1);
         this.allTimingDomElements.forEach( de => {
-          debug$L.log(`[fileName]: ${de.tagName}`, true);
+          debug$N.log(`[fileName]: ${de.tagName}`, true);
         });
       }
     }
@@ -29450,11 +29480,11 @@
   /* domCache.js */
 
   /* Constants */
-  const debug$K = new DebugLogging('domCache', false);
-  debug$K.flag = false;
-  debug$K.showDomTexts = false;
-  debug$K.showDomElems = false;
-  debug$K.showTree = false;
+  const debug$M = new DebugLogging('domCache', false);
+  debug$M.flag = false;
+  debug$M.showDomTexts = false;
+  debug$M.showDomElems = false;
+  debug$M.showTree = false;
 
   const skipableElements = [
     'base',
@@ -29854,24 +29884,24 @@
      */
 
     showDomElementTree () {
-      if (debug$K.flag) {
-        if (debug$K.showDomElems) {
-          debug$K.log(' === AllDomElements ===', true);
+      if (debug$M.flag) {
+        if (debug$M.showDomElems) {
+          debug$M.log(' === AllDomElements ===', true);
           this.allDomElements.forEach( de => {
-            debug$K.domElement(de);
+            debug$M.domElement(de);
           });
         }
 
-        if (debug$K.showDomTexts) {
-          debug$K.log(' === AllDomTexts ===', true);
+        if (debug$M.showDomTexts) {
+          debug$M.log(' === AllDomTexts ===', true);
           this.allDomTexts.forEach( dt => {
-            debug$K.domText(dt);
+            debug$M.domText(dt);
           });
         }
 
-        if (debug$K.showTree) {
-          debug$K.log(' === DOMCache Tree ===', true);
-          debug$K.domElement(this.startingDomElement);
+        if (debug$M.showTree) {
+          debug$M.log(' === DOMCache Tree ===', true);
+          debug$M.domElement(this.startingDomElement);
           this.startingDomElement.showDomElementTree(' ');
         }
       }
@@ -29880,8 +29910,8 @@
 
   /* resultSummary.js */
 
-  const debug$J = new DebugLogging('ruleResultSummary', false);
-  debug$J.flag = false;
+  const debug$L = new DebugLogging('ruleResultSummary', false);
+  debug$L.flag = false;
 
   /* ---------------------------------------------------------------- */
   /*                             RuleResultsSummary                        */
@@ -29923,7 +29953,7 @@
       this.is  = -1;  // implementation score for group
       this.iv  = IMPLEMENTATION_VALUE.UNDEFINED; // implementation value for the group
 
-      debug$J.flag && debug$J.log(`[RuleResultsSummary]: ${this.toString()}`);
+      debug$L.flag && debug$L.log(`[RuleResultsSummary]: ${this.toString()}`);
     }
 
      get violations()     { return this.v;  }
@@ -30017,8 +30047,8 @@
   /* ruleGroupResult.js */
 
   /* Constants */
-  const debug$I = new DebugLogging('ruleGroupResult', false);
-  debug$I.flag = false;
+  const debug$K = new DebugLogging('ruleGroupResult', false);
+  debug$K.flag = false;
 
   /**
    * @class RuleGroupResult
@@ -30228,12 +30258,1549 @@
       };
 
       const json = JSON.stringify(ruleGroupResultInfo);
-      debug$I.flag && debug$I.log(`[JSON]: ${json}`);
+      debug$K.flag && debug$K.log(`[JSON]: ${json}`);
       return json;
     }
   }
 
+  const axeInfo ={
+      "version": "4.1.1",
+      "ruleCount": 100,
+      "rules": {
+          "area-alt": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/area-alt",
+              "title": "Ensure &lt;area&gt; elements of image maps have alternative text",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-allowed-attr": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-allowed-attr",
+              "title": "Ensure an element&apos;s role supports its ARIA attributes",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-braille-equivalent": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-braille-equivalent",
+              "title": "Ensure aria-braillelabel and aria-brailleroledescription have a non-braille equivalent",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-command-name": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-command-name",
+              "title": "Ensure every ARIA button, link and menuitem has an accessible name",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-conditional-attr": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-conditional-attr",
+              "title": "Ensure ARIA attributes are used as described in the specification of the element&apos;s role",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-deprecated-role": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-deprecated-role",
+              "title": "Ensure elements do not use deprecated roles",
+              "impact": "Minor",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-hidden-body": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-hidden-body",
+              "title": "Ensure aria-hidden=&quot;true&quot; is not present on the document body.",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-hidden-focus": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-hidden-focus",
+              "title": "Ensure aria-hidden elements are not focusable nor contain focusable elements",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-input-field-name": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-input-field-name",
+              "title": "Ensure every ARIA input field has an accessible name",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-meter-name": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-meter-name",
+              "title": "Ensure every ARIA meter node has an accessible name",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-progressbar-name": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-progressbar-name",
+              "title": "Ensure every ARIA progressbar node has an accessible name",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-prohibited-attr": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-prohibited-attr",
+              "title": "Ensure ARIA attributes are not prohibited for an element&apos;s role",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-required-attr": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-required-attr",
+              "title": "Ensure elements with ARIA roles have all required ARIA attributes",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-required-children": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-required-children",
+              "title": "Ensure elements with an ARIA role that require child roles contain them",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-required-parent": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-required-parent",
+              "title": "Ensure elements with an ARIA role that require parent roles are contained by them",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-roles": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-roles",
+              "title": "Ensure all elements with a role attribute use a valid value",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-toggle-field-name": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-toggle-field-name",
+              "title": "Ensure every ARIA toggle field has an accessible name",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-tooltip-name": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-tooltip-name",
+              "title": "Ensure every ARIA tooltip node has an accessible name",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-valid-attr-value": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-valid-attr-value",
+              "title": "Ensure all ARIA attributes have valid values",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "aria-valid-attr": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-valid-attr",
+              "title": "Ensure attributes that begin with aria- are valid ARIA attributes",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "blink": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/blink",
+              "title": "Ensure &lt;blink&gt; elements are not used",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "button-name": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/button-name",
+              "title": "Ensure buttons have discernible text",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "bypass": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/bypass",
+              "title": "Ensure each page has at least one mechanism for a user to bypass navigation and jump straight to the content",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "color-contrast": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/color-contrast",
+              "title": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "definition-list": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/definition-list",
+              "title": "Ensure &lt;dl&gt; elements are structured correctly",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "dlitem": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/dlitem",
+              "title": "Ensure &lt;dt&gt; and &lt;dd&gt; elements are contained by a &lt;dl&gt;",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "document-title": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/document-title",
+              "title": "Ensure each HTML document contains a non-empty &lt;title&gt; element",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "duplicate-id-aria": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/duplicate-id-aria",
+              "title": "Ensure every id attribute value used in ARIA and in labels is unique",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "form-field-multiple-labels": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/form-field-multiple-labels",
+              "title": "Ensure form field does not have multiple label elements",
+              "impact": "Moderate",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "frame-focusable-content": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/frame-focusable-content",
+              "title": "Ensure &lt;frame&gt; and &lt;iframe&gt; elements with focusable content do not have tabindex=-1",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "frame-title-unique": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/frame-title-unique",
+              "title": "Ensure &lt;iframe&gt; and &lt;frame&gt; elements contain a unique title attribute",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "frame-title": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/frame-title",
+              "title": "Ensure &lt;iframe&gt; and &lt;frame&gt; elements have an accessible name",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "html-has-lang": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/html-has-lang",
+              "title": "Ensure every HTML document has a lang attribute",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "html-lang-valid": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/html-lang-valid",
+              "title": "Ensure the lang attribute of the &lt;html&gt; element has a valid value",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "html-xml-lang-mismatch": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/html-xml-lang-mismatch",
+              "title": "Ensure that HTML elements with both valid lang and xml:lang attributes agree on the base language of the page",
+              "impact": "Moderate",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "image-alt": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/image-alt",
+              "title": "Ensure &lt;img&gt; elements have alternative text or a role of none or presentation",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "input-button-name": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/input-button-name",
+              "title": "Ensure input buttons have discernible text",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "input-image-alt": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/input-image-alt",
+              "title": "Ensure &lt;input type=&quot;image&quot;&gt; elements have alternative text",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "label": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/label",
+              "title": "Ensure every form element has a label",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "link-in-text-block": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/link-in-text-block",
+              "title": "Ensure links are distinguished from surrounding text in a way that does not rely on color",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "link-name": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/link-name",
+              "title": "Ensure links have discernible text",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "list": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/list",
+              "title": "Ensure that lists are structured correctly",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "listitem": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/listitem",
+              "title": "Ensure &lt;li&gt; elements are used semantically",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "marquee": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/marquee",
+              "title": "Ensure &lt;marquee&gt; elements are not used",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "meta-refresh": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/meta-refresh",
+              "title": "Ensure &lt;meta http-equiv=&quot;refresh&quot;&gt; is not used for delayed refresh",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "meta-viewport": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/meta-viewport",
+              "title": "Ensure &lt;meta name=&quot;viewport&quot;&gt; does not disable text scaling and zooming",
+              "impact": "Moderate",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "nested-interactive": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/nested-interactive",
+              "title": "Ensure interactive controls are not nested as they are not always announced by screen readers or can cause focus problems for assistive technologies",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "no-autoplay-audio": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/no-autoplay-audio",
+              "title": "Ensure &lt;video&gt; or &lt;audio&gt; elements do not autoplay audio for more than 3 seconds without a control mechanism to stop or mute the audio",
+              "impact": "Moderate",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "object-alt": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/object-alt",
+              "title": "Ensure &lt;object&gt; elements have alternative text",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "role-img-alt": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/role-img-alt",
+              "title": "Ensure [role=&quot;img&quot;] elements have alternative text",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "scrollable-region-focusable": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/scrollable-region-focusable",
+              "title": "Ensure elements that have scrollable content are accessible by keyboard",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "select-name": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/select-name",
+              "title": "Ensure select element has an accessible name",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "server-side-image-map": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/server-side-image-map",
+              "title": "Ensure that server-side image maps are not used",
+              "impact": "Minor",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "summary-name": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/summary-name",
+              "title": "Ensure summary elements have discernible text",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "svg-img-alt": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/svg-img-alt",
+              "title": "Ensure &lt;svg&gt; elements with an img, graphics-document or graphics-symbol role have accessible text",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "td-headers-attr": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/td-headers-attr",
+              "title": "Ensure that each cell in a table that uses the headers attribute refers only to other &lt;th&gt; elements in that table",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "th-has-data-cells": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/th-has-data-cells",
+              "title": "Ensure that &lt;th&gt; elements and elements with role=columnheader/rowheader have data cells they describe",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "valid-lang": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/valid-lang",
+              "title": "Ensure lang attributes have valid values",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "video-caption": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/video-caption",
+              "title": "Ensure &lt;video&gt; elements have captions",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "autocomplete-valid": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/autocomplete-valid",
+              "title": "Ensure the autocomplete attribute is correct and suitable for the form field",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "avoid-inline-spacing": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/avoid-inline-spacing",
+              "title": "Ensure that text spacing set through style attributes can be adjusted with custom stylesheets",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "target-size": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/target-size",
+              "title": "Ensure touch targets have sufficient size and space",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": false
+          },
+          "accesskeys": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/accesskeys",
+              "title": "Ensure every accesskey attribute value is unique",
+              "impact": "Serious",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "aria-allowed-role": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-allowed-role",
+              "title": "Ensure role attribute has an appropriate value for the element",
+              "impact": "Minor",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "aria-dialog-name": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-dialog-name",
+              "title": "Ensure every ARIA dialog and alertdialog node has an accessible name",
+              "impact": "Serious",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "aria-text": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-text",
+              "title": "Ensure role=&quot;text&quot; is used on elements with no focusable descendants",
+              "impact": "Serious",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "aria-treeitem-name": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/aria-treeitem-name",
+              "title": "Ensure every ARIA treeitem node has an accessible name",
+              "impact": "Serious",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "empty-heading": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/empty-heading",
+              "title": "Ensure headings have discernible text",
+              "impact": "Minor",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "empty-table-header": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/empty-table-header",
+              "title": "Ensure table headers have discernible text",
+              "impact": "Minor",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "frame-tested": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/frame-tested",
+              "title": "Ensure &lt;iframe&gt; and &lt;frame&gt; elements contain the axe-core script",
+              "impact": "Critical",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "heading-order": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/heading-order",
+              "title": "Ensure the order of headings is semantically correct",
+              "impact": "Moderate",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "image-redundant-alt": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/image-redundant-alt",
+              "title": "Ensure image alternative is not repeated as text",
+              "impact": "Minor",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "label-title-only": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/label-title-only",
+              "title": "Ensure that every form element has a visible label and is not solely labeled using hidden labels, or the title or aria-describedby attributes",
+              "impact": "Serious",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "landmark-banner-is-top-level": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/landmark-banner-is-top-level",
+              "title": "Ensure the banner landmark is at top level",
+              "impact": "Moderate",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "landmark-complementary-is-top-level": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/landmark-complementary-is-top-level",
+              "title": "Ensure the complementary landmark or aside is at top level",
+              "impact": "Moderate",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "landmark-contentinfo-is-top-level": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/landmark-contentinfo-is-top-level",
+              "title": "Ensure the contentinfo landmark is at top level",
+              "impact": "Moderate",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "landmark-main-is-top-level": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/landmark-main-is-top-level",
+              "title": "Ensure the main landmark is at top level",
+              "impact": "Moderate",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "landmark-no-duplicate-banner": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/landmark-no-duplicate-banner",
+              "title": "Ensure the document has at most one banner landmark",
+              "impact": "Moderate",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "landmark-no-duplicate-contentinfo": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/landmark-no-duplicate-contentinfo",
+              "title": "Ensure the document has at most one contentinfo landmark",
+              "impact": "Moderate",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "landmark-no-duplicate-main": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/landmark-no-duplicate-main",
+              "title": "Ensure the document has at most one main landmark",
+              "impact": "Moderate",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "landmark-one-main": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/landmark-one-main",
+              "title": "Ensure the document has a main landmark",
+              "impact": "Moderate",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "landmark-unique": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/landmark-unique",
+              "title": "Ensure landmarks are unique",
+              "impact": "Moderate",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "meta-viewport-large": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/meta-viewport-large",
+              "title": "Ensure &lt;meta name=&quot;viewport&quot;&gt; can scale a significant amount",
+              "impact": "Minor",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "page-has-heading-one": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/page-has-heading-one",
+              "title": "Ensure that the page, or at least one of its frames contains a level-one heading",
+              "impact": "Moderate",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "presentation-role-conflict": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/presentation-role-conflict",
+              "title": "Ensure elements marked as presentational do not have global ARIA or tabindex so that all screen readers ignore them",
+              "impact": "Minor",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "region": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/region",
+              "title": "Ensure all page content is contained by landmarks",
+              "impact": "Moderate",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "scope-attr-valid": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/scope-attr-valid",
+              "title": "Ensure the scope attribute is used correctly on tables",
+              "impact": "Moderate",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "skip-link": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/skip-link",
+              "title": "Ensure all skip links have a focusable target",
+              "impact": "Moderate",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "tabindex": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/tabindex",
+              "title": "Ensure tabindex attribute values are not greater than 0",
+              "impact": "Serious",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "table-duplicate-name": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/table-duplicate-name",
+              "title": "Ensure the &lt;caption&gt; element does not contain the same text as the summary attribute",
+              "impact": "Minor",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "color-contrast-enhanced": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/color-contrast-enhanced",
+              "title": "Ensure the contrast between foreground and background colors meets WCAG 2 AAA enhanced contrast ratio thresholds",
+              "impact": "Serious",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "identical-links-same-purpose": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/identical-links-same-purpose",
+              "title": "Ensure that links with the same accessible name serve a similar purpose",
+              "impact": "Minor",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "meta-refresh-no-exceptions": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/meta-refresh-no-exceptions",
+              "title": "Ensure &lt;meta http-equiv=&quot;refresh&quot;&gt; is not used for delayed refresh",
+              "impact": "Minor",
+              "bestPractice": true,
+              "experimental": false
+          },
+          "css-orientation-lock": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/css-orientation-lock",
+              "title": "Ensure content is not locked to any specific display orientation, and the content is operable in all display orientations",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": true
+          },
+          "focus-order-semantics": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/focus-order-semantics",
+              "title": "Ensure elements in the focus order have a role appropriate for interactive content",
+              "impact": "Minor",
+              "bestPractice": false,
+              "experimental": true
+          },
+          "hidden-content": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/hidden-content",
+              "title": "Inform users about hidden content.",
+              "impact": "Minor",
+              "bestPractice": false,
+              "experimental": true
+          },
+          "label-content-name-mismatch": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/label-content-name-mismatch",
+              "title": "Ensure that elements labelled through their content must have their visible text as part of their accessible name",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": true
+          },
+          "p-as-heading": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/p-as-heading",
+              "title": "Ensure bold, italic text and font-size is not used to style &lt;p&gt; elements as a heading",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": true
+          },
+          "table-fake-caption": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/table-fake-caption",
+              "title": "Ensure that tables with a caption use the &lt;caption&gt; element.",
+              "impact": "Serious",
+              "bestPractice": false,
+              "experimental": true
+          },
+          "td-has-header": {
+              "url": "https://dequeuniversity.com/rules/axe/4.11/td-has-header",
+              "title": "Ensure that each non-empty data cell in a &lt;table&gt; larger than 3 by 3 has one or more table headers",
+              "impact": "Critical",
+              "bestPractice": false,
+              "experimental": true
+          }
+      }
+  };
+
+  /* axe-info.js */
+
+  /* Constants */
+  const debug$J = new DebugLogging('axeInfo', false);
+  debug$J.flag = false;
+
+  function getAxeRuleInfo(refs, convert=false) {
+
+    debug$J.flag && debug$J.log(`[axeRules]: ${refs.join(' ')}`);
+
+    const infos = [];
+
+    refs.forEach( (ref) => {
+      const r = axeInfo.rules[ref];
+      if (r) {
+        const info = {};
+        info.title  = convert ? convertRuleTitle(r.title) : r.title;
+        info.url    = r.url;
+        info.type   = r.bestPractice ? 'Best Practices' : r.experimental ? 'Experimental' : 'Required';
+        info.impact = r.impact;
+        infos.push(info);
+      }
+      else {
+        debug$J.log(`[ref]: ${ref} not found`);
+      }
+    });
+
+    return infos;
+  }
+
+  const waveInfo = {
+      "version": "2025-11",
+      "ruleCount": 109,
+      "rules": {
+          "alt_missing": {
+              "title": "Missing alternative text - alt_missing",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_missing",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "alt_link_missing": {
+              "title": "Linked image missing alternative text - alt_link_missing",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_link_missing",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "alt_spacer_missing": {
+              "title": "Spacer image missing alternative text - alt_spacer_missing",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_spacer_missing",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "alt_input_missing": {
+              "title": "Image button missing alternative text - alt_input_missing",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_input_missing",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "alt_area_missing": {
+              "title": "Image map area missing alternative text - alt_area_missing",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_area_missing",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "alt_map_missing": {
+              "title": "Image map missing alternative text - alt_map_missing",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_map_missing",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "longdesc_invalid": {
+              "title": "Invalid longdesc - longdesc_invalid",
+              "url": "https://wave.webaim.org/api/docs?format=html#longdesc_invalid",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "label_missing": {
+              "title": "Missing form label - label_missing",
+              "url": "https://wave.webaim.org/api/docs?format=html#label_missing",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "label_empty": {
+              "title": "Empty form label - label_empty",
+              "url": "https://wave.webaim.org/api/docs?format=html#label_empty",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "label_multiple": {
+              "title": "Multiple form labels - label_multiple",
+              "url": "https://wave.webaim.org/api/docs?format=html#label_multiple",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "aria_reference_broken": {
+              "title": "Broken ARIA reference - aria_reference_broken",
+              "url": "https://wave.webaim.org/api/docs?format=html#aria_reference_broken",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "aria_menu_broken": {
+              "title": "Broken ARIA menu - aria_menu_broken",
+              "url": "https://wave.webaim.org/api/docs?format=html#aria_menu_broken",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "title_invalid": {
+              "title": "Missing or uninformative page title - title_invalid",
+              "url": "https://wave.webaim.org/api/docs?format=html#title_invalid",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "language_missing": {
+              "title": "Language missing or invalid - language_missing",
+              "url": "https://wave.webaim.org/api/docs?format=html#language_missing",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "meta_refresh": {
+              "title": "Page refreshes or redirects - meta_refresh",
+              "url": "https://wave.webaim.org/api/docs?format=html#meta_refresh",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "heading_empty": {
+              "title": "Empty heading - heading_empty",
+              "url": "https://wave.webaim.org/api/docs?format=html#heading_empty",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "button_empty": {
+              "title": "Empty button - button_empty",
+              "url": "https://wave.webaim.org/api/docs?format=html#button_empty",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "link_empty": {
+              "title": "Empty link - link_empty",
+              "url": "https://wave.webaim.org/api/docs?format=html#link_empty",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "link_skip_broken": {
+              "title": "Broken skip link - link_skip_broken",
+              "url": "https://wave.webaim.org/api/docs?format=html#link_skip_broken",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "th_empty": {
+              "title": "Empty table header - th_empty",
+              "url": "https://wave.webaim.org/api/docs?format=html#th_empty",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "blink": {
+              "title": "Blinking content - blink",
+              "url": "https://wave.webaim.org/api/docs?format=html#blink",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "marquee": {
+              "title": "Marquee - marquee",
+              "url": "https://wave.webaim.org/api/docs?format=html#marquee",
+              "error": true,
+              "contrast": false,
+              "alert": false
+          },
+          "contrast": {
+              "title": "Very low contrast - contrast",
+              "url": "https://wave.webaim.org/api/docs?format=html#contrast",
+              "error": false,
+              "contrast": true,
+              "alert": false
+          },
+          "alt_suspicious": {
+              "title": "Suspicious alternative text - alt_suspicious",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_suspicious",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "alt_redundant": {
+              "title": "Redundant alternative text - alt_redundant",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_redundant",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "alt_duplicate": {
+              "title": "A nearby image has the same alternative text - alt_duplicate",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_duplicate",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "alt_long": {
+              "title": "Long alternative text - alt_long",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_long",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "longdesc": {
+              "title": "Long description - longdesc",
+              "url": "https://wave.webaim.org/api/docs?format=html#longdesc",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "image_title": {
+              "title": "Image with title - image_title",
+              "url": "https://wave.webaim.org/api/docs?format=html#image_title",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "label_orphaned": {
+              "title": "Orphaned form label - label_orphaned",
+              "url": "https://wave.webaim.org/api/docs?format=html#label_orphaned",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "label_title": {
+              "title": "Unlabeled form control with title - label_title",
+              "url": "https://wave.webaim.org/api/docs?format=html#label_title",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "select_missing_label": {
+              "title": "Select missing label - select_missing_label",
+              "url": "https://wave.webaim.org/api/docs?format=html#select_missing_label",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "fieldset_missing": {
+              "title": "Missing fieldset - fieldset_missing",
+              "url": "https://wave.webaim.org/api/docs?format=html#fieldset_missing",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "legend_missing": {
+              "title": "Fieldset missing legend - legend_missing",
+              "url": "https://wave.webaim.org/api/docs?format=html#legend_missing",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "heading_missing": {
+              "title": "No heading structure - heading_missing",
+              "url": "https://wave.webaim.org/api/docs?format=html#heading_missing",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "h1_missing": {
+              "title": "Missing first level heading - h1_missing",
+              "url": "https://wave.webaim.org/api/docs?format=html#h1_missing",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "region_missing": {
+              "title": "No page regions - region_missing",
+              "url": "https://wave.webaim.org/api/docs?format=html#region_missing",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "heading_skipped": {
+              "title": "Skipped heading level - heading_skipped",
+              "url": "https://wave.webaim.org/api/docs?format=html#heading_skipped",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "heading_possible": {
+              "title": "Possible heading - heading_possible",
+              "url": "https://wave.webaim.org/api/docs?format=html#heading_possible",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "table_layout": {
+              "title": "Layout table - table_layout",
+              "url": "https://wave.webaim.org/api/docs?format=html#table_layout",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "table_caption_possible": {
+              "title": "Possible table caption - table_caption_possible",
+              "url": "https://wave.webaim.org/api/docs?format=html#table_caption_possible",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "list_possible": {
+              "title": "Possible list - list_possible",
+              "url": "https://wave.webaim.org/api/docs?format=html#list_possible",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "link_internal_broken": {
+              "title": "Broken same-page link - link_internal_broken",
+              "url": "https://wave.webaim.org/api/docs?format=html#link_internal_broken",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "link_suspicious": {
+              "title": "Suspicious link text - link_suspicious",
+              "url": "https://wave.webaim.org/api/docs?format=html#link_suspicious",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "link_redundant": {
+              "title": "Redundant link - link_redundant",
+              "url": "https://wave.webaim.org/api/docs?format=html#link_redundant",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "link_word": {
+              "title": "Link to Word document - link_word",
+              "url": "https://wave.webaim.org/api/docs?format=html#link_word",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "link_excel": {
+              "title": "Link to Excel spreadsheet - link_excel",
+              "url": "https://wave.webaim.org/api/docs?format=html#link_excel",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "link_powerpoint": {
+              "title": "Link to PowerPoint document - link_powerpoint",
+              "url": "https://wave.webaim.org/api/docs?format=html#link_powerpoint",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "link_pdf": {
+              "title": "Link to PDF document - link_pdf",
+              "url": "https://wave.webaim.org/api/docs?format=html#link_pdf",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "link_document": {
+              "title": "Link to document - link_document",
+              "url": "https://wave.webaim.org/api/docs?format=html#link_document",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "audio_video": {
+              "title": "Audio/Video - audio_video",
+              "url": "https://wave.webaim.org/api/docs?format=html#audio_video",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "html5_video_audio": {
+              "title": "HTML5 video or audio - html5_video_audio",
+              "url": "https://wave.webaim.org/api/docs?format=html#html5_video_audio",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "youtube_video": {
+              "title": "YouTube video - youtube_video",
+              "url": "https://wave.webaim.org/api/docs?format=html#youtube_video",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "flash": {
+              "title": "Flash - flash",
+              "url": "https://wave.webaim.org/api/docs?format=html#flash",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "applet": {
+              "title": "Java applet - applet",
+              "url": "https://wave.webaim.org/api/docs?format=html#applet",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "plugin": {
+              "title": "Plugin - plugin",
+              "url": "https://wave.webaim.org/api/docs?format=html#plugin",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "noscript": {
+              "title": "Noscript element - noscript",
+              "url": "https://wave.webaim.org/api/docs?format=html#noscript",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "event_handler": {
+              "title": "Device dependent event handler - event_handler",
+              "url": "https://wave.webaim.org/api/docs?format=html#event_handler",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "javascript_jumpmenu": {
+              "title": "JavaScript jump menu - javascript_jumpmenu",
+              "url": "https://wave.webaim.org/api/docs?format=html#javascript_jumpmenu",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "accesskey": {
+              "title": "Accesskey - accesskey",
+              "url": "https://wave.webaim.org/api/docs?format=html#accesskey",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "tabindex": {
+              "title": "Tabindex - tabindex",
+              "url": "https://wave.webaim.org/api/docs?format=html#tabindex",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "text_small": {
+              "title": "Very small text - text_small",
+              "url": "https://wave.webaim.org/api/docs?format=html#text_small",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "text_justified": {
+              "title": "Justified text - text_justified",
+              "url": "https://wave.webaim.org/api/docs?format=html#text_justified",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "underline": {
+              "title": "Underlined text - underline",
+              "url": "https://wave.webaim.org/api/docs?format=html#underline",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "title_redundant": {
+              "title": "Redundant title text - title_redundant",
+              "url": "https://wave.webaim.org/api/docs?format=html#title_redundant",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "alt_null": {
+              "title": "Null or empty alternative text - alt_null",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_null",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "alt_spacer": {
+              "title": "Null or empty alternative text on spacer - alt_spacer",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_spacer",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "alt_link": {
+              "title": "Linked image with alternative text - alt_link",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_link",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "alt_input": {
+              "title": "Image button with alternative text - alt_input",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_input",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "alt_map": {
+              "title": "Image map with alternative text - alt_map",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_map",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "alt_area": {
+              "title": "Image map area with alternative text - alt_area",
+              "url": "https://wave.webaim.org/api/docs?format=html#alt_area",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "figure": {
+              "title": "Figure - figure",
+              "url": "https://wave.webaim.org/api/docs?format=html#figure",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "label": {
+              "title": "Form label - label",
+              "url": "https://wave.webaim.org/api/docs?format=html#label",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "fieldset": {
+              "title": "Fieldset - fieldset",
+              "url": "https://wave.webaim.org/api/docs?format=html#fieldset",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "link_skip": {
+              "title": "Skip link - link_skip",
+              "url": "https://wave.webaim.org/api/docs?format=html#link_skip",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "link_skip_target": {
+              "title": "Skip link target - link_skip_target",
+              "url": "https://wave.webaim.org/api/docs?format=html#link_skip_target",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "lang": {
+              "title": "Language - lang",
+              "url": "https://wave.webaim.org/api/docs?format=html#lang",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "h1": {
+              "title": "Heading level 1 - h1",
+              "url": "https://wave.webaim.org/api/docs?format=html#h1",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "h2": {
+              "title": "Heading level 2 - h2",
+              "url": "https://wave.webaim.org/api/docs?format=html#h2",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "h3": {
+              "title": "Heading level 3 - h3",
+              "url": "https://wave.webaim.org/api/docs?format=html#h3",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "h4": {
+              "title": "Heading level 4 - h4",
+              "url": "https://wave.webaim.org/api/docs?format=html#h4",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "h5": {
+              "title": "Heading level 5 - h5",
+              "url": "https://wave.webaim.org/api/docs?format=html#h5",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "h6": {
+              "title": "Heading level 6 - h6",
+              "url": "https://wave.webaim.org/api/docs?format=html#h6",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "ol": {
+              "title": "Ordered list - ol",
+              "url": "https://wave.webaim.org/api/docs?format=html#ol",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "ul": {
+              "title": "Unordered list - ul",
+              "url": "https://wave.webaim.org/api/docs?format=html#ul",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "dl": {
+              "title": "Definition/description list - dl",
+              "url": "https://wave.webaim.org/api/docs?format=html#dl",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "header": {
+              "title": "Header - header",
+              "url": "https://wave.webaim.org/api/docs?format=html#header",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "nav": {
+              "title": "Navigation - nav",
+              "url": "https://wave.webaim.org/api/docs?format=html#nav",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "search": {
+              "title": "Search - search",
+              "url": "https://wave.webaim.org/api/docs?format=html#search",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "main": {
+              "title": "Main content - main",
+              "url": "https://wave.webaim.org/api/docs?format=html#main",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "aside": {
+              "title": "Aside - aside",
+              "url": "https://wave.webaim.org/api/docs?format=html#aside",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "footer": {
+              "title": "Footer - footer",
+              "url": "https://wave.webaim.org/api/docs?format=html#footer",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "region": {
+              "title": "Generic region - region",
+              "url": "https://wave.webaim.org/api/docs?format=html#region",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "table_data": {
+              "title": "Data table - table_data",
+              "url": "https://wave.webaim.org/api/docs?format=html#table_data",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "table_caption": {
+              "title": "Table caption - table_caption",
+              "url": "https://wave.webaim.org/api/docs?format=html#table_caption",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "th": {
+              "title": "Table header cell - th",
+              "url": "https://wave.webaim.org/api/docs?format=html#th",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "th_col": {
+              "title": "Column header cell - th_col",
+              "url": "https://wave.webaim.org/api/docs?format=html#th_col",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "th_row": {
+              "title": "Row header cell - th_row",
+              "url": "https://wave.webaim.org/api/docs?format=html#th_row",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "iframe": {
+              "title": "Inline frame - iframe",
+              "url": "https://wave.webaim.org/api/docs?format=html#iframe",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "aria": {
+              "title": "ARIA - aria",
+              "url": "https://wave.webaim.org/api/docs?format=html#aria",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "aria_label": {
+              "title": "ARIA label - aria_label",
+              "url": "https://wave.webaim.org/api/docs?format=html#aria_label",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "aria_describedby": {
+              "title": "ARIA description - aria_describedby",
+              "url": "https://wave.webaim.org/api/docs?format=html#aria_describedby",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "aria_live_region": {
+              "title": "ARIA alert or live region - aria_live_region",
+              "url": "https://wave.webaim.org/api/docs?format=html#aria_live_region",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "aria_menu": {
+              "title": "ARIA menu - aria_menu",
+              "url": "https://wave.webaim.org/api/docs?format=html#aria_menu",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "aria_button": {
+              "title": "ARIA button - aria_button",
+              "url": "https://wave.webaim.org/api/docs?format=html#aria_button",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "aria_expanded": {
+              "title": "ARIA expanded - aria_expanded",
+              "url": "https://wave.webaim.org/api/docs?format=html#aria_expanded",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "aria_haspopup": {
+              "title": "ARIA popup - aria_haspopup",
+              "url": "https://wave.webaim.org/api/docs?format=html#aria_haspopup",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "aria_tabindex": {
+              "title": "ARIA tabindex - aria_tabindex",
+              "url": "https://wave.webaim.org/api/docs?format=html#aria_tabindex",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          },
+          "aria_hidden": {
+              "title": "ARIA hidden - aria_hidden",
+              "url": "https://wave.webaim.org/api/docs?format=html#aria_hidden",
+              "error": false,
+              "contrast": false,
+              "alert": true
+          }
+      }
+  };
+
+  /* wave-info.js */
+
+  /* Constants */
+  const debug$I = new DebugLogging('waveInfo', false);
+  debug$I.flag = false;
+
+  function getWaveRuleInfo(refs, convert=false) {
+
+    debug$I.flag && debug$I.log(`[waveRules]: ${refs.join(' ')}`);
+
+    const infos = [];
+
+    refs.forEach( (ref) => {
+      const r = waveInfo.rules[ref];
+      if (r) {
+        const info = {};
+        info.title  = convert ? convertRuleTitle(r.title) : r.title;
+        info.url    = r.url;
+        info.type   = r.error ? 'Error' : r.contrast ? 'Contrast' : 'Alert';
+        infos.push(info);
+      }
+      else {
+        debug$I.log(`[ref]: ${ref} not found`);
+      }
+    });
+
+    return infos;
+  }
+
   /* baseResult.js */
+
 
   /* constants */
   const debug$H = new DebugLogging('baseResult', false);
@@ -30427,6 +31994,29 @@
       };
     }
 
+
+    /**
+    * @method getAxeRuleInfo
+    *
+    * @desc Returns an array of related aXe rule information
+    *
+    * @return {Array} see @desc
+    */
+    getAxeRuleInfo () {
+      return this.rule_result.getAxeRuleInfo();
+    }
+
+    /**
+    * @method getWaveRuleInfo
+    *
+    * @desc Returns an array of related WAVErule information
+    *
+    * @return {Array} see @desc
+    */
+    getWaveRuleInfo () {
+      return this.rule_result.getWaveRuleInfo();
+    }
+
     /**
      * @method toJSON
      *
@@ -30543,7 +32133,6 @@
     getNode () {
       return this.domElement.node;
     }
-
 
     /**
      * @method getTagName
@@ -30803,7 +32392,6 @@
       }
       return info;
     }
-
 
   }
 
@@ -31193,6 +32781,7 @@
   }
 
   /* ruleResult.js */
+
 
 
   /* constants */
@@ -31706,6 +33295,30 @@
     }
 
     /**
+    * @method getAxeRuleInfo
+    *
+    * @desc Returns an array of related aXe rule information
+    *
+    * @return {Array} see @desc
+    */
+    getAxeRuleInfo () {
+      return getAxeRuleInfo(this.rule.axe_refs, true);
+    }
+
+    /**
+    * @method getWaveRuleInfo
+    *
+    * @desc Returns an array of related WAVErule information
+    *
+    * @return {Array} see @desc
+    */
+    getWaveRuleInfo () {
+      return getWaveRuleInfo(this.rule.wave_refs, true);
+    }
+
+
+
+    /**
      * @method getDataForJSON
      *
      * @desc Object containing the data for exporting a rule result to JSON
@@ -31819,6 +33432,8 @@
       rule_category       : RULE_CATEGORIES.AUDIO_VIDEO,
       rule_required       : true,
       first_step          : true,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.2.1',
       wcag_related_ids    : ['1.2.2', '1.2.4', '1.2.9'],
       target_resources    : ['audio', 'embed', 'object', 'track'],
@@ -31878,6 +33493,8 @@
       rule_category       : RULE_CATEGORIES.AUDIO_VIDEO,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : ['no-autoplay-audio'],
+      wave_refs           : [],
       wcag_primary_id     : '1.4.2',
       wcag_related_ids    : [],
       target_resources    : [],
@@ -31915,6 +33532,8 @@
       rule_category       : RULE_CATEGORIES.FORMS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '3.3.8',
       wcag_related_ids    : [],
       target_resources    : ['widgets'],
@@ -31953,6 +33572,9 @@
       rule_category       : RULE_CATEGORIES.KEYBOARD_SUPPORT,
       rule_required       : true,
       first_step          : true,
+      axe_refs            : ['skip-link',
+                             'bypass'],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['2.4.4'],
       target_resources    : ['a'],
@@ -32161,6 +33783,8 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : true,
+      axe_refs            : ['color-contrast'],
+      wave_refs           : [],
       wcag_primary_id     : '1.4.3',
       wcag_related_ids    : ['1.4.1','1.4.6'],
       target_resources    : ['text content'],
@@ -32186,6 +33810,8 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : true,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.4.1',
       wcag_related_ids    : [],
       target_resources    : [],
@@ -32208,6 +33834,8 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required        : false,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.4.6',
       wcag_related_ids    : ['1.4.1','1.4.3'],
       target_resources    : ['text content'],
@@ -32233,6 +33861,8 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.4.11',
       wcag_related_ids    : [],
       target_resources    : [],
@@ -32266,6 +33896,8 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.4.11',
       wcag_related_ids    : [],
       target_resources    : [],
@@ -32323,6 +33955,8 @@
       rule_category       : RULE_CATEGORIES.FORMS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '3.3.1',
       wcag_related_ids    : [],
       target_resources    : ['input[type="checkbox"]',
@@ -32408,6 +34042,8 @@
       rule_category       : RULE_CATEGORIES.FORMS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '3.3.3',
       wcag_related_ids    : [],
       target_resources    : ['input[type="text"]', 'input[type="date"]', 'input[type="file"]', 'input[type="number"]', 'input[type="password"]', 'input[type="tel"]' , 'input[type="text"]', 'input[type="url"]', 'select', 'textarea'],
@@ -32453,6 +34089,8 @@
       rule_category       : RULE_CATEGORIES.FORMS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '3.3.3',
       wcag_related_ids    : [],
       target_resources    : ['input[type="text"]', 'input[type="date"]', 'input[type="file"]', 'input[type="number"]', 'input[type="password"]', 'input[type="tel"]' , 'input[type="text"]', 'input[type="url"]', 'select', 'textarea', '[role="textbox"]', '[role="combobox"]', '[role="gridcell"]'],
@@ -32489,6 +34127,8 @@
       rule_category       : RULE_CATEGORIES.FORMS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '3.3.4',
       wcag_related_ids    : [],
       target_resources    : ['input[type="text"]', 'input[type="date"]', 'input[type="file"]', 'input[type="number"]', 'input[type="password"]', 'input[type="tel"]' , 'input[type="text"]', 'input[type="url"]', 'select', 'textarea', '[role="textbox"]', '[role="combobox"]', '[role="gridcell"]'],
@@ -32551,6 +34191,8 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : ['frame-title'],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : [],
       target_resources    : ['frame'],
@@ -32585,6 +34227,8 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : [],
       target_resources    : ['iframe'],
@@ -32687,7 +34331,7 @@
    *
    * @desc textarea, select and input elements of type text,
    *       password, checkbox, radio and file must have an
-   *       accessible name using label elements
+   *       accessible name
    *
    */
 
@@ -32697,6 +34341,9 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : true,
+    axe_refs            : ['label',
+                           'select-name'],
+    wave_refs           : ['label_missing'],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['input[type="checkbox"]', 'input[type="date"]', 'input[type="file"]', 'input[type="radio"]', 'input[type="number"]', 'input[type="password"]', 'input[type="tel"]' , 'input[type="text"]', 'input[type="url"]', 'select', 'textarea', 'meter', 'progress'],
@@ -32740,6 +34387,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : true,
+    axe_refs            : ['input-image-alt'],
+    wave_refs           : [],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['input[type="image"]'],
@@ -32779,6 +34428,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : true,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['input[type="radio"]'],
@@ -32830,6 +34481,9 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : false,
     first_step          : false,
+    axe_refs            : ['button-name',
+                           'summary-name'],
+    wave_refs           : [],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['button'],
@@ -32911,6 +34565,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : ['duplicate-id-aria'],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.1',
     wcag_related_ids    : ['3.3.2', '1.3.1', '2.4.6'],
     target_resources    : ['input[type="checkbox"]', 'input[type="radio"]', 'input[type="text"]', 'input[type="password"]', 'input[type="file"]', 'select', 'textarea'],
@@ -32945,6 +34601,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['label'],
@@ -32984,6 +34642,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['label', 'legend'],
@@ -33023,6 +34683,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6', '4.1.1'],
     target_resources    : ['fieldset'],
@@ -33075,6 +34737,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['4.1.1'],
     target_resources    : ['input', 'select', 'textarea'],
@@ -33107,6 +34771,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : true,
+    axe_refs            : ['input-button-name'],
+    wave_refs           : [],
     wcag_primary_id     : '2.4.6',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['input[type="checkbox"]', 'input[type="radio"]', 'input[type="text"]', 'input[type="password"]', 'input[type="file"]', 'select', 'textarea'],
@@ -33190,6 +34856,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '2.4.6',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['input[type="submit"]', 'input[type="reset"]','button[type="submit"]', 'button[type="reset"]'],
@@ -33274,6 +34942,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : true,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '3.2.2',
     wcag_related_ids    : [],
     target_resources    : ['form', 'input[type="submit"]', 'input[type="button"]', 'input[type="image"]', 'button', '[role="button"]'],
@@ -33385,6 +35055,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.3.5',
     wcag_related_ids    : ['3.3.2', '2.4.6'],
     target_resources    : ['input[type="text"]'],
@@ -33418,6 +35090,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : [],
     target_resources    : ["input", "option", "select", "textarea"],
@@ -33494,6 +35168,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '2.5.3',
     wcag_related_ids    : [],
     target_resources    : ["input", "output", "select", "textarea", "widgets"],
@@ -33551,6 +35227,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '3.3.7',
     wcag_related_ids    : [],
     target_resources    : ["input", "select", "textarea"],
@@ -33599,6 +35277,8 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : [],
     target_resources    : ["input", 'output', "select", "textarea"],
@@ -33653,6 +35333,8 @@
       rule_category       : RULE_CATEGORIES.HEADINGS,
       rule_required       : false,
       first_step          : true,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.2', '2.4.6', '2.4.10'],
       target_resources    : ['h1'],
@@ -33698,6 +35380,8 @@
       rule_category       : RULE_CATEGORIES.HEADINGS,
       rule_required       : false,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.6',
       wcag_related_ids    : ['1.3.1', '2.4.1', '2.4.2', '2.4.10'],
       target_resources    : ['h1'],
@@ -33748,6 +35432,9 @@
     rule_scope          : RULE_SCOPE.ELEMENT,
     rule_category       : RULE_CATEGORIES.HEADINGS,
     rule_required       : false,
+    first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '2.4.6',
     wcag_related_ids    : ['1.3.1', '2.4.10'],
     target_resources    : ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
@@ -33856,6 +35543,9 @@
     rule_scope          : RULE_SCOPE.PAGE,
     rule_category       : RULE_CATEGORIES.HEADINGS,
     rule_required       : false,
+    first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6', '2.4.10'],
     target_resources    : ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
@@ -33921,6 +35611,9 @@
     rule_scope          : RULE_SCOPE.ELEMENT,
     rule_category       : RULE_CATEGORIES.HEADINGS,
     rule_required       : false,
+    first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6', '2.4.10'],
     target_resources    : ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
@@ -33956,6 +35649,9 @@
     rule_scope          : RULE_SCOPE.ELEMENT,
     rule_category       : RULE_CATEGORIES.HEADINGS,
     rule_required        : false,
+    first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
     target_resources    : ['h2', '[role="contentinfo"]', '[role="complementary"]', '[role="form"]', '[role="navigation"]', '[role="search"]'],
@@ -34049,6 +35745,8 @@
       rule_category       : RULE_CATEGORIES.SITE_NAVIGATION,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '3.2.6',
       wcag_related_ids    : [],
       target_resources    : ['page'],
@@ -34086,6 +35784,8 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : ['marquee'],
+      wave_refs           : [],
       wcag_primary_id     : '2.3.1',
       wcag_related_ids    : ['2.2.2', '4.1.1'],
       target_resources    : ['marquee'],
@@ -34131,6 +35831,11 @@
     rule_category       : RULE_CATEGORIES.IMAGES,
     rule_required       : true,
     first_step          : true,
+    axe_refs            : ['image-alt',
+                           'area-alt',
+                           'role-img-alt',
+                           'svg-img-alt'],
+    wave_refs           : ['alt_missing'],
     wcag_primary_id     : '1.1.1',
     wcag_related_ids    : [],
     target_resources    : ['img', 'area', '[role="img"]'],
@@ -34173,6 +35878,8 @@
     rule_category       : RULE_CATEGORIES.IMAGES,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.1.1',
     wcag_related_ids    : [],
     target_resources    : ['img', '[role="img"]'],
@@ -34211,6 +35918,8 @@
     rule_category       : RULE_CATEGORIES.IMAGES,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.1.1',
     wcag_related_ids    : [],
     target_resources    : ['img', '[role="img"]'],
@@ -34245,6 +35954,8 @@
     rule_category       : RULE_CATEGORIES.IMAGES,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.1.1',
     wcag_related_ids    : [],
     target_resources    : ['img', 'area'],
@@ -34279,6 +35990,8 @@
     rule_category       : RULE_CATEGORIES.IMAGES,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.1.1',
     wcag_related_ids    : [],
     target_resources    : ['img', '[role="img"]'],
@@ -34308,6 +36021,8 @@
     rule_category       : RULE_CATEGORIES.IMAGES,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.1.1',
     wcag_related_ids    : [],
     target_resources    : ['img', '[role="img"]'],
@@ -34349,6 +36064,8 @@
     rule_category       : RULE_CATEGORIES.IMAGES,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.1.1',
     wcag_related_ids    : [],
     target_resources    : ['img', '[role="img"]'],
@@ -34389,6 +36106,8 @@
     rule_category       : RULE_CATEGORIES.IMAGES,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.1.1'],
     target_resources    : ['svg'],
@@ -34449,6 +36168,8 @@
       rule_category       : RULE_CATEGORIES.KEYBOARD_SUPPORT,
       rule_required       : true,
       first_step          : true,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.1.1',
       wcag_related_ids    : ['4.1.2'],
       target_resources    : ['widgets'],
@@ -34480,6 +36201,8 @@
       rule_category       : RULE_CATEGORIES.KEYBOARD_SUPPORT,
       rule_required       : true,
       first_step          : true,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.3',
       wcag_related_ids    : ['2.1.1', '2.1.2', '2.4.7', '3.2.1'],
       target_resources    : ['links', 'controls', 'widgets'],
@@ -34552,6 +36275,8 @@
       rule_category       : RULE_CATEGORIES.KEYBOARD_SUPPORT,
       rule_required       : true,
       first_step          : true,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.1.2',
       wcag_related_ids    : ['2.1.1', '2.4.3',  '2.4.7', '3.2.1'],
       target_resources    : ['object'],
@@ -34581,6 +36306,8 @@
       rule_category       : RULE_CATEGORIES.KEYBOARD_SUPPORT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.1.2',
       wcag_related_ids    : ['2.1.1', '2.4.3',  '2.4.7', '3.2.1'],
       target_resources    : ['object'],
@@ -34611,6 +36338,8 @@
       rule_category       : RULE_CATEGORIES.KEYBOARD_SUPPORT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.7',
       wcag_related_ids    : ['2.1.1', '2.1.2',  '2.4.3', '3.2.1'],
       target_resources    : ['Page', 'a', 'applet', 'area', 'button', 'input', 'object', 'select', 'area', 'widgets'],
@@ -34656,6 +36385,8 @@
       rule_category       : RULE_CATEGORIES.KEYBOARD_SUPPORT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '3.2.2',
       wcag_related_ids    : ['2.1.1', '2.1.2',  '2.4.3', '2.4.7'],
       target_resources    : ['select'],
@@ -34688,6 +36419,8 @@
       rule_category       : RULE_CATEGORIES.KEYBOARD_SUPPORT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.4.13',
       wcag_related_ids    : [],
       target_resources    : ['button', 'input', 'links', 'output', 'textarea', 'widgets'],
@@ -34712,6 +36445,8 @@
       rule_category       : RULE_CATEGORIES.KEYBOARD_SUPPORT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.3',
       wcag_related_ids    : [],
       target_resources    : ['button', 'input', 'links', 'output', 'textarea', 'widgets'],
@@ -34734,6 +36469,8 @@
       rule_category       : RULE_CATEGORIES.KEYBOARD_SUPPORT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.11',
       wcag_related_ids    : [],
       target_resources    : ['button', 'input', 'links', 'output', 'textarea', 'widgets'],
@@ -34771,6 +36508,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : true,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['main', '[role="main"]'],
@@ -34790,6 +36529,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['Page', 'all'],
@@ -34832,6 +36573,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['nav', '[role="navigation"]'],
@@ -34897,6 +36640,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['header', '[role="banner"]'],
@@ -34918,6 +36663,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['header', '[role="banner"]'],
@@ -34938,6 +36685,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['footer', '[role="contentinfo"]'],
@@ -34958,6 +36707,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['footer', '[role="contentinfo"]'],
@@ -34977,6 +36728,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       required            : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['header', '[role="banner"]'],
@@ -34996,6 +36749,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['header', '[role="banner"]'],
@@ -35015,6 +36770,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['nav', '[role="naviation"]'],
@@ -35034,6 +36791,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['main', '[role="main"]'],
@@ -35053,6 +36812,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['footer', '[role="contentinfo"]'],
@@ -35072,6 +36833,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['header', '[role="banner"]'],
@@ -35091,6 +36854,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['[role="search"]'],
@@ -35110,6 +36875,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['[role="form"]'],
@@ -35129,6 +36896,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['[role="region"]'],
@@ -35163,6 +36932,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['main', 'nav', 'header', 'footer', 'section', 'aside', '[role="application"]','[role="banner"]', '[role="complementary"]','[role="contentinfo"]','[role="form"]','[role="main"]','[role="navigation"]','[role="region"]','[role="search"]'],
@@ -35186,6 +36957,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['main', 'nav', 'header', 'footer', 'section', 'aside', '[role="application"]','[role="banner"]', '[role="complementary"]','[role="contentinfo"]','[role="form"]','[role="main"]','[role="navigation"]','[role="region"]','[role="search"]'],
@@ -35214,6 +36987,8 @@
       rule_category       : RULE_CATEGORIES.LANDMARKS,
       rule_required       : false,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['aside', '[role="complementary"]'],
@@ -35612,6 +37387,9 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : ['html-has-lang',
+                             'html-lang-valid'],
+      wave_refs           : [],
       wcag_primary_id     : '3.1.1',
       wcag_related_ids    : [],
       target_resources    : ['html'],
@@ -35642,6 +37420,8 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '3.1.2',
       wcag_related_ids    : ['3.1.1'],
       target_resources    : ['[lang]'],
@@ -35707,6 +37487,8 @@
       rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.2',
       wcag_related_ids    : ['1.3.1'],
       target_resources    : ['Page', 'table'],
@@ -35764,6 +37546,8 @@
       rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.2',
       wcag_related_ids    : [],
       target_resources    : ['table'],
@@ -35807,6 +37591,8 @@
       rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.2',
       wcag_related_ids    : [],
       target_resources    : ['[aria_flowto]'],
@@ -35838,6 +37624,8 @@
       rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.4',
       wcag_related_ids    : [],
       target_resources    : ['page'],
@@ -35874,6 +37662,9 @@
       rule_category       : RULE_CATEGORIES.LINKS,
       rule_required       : true,
       first_step          : true,
+      axe_refs            : ['link-name',
+                             'aria-command-name'],
+      wave_refs           : ['alt_link_missing'],
       wcag_primary_id     : '2.4.4',
       wcag_related_ids    : ['2.4.9'],
       target_resources    : ['a', 'area', '[role=link]'],
@@ -35913,6 +37704,8 @@
       rule_category       : RULE_CATEGORIES.LINKS,
       rule_required       : false,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.4',
       wcag_related_ids    : ['2.4.9'],
       target_resources    : ['a', 'area', '[role=link]'],
@@ -35987,6 +37780,8 @@
       rule_category       : RULE_CATEGORIES.LINKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '3.2.1',
       wcag_related_ids    : ['2.1.1', '2.1.2',  '2.4.3', '2.4.7'],
       target_resources    : ['a', 'area', 'select'],
@@ -36015,6 +37810,8 @@
       rule_category       : RULE_CATEGORIES.LINKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.5.3',
       wcag_related_ids    : [],
       target_resources    : ["a", "[role=link]"],
@@ -36084,6 +37881,9 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : ['list',
+                             'listitem'],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : [],
       target_resources    : ['ul', 'ol', 'li', '[role="list"]', '[role="listitem"]'],
@@ -36134,6 +37934,8 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.6',
       wcag_related_ids    : ['1.3.1'],
       target_resources    : ['ul', 'ol', '[role="list"]'],
@@ -36184,6 +37986,8 @@
     rule_scope          : RULE_SCOPE.PAGE,
     rule_category       : RULE_CATEGORIES.TIMING_LIVE,
     rule_required       : true,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.3',
     wcag_related_ids    : [],
     target_resources    : ['[role="alert"]','[role="log"]','[role="status"]','[aria-live]'],
@@ -36258,6 +38062,8 @@
       rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.5.4',
       wcag_related_ids    : [],
       target_resources    : ['page'],
@@ -36313,6 +38119,8 @@
       rule_category       : RULE_CATEGORIES.SITE_NAVIGATION,
       rule_required       : true,
       first_step          : true,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.5',
       wcag_related_ids    : [],
       target_resources    : ['Website', 'role=\'search\'', 'role=\'navigation\''],
@@ -36361,6 +38169,8 @@
       rule_category       : RULE_CATEGORIES.SITE_NAVIGATION,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '3.2.3',
       wcag_related_ids    : ['3.2.4'],
       target_resources    : ['Website', 'role=\'main\'', 'role=\'navigation\'', 'role=\'banner\'', 'role=\'contentinfo\'','role=\'search\''],
@@ -36405,6 +38215,8 @@
       rule_category       : RULE_CATEGORIES.SITE_NAVIGATION,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '3.2.3',
       wcag_related_ids    : ['3.2.4'],
       target_resources    : ['Website', 'h2'],
@@ -36449,6 +38261,8 @@
       rule_category       : RULE_CATEGORIES.SITE_NAVIGATION,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '3.2.4',
       wcag_related_ids    : ['3.2.3'],
       target_resources    : ['Website', 'role=\'search\'', 'role=\'navigation\'', 'role=\'main\'', 'role=\'banner\'', 'role=\'contentinfo\'', 'h2'],
@@ -36494,6 +38308,8 @@
       rule_category       : RULE_CATEGORIES.SITE_NAVIGATION,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '3.2.4',
       wcag_related_ids    : ['3.2.3'],
       target_resources    : ['Website', 'h2'],
@@ -36551,6 +38367,8 @@
       rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.5.1',
       wcag_related_ids    : [],
       target_resources    : ['widgets'],
@@ -36575,6 +38393,8 @@
       rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.5.2',
       wcag_related_ids    : [],
       target_resources    : ['widgets'],
@@ -36599,6 +38419,8 @@
       rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.5.7',
       wcag_related_ids    : [],
       target_resources    : ['widgets'],
@@ -36638,6 +38460,8 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.2',
       wcag_related_ids    : [],
       target_resources    : [],
@@ -36687,6 +38511,8 @@
       rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.4.4',
       wcag_related_ids    : [],
       target_resources    : ['content'],
@@ -36707,6 +38533,8 @@
       rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.4.10',
       wcag_related_ids    : [],
       target_resources    : ['content'],
@@ -36742,6 +38570,8 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.3.3',
       wcag_related_ids    : [],
       target_resources    : ['button', 'link'],
@@ -36777,6 +38607,8 @@
       rule_category       : RULE_CATEGORIES.KEYBOARD_SUPPORT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.1.4',
       wcag_related_ids    : [],
       target_resources    : ['page'],
@@ -36801,6 +38633,8 @@
       rule_category       : RULE_CATEGORIES.KEYBOARD_SUPPORT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.1.4',
       wcag_related_ids    : [],
       target_resources    : ['a', 'input', 'output', 'select', 'textarea'],
@@ -36847,6 +38681,8 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.4.12',
       wcag_related_ids    : [],
       target_resources    : ['text'],
@@ -36882,6 +38718,8 @@
     rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
     rule_required       : true,
     first_step          : true,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6'],
     target_resources    : ['td'],
@@ -36948,6 +38786,8 @@
     rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
     rule_required       : true,
     first_step          : true,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '2.4.6',
     wcag_related_ids    : ['1.3.1'],
     target_resources    : ['table', 'caption'],
@@ -36984,6 +38824,8 @@
     rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6'],
     target_resources    : ['table'],
@@ -37030,6 +38872,8 @@
     rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6'],
     target_resources    : ['table'],
@@ -37087,6 +38931,8 @@
     rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
     rule_required       : true,
     first_step          : true,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6'],
     target_resources    : ['table'],
@@ -37155,6 +39001,8 @@
     rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
     rule_required       : false,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6'],
     target_resources    : ['td[scope]'],
@@ -37199,6 +39047,8 @@
     rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6'],
     target_resources    : ['td'],
@@ -37252,6 +39102,8 @@
     rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6'],
     target_resources    : ['caption', 'table[aria-label]', 'table[aria-labelledby]', 'table[aria-describedby]', 'table[title]'],
@@ -37310,6 +39162,8 @@
       rule_category       : RULE_CATEGORIES.LINKS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.5.8',
       wcag_related_ids    : [],
       target_resources    : ['links'],
@@ -37349,6 +39203,8 @@
       rule_category       : RULE_CATEGORIES.LINKS,
       rule_required       : false,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.5.5',
       wcag_related_ids    : [],
       target_resources    : ['links'],
@@ -37387,6 +39243,8 @@
       rule_category       : RULE_CATEGORIES.FORMS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.5.8',
       wcag_related_ids    : [],
       target_resources    : ['button', 'input[type=button]', 'input[type=image]', 'input[type=reset]', 'input[type=submit]', '[role=button]'],
@@ -37424,6 +39282,8 @@
       rule_category       : RULE_CATEGORIES.FORMS,
       rule_required       : false,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.5.5',
       wcag_related_ids    : [],
       target_resources    : ['button', 'input[type=button]', 'input[type=image]', 'input[type=reset]', 'input[type=submit]', '[role=button]'],
@@ -37477,6 +39337,8 @@
       rule_category       : RULE_CATEGORIES.FORMS,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.5.8',
       wcag_related_ids    : [],
       target_resources    : ['input[type=checkbox]', 'input[type=radio]', '[role=radio]', '[role=checkbox]]'],
@@ -37531,6 +39393,8 @@
       rule_category       : RULE_CATEGORIES.FORMS,
       rule_required       : false,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.5.5',
       wcag_related_ids    : [],
       target_resources    : ['input[type=checkbox]', 'input[type=radio]', '[role=radio]', '[role=checkbox]]'],
@@ -37602,6 +39466,8 @@
       rule_category       : RULE_CATEGORIES.TIMING_LIVE,
       rule_required       : true,
       first_step          : true,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.2.1',
       wcag_related_ids    : [],
       target_resources    : ['a', 'input', 'button', 'wdiget'],
@@ -37626,6 +39492,8 @@
       rule_category       : RULE_CATEGORIES.TIMING_LIVE,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.2.2',
       wcag_related_ids    : [],
       target_resources    : ['canvas', 'embed', 'img', 'object', 'svg'],
@@ -37658,6 +39526,8 @@
       rule_category       : RULE_CATEGORIES.TIMING_LIVE,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.3.1',
       wcag_related_ids    : [],
       target_resources    : ['canvas', 'embed', 'img', 'object', 'svg'],
@@ -37705,6 +39575,8 @@
       rule_category       : RULE_CATEGORIES.SITE_NAVIGATION,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : ['document-title'],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.2',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['Page', 'title'],
@@ -37731,6 +39603,8 @@
       rule_category       : RULE_CATEGORIES.SITE_NAVIGATION,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '2.4.2',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['Page', 'title', 'h1'],
@@ -37857,6 +39731,8 @@
       rule_category       : RULE_CATEGORIES.AUDIO_VIDEO,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.2.1',
       wcag_related_ids    : ['1.2.2', '1.2.4'],
       target_resources    : ['embed', 'object', 'track', 'video'],
@@ -37922,6 +39798,8 @@
       rule_category       : RULE_CATEGORIES.AUDIO_VIDEO,
       rule_required       : true,
       first_step          : true,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.2.2',
       wcag_related_ids    : ['1.2.4'],
       target_resources    : ['embed', 'object', 'track', 'video'],
@@ -37969,6 +39847,8 @@
       rule_category       : RULE_CATEGORIES.AUDIO_VIDEO,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.2.3',
       wcag_related_ids    : ['1.2.5'],
       target_resources    : ['embed', 'object', 'track', 'video'],
@@ -38016,6 +39896,8 @@
       rule_category       : RULE_CATEGORIES.AUDIO_VIDEO,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.2.4',
       wcag_related_ids    : ['1.2.2'],
       target_resources    : ['embed', 'object', 'track', 'video'],
@@ -38063,6 +39945,8 @@
       rule_category       : RULE_CATEGORIES.AUDIO_VIDEO,
       rule_required       : true,
       first_step          : false,
+      axe_refs            : [],
+      wave_refs           : [],
       wcag_primary_id     : '1.2.5',
       wcag_related_ids    : ['1.2.3'],
       target_resources    : ['embed', 'object', 'track', 'video'],
@@ -38123,6 +40007,13 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : true,
+    axe_refs            : ['aria-command-name',
+                           'aria-input-field-name',
+                           'aria-meter-name',
+                           'aria-progressbar-name',
+                           'aria-toggle-field-name',
+                           'aria-tooltip-name'],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['ARIA Widget roles'],
@@ -38167,6 +40058,8 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['Elements with onclick events'],
@@ -38227,6 +40120,9 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : true,
+    axe_refs            : ['aria-deprecated-role',
+                           'aria-roles'],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['[role]'],
@@ -38296,6 +40192,9 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : true,
+    axe_refs            : ['aria-conditional-attr',
+                           'aria-valid-attr-value'],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['[aria-atomic]',
@@ -38410,6 +40309,10 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : true,
+    axe_refs            : ['aria-allowed-attr',
+                           'aria-conditional-attr',
+                           'aria-prohibited-attr'],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['[aria-atomic]',
@@ -38479,6 +40382,9 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : ['aria-conditional-attr',
+                           'aria-required-attr'],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['[checkbox]',
@@ -38524,6 +40430,8 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : ['aria-required-children'],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['[feed]',
@@ -38604,6 +40512,8 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : ['aria-required-parent'],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : [ "caption",
@@ -38692,6 +40602,8 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['[aria-owns]'],
@@ -38723,6 +40635,8 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['[role="meter"]',
@@ -38793,6 +40707,8 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['[role="meter"]',
@@ -38835,6 +40751,8 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : true,
+    axe_refs            : ['aria-conditional-attr'],
+    wave_refs           : [],
     wcag_primary_id     : '2.4.6',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['[ARIA widget roles'],
@@ -38875,6 +40793,8 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['2.4.6'],
     target_resources    : [ "caption",
@@ -38917,6 +40837,8 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : ['aria-deprecated-role'],
+    wave_refs           : [],
     wcag_primary_id     : '4.1.1',
     wcag_related_ids    : ['4.1.2'],
     target_resources    : [
@@ -39037,6 +40959,8 @@
     rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
     rule_required       : true,
     first_step          : false,
+    axe_refs            : [],
+    wave_refs           : [],
     wcag_primary_id     : '2.1.1',
     wcag_related_ids    : ['1.1.1','1.4.1','1.4.3','1.4.4','2.1.2','2.2.1','2.2.2', '2.4.7','2.4.3','2.4.7','3.3.2'],
     target_resources    : ["Custom elements using web component APIs"],
@@ -39085,10 +41009,13 @@
       this.last_updated        = rule_item.last_updated; // String
       this.target_resources    = rule_item.target_resources; // array of strings
       this.first_step          = rule_item.first_step; // Boolean
+      this.axe_refs            = rule_item.axe_refs; // axe rule ids
+      this.wave_refs           = rule_item.wave_refs; // wave rule ids
       this.wcag_primary_id     = rule_item.wcag_primary_id;  // String (P.G.SC)
       this.wcag_related_ids    = rule_item.wcag_related_ids; // Array of Strings (P.G.SC)
       this.wcag_guideline_id   = getGuidelineId(rule_item.wcag_primary_id); // Integer
       this.validate            = rule_item.validate;  // function
+
 
       // Rule information that is locale dependent
       this.rule_category_info  = getRuleCategoryInfo(this.rule_category_id); // Object with keys to strings
@@ -39839,7 +41766,8 @@
       debug$3.flag && debug$3.log(`[evaluateRuleList][ruleList]: ${ruleList}`);
 
       this.ruleset     = 'RULELIST';
-      this.ariaVersion = ariaVersion;
+      this.scopeFilter = '';
+      this.ariaVersion = validateAriaVersion(ariaVersion);
 
       const domCache      = new DOMCache(this.startingDoc, this.startingDoc.body, ariaVersion, addDataId);
       this.allDomElements = domCache.allDomElements;
@@ -39873,6 +41801,7 @@
      * @method runFirstStepRules
      *
      * @desc Updates rule results array with results first step rules
+     *
      * @param  {String}  ariaVersion - Version of ARIA used for validation rules
      *                                 (values: 'ARIA12' | ARIA13")
      * @param  {Boolean} addDataId   - If true, create a data-opena11y-oridinal-position attribute
@@ -39884,6 +41813,7 @@
       const startTime = new Date();
 
       this.ruleset     = 'FIRSTSTEP';
+      this.scopeFilter = '';
       this.ariaVersion = ariaVersion;
 
       const domCache      = new DOMCache(this.startingDoc, this.startingDoc.body, ariaVersion, addDataId);
@@ -39896,6 +41826,100 @@
       allRules.forEach (rule => {
 
         if (rule.isFirstStep) {
+          const ruleResult = new RuleResult(rule);
+
+          ruleResult.validate(domCache);
+          this._allRuleResults.push(ruleResult);
+          this._ruleResultsSummary.update(ruleResult);
+          this._rcRuleResultsGroup.update(rule.rule_category_id, ruleResult);
+          this._glRuleResultsGroup.update(rule.wcag_guideline_id, ruleResult);
+        }
+      });
+
+      this._headings.update(domCache);
+      this._landmarkRegions.update(domCache);
+      this._links.update(domCache, this.url);
+
+      const endTime = new Date();
+      debug$3.flag && debug$3.log(`[evaluateWCAG][Run Time]: ${endTime.getTime() - startTime.getTime()} msecs`);
+
+    }
+
+   /**
+     * @method runAxeRules
+     *
+     * @desc Updates rule results array with results using rules with aXe references
+     *
+     * @param  {String}  ariaVersion - Version of ARIA used for validation rules
+     *                                 (values: 'ARIA12' | ARIA13")
+     * @param  {Boolean} addDataId   - If true, create a data-opena11y-oridinal-position attribute
+     *                                 on element nodes for use in navigation and highlighting
+     */
+
+    runAxeRules (ariaVersion='ARIA12') {
+      const startTime = new Date();
+
+      this.ruleset     = 'AXE';
+      this.scopeFilter = '';
+      this.ariaVersion = ariaVersion;
+
+      const domCache      = new DOMCache(this.startingDoc, this.startingDoc.body, ariaVersion);
+      this.allDomElements = domCache.allDomElements;
+      this._allRuleResults = [];
+      this._ruleResultsSummary.clear();
+      this._rcRuleResultsGroup.clear();
+      this._glRuleResultsGroup.clear();
+
+      allRules.forEach (rule => {
+
+        if (rule.axe_refs.length) {
+          const ruleResult = new RuleResult(rule);
+
+          ruleResult.validate(domCache);
+          this._allRuleResults.push(ruleResult);
+          this._ruleResultsSummary.update(ruleResult);
+          this._rcRuleResultsGroup.update(rule.rule_category_id, ruleResult);
+          this._glRuleResultsGroup.update(rule.wcag_guideline_id, ruleResult);
+        }
+      });
+
+      this._headings.update(domCache);
+      this._landmarkRegions.update(domCache);
+      this._links.update(domCache, this.url);
+
+      const endTime = new Date();
+      debug$3.flag && debug$3.log(`[evaluateWCAG][Run Time]: ${endTime.getTime() - startTime.getTime()} msecs`);
+
+    }
+
+   /**
+     * @method runWaveRules
+     *
+     * @desc Updates rule results array with results using rules with WAVE/popetech references
+     *
+     * @param  {String}  ariaVersion - Version of ARIA used for validation rules
+     *                                 (values: 'ARIA12' | ARIA13")
+     * @param  {Boolean} addDataId   - If true, create a data-opena11y-oridinal-position attribute
+     *                                 on element nodes for use in navigation and highlighting
+     */
+
+    runWaveRules (ariaVersion='ARIA12') {
+      const startTime = new Date();
+
+      this.ruleset     = 'WAVE';
+      this.scopeFilter = '';
+      this.ariaVersion = ariaVersion;
+
+      const domCache      = new DOMCache(this.startingDoc, this.startingDoc.body, ariaVersion);
+      this.allDomElements = domCache.allDomElements;
+      this._allRuleResults = [];
+      this._ruleResultsSummary.clear();
+      this._rcRuleResultsGroup.clear();
+      this._glRuleResultsGroup.clear();
+
+      allRules.forEach (rule => {
+
+        if (rule.wave_refs.length) {
           const ruleResult = new RuleResult(rule);
 
           ruleResult.validate(domCache);
@@ -40207,7 +42231,7 @@
    /**
      * @method evaluateFirstStepRules
      *
-     * @desc Evaluate a document using first step rules
+     * @desc Returns an EvaluationResult object using first step rules
      *
      * @param  {Object}  startingDoc - Browser document object model (DOM) to be evaluated
      * @param  {String}  title       - Title of document being analyzed
@@ -40217,6 +42241,8 @@
      * @param  {Boolean} addDataId   - If true, add an data-opena11y-id attribute based on
      *                                 the elements ordinal position for use in
      *                                 navigation and highlighting
+     *
+     * @returns {Object}  see @desc
     */
 
     evaluateFirstStepRules (startingDoc, title='', url='',
@@ -40225,6 +42251,65 @@
 
       const evaluationResult = new EvaluationResult(startingDoc, title, url);
       evaluationResult.runFirstStepRules(ariaVersion, addDataId);
+
+      // Debug features
+      if (debug$2.flag) {
+        debug$2.json && debug$2.log(`[evaluationResult][JSON]: ${evaluationResult.toJSON(true)}`);
+      }
+      return evaluationResult;
+    }
+
+   /**
+     * @method evaluateAxeRules
+     *
+     * @desc Returns an EvaluationResult object using rule with aXe references
+     *
+     * @param  {Object}  startingDoc - Browser document object model (DOM) to be evaluated
+     * @param  {String}  title       - Title of document being analyzed
+     * @param  {String}  url         - url of document being analyzed
+     * @param  {String}  ariaVersion - Version of ARIA used for validation rules
+     *                                 Values: 'ARIA12' | 'ARIA13'
+     * @param  {Boolean} addDataId   - If true, add an data-opena11y-id attribute based on
+     *                                 the elements ordinal position for use in
+     *                                 navigation and highlighting
+     *
+     * @returns {Object}  see @desc
+    */
+
+    evaluateAxeRules (startingDoc, title='', url='', ariaVersion="ARIA12") {
+
+      const evaluationResult = new EvaluationResult(startingDoc, title, url);
+      evaluationResult.runAxeRules(ariaVersion);
+
+      // Debug features
+      if (debug$2.flag) {
+        debug$2.json && debug$2.log(`[evaluationResult][JSON]: ${evaluationResult.toJSON(true)}`);
+      }
+      return evaluationResult;
+    }
+
+
+   /**
+     * @method evaluateWaveRules
+     *
+     * @desc Returns an EvaluationResult object using rule with WAVE references
+     *
+     * @param  {Object}  startingDoc - Browser document object model (DOM) to be evaluated
+     * @param  {String}  title       - Title of document being analyzed
+     * @param  {String}  url         - url of document being analyzed
+     * @param  {String}  ariaVersion - Version of ARIA used for validation rules
+     *                                 Values: 'ARIA12' | 'ARIA13'
+     * @param  {Boolean} addDataId   - If true, add an data-opena11y-id attribute based on
+     *                                 the elements ordinal position for use in
+     *                                 navigation and highlighting
+     *
+     * @returns {Object}  see @desc
+    */
+
+    evaluateWaveRules (startingDoc, title='', url='', ariaVersion="ARIA12") {
+
+      const evaluationResult = new EvaluationResult(startingDoc, title, url);
+      evaluationResult.runWaveRules(ariaVersion);
 
       // Debug features
       if (debug$2.flag) {
@@ -40332,6 +42417,12 @@
       ruleInfo.has_pass           = getHasPass(id);
       ruleInfo.mc_message         = getManualCheckMessage(id);
 
+      ruleInfo.has_axe            = rule.axe_refs.length !== 0;
+      ruleInfo.axe_rules          = getAxeRuleInfo(rule.axe_refs);
+
+      ruleInfo.has_wave           = rule.wave_refs.length !== 0;
+      ruleInfo.wave_rules         = getWaveRuleInfo(rule.wave_refs);
+
       ruleInfo.target_resources = rule.target_resources;
 
       ruleInfo.definition = getRuleDefinition(id, true);
@@ -40344,6 +42435,119 @@
       return ruleInfo;
     }
 
+
+    /**
+     * @method getAllAxeRules
+     *
+     * @desc Provides an array of aXe rule information
+     *
+     * @return see @desc
+     */
+
+    getAllAxeRules() {
+
+      const rules = [];
+      for (const id in axeInfo.rules) {
+        const r = axeInfo.rules[id];
+        const info = {};
+        info.title  = r.title;
+        info.url    = r.url;
+        info.type   = r.bestPractice ? 'Best Practices' : r.experimental ? 'Experimental' : 'Required';
+        info.impact = r.impact;
+        rules.push(info);
+      }
+      return rules;
+    }
+
+    /**
+     * @method getUnmappedAxeRules
+     *
+     * @desc Provides an array of aXe rule information
+     *
+     * @return see @desc
+     */
+
+    getUnmappedAxeRules() {
+
+      const rules = [];
+      for (const id in axeInfo.rules) {
+        let flag = true;
+        for (let i = 0; i < allRules.length && flag; i += 1) {
+          const refs = allRules[i].axe_refs;
+          if (refs) {
+            if (refs.includes(id)) {
+              flag = false;
+            }
+          }
+        }
+        if (flag) {
+          const r = axeInfo.rules[id];
+          const info = {};
+          info.title  = r.title;
+          info.url    = r.url;
+          info.type   = r.bestPractice ? 'Best Practices' : r.experimental ? 'Experimental' : 'Required';
+          info.impact = r.impact;
+          rules.push(info);
+        }
+      }
+      return rules;
+    }
+
+    /**
+     * @method getAllWaveRules
+     *
+     * @desc Provides an array of WAVE rule information
+     *
+     * @return see @desc
+     */
+
+    getAllWaveRules() {
+
+      const rules = [];
+
+      for (const rule in waveInfo.rules) {
+        const info = {};
+        info.title  = rule.title;
+        info.url    = rule.url;
+        info.type   = rule.error ? 'Error' : rule.contrast ? 'Contrast' : 'Alert';
+        rules.push(info);
+      }
+
+      return rules;
+    }
+
+    /**
+     * @method getUnmappedWaveRules
+     *
+     * @desc Provides an array of WAVE rule information
+     *
+     * @return see @desc
+     */
+
+    getUnmappedWaveRules() {
+
+      const rules = [];
+      for (const id in waveInfo.rules) {
+        let flag = true;
+        for (let i = 0; i < allRules.length && flag; i += 1) {
+          const refs = allRules[i].wave_refs;
+          if (refs) {
+            if (refs.includes(id)) {
+              flag = false;
+            }
+          }
+        }
+        if (flag) {
+          const r = waveInfo.rules[id];
+          const info = {};
+          info.title  = r.title;
+          info.url    = r.url;
+          info.type   = r.error ? 'Error' : r.contrast ? 'Contrast' : 'Alert';
+          rules.push(info);
+        }
+      }
+      return rules;
+    }
 
   }
 
@@ -40381,17 +42585,18 @@
       if (er.isElementResult) {
         const de = er.domElement;
         const element_result = {
-          id:               er.getResultId(),
-          element:          er.getResultIdentifier(),
-          element_id:       er.getId(),
-          element_class:    er.getClassName(),
-          result_type:      er.getResultType(),
-          result_value:     er.getResultValue(),
-          result_abbrev:    er.getResultValueNLS(),
-          result_long:      er.getResultValueLongNLS(),
-          position:         er.getOrdinalPosition(),
+          id:            er.getResultId(),
+          element:       er.getResultIdentifier(),
+          element_id:    er.getId(),
+          element_class: er.getClassName(),
+          result_type:   er.getResultType(),
+          result_value:  er.getResultValue(),
+          result_abbrev: er.getResultValueNLS(),
+          result_long:   er.getResultValueLongNLS(),
+          position:      er.getOrdinalPosition(),
+          action:        er.getResultMessage(),
+
           highlightId:      `opena11y-pos-${er.getOrdinalPosition()}`,
-          action:           er.getResultMessage(),
           rule_id:          rule_id,
           rule_nls_id:      getRuleId(rule_id),
           rule_scope:       rule_scope,
@@ -40418,7 +42623,7 @@
           html_attributes:            de.htmlAttrs,
           aria_attributes:            de.ariaAttrs,
 
-          is_element: true,
+            is_element: true,
           is_page: false,
           is_website: false
         };
@@ -40499,6 +42704,7 @@
           result_abbrev: er.getResultValueNLS(),
           result_long:   er.getResultValueLongNLS(),
           action:        er.getResultMessage(),
+
           definition:    getRuleDefinition(rule_id),
           rule_id:       rule_id,
           rule_nls_id:   getRuleId(rule_id),
@@ -40507,7 +42713,7 @@
           highlightId:   'opena11y-pos-page',
           is_element: false,
           is_page: true,
-          is_website: false
+          is_website: false,
         };
       }
 
@@ -40520,15 +42726,18 @@
           result_abbrev: er.getResultValueNLS(),
           result_long:   er.getResultValueLongNLS(),
           action:        er.getResultMessage(),
+
           definition:    getRuleDefinition(rule_id),
           rule_id:       rule_id,
           rule_nls_id:   getRuleId(rule_id),
           rule_scope:    rule_scope,
+
           position:      'website',
           highlightId:   'opena11y-pos-website',
           is_element: false,
           is_page: false,
           is_website: true
+
         };
       }
 
@@ -40698,6 +42907,9 @@
         wcag_level:            getCommonMessage('level', rule.wcag_primary.level),
         wcag_version:          getWCAGVersion(rule.wcag_primary_id),
 
+        axe_rules:             rule_result.getAxeRuleInfo(),
+        wave_rules:            rule_result.getWaveRuleInfo(),
+
         rule_nls_id:           getRuleId(id), // String
         summary:               getRuleSummary(id), // String
         definition:            getRuleDefinition(id), // String
@@ -40848,16 +43060,35 @@
 
         const doc = window.document;
 
-        if (r.ruleset === 'FIRSTSTEP') {
-          er  = evaluationLibrary.evaluateFirstStepRules(
-                  doc,
-                  doc.title,
-                  doc.location.href,
-                  r.aria_version,
-                  false);
-        }
-        else {
-          er  = evaluationLibrary.evaluateWCAG(
+        switch (r.ruleset) {
+          case 'AXE':
+            er  = evaluationLibrary.evaluateAxeRules(
+                            doc,
+                            doc.title,
+                            doc.location.href,
+                            r.aria_version);
+            break;
+
+          case 'FIRSTSTEP':
+            er  = evaluationLibrary.evaluateFirstStepRules(
+                            doc,
+                            doc.title,
+                            doc.location.href,
+                            r.aria_version,
+                            false);
+            break;
+
+          case 'WAVE':
+            er  = evaluationLibrary.evaluateWaveRules(
+                            doc,
+                            doc.title,
+                            doc.location.href,
+                            r.aria_version);
+            break;
+
+
+          default:
+            er  = evaluationLibrary.evaluateWCAG(
                   doc,
                   doc.title,
                   doc.location.href,
@@ -40866,6 +43097,7 @@
                   r.scope_filter,
                   r.aria_version,
                   false);
+            break;
         }
 
         lastEvaluationResult = er;
@@ -40875,6 +43107,7 @@
         let response = {
           title:             er.getTitle(),
           location:          er.getURL(),
+          ruleset:           r.ruleset,
           ruleset_label:     er.getRulesetLabel(),
           rule_scope_filter: er.getRuleScopeFilterLabel(),
           result_view:       r.result_view,

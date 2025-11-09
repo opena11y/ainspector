@@ -140,6 +140,27 @@ export default class InfoRule extends HTMLElement {
         this.copyText[id] += getCopyTextContent('rule_sc_label',  getMessage('element_result_value_none'));
       }
 
+      addH3(divElem, getMessage('rule_related_axe'));
+      if (info_rule.axe_rules) {
+        renderContent(divElem, info_rule.axe_rules);
+        this.copyText[id] += getCopyTextContent(getMessage('rule_related_axe'), info_rule.axe_rules);
+      }
+      else {
+        renderContent(divElem, getMessage('element_result_value_none'));
+        this.copyText[id] += getCopyTextContent(getMessage('rule_related_axe'),  getMessage('element_result_value_none'));
+      }
+
+      addH3(divElem, getMessage('rule_related_wave'));
+      console.log(`[wave_rules]: ${info_rule.wave_rules}`);
+      if (info_rule.axe_rules) {
+        renderContent(divElem, info_rule.wave_rules);
+        this.copyText[id] += getCopyTextContent(getMessage('rule_related_wave'), info_rule.wave_rules);
+      }
+      else {
+        renderContent(divElem, getMessage('element_result_value_none'));
+        this.copyText[id] += getCopyTextContent(getMessage('rule_related_wave'),  getMessage('element_result_value_none'));
+      }
+
       addH3(divElem, getMessage('rule_additional_label'));
       renderContent(divElem, info_rule.informational_links);
       this.copyText[id] += getCopyTextContent('rule_additional_label', info_rule.informational_links);

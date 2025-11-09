@@ -85,6 +85,27 @@ optionsRulesetTemplate.innerHTML = `
           First Step Rules
         </span>
       </label>
+
+      <label>
+        <input type="radio"
+               data-option="ruleset"
+               name="ruleset"
+               value="AXE"/>
+        <span data-i18n="options_ruleset_axe_label">
+          Only Related aXe Rules
+        </span>
+      </label>
+
+      <label>
+        <input type="radio"
+               data-option="ruleset"
+               name="ruleset"
+               value="WAVE"/>
+        <span data-i18n="options_ruleset_wave_label">
+          Only Related WAVE/popetech Rules
+        </span>
+      </label>
+
     </fieldset>
 
     <fieldset>

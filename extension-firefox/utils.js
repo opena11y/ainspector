@@ -419,4 +419,3 @@ export function getCopyTextProps (prop_list, type='') {
   }
   return copyText + '\n';
 }
-

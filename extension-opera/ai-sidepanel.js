@@ -76,7 +76,7 @@ template.innerHTML = `
   <header>
     <h1 id="view-title"
         aria-live="polite"
-        data-i18n="view_title_all_rules_Label">
+        data-i18n="view_title_summary_Label">
     </h1>
     <div class="buttons">
       <button id="back-button">
@@ -291,9 +291,30 @@ class AISidePanel extends HTMLElement {
 
     this.lastResult = result;
 
+    let viewTitle = getMessage('view_title_summary_Label') + ' ';
+
+    switch (result.ruleset) {
+
+      case 'AXE':
+        viewTitle += getMessage('options_ruleset_axe_label');
+        break;
+
+      case 'FIRSTSTEP':
+        viewTitle += getMessage('options_ruleset_first_step_label');
+        break;
+
+      case 'WAVE':
+        viewTitle += getMessage('options_ruleset_wave_label');
+        break;
+
+      default:
+        viewTitle += result.rule_scope_filter;
+
+    }
+
     switch (result.result_view) {
       case 'rules-all':
-        this.viewTitleElem.textContent = getMessage('view_title_all_rules_Label');
+        this.viewTitleElem.textContent = viewTitle;
         this.backButtonElem.disabled = true;
         this.viewRuleGroupElem.setAttribute('hidden', '');
         this.viewRuleElem.setAttribute('hidden', '');
