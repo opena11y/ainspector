@@ -51,22 +51,26 @@ const pages = [
       { content: 'content-getting-started-chrome.njk',
         title: 'Chrome Browser',
         link: 'Chrome',
-        filename: 'getting-started-chrome.html'
+        filename: 'getting-started-chrome.html',
+        breadcrumb: 'Getting Started'
       },
       { content: 'content-getting-started-edge.njk',
         title: 'Edge Browser',
         link: 'Edge',
-        filename: 'getting-started-edge.html'
+        filename: 'getting-started-edge.html',
+        breadcrumb: 'Getting Started'
       },
       { content: 'content-getting-started-firefox.njk',
         title: 'Firefox Browser',
         link: 'Firefox',
-        filename: 'getting-started-firefox.html'
+        filename: 'getting-started-firefox.html',
+        breadcrumb: 'Getting Started'
       },
       { content: 'content-getting-started-opera.njk',
         title: 'Opera Browser',
         link: 'Opera',
-        filename: 'getting-started-opera.html'
+        filename: 'getting-started-opera.html',
+        breadcrumb: 'Getting Started'
       }
     ]
   },
@@ -76,22 +80,26 @@ const pages = [
       { content: 'content-option-ruleset.njk',
         title: 'Ruleset Options',
         link: 'Rulesets',
-        filename: 'option-rulesets.html'
+        filename: 'option-rulesets.html',
+        breadcrumb: 'Options'
       },
       { content: 'content-option-general.njk',
         title: 'General Options',
         link: 'General',
-        filename: 'option-general.html'
+        filename: 'option-general.html',
+        breadcrumb: 'Options'
       },
       { content: 'content-option-export.njk',
         title: 'Export Options',
         link: 'Export',
-        filename: 'option-export.html'
+        filename: 'option-export.html',
+        breadcrumb: 'Options'
       },
       { content: 'content-option-shortcuts.njk',
         title: 'Shortcut Options',
         link: 'Shortcuts',
-        filename: 'option-shortcuts.html'
+        filename: 'option-shortcuts.html',
+        breadcrumb: 'Options'
       }
     ]
   },
@@ -101,17 +109,20 @@ const pages = [
       { content: 'content-view-all-rules.njk',
         title: 'All Rules View',
         link: 'All Rules',
-        filename: 'view-all-rules.html'
+        filename: 'view-all-rules.html',
+        breadcrumb: 'Views'
       },
       { content: 'content-view-rule-group.njk',
         title: 'Rule Group View',
         link: 'Rule Group',
-        filename: 'view-rule-group.html'
+        filename: 'view-rule-group.html',
+        breadcrumb: 'Views'
       },
       { content: 'content-view-rule-result.njk',
         title: 'Rule Result View',
         link: 'Rule Result',
-        filename: 'view-rule-result.html'
+        filename: 'view-rule-result.html',
+        breadcrumb: 'Views'
       },
       {
         spacer: ''
@@ -119,22 +130,26 @@ const pages = [
       { content: 'content-view-rule-result-ccr.njk',
         title: 'Rule Result View: Color Contrast Rules',
         link: 'Color Contrast Rules',
-        filename: 'view-rule-result-ccr.html'
+        filename: 'view-rule-result-ccr.html',
+        breadcrumb: 'Views'
       },
       { content: 'content-view-rule-result-table.njk',
         title: 'Rule Result View: Table Rule Results',
         link: 'Table Rules',
-        filename: 'view-rule-result-table.html'
+        filename: 'view-rule-result-table.html',
+        breadcrumb: 'Views'
       },
       { content: 'content-view-rule-result-table-cell.njk',
         title: 'Rule Result View: Table Cell Rule Results',
         link: 'Table Cell Rules',
-        filename: 'view-rule-result-table-cell.html'
+        filename: 'view-rule-result-table-cell.html',
+        breadcrumb: 'Views'
       },
       { content: 'content-view-rule-result-title.njk',
         title: 'Rule Result View: Title Rule Results',
         link: 'Title Rules',
-        filename: 'view-rule-result-title.html'
+        filename: 'view-rule-result-title.html',
+        breadcrumb: 'Views'
       }
     ]
   },
@@ -143,22 +158,26 @@ const pages = [
       { content: 'content-concepts-basic.njk',
         title: 'Basic Concepts and Terms',
         link: 'Basic Concepts',
-        filename: 'concepts-basic.html'
+        filename: 'concepts-basic.html',
+        breadcrumb: 'Concepts and Terms'
       },
       { content: 'content-concepts-results.njk',
         title: 'Result Values',
         link: 'Result Values',
-        filename: 'concepts-results.html'
+        filename: 'concepts-results.html',
+        breadcrumb: 'Concepts and Terms'
       },
       { content: 'content-concepts-categories.njk',
         title: 'Rule Categories',
         link: 'Rule Categories',
-        filename: 'concepts-categories.html'
+        filename: 'concepts-categories.html',
+        breadcrumb: 'Concepts and Terms'
       },
       { content: 'content-concepts-rulesets.njk',
         title: 'Rulesets',
         link: 'Rulesets',
-        filename: 'concepts-rulesets.html'
+        filename: 'concepts-rulesets.html',
+        breadcrumb: 'Concepts and Terms'
       }
     ]
   },
@@ -218,6 +237,13 @@ function createNavigation(pages) {
 function createPage(page, navigation) {
   if (page.filename) {
     console.log(`  [createPage]: ${page.filename}`);
+
+    const breadcrumb =  page.breadcrumb ?
+                        page.breadcrumb :
+                        page.filename !== 'index.html' ?
+                          page.title :
+                          '';
+
     outputFile(page.filename,
       nunjucks.render('./src-docs/templates/page.njk',{
         content: page.content,
@@ -227,7 +253,8 @@ function createPage(page, navigation) {
         extName: extName,
         tagLineName: tagLineName,
         version: version,
-        title: page.title
+        title: page.title,
+        breadcrumb: breadcrumb
       })
     );
   }
