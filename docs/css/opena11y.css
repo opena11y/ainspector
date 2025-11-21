@@ -219,7 +219,7 @@ nav.second-level a,
 
 .dropdown-menu {
   background-color: light-dark(var(--backgroundColor), var(--backgroundColorDark)) !important;
-  border-color: light-dark(var(--backgroundColor), var(--backgroundColorDark)) !important;
+  border-color: light-dark(var(--linkColor), var(--linkColorDark)) !important;
 }
 
 .breadcrumb a[aria-current],
