@@ -9,11 +9,13 @@
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="./css/ainspector.css" rel="stylesheet" />
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-
     <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+
+    <link href="./css/bootstrap.min.css" rel="stylesheet" >
+
+    <link href="./css/opena11y.css" rel="stylesheet" />
+
+
 
 
 
@@ -68,25 +70,41 @@
         </li>
       
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Getting Started</a>
+          <a class="nav-link dropdown-toggle"
+             data-bs-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-expanded="false">Getting Started</a>
           <ul class="dropdown-menu"><li><a class="dropdown-item" href="getting-started-chrome.html">Chrome</a></li><li><a class="dropdown-item" href="getting-started-edge.html">Edge</a></li><li><a class="dropdown-item" href="getting-started-firefox.html">Firefox</a></li><li><a class="dropdown-item" href="getting-started-opera.html">Opera</a></li>
           </ul>
         </li>
       
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Options</a>
+          <a class="nav-link dropdown-toggle"
+             data-bs-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-expanded="false">Options</a>
           <ul class="dropdown-menu"><li><a class="dropdown-item" href="option-rulesets.html">Rulesets</a></li><li><a class="dropdown-item" href="option-general.html">General</a></li><li><a class="dropdown-item" href="option-export.html">Export</a></li><li><a class="dropdown-item" href="option-shortcuts.html">Shortcuts</a></li>
           </ul>
         </li>
       
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Views</a>
+          <a class="nav-link dropdown-toggle"
+             data-bs-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-expanded="false">Views</a>
           <ul class="dropdown-menu"><li><a class="dropdown-item" href="view-all-rules.html">All Rules</a></li><li><a class="dropdown-item" href="view-rule-group.html">Rule Group</a></li><li><a class="dropdown-item" href="view-rule-result.html">Rule Result</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="view-rule-result-ccr.html">Color Contrast Rules</a></li><li><a class="dropdown-item" href="view-rule-result-table.html">Table Rules</a></li><li><a class="dropdown-item" href="view-rule-result-table-cell.html">Table Cell Rules</a></li><li><a class="dropdown-item" href="view-rule-result-title.html">Title Rules</a></li>
           </ul>
         </li>
       
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Concepts and Terms</a>
+          <a class="nav-link dropdown-toggle"
+             data-bs-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-expanded="false">Concepts and Terms</a>
           <ul class="dropdown-menu"><li><a class="dropdown-item" href="concepts-basic.html">Basic Concepts</a></li><li><a class="dropdown-item" href="concepts-results.html">Result Values</a></li><li><a class="dropdown-item" href="concepts-categories.html">Rule Categories</a></li><li><a class="dropdown-item" href="concepts-rulesets.html">Rulesets</a></li>
           </ul>
         </li>
@@ -131,15 +149,157 @@
 
             
 
-              <h1>Chrome Browser</h1>
+                
+                <nav class="second-level">
+                  
+                    
+                    
+                    <a href="getting-started-chrome.html">Chrome</a> |
+                    
+                    
+                  
+                    
+                    
+                    <a href="getting-started-edge.html">Edge</a> |
+                    
+                    
+                  
+                    
+                    
+                    <a href="getting-started-firefox.html">Firefox</a> |
+                    
+                    
+                  
+                    
+                    <a href="getting-started-opera.html">Opera</a>
+                    
+                  
+                </nav>
+                
+
+                <h1>Chrome Browser</h1>
 
                 
-  <figure class="image">
-    <img  src="images/webstore-chrome.png" alt="">
-    <figcaption>Screen shot of AInspector for WCAG Evaluation in chrome web store</figcaption>
-  </figure>
+  <h2>Chrome Webstore</h2>
 
-  <p><a href="https://chromewebstore.google.com/detail/ainspector-for-wcag-evalu/dhllbiaionalkdpankidadkoaaenenie">AInspector for WCAG Evaluation in chrome web store</a></p>
+  <ul>
+    <li>To install the extension first go to the <a href="https://chromewebstore.google.com/detail/ainspector-for-wcag-evalu/dhllbiaionalkdpankidadkoaaenenie">chrome web store</a>.</li>
+    <li> Use the "Add to Chrome" button to install extension into Chrome or chrome compatible browser.</li>
+    <li>The <img src="./images/icon.png" alt="AInspector for WCAG Evaluation icon" style="height: 32px"/> icon will initially be hidden, but can be pinned to the toolbar using the extension manager.</li>
+  </ul>
+
+  <details class="screenshot">
+    <summary>
+            <svg width="40px" height="40px" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke="currentColor" d="M3 8H2V4.5A2.5 2.5 0 0 1 4.5 2H8v1H4.5A1.5 1.5 0 0 0 3 4.5zm1.5 14A1.5 1.5 0 0 1 3 20.5V17H2v3.5A2.5 2.5 0 0 0 4.5 23H8v-1zM22 20.5a1.5 1.5 0 0 1-1.5 1.5H17v1h3.5a2.5 2.5 0 0 0 2.5-2.5V17h-1zM20.5 2H17v1h3.5A1.5 1.5 0 0 1 22 4.5V8h1V4.5A2.5 2.5 0 0 0 20.5 2zM14 7h4v4h1V6h-5zm-7 4V7h4V6H6v5zm11 3v4h-4v1h5v-5zm-7 4H7v-4H6v5h5z"/>
+        <path fill="none" d="M0 0h24v24H0z"/>
+      </svg>
+      <span class="show">Show</span>
+      <span class="hide">Hide</span>
+       Screen Shot
+
+
+    </summary>
+    <figure class="image">
+      <img  src="images/getting-started-chrome-webstore.png" alt="">
+      <figcaption>Screen shot of AInspector for WCAG Evaluation in chrome web store</figcaption>
+    </figure>
+  </details>
+
+
+  <h2>Pinning to Toolbar</h2>
+
+  <p>After you install AInspector for WCAG Evaluation you can pin an <img src="./images/icon.png" alt="AInspector for WCAG Evaluation" style="height: 32px"/> icon to the toolbar to open and close the side panel.</p>
+
+  <ul>
+    <li>Select the <img src="images/chrome-extensions-icon.png" alt="extensions"/> icon in the toolbar and locate the  in the list of extensions.</li>
+    <li>After the extension name there is a toggle button to enable <img src="./images/icon.png" alt="AInspector for WCAG Evaluation" style="height: 32px"/> icon to appear in the toolbar.</li>
+    <li>Selecting the toolbar icon opens and closes the side panel.</li>
+  </ul>
+
+  <details class="screenshot">
+    <summary>
+            <svg width="40px" height="40px" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke="currentColor" d="M3 8H2V4.5A2.5 2.5 0 0 1 4.5 2H8v1H4.5A1.5 1.5 0 0 0 3 4.5zm1.5 14A1.5 1.5 0 0 1 3 20.5V17H2v3.5A2.5 2.5 0 0 0 4.5 23H8v-1zM22 20.5a1.5 1.5 0 0 1-1.5 1.5H17v1h3.5a2.5 2.5 0 0 0 2.5-2.5V17h-1zM20.5 2H17v1h3.5A1.5 1.5 0 0 1 22 4.5V8h1V4.5A2.5 2.5 0 0 0 20.5 2zM14 7h4v4h1V6h-5zm-7 4V7h4V6H6v5zm11 3v4h-4v1h5v-5zm-7 4H7v-4H6v5h5z"/>
+        <path fill="none" d="M0 0h24v24H0z"/>
+      </svg>
+      <span class="show">Show</span>
+      <span class="hide">Hide</span>
+       Screen Shot
+
+
+    </summary>
+    <figure class="image" style="width: 50%">
+      <img  src="images/getting-started-chrome-pin.png" alt="">
+      <figcaption>Screen shot of AInspector for WCAG Evaluation of popup list of installed extensions and the associated toggle buttons to enable their icons to be displayed in the toolbar.  The AInspector for WCAG Evaluation option is highlighted with a circle.</figcaption>
+    </figure>
+  </details>
+
+
+  <h2 id="shortcut">Setting a Keyboard Shortcut</h2>
+
+  <p>A keyboard shortcut can be assigned to open and close the side panel.</p>
+
+  <ul>
+    <li>Go to the Manage Extensions settings page (e.g. URL: <code>chrome://extensions/</code>).</li>
+    <li>Select the keyboard shortcuts link (e.g. URL: <code>chrome://extensions/shortcuts</code>).</li>
+    <li>Select the edit icon associated with the extension and focus moves to the edit box.</li>
+    <li>Type the key combination for the keyboard shortcut, for example <kbd>Control+Shift+A</kbd>.</li>
+    <li>When viewing a web page the shortcut can be used to open and close the side panel.</li>
+  </ul>
+
+  <details class="screenshot">
+    <summary>
+            <svg width="40px" height="40px" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke="currentColor" d="M3 8H2V4.5A2.5 2.5 0 0 1 4.5 2H8v1H4.5A1.5 1.5 0 0 0 3 4.5zm1.5 14A1.5 1.5 0 0 1 3 20.5V17H2v3.5A2.5 2.5 0 0 0 4.5 23H8v-1zM22 20.5a1.5 1.5 0 0 1-1.5 1.5H17v1h3.5a2.5 2.5 0 0 0 2.5-2.5V17h-1zM20.5 2H17v1h3.5A1.5 1.5 0 0 1 22 4.5V8h1V4.5A2.5 2.5 0 0 0 20.5 2zM14 7h4v4h1V6h-5zm-7 4V7h4V6H6v5zm11 3v4h-4v1h5v-5zm-7 4H7v-4H6v5h5z"/>
+        <path fill="none" d="M0 0h24v24H0z"/>
+      </svg>
+      <span class="show">Show</span>
+      <span class="hide">Hide</span>
+       Screen Shot
+
+
+    </summary>
+    <figure class="image">
+      <img  src="images/getting-started-chrome-shortcut.png" alt="">
+      <figcaption>Screen shot of AInspector for WCAG Evaluation in shortcuts manager for installed extensions.  The AInspector for WCAG Evaluation shortcut setting is highlighted with a circle.</figcaption>
+    </figure>
+  </details>
+
+
+
+  <h2>Changing Side Panel Position</h2>
+
+  <p>The side panel by default is positioned on the right side of the screen.  It can be changed to the left side in settings.</p>
+
+  <ul>
+    <li>Open the setting options by going to the <code>Chrome</code> option in the main menu and selecting the <code>Settings</code> option.</li>
+    <li>Use the search box with the value "side panel" to filter the settings.</li>
+    <li>Go to the "Side panel position" option and you can choose between: "Show on right" or "Show on left" options.</li>
+  </ul>
+
+  <details class="screenshot">
+    <summary>
+            <svg width="40px" height="40px" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke="currentColor" d="M3 8H2V4.5A2.5 2.5 0 0 1 4.5 2H8v1H4.5A1.5 1.5 0 0 0 3 4.5zm1.5 14A1.5 1.5 0 0 1 3 20.5V17H2v3.5A2.5 2.5 0 0 0 4.5 23H8v-1zM22 20.5a1.5 1.5 0 0 1-1.5 1.5H17v1h3.5a2.5 2.5 0 0 0 2.5-2.5V17h-1zM20.5 2H17v1h3.5A1.5 1.5 0 0 1 22 4.5V8h1V4.5A2.5 2.5 0 0 0 20.5 2zM14 7h4v4h1V6h-5zm-7 4V7h4V6H6v5zm11 3v4h-4v1h5v-5zm-7 4H7v-4H6v5h5z"/>
+        <path fill="none" d="M0 0h24v24H0z"/>
+      </svg>
+      <span class="show">Show</span>
+      <span class="hide">Hide</span>
+       Screen Shot
+
+
+    </summary>
+    <figure class="image">
+      <img  src="images/getting-started-chrome-side-panel.png" alt="">
+      <figcaption>Screen shot of AInspector for WCAG Evaluation of settings in Chrome with the side panel position option highlighted with a circle.</figcaption>
+    </figure>
+  </details>
+
 
 
                          <section class="feedback" aria-label="Privacy and Feedback">
@@ -148,7 +308,7 @@
              <p>AInspector for WCAG Evaluation <em>does not</em> collect or store any information about users or work with any other parties to collect or share user browsing information.</p>
 
 
-             <h2>Help Make AInspector for WCAG Evaluation Better</h2>
+             <h2>Feedback</h2>
 
              <p>If you find a problem with AInspector for WCAG Evaluation please let us know by creating an <a href="https://github.com/opena11y/ainspector/issues">issue in the GitHib repository for AInspector</a>.&nbsp; Please provide the following information:</p>
 
@@ -181,7 +341,10 @@
 
 
             <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <script src="./js/bootstrap.bundle.min.js"></script>
+
+        <!-- opena11y.js -->
+        <script src="./js/opena11y.js"></script>
 
         <!-- SkipTo.js -->
         <script data-skipto="positionLeft: 30%" src="https://skipto-landmarks-headings.github.io/page-script-5/dist/skipto.min.js"></script>

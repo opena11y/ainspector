@@ -22,7 +22,21 @@
 
             {% block content %}
 
-              <h1>{{title}}</h1>
+                {% if dropdownPages %}
+                <nav class="second-level">
+                  {% for page in dropdownPages %}
+                    {% if not loop.last %}
+                    {% if page.filename %}
+                    <a href="{{page.filename}}">{{page.link}}</a> |
+                    {% endif %}
+                    {% else %}
+                    <a href="{{page.filename}}">{{page.link}}</a>
+                    {% endif %}
+                  {% endfor %}
+                </nav>
+                {% endif %}
+
+                <h1>{{title}}</h1>
 
                 {% include './' + content %}
 

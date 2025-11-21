@@ -59,11 +59,6 @@ gulp.task('documentation', function (cb) {
     cb(err);  });
 })
 
-gulp.task('documentationStyle', function () {
-  return gulp.src('./src-docs/css/*.css')
-  .pipe(gulp.dest('./docs/css'));
-});
-
 const linting            = task('linting');
 const extensionsCode     = task('extensionsCode');
 const extensionsLocales  = task('extensionsLocales');
@@ -75,4 +70,4 @@ const documentationStyle = task('documentationStyle');
 exports.default = series(
   linting,
   parallel(extensionsCode, extensionsLocales, style),
-  parallel(documentation,documentationStyle));
+  parallel(documentation));

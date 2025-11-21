@@ -9,11 +9,13 @@
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
 
     <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="./css/ainspector.css" rel="stylesheet" />
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-
     <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
+
+    <link href="./css/bootstrap.min.css" rel="stylesheet" >
+
+    <link href="./css/opena11y.css" rel="stylesheet" />
+
+
 
 
 
@@ -68,25 +70,41 @@
         </li>
       
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Getting Started</a>
+          <a class="nav-link dropdown-toggle"
+             data-bs-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-expanded="false">Getting Started</a>
           <ul class="dropdown-menu"><li><a class="dropdown-item" href="getting-started-chrome.html">Chrome</a></li><li><a class="dropdown-item" href="getting-started-edge.html">Edge</a></li><li><a class="dropdown-item" href="getting-started-firefox.html">Firefox</a></li><li><a class="dropdown-item" href="getting-started-opera.html">Opera</a></li>
           </ul>
         </li>
       
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Options</a>
+          <a class="nav-link dropdown-toggle"
+             data-bs-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-expanded="false">Options</a>
           <ul class="dropdown-menu"><li><a class="dropdown-item" href="option-rulesets.html">Rulesets</a></li><li><a class="dropdown-item" href="option-general.html">General</a></li><li><a class="dropdown-item" href="option-export.html">Export</a></li><li><a class="dropdown-item" href="option-shortcuts.html">Shortcuts</a></li>
           </ul>
         </li>
       
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Views</a>
+          <a class="nav-link dropdown-toggle"
+             data-bs-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-expanded="false">Views</a>
           <ul class="dropdown-menu"><li><a class="dropdown-item" href="view-all-rules.html">All Rules</a></li><li><a class="dropdown-item" href="view-rule-group.html">Rule Group</a></li><li><a class="dropdown-item" href="view-rule-result.html">Rule Result</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="view-rule-result-ccr.html">Color Contrast Rules</a></li><li><a class="dropdown-item" href="view-rule-result-table.html">Table Rules</a></li><li><a class="dropdown-item" href="view-rule-result-table-cell.html">Table Cell Rules</a></li><li><a class="dropdown-item" href="view-rule-result-title.html">Title Rules</a></li>
           </ul>
         </li>
       
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Concepts and Terms</a>
+          <a class="nav-link dropdown-toggle"
+             data-bs-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-expanded="false">Concepts and Terms</a>
           <ul class="dropdown-menu"><li><a class="dropdown-item" href="concepts-basic.html">Basic Concepts</a></li><li><a class="dropdown-item" href="concepts-results.html">Result Values</a></li><li><a class="dropdown-item" href="concepts-categories.html">Rule Categories</a></li><li><a class="dropdown-item" href="concepts-rulesets.html">Rulesets</a></li>
           </ul>
         </li>
@@ -131,7 +149,35 @@
 
             
 
-              <h1>Opera Browser</h1>
+                
+                <nav class="second-level">
+                  
+                    
+                    
+                    <a href="getting-started-chrome.html">Chrome</a> |
+                    
+                    
+                  
+                    
+                    
+                    <a href="getting-started-edge.html">Edge</a> |
+                    
+                    
+                  
+                    
+                    
+                    <a href="getting-started-firefox.html">Firefox</a> |
+                    
+                    
+                  
+                    
+                    <a href="getting-started-opera.html">Opera</a>
+                    
+                  
+                </nav>
+                
+
+                <h1>Opera Browser</h1>
 
                 
   <figure class="image">
@@ -139,7 +185,7 @@
     <figcaption>Screen shot of AInspector for WCAG Evaluation installed on Opera web browser showing the all rules view</figcaption>
   </figure>
 
-  <p><a href="./dist/ainspector-opera-4.1.1.crx">AInspector for WCAG Evaluation install file</a> is hosted on this website and requires manual installation into Opera.  You will also have to delete earlier versions of Opera.  The install package has been submitted to the Opera Addons website and is awaiting publication.</p>
+  <p>Opera AInspector for WCAG Evaluation <a href="./dist/ainspector-opera-4.1.1.crx">self-hosted install file</a> is hosted on this website and requires manual installation into Opera.  You will also have to delete earlier versions of Opera.  The install package has been submitted to the Opera Addons website and is awaiting publication.</p>
 
 
                          <section class="feedback" aria-label="Privacy and Feedback">
@@ -148,7 +194,7 @@
              <p>AInspector for WCAG Evaluation <em>does not</em> collect or store any information about users or work with any other parties to collect or share user browsing information.</p>
 
 
-             <h2>Help Make AInspector for WCAG Evaluation Better</h2>
+             <h2>Feedback</h2>
 
              <p>If you find a problem with AInspector for WCAG Evaluation please let us know by creating an <a href="https://github.com/opena11y/ainspector/issues">issue in the GitHib repository for AInspector</a>.&nbsp; Please provide the following information:</p>
 
@@ -181,7 +227,10 @@
 
 
             <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <script src="./js/bootstrap.bundle.min.js"></script>
+
+        <!-- opena11y.js -->
+        <script src="./js/opena11y.js"></script>
 
         <!-- SkipTo.js -->
         <script data-skipto="positionLeft: 30%" src="https://skipto-landmarks-headings.github.io/page-script-5/dist/skipto.min.js"></script>

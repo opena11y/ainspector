@@ -128,25 +128,25 @@ const pages = [
         spacer: ''
       },
       { content: 'content-view-rule-result-ccr.njk',
-        title: 'Rule Result View: Color Contrast Rules',
+        title: 'Color Contrast Rule',
         link: 'Color Contrast Rules',
         filename: 'view-rule-result-ccr.html',
         breadcrumb: 'Views'
       },
       { content: 'content-view-rule-result-table.njk',
-        title: 'Rule Result View: Table Rule Results',
+        title: 'Table Rule Results',
         link: 'Table Rules',
         filename: 'view-rule-result-table.html',
         breadcrumb: 'Views'
       },
       { content: 'content-view-rule-result-table-cell.njk',
-        title: 'Rule Result View: Table Cell Rule Results',
+        title: 'Table Cell Rule Result',
         link: 'Table Cell Rules',
         filename: 'view-rule-result-table-cell.html',
         breadcrumb: 'Views'
       },
       { content: 'content-view-rule-result-title.njk',
-        title: 'Rule Result View: Title Rule Results',
+        title: 'Title Rule Results',
         link: 'Title Rules',
         filename: 'view-rule-result-title.html',
         breadcrumb: 'Views'
@@ -156,7 +156,7 @@ const pages = [
   { dropdown: 'Concepts and Terms',
     pages: [
       { content: 'content-concepts-basic.njk',
-        title: 'Basic Concepts and Terms',
+        title: 'Basic Concepts',
         link: 'Basic Concepts',
         filename: 'concepts-basic.html',
         breadcrumb: 'Concepts and Terms'
@@ -203,7 +203,11 @@ function createNavigation(pages) {
     if (item.dropdown) {
       html += `
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">${item.dropdown}</a>
+          <a class="nav-link dropdown-toggle"
+             data-bs-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-expanded="false">${item.dropdown}</a>
           <ul class="dropdown-menu">`;
 
       item.pages.forEach( p => {
@@ -234,7 +238,7 @@ function createNavigation(pages) {
   return html;
 }
 
-function createPage(page, navigation) {
+function createPage(page, mainNav, dropdownPages=false) {
   if (page.filename) {
     console.log(`  [createPage]: ${page.filename}`);
 
@@ -247,7 +251,8 @@ function createPage(page, navigation) {
     outputFile(page.filename,
       nunjucks.render('./src-docs/templates/page.njk',{
         content: page.content,
-        navigation: navigation,
+        navigation: mainNav,
+        dropdownPages: dropdownPages,
         websiteURL: websiteURL,
         repositoryURL: repositoryURL,
         extName: extName,
@@ -260,18 +265,18 @@ function createPage(page, navigation) {
   }
 }
 
-const navigation = createNavigation(pages);
+const mainNav = createNavigation(pages);
 
 function createPages(pages) {
   console.log(`[create pages]`);
   pages.forEach( item => {
     if (item.dropdown) {
       item.pages.forEach( p => {
-        createPage(p, navigation);
+        createPage(p, mainNav, item.pages);
       });
     }
     else {
-      createPage(item, navigation);
+      createPage(item, mainNav);
     }
   });
 

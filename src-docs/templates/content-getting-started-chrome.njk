@@ -1,7 +1,85 @@
 
-  <figure class="image">
-    <img  src="images/webstore-chrome.png" alt="">
-    <figcaption>Screen shot of {{extName}} in chrome web store</figcaption>
-  </figure>
+  <h2>Chrome Webstore</h2>
 
-  <p><a href="https://chromewebstore.google.com/detail/ainspector-for-wcag-evalu/dhllbiaionalkdpankidadkoaaenenie">{{extName}} in chrome web store</a></p>
+  <ul>
+    <li>To install the extension first go to the <a href="https://chromewebstore.google.com/detail/ainspector-for-wcag-evalu/dhllbiaionalkdpankidadkoaaenenie">chrome web store</a>.</li>
+    <li> Use the "Add to Chrome" button to install extension into Chrome or chrome compatible browser.</li>
+    <li>The <img src="./images/icon.png" alt="{{extName}} icon" style="height: 32px"/> icon will initially be hidden, but can be pinned to the toolbar using the extension manager.</li>
+  </ul>
+
+  <details class="screenshot">
+    <summary>
+      {% include "./show-screenshot.njk" %}
+    </summary>
+    <figure class="image">
+      <img  src="images/getting-started-chrome-webstore.png" alt="">
+      <figcaption>Screen shot of {{extName}} in chrome web store</figcaption>
+    </figure>
+  </details>
+
+
+  <h2>Pinning to Toolbar</h2>
+
+  <p>After you install {{extName}} you can pin an <img src="./images/icon.png" alt="{{extName}}" style="height: 32px"/> icon to the toolbar to open and close the side panel.</p>
+
+  <ul>
+    <li>Select the <img src="images/chrome-extensions-icon.png" alt="extensions"/> icon in the toolbar and locate the {{extname}} in the list of extensions.</li>
+    <li>After the extension name there is a toggle button to enable <img src="./images/icon.png" alt="{{extName}}" style="height: 32px"/> icon to appear in the toolbar.</li>
+    <li>Selecting the toolbar icon opens and closes the side panel.</li>
+  </ul>
+
+  <details class="screenshot">
+    <summary>
+      {% include "./show-screenshot.njk" %}
+    </summary>
+    <figure class="image" style="width: 50%">
+      <img  src="images/getting-started-chrome-pin.png" alt="">
+      <figcaption>Screen shot of {{extName}} of popup list of installed extensions and the associated toggle buttons to enable their icons to be displayed in the toolbar.  The {{extName}} option is highlighted with a circle.</figcaption>
+    </figure>
+  </details>
+
+
+  <h2 id="shortcut">Setting a Keyboard Shortcut</h2>
+
+  <p>A keyboard shortcut can be assigned to open and close the side panel.</p>
+
+  <ul>
+    <li>Go to the Manage Extensions settings page (e.g. URL: <code>chrome://extensions/</code>).</li>
+    <li>Select the keyboard shortcuts link (e.g. URL: <code>chrome://extensions/shortcuts</code>).</li>
+    <li>Select the edit icon associated with the extension and focus moves to the edit box.</li>
+    <li>Type the key combination for the keyboard shortcut, for example <kbd>Control+Shift+A</kbd>.</li>
+    <li>When viewing a web page the shortcut can be used to open and close the side panel.</li>
+  </ul>
+
+  <details class="screenshot">
+    <summary>
+      {% include "./show-screenshot.njk" %}
+    </summary>
+    <figure class="image">
+      <img  src="images/getting-started-chrome-shortcut.png" alt="">
+      <figcaption>Screen shot of {{extName}} in shortcuts manager for installed extensions.  The {{extName}} shortcut setting is highlighted with a circle.</figcaption>
+    </figure>
+  </details>
+
+
+
+  <h2>Changing Side Panel Position</h2>
+
+  <p>The side panel by default is positioned on the right side of the screen.  It can be changed to the left side in settings.</p>
+
+  <ul>
+    <li>Open the setting options by going to the <code>Chrome</code> option in the main menu and selecting the <code>Settings</code> option.</li>
+    <li>Use the search box with the value "side panel" to filter the settings.</li>
+    <li>Go to the "Side panel position" option and you can choose between: "Show on right" or "Show on left" options.</li>
+  </ul>
+
+  <details class="screenshot">
+    <summary>
+      {% include "./show-screenshot.njk" %}
+    </summary>
+    <figure class="image">
+      <img  src="images/getting-started-chrome-side-panel.png" alt="">
+      <figcaption>Screen shot of {{extName}} of settings in Chrome with the side panel position option highlighted with a circle.</figcaption>
+    </figure>
+  </details>
+
