@@ -553,6 +553,12 @@ main details.screenshot summary:focus-visible {
   outline-offset: 2px;
 }
 
+main details.screenshot summary:hover path.camera,
+main details.screenshot:focus-visible path.camera,
+main details.screenshot summary:focus-visible path.camera {
+  fill: light-dark(var(--linkColorFocus), var(--linkColorFocusDark));
+}
+
 main details.screenshot:hover::marker,
 main details.screenshot summary:hover::marker,
 main details.screenshot:focus-visible::marker,
