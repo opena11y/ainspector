@@ -45,9 +45,9 @@
   "commands": {
     "_execute_sidebar_action": {
       "suggested_key": {
-        "default": "Ctrl+Shift+1",
-        "linux": "Alt+Shift+1",
-        "mac": "Command+Shift+1"
+        "default": "Ctrl+Shift+u",
+        "linux": "Alt+Shift+u",
+        "mac": "Command+Shift+u"
       }
     }
   },
