@@ -9,7 +9,7 @@
     }
   },
   "name": "__MSG_extension_name__",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "description": "__MSG_extension_description__",
   "homepage_url": "https://opena11y.github.io/ainspector/",
   "default_locale": "en",
@@ -45,9 +45,9 @@
   "commands": {
     "_execute_sidebar_action": {
       "suggested_key": {
-        "default": "Ctrl+Shift+u",
-        "linux": "Alt+Shift+u",
-        "mac": "Command+Shift+u"
+        "default": "Ctrl+Shift+U",
+        "linux": "Alt+Shift+U",
+        "mac": "Command+Shift+U"
       }
     }
   },
