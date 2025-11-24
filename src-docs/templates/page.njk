@@ -11,6 +11,9 @@
       <nav aria-label="Breadcrumb">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          {% if breadcrumb %}
+            <li class="breadcrumb-item">{{breadcrumb}}</li>
+          {% endif %}
         </ol>
       </nav>
       <main class="container px-4">
@@ -19,7 +22,21 @@
 
             {% block content %}
 
-              <h1>{{title}}</h1>
+                {% if dropdownPages %}
+                <nav class="second-level">
+                  {% for page in dropdownPages %}
+                    {% if not loop.last %}
+                    {% if page.filename %}
+                    <a href="{{page.filename}}">{{page.link}}</a> |
+                    {% endif %}
+                    {% else %}
+                    <a href="{{page.filename}}">{{page.link}}</a>
+                    {% endif %}
+                  {% endfor %}
+                </nav>
+                {% endif %}
+
+                <h1>{{title}}</h1>
 
                 {% include './' + content %}
 

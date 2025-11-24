@@ -1,7 +1,76 @@
+  <h2>Edge Add-ons</h2>
 
-  <figure class="image">
-    <img  src="images/webstore-edge.png" alt="">
-    <figcaption>Screen shot of {{extName}} in Edge Add-ons</figcaption>
-  </figure>
+  <ul>
+    <li>To install the extension first go to the <a href="https://microsoftedge.microsoft.com/addons/detail/ainspector-for-wcag-evalu/enilnlbjbmnfleppphmbodnhkecoddhg">Edge Add-ons </a> website.</li>
+    <li> Use the "Get" button to install extension into the Edge browser.</li>
+    <li>The
+    {% include "./icon-ainspector.njk" %}
+    icon will initially be hidden, but can be pinned to the toolbar using the extension manager.</li>
+  </ul>
 
-  <p><a href="">{{extName}} in Edge Add-ons</a></p>
+  <details class="screenshot">
+    <summary>
+      {% include "./icon-show-screenshot.njk" %}
+    </summary>
+    <figure class="image">
+      <img  src="images/getting-started-edge-webstore.png" alt="">
+      <figcaption>Screen shot of {{extName}} in Edge Add-ons website</figcaption>
+    </figure>
+  </details>
+
+
+  <h2>Pinning to Toolbar</h2>
+
+  <p>After you install {{extName}} you can pin the
+  {% include "./icon-ainspector.njk" %}
+  icon to the toolbar to open and close the side panel.</p>
+
+  <ul>
+    <li>Select the extensions manager icon
+    {% include "./icon-edge-extension.njk" %}
+      in the Edge toolbar and locate {{extName}} in the list of extensions.</li>
+    <li>Use the toggle button next to the extension to enable
+     {% include "./icon-ainspector.njk" %}
+     icon to appear in the toolbar.</li>
+    <li>Selecting the toolbar icon opens and closes the side panel.</li>
+  </ul>
+
+  <details class="screenshot">
+    <summary>
+      {% include "./icon-show-screenshot.njk" %}
+    </summary>
+    <figure class="image" style="width: 50%">
+      <img  src="images/getting-started-edge-pin.png" alt="">
+      <figcaption>Screen shot of {{extName}} of popup list of installed extensions and the associated toggle buttons to enable their icons to be displayed in the toolbar.  The {{extName}} option is highlighted with a circle.</figcaption>
+    </figure>
+  </details>
+
+
+  <h2 id="shortcut">Setting a Keyboard Shortcut</h2>
+
+  <p>A keyboard shortcut can be assigned to open and close the side panel.</p>
+
+  <ul>
+    <li>Go to the Manage Extensions settings page (e.g. URL: <code>edge://extensions/</code>).</li>
+    <li>Select the keyboard shortcuts link (e.g. URL: <code>edge://extensions/shortcuts</code>).</li>
+    <li>Select the edit icon associated with the extension and focus moves to the edit box.</li>
+    <li>Type the key combination for the keyboard shortcut, for example <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>A</kbd>.</li>
+    <li>When viewing a web page the shortcut can be used to open and close the side panel.</li>
+  </ul>
+
+  <details class="screenshot">
+    <summary>
+      {% include "./icon-show-screenshot.njk" %}
+    </summary>
+    <figure class="image">
+      <img  src="images/getting-started-edge-shortcut.png" alt="">
+      <figcaption>Screen shot of {{extName}} in shortcuts manager for installed extensions.  The {{extName}} shortcut setting is highlighted with a circle.</figcaption>
+    </figure>
+  </details>
+
+
+
+  <h2>Changing Side Panel Position</h2>
+
+  <p>The side panel by default is positioned on the right side of the screen and <em>cannot</em> be configured for the left side.</p>
+
