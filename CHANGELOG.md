@@ -33,6 +33,7 @@
 * Updated title rule messaging
 * Added message when a rule group has no results when filters are applied
 * Fixed no results messaging
+* Fix suggested keyboard shortcuts for Firefox and Opera
 
 ### 4.1.1
 * Added page title information to rule view results for title rules

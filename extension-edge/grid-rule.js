@@ -237,6 +237,7 @@ export default class GridRule extends Grid {
     }
     else {
       this.addMessageRow('msg1', getMessage('no_results_msg'));
+      this.addMessageRow('msg2', getMessage('check_options_msg'));
     }
   }
 

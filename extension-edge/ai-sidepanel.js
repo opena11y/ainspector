@@ -35,7 +35,7 @@ import {
 /* Constants */
 
 const debug = new DebugLogging('ai-sidepanel', false);
-debug.flag = false;
+debug.flag = true;
 
 // Browser Constants
 
@@ -366,6 +366,7 @@ class AISidePanel extends HTMLElement {
 
   runEvaluation() {
     this.clearView(getMessage('loading_content'));
+    debug.log(`runEvaluation`);
 
     const aiSidePanelObj = this;
 
@@ -517,7 +518,7 @@ class AISidePanel extends HTMLElement {
         currentWindow: true,
         active: true,
       })
-      .then(this.sendMessageToTabs.bind(this))
+      .then(this.runEvaluation.bind(this))
       .catch(onErrorPotocol);
 
   }
