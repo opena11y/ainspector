@@ -30,9 +30,9 @@
 =======
 
 ### 4.1.2
-* Updated title when page scope is page or website
-* Added rule scope to the summary information
-* Added message when a rule group or rule has no results when filters are applied
+* Updated summary view title based on rule scope: All, Page or Website Rules
+* Added rule scope to the summary information near bottom of side panel
+* Added message when a rule group or rule has no results when scope filters are applied
 * Fixed no results messaging
 * Fix suggested keyboard shortcuts for Firefox and Opera
 * Automatically runs evaluation when a tab becomes active
