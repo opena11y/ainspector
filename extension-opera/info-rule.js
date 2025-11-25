@@ -140,6 +140,7 @@ export default class InfoRule extends HTMLElement {
         this.copyText[id] += getCopyTextContent('rule_sc_label',  getMessage('element_result_value_none'));
       }
 
+/*
       addH3(divElem, getMessage('rule_related_axe'));
       if (info_rule.axe_rules) {
         renderContent(divElem, info_rule.axe_rules);
@@ -160,6 +161,7 @@ export default class InfoRule extends HTMLElement {
         renderContent(divElem, getMessage('element_result_value_none'));
         this.copyText[id] += getCopyTextContent(getMessage('rule_related_wave'),  getMessage('element_result_value_none'));
       }
+*/
 
       addH3(divElem, getMessage('rule_additional_label'));
       renderContent(divElem, info_rule.informational_links);

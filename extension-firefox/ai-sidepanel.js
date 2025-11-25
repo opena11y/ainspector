@@ -35,7 +35,7 @@ import {
 /* Constants */
 
 const debug = new DebugLogging('ai-sidepanel', false);
-debug.flag = true;
+debug.flag = false;
 
 // Browser Constants
 
@@ -60,14 +60,6 @@ const browserDownloads   = typeof browser === 'object' ?
 let myWindowId = -1;  // used for checking if a tab is in the same window as the sidebar
 
 /* Utility functions */
-
-/*
-**  @function onError
-*/
-
-function onError(error) {
-  console.error(`Error: ${error}`);
-}
 
 /* templates */
 const template = document.createElement('template');
@@ -370,9 +362,9 @@ class AISidePanel extends HTMLElement {
 
     const aiSidePanelObj = this;
 
-    function onRunEvaluationError() {
+    function onRunEvaluationError(error) {
       aiSidePanelObj.clearView(getMessage('protocol_not_supported'),getMessage('unable_to_retrieve'));
-      onError();
+      console.error(`[runEvalution] ${error}`);
     }
 
     getOptions().then( (options) => {
@@ -405,6 +397,10 @@ class AISidePanel extends HTMLElement {
 
   highlightResult(position, highlightId, resultType,  focus=true) {
 
+    function onHighlightError(error) {
+      console.error(`[highlight] ${error}`);
+    }
+
     getOptions().then( (options) => {
 
       async function sendHighlightMessage(tabs) {
@@ -428,7 +424,7 @@ class AISidePanel extends HTMLElement {
           active: true,
         })
         .then(sendHighlightMessage)
-        .catch(onError);
+        .catch(onHighlightError);
     });
 
   }
@@ -510,7 +506,7 @@ class AISidePanel extends HTMLElement {
 
     function onErrorPotocol(error) {
       that.clearView(getMessage('protocol_not_supported'),getMessage('unable_to_retrieve'));
-      onError(error);
+       console.error(`[handleTabActivated] ${error}`);
     }
 
     myBrowser.tabs

@@ -4,7 +4,7 @@
 
 | Version      |    Date     | Notes |
 |--------------|:-----------:|-----------------------------------------------------|
-| 4.1.2        |   11/01/25  | Updated some rule result views
+| 4.1.2        |   11/24/25  | Updated title and fixed some other issues
 | 4.1.1        |   11/01/25  | Updated some rule result views
 | 4.1          |   10/06/25  | Updated evaluation library to version 2.0.7
 | 4.0          |   9/25/25   | Updated evaluation library to version 2.0.6 and support for Chrome
@@ -30,10 +30,12 @@
 =======
 
 ### 4.1.2
-* Updated title rule messaging
-* Added message when a rule group has no results when filters are applied
+* Updated title when page scope is page or website
+* Added rule scope to the summary information
+* Added message when a rule group or rule has no results when filters are applied
 * Fixed no results messaging
 * Fix suggested keyboard shortcuts for Firefox and Opera
+* Automatically runs evaluation when a tab becomes active
 
 ### 4.1.1
 * Added page title information to rule view results for title rules

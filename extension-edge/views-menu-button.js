@@ -24,7 +24,7 @@ import {
 // Constants
 
 const debug = new DebugLogging('[views-menu-button]', false);
-debug.flag = true;
+debug.flag = false;
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -334,7 +334,6 @@ export default class ViewsMenuButton extends HTMLElement {
 
   performMenuAction(tgt) {
     const id = tgt.id;
-    debug.flag && debug.log(`[performMenuAction][id]: ${id}`);
     if (this.callback) {
       if (id === 'summary') {
         this.callback('rules-all', '');
