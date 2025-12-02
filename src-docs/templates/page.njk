@@ -23,7 +23,7 @@
             {% block content %}
 
                 {% if dropdownPages %}
-                <nav class="second-level">
+                <nav class="second-level" aria-label="{{dropdownName}}">
                   {% for page in dropdownPages %}
                     {% if not loop.last %}
                     {% if page.filename %}
@@ -39,8 +39,6 @@
                 <h1>{{title}}</h1>
 
                 {% include './' + content %}
-
-             {% include "./feedback.njk" %}
 
             {% endblock %}
           </div>

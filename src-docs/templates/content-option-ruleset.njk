@@ -11,32 +11,44 @@
     <table class="table table-striped" aria-labelledby="ruleset">
       <thead>
         <tr>
-          <th>Option</th>
-          <th>Default</th>
-          <th>Description</th>
+          <th rowspan="2">Option</th>
+          <th colspan="3">Number of Rules</th>
+          <th rowspan="2">Description</th>
+        </tr>
+        <tr>
+          <th>Level A</th>
+          <th>Level AA</th>
+          <th>Level AAA</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>WCAG 2.0</rd>
-          <td></td>
-          <td>desc...</td>
+          <td style="width: 6em">WCAG 2.0</rd>
+          <td>96</td>
+          <td>21</td>
+          <td>1</td>
+          <td><a href="https://www.w3.org/TR/WCAG20/">Web Content Accessibility Guidelines 2.0</a> was published in 2008 and was a widely used reference for accessibility standards around the world.  This was the version available when AInspector for WCAG Evaluation 1.0 was released in 2015.</td>
         </tr>
         <tr>
-          <td>WCAG 2.1</td>
-          <td>Checked</td>
-          <dd>desc...</dd>
+          <td>WCAG 2.1 (default)</td>
+          <td>103</td>
+          <td>29</td>
+          <td>4</td>
+          <td><a href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines 2.1</a> was published in 2018 and replaced version 2.0 in the accessibility standards.  This was the version available when AInspector for WCAG Evaluation 2.0 was released.</td>
         </tr>
         <tr>
           <td>WCAG 2.2</td>
-          <td></td>
-          <td>desc...</td>
+          <td>104</td>
+          <td>36</td>
+          <td>4</td>
+          <td><a href="https://www.w3.org/TR/WCAG22/">Web Content Accessibility Guidelines 2.2</a> was published in 2023 and is in the process of replacing 2.1 as a global accessibility standard.   This version was first published about the same time as  AInspector for WCAG Evaluation 3.0 was released. </td>
         </tr>
         <tr>
           <td>First Step</td>
-          <td></td>
-          <td>desc...</td>
-        </tr>
+          <td>22</td>
+          <td>5</td>
+          <td>0</td>
+          <td>Is a basic set of rules that people new to accessibility could start with.  It is designed to help people get started in improving the accessibility of their websites.</td>
         </tr>
       </tbody>
     </table>
@@ -50,25 +62,27 @@
       <thead>
         <tr>
           <th>Option</th>
-          <td>Default</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>Level A only</rd>
-          <td></td>
-          <td>desc...</td>
+          <td style="width: 14em">Level A only</rd>
+          <td>
+            Level A requirments set a minimum level of accessibility, but does not achieve accessibility for many people with disabilities.
+          </td>
         </tr>
         <tr>
-          <td>Level A and AA</td>
-          <td>Checked</td>
-          <dd>desc...</dd>
+          <td>Level A and AA (default)</td>
+          <td>
+            Level AA requirements meet the accessibility of a broader range of disabilities and when combined with Level A requirements are typically considered the minimum requirements to be considered accessible.
+          </td>
         </tr>
         <tr>
           <td>Level A, AA and a few AAA</td>
-          <td></td>
-          <td>desc...</td>
+          <td>
+            Level AAA requirements maximizes the the accessibility to the broadest range of disabilities and when combined with Level A and AA requirements achieves the highest level of accessibility.
+          </td>
         </tr>
       </tbody>
     </table>
@@ -78,29 +92,36 @@
   <section>
 
     <h2 id="scope">Rule Scope filter</h2>
+
+    <p>
+      WCAG requirements not only apply to individual <code>html</code> elements, but also requirements for page and website features.  Page and website requirements often require some type of human interpretation to determine if requirements have been meet and designers need to be aware of these requirements when identifying the features of a website or web application.
+    </p>
+
     <table class="table table-striped" aria-labelledby="scope">
       <thead>
         <tr>
           <th>Option</th>
-          <th>Default</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>All rules</rd>
-          <td>Checked</td>
-          <td>desc...</td>
+          <td style="width: 14em">All rules</rd>
+          <td>
+            All <em>element</em>, <em>page</em> and <em>website</em> rules are included in the evaluation.
+          </td>
         </tr>
         <tr>
           <td>Page scope rules only</td>
-          <td></td>
-          <dd>desc...</dd>
+          <td>
+            Only rules that have <em>page</em> requirements are included.  For example, the page includes a <code>main</code> landmark region and a means to skip to the main content of a page using the keyboard.
+          </td>
         </tr>
         <tr>
           <td>Website scope rules only</td>
-          <td></td>
-          <td>desc...</td>
+          <td>
+            Only rules that have <em>website</em> requirements are included.  Most of these rules are concentrated in requirements for consistent navigation of web pages within a website and the ability to search for content within a website.
+          </td>
         </tr>
       </tbody>
     </table>
@@ -119,17 +140,21 @@
       </thead>
       <tbody>
         <tr>
-          <td>ARIA 1.2</rd>
-          <td>Checked</td>
-          <td>desc...</td>
+          <td style="width: 10em">ARIA 1.2 (default)</rd>
+          <td>
+            The <a href="">Accessible Rich Internet Applications 1.2</a> Specification was published in June 2023 and it's features are widely supported in browsers and is the current standard to reliability use.
+          </td>
         </tr>
         <tr>
           <td>ARIA 1.3</td>
-          <td></td>
-          <dd>desc...</dd>
+          <td>
+            The <a href="https://www.w3.org/TR/wai-aria-1.3/">Accessible Rich Internet Applications 1.3</a> is the current public working draft under development by the <a href="https://www.w3.org/WAI/about/groups/ariawg/">Accessible Rich Internet Applications (ARIA) Working Group</a> (major new features). New features of ARIA 1.3 have been implemented by some browsers. The specification is still under development so <a href="https://w3c.github.io/aria/#changelog">new features and changes</a> should be used with caution until it becomes a specification with wide spread implementation of features.
+          </td>
         </tr>
       </tbody>
     </table>
+
+    Note: A few ARIA features are not fully supported by assistive technologies including screen readers. See the <a href="https://www.w3.org/groups/cg/aria-at/">ARIA and Assistive Technologies Community Group</a> for work on improving assistive technology support for ARIA features.
 
   </section>
 

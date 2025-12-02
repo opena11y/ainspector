@@ -116,8 +116,14 @@
           <a class="nav-link" href="faq.html">FAQ</a>
         </li>
       
-        <li class="nav-item">
-          <a class="nav-link" href="about.html">About</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle"
+             data-bs-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-expanded="false">About</a>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="about-history.html">History</a></li><li><a class="dropdown-item" href="about-privacy.html">Privacy</a></li><li><a class="dropdown-item" href="about-feedback.html">Feedback</a></li>
+          </ul>
         </li>
       
 
@@ -153,7 +159,7 @@
             
 
                 
-                <nav class="second-level">
+                <nav class="second-level" aria-label="Getting Started">
                   
                     
                     
@@ -397,26 +403,6 @@
 
 
 
-                         <section class="feedback" aria-label="Privacy and Feedback">
-
-              <h2 id="privacy">Privacy</h2>
-             <p>AInspector for WCAG Evaluation <em>does not</em> collect or store any information about users or work with any other parties to collect or share user browsing information.</p>
-
-
-             <h2>Feedback</h2>
-
-             <p>If you find a problem with AInspector for WCAG Evaluation please let us know by creating an <a href="https://github.com/opena11y/ainspector/issues">issue in the GitHib repository for AInspector</a>.&nbsp; Please provide the following information:</p>
-
-             <ol>
-                <li>A URL to were the problem can be replicated.</li>
-                <li>A short description of the issue.</li>
-                <li>How we can contact you for more information and verification the issue is resolved.</li>
-             </ol>
-
-            </section>
-
-
-
             
           </div>
         </div>
@@ -424,12 +410,13 @@
     </div>
             <!-- Footer-->
         <footer class="py-5">
+            <div class="feedback container px-4 text-center"><a href="about-privacy.html">Privacy Policy</a> | <a href="about-feedback.html">Feedback</a></div>
 
             <div class="container px-4 text-center">AInspector for WCAG Evaluation Copyright (c) 2025; Licensed Mozilla Public License 2.0, All rights reserved</div>
 
             <div class="container px-4 text-center"><a href="https://www.mozilla.org/en-US/MPL/2.0/">Mozilla Public License 2.0</a> allows for <em>AInspector for WCAG Evaluation</em> to be freely used (e.g. no cost), copied or modified.</div>
 
-            <div class="container px-4 text-center">Website conformance to <a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</a> requirements supported using <a href="https://ainspector.disability.illinois.edu">AInspector browser addon</a>.</div>
+            <div class="container px-4 text-center">Website conformance to <a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</a> requirements supported using <a href="https://opena11y.github.io/ainspector">AInspector browser addon</a>.</div>
 
         </footer>
 

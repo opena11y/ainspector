@@ -54,19 +54,19 @@
   --headingColor: hsl(214, 70%, 38%);
   --headingColorDark:  hsl(214, 70%, 62%);
 
-  --footerBackground: #eee;
-  --footerBackgroundDark: #222;
-
   --imageBorder:  hsl(0, 0%, 87%);
   --imageBorderDark:  hsl(0, 0%, 13%);
 
   --font-family: arial, verdana, tahoma, "trebuchet MS", sans-serif;
 
-  --feedbackColor:  hsl(195, 100%, 42%);
-  --feedbackColorDark:  hsl(195, 100%, 58%);
+  --footerColor:  hsl(0, 0%, 7%);
+  --footerColorDark:  hsl(0, 0%, 93%);
 
-  --feedbackBackground:  hsl(195, 100%, 95%);
-  --feedbackBackgroundDark: hsl(195, 100%, 5%);
+  --footerBackground:  hsl(0, 0%, 90%);
+  --footerBackgroundDark: hsl(0, 0%, 10%);
+
+  --faqBackground:  hsl(195, 100%, 92%);
+  --faqBackgroundDark: hsl(195, 100%, 15%);
 
 }
 
@@ -189,10 +189,6 @@ nav.second-level a[aria-current] {
   text-decoration: none;
 }
 
-footer {
-  margin-top: 40px;
-}
-
 a[href] {
   display: inline-block;
 }
@@ -214,6 +210,10 @@ footer  a[href] {
 
 main .second-level a[href] {
   outline-offset: -3px;
+}
+
+.dropdown-menu hr.dropdown-divider {
+  border-color: light-dark(var(--linkColor), var(--linkColorDark));
 }
 
 .bg-light a,
@@ -412,18 +412,7 @@ div.params {
 }
 
 .feedback {
-  margin-right: 1em;
-  margin-bottom: 2em;
-  padding: 1em;
-  margin-top: 5em;
-  border: 2px solid light-dark(var(--feedbackColor), var(--feedbackColorDark));
-  border-radius: 5px;
-  background-color: light-dark(var(--feedbackBackground), var(--feedbackBackgroundDark));
-}
-
-.feedback h2:first-child {
-  margin-top: 0;
-  padding-top: 0;
+  margin-bottom: 1em;
 }
 
 .bg-light code {
@@ -602,8 +591,9 @@ main .faq details .content {
   margin: 0.25em;
   padding: 0.5em;
   padding-left: 1em;
-  background-color: light-dark(var(--footerBackground), var(--footerBackgroundDark));
+  background-color: light-dark(var(--faqBackground), var(--faqBackgroundDark));
   margin-bottom: 0.5em;
+  border-color: light-dark(var(--faqBackground), var(--faqBackgroundDark));
   border-style: solid;
   border-width: 1px;
   border-radius: 5px;
@@ -681,8 +671,9 @@ main code.h {
 }
 
 
-
-footer {
+footer  {
   margin: 0;
+  margin-top: 2em;
+  color: light-dark(var(--footerColor), var(--footerColorDark));
   background-color: light-dark(var(--footerBackground), var(--footerBackgroundDark));
 }

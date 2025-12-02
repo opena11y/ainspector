@@ -1,4 +1,4 @@
-  /*  gen-documentation.js */
+/*  gen-documentation.js */
 
 /* Requirements */
 
@@ -39,7 +39,7 @@ function outputTemplate(fname, data) {
   })
 }
 
-const pages = [
+const mainPages = [
   { content: 'content-home.njk',
     title: 'Browser Extension',
     link: 'Home',
@@ -186,12 +186,33 @@ const pages = [
     link: 'FAQ',
     filename: 'faq.html'
   },
-  { content: 'content-about.njk',
-    title: 'About',
-    link: 'About',
-    filename: 'about.html'
+  { dropdown: 'About',
+    pages: [
+      { content: 'content-about-history.njk',
+        title: 'History',
+        link: 'History',
+        breadcrumb: 'About',
+        filename: 'about-history.html'
+      },
+      { content: 'content-about-privacy.njk',
+        title: 'Privacy',
+        link: 'Privacy',
+        breadcrumb: 'About',
+        filename: 'about-privacy.html'
+      },
+      { content: 'content-about-feedback.njk',
+        title: 'Feedback and Issues',
+        link: 'Feedback',
+        breadcrumb: 'About',
+        filename: 'about-feedback.html'
+      }
+    ]
   }
   ];
+
+const supportPages = [
+];
+
 
 // Create content files
 
@@ -238,7 +259,7 @@ function createNavigation(pages) {
   return html;
 }
 
-function createPage(page, mainNav, dropdownPages=false) {
+function createPage(page, mainNav, dropdownName='', dropdownPages=false) {
   if (page.filename) {
     console.log(`  [createPage]: ${page.filename}`);
 
@@ -252,6 +273,7 @@ function createPage(page, mainNav, dropdownPages=false) {
       nunjucks.render('./src-docs/templates/page.njk',{
         content: page.content,
         navigation: mainNav,
+        dropdownName: dropdownName,
         dropdownPages: dropdownPages,
         websiteURL: websiteURL,
         repositoryURL: repositoryURL,
@@ -265,14 +287,14 @@ function createPage(page, mainNav, dropdownPages=false) {
   }
 }
 
-const mainNav = createNavigation(pages);
+const mainNav = createNavigation(mainPages);
 
 function createPages(pages) {
   console.log(`[create pages]`);
   pages.forEach( item => {
     if (item.dropdown) {
       item.pages.forEach( p => {
-        createPage(p, mainNav, item.pages);
+        createPage(p, mainNav, item.dropdown, item.pages);
       });
     }
     else {
@@ -282,5 +304,6 @@ function createPages(pages) {
 
 }
 
-createPages(pages);
+createPages(mainPages);
+// createPages(supportPages);
 
