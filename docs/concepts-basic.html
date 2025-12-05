@@ -98,7 +98,7 @@
             href="#"
             role="button"
             aria-expanded="false">Views</a>
-          <ul class="dropdown-menu"><li><a class="dropdown-item" href="view-all-rules.html">All Rules</a></li><li><a class="dropdown-item" href="view-rule-group.html">Rule Group</a></li><li><a class="dropdown-item" href="view-rule-result.html">Rule Result</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="view-rule-result-ccr.html">Color Contrast Rules</a></li><li><a class="dropdown-item" href="view-rule-result-table.html">Table Rules</a></li><li><a class="dropdown-item" href="view-rule-result-table-cell.html">Table Cell Rules</a></li><li><a class="dropdown-item" href="view-rule-result-title.html">Title Rules</a></li>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="view-summary.html">Summary</a></li><li><a class="dropdown-item" href="view-rule-group.html">Rule Group</a></li><li><a class="dropdown-item" href="view-rule-result.html">Rule Result</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="view-rule-result-ccr.html">Color Contrast Rules</a></li><li><a class="dropdown-item" href="view-rule-result-table.html">Table Rules</a></li><li><a class="dropdown-item" href="view-rule-result-table-cell.html">Table Cell Rules</a></li><li><a class="dropdown-item" href="view-rule-result-title.html">Title Rules</a></li>
           </ul>
         </li>
       
@@ -162,25 +162,25 @@
                 <nav class="second-level" aria-label="Concepts and Terms">
                   
                     
-                    
-                    <a href="concepts-basic.html">Basic Concepts</a> |
-                    
+                    <a href="concepts-basic.html">Basic Concepts</a>
                     
                   
                     
-                    
-                    <a href="concepts-results.html">Result Values</a> |
-                    
-                    
-                  
-                    
-                    
-                    <a href="concepts-categories.html">Rule Categories</a> |
-                    
+                      
+                       | <a href="concepts-results.html">Result Values</a>
+                      
                     
                   
                     
-                    <a href="concepts-rulesets.html">Rulesets</a>
+                      
+                       | <a href="concepts-categories.html">Rule Categories</a>
+                      
+                    
+                  
+                    
+                      
+                       | <a href="concepts-rulesets.html">Rulesets</a>
+                      
                     
                   
                 </nav>
@@ -198,14 +198,13 @@
 
       <dt>Target resources</dt>
       <dd>
-          The set of HTML elements to which a particular rule applies. These include familiar elements such as&nbsp;<code>div</code>,&nbsp;<code>img</code>&nbsp;and&nbsp;<code>input</code>, as well as a pseudo-element designated
-          as&nbsp;<code>page</code>, which is a placeholder for the document element. When a rule is evaluated, each of its target resources is assigned an element result value.
+          The set of HTML elements to which a particular rule applies. These include familiar elements such as&nbsp;<code>div</code>, <code>img</code> and <code>input</code>, as well as a pseudo-element designated
+          as <code>page</code> or <code>website</code>, which is a placeholder for the document element or a feature for related web pages. When a rule is evaluated, each of its target resources is assigned a result value.
       </dd>
 
       <dt>Evaluation</dt>
       <dd>
-          The application of all evaluation functions of all rules in the selected ruleset to their corresponding target resources in a web page, and the subsequent collection of all evaluation results and messages, at both the rule
-          and element levels, into a dataset.
+          The application of all evaluation functions of all rules in the selected ruleset to their corresponding target resources in a web page, and the subsequent collection of all evaluation results and messages, at both the rule and element levels, into a dataset.
       </dd>
 
       <dt>Rule result</dt>
@@ -221,7 +220,7 @@
 
       <dd>
         <em>element</em>:
-        A WCAG requirement for a specific html element or an element with an ARIA role, property or state.&nbsp; For example, an <code>img</code> element must have an <code>alt</code> attribute.
+        A WCAG requirement for a specific html element or an element with an ARIA role, property or state.&nbsp; For example, an <code>img</code> element must have an accessible name (e.g. <code>alt</code> attribute value).
       </dd>
       <dd>
         <em>page</em>:
@@ -229,7 +228,7 @@
       </dd>
       <dd>
         <em>website</em>:
-        A WCAG requrement that applied to pages in a website.&nbsp; For example, consistent navigational links in each web page.
+        A WCAG requrement that applied to pages within a website or application. For example, consistent navigational links in each page within website.
       </dd>
   </dl>
 

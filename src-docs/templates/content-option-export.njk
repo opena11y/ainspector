@@ -13,13 +13,15 @@
           <th>Option</th>
           <th>Default</th>
           <th>Description</th>
+          <th>Uses</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>Include 'Pass' and 'N/A' results</rd>
+          <td>Do not prompt for data export options</rd>
           <td>Unchecked</td>
-          <td>The </td>
+          <td>When checked the "Save As" box appears immediately using the current option settings.</td>
+          <td>Saves time from having to go through the "Export Dialog" before saving the file.</td>
         </tr>
       </tbody>
     </table>
@@ -28,25 +30,28 @@
 
   <section>
 
-    <h2 id="format">Export Data Button</h2>
+    <h2 id="format">Export Format</h2>
     <table class="table table-striped" aria-labelledby="format">
       <thead>
         <tr>
           <th>Option</th>
           <th>Default</th>
           <th>Description</th>
+          <th>Uses</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>CSV</rd>
-          <td>Unchecked</td>
-          <td>desc...</td>
+          <td>Yes</td>
+          <td>Saves results in a Comma Separated Value (CSV) format.</td>
+          <td>Useful for human consumption or including in reporting results to other people. </td>
         </tr>
         <tr>
           <td>JSON</rd>
           <td></td>
-          <td>desc...</td>
+          <td>Saves result in Javascript Object Notation (JSON) format.</td>
+          <td>Useful for additional processing by other programs.</td>
         </tr>
       </tbody>
     </table>
@@ -56,6 +61,9 @@
   <section>
 
     <h2 id="format">Filename Options</h2>
+
+    <p>The default file name in the "Save As" dialog box can be configured with a default prefix, index and date/time information: <code>{prefix}-{index}-{YYYY-MM-DD-HH-MM-SS}</code>.  The index and date/time are optional parts of the default file name.
+
     <table class="table table-striped" aria-labelledby="format">
       <thead>
         <tr>
@@ -66,24 +74,24 @@
       </thead>
       <tbody>
         <tr>
-          <td>Export FIle Prefix</rd>
+          <td>Export File Prefix</rd>
           <td><code>ainspector</code></td>
-          <td>desc...</td>
+          <td>The first part of the file name for saving results.</td>
         </tr>
         <tr>
           <td>File name index</rd>
           <td><code>1</code></td>
-          <td>desc...</td>
+          <td>Starting index value for the file name, it is automatically incremented after each save.</td>
         </tr>
         <tr>
           <td>Include index value in filename</rd>
           <td>Checked</td>
-          <td>desc...</td>
+          <td>When checked the index value is used in the filename.</td>
         </tr>
         <tr>
           <td>Include date value in filename</rd>
-          <td></td>
-          <td>desc...</td>
+          <td>Unchecked</td>
+          <td>When checked the date and time the file created is used in the filename.</td>
         </tr>
       </tbody>
     </table>

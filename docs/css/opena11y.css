@@ -465,11 +465,13 @@ main h2 {
   margin-top: 0;
 }
 
-main .feature ul {
+main .feature ul,
+main .feature ol {
   margin: 0;
 }
 
-main .feature ul li {
+main .feature ul li,
+main .feature ol li {
   margin: 0;
   padding-bottom: 0.5em;
 }
@@ -502,7 +504,8 @@ table.table tbody th a[href] {
   font-weight: normal;
 }
 
-table.table tbody td ul {
+table.table tbody td ul,
+table.table tbody td ol {
   margin: 0;
   padding: 0;
 }
@@ -510,7 +513,7 @@ table.table tbody td ul {
 table.table tbody td li {
   margin: 0;
   padding: 0;
-  margin-left: 1em;
+  margin-left: 1.75em;
 }
 
 main dt {
@@ -524,9 +527,15 @@ main dt {
 main dd {
   font-size: 110%;
   margin: 0;
+  margin-bottom: 1em;
   padding: 0;
   margin-left: 0.5em;
   line-height: 1.2em;
+}
+
+main dd em {
+  font-style: italics;
+  font-weight: bold;
 }
 
 main details.screenshot {
@@ -599,7 +608,8 @@ main .faq details .content {
   border-radius: 5px;
 }
 
-main .faq ul {
+main .faq ul,
+main .faq ol {
   margin: 0;
   padding: 0;
   list-style: none;

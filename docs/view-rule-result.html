@@ -98,7 +98,7 @@
             href="#"
             role="button"
             aria-expanded="false">Views</a>
-          <ul class="dropdown-menu"><li><a class="dropdown-item" href="view-all-rules.html">All Rules</a></li><li><a class="dropdown-item" href="view-rule-group.html">Rule Group</a></li><li><a class="dropdown-item" href="view-rule-result.html">Rule Result</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="view-rule-result-ccr.html">Color Contrast Rules</a></li><li><a class="dropdown-item" href="view-rule-result-table.html">Table Rules</a></li><li><a class="dropdown-item" href="view-rule-result-table-cell.html">Table Cell Rules</a></li><li><a class="dropdown-item" href="view-rule-result-title.html">Title Rules</a></li>
+          <ul class="dropdown-menu"><li><a class="dropdown-item" href="view-summary.html">Summary</a></li><li><a class="dropdown-item" href="view-rule-group.html">Rule Group</a></li><li><a class="dropdown-item" href="view-rule-result.html">Rule Result</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="view-rule-result-ccr.html">Color Contrast Rules</a></li><li><a class="dropdown-item" href="view-rule-result-table.html">Table Rules</a></li><li><a class="dropdown-item" href="view-rule-result-table-cell.html">Table Cell Rules</a></li><li><a class="dropdown-item" href="view-rule-result-title.html">Title Rules</a></li>
           </ul>
         </li>
       
@@ -162,47 +162,47 @@
                 <nav class="second-level" aria-label="Views">
                   
                     
-                    
-                    <a href="view-all-rules.html">All Rules</a> |
-                    
+                    <a href="view-summary.html">Summary</a>
                     
                   
                     
-                    
-                    <a href="view-rule-group.html">Rule Group</a> |
-                    
-                    
-                  
-                    
-                    
-                    <a href="view-rule-result.html">Rule Result</a> |
-                    
+                      
+                       | <a href="view-rule-group.html">Rule Group</a>
+                      
                     
                   
                     
-                    
-                    
-                  
-                    
-                    
-                    <a href="view-rule-result-ccr.html">Color Contrast Rules</a> |
-                    
+                      
+                       | <a href="view-rule-result.html">Rule Result</a>
+                      
                     
                   
                     
-                    
-                    <a href="view-rule-result-table.html">Table Rules</a> |
-                    
+                      
                     
                   
                     
-                    
-                    <a href="view-rule-result-table-cell.html">Table Cell Rules</a> |
-                    
+                      
+                       | <a href="view-rule-result-ccr.html">Color Contrast Rules</a>
+                      
                     
                   
                     
-                    <a href="view-rule-result-title.html">Title Rules</a>
+                      
+                       | <a href="view-rule-result-table.html">Table Rules</a>
+                      
+                    
+                  
+                    
+                      
+                       | <a href="view-rule-result-table-cell.html">Table Cell Rules</a>
+                      
+                    
+                  
+                    
+                      
+                       | <a href="view-rule-result-title.html">Title Rules</a>
+                      
                     
                   
                 </nav>
@@ -211,9 +211,111 @@
                 <h1>Rule Result View</h1>
 
                   <figure class="image">
-    <img  src="images/chrome-rule.png" alt="">
+    <img  src="images/views-rule.png" alt="">
     <figcaption>Screen shot of Rule Result View in Chrome Browser</figcaption>
   </figure>
+
+  <h2 id="features">Features</h2>
+  <table class="table table-striped" aria-labelledby="features">
+    <thead>
+      <tr>
+          <th>Feature</th>
+          <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="width: 12em">
+          Rule Summary
+        </td>
+        <td>
+          A summary of the accessibility requirement.
+        </td>
+      </tr>
+      <tr>
+        <td>Results Summary</td>
+        <td>
+          <p>
+            Provides a count of the number of results with Violations (V), Warnings (W), Manual Checks (MC) and Passed (P) and that are Hidden (H).
+          </p>
+          <p>
+            <em>Note:</em> Hidden results are not evaluated for accessibility, but are provided for developers and quality assurance people to be aware of content that could become visible.
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>Results Grid</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Result Details</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>Evaluation Information</td>
+        <td>
+          This section appears in every view and includes information on:
+          <ul>
+            <li>Page title</li>
+            <li>URL of the web page</li>
+            <li>The selected Ruleset</li>
+            <li>Scope of rules used in the results (e.g. All, Page, Website)</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="buttons">Buttons</h2>
+  <table class="table table-striped" aria-labelledby="buttons">
+    <thead>
+      <tr>
+          <th>Button</th>
+          <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="width: 10em">Back</td>
+        <td>The <span class="button">Back</span> button changes the view back to the last rule group view.</td>
+      </tr>
+      <tr>
+        <td>Copy</td>
+        <td>The <span class="button">Copy</span> button copies the Selected Results information to the clipboard in a plain text format.</td>
+      </tr>
+      <tr>
+        <td>Export Data</td>
+        <td>The <span class="button">Export Data</span> button prompts to save the rule result data to a local file system in CSV or JSON format.  The Export button is available in all views.</td>
+      </tr>
+      <tr>
+        <td>Highlight</td>
+        <td>
+          The <span class="button">Highlight</span> select box changes which elements on the page are highlighted, options include:
+          <ul>
+            <li><strong>None:</strong> No elements are selected on the web page.</li>
+            <li><strong>Selected:</strong> The element associated with the selected result on the web page is highlighted.</li>
+            <li><strong>V/W:</strong> The elements associated with violation or warning results on the web page are highlighted.</li>
+            <li><strong>All:</strong> All elements associated a result0 on the web page are highlighted.</li>
+          </ul>
+          <p style="margin-top: 1em"><em>Note:</em> The highlight uses the border color and a label in the upper left or right corner of the highlight to indicated the type of result.
+        </td>
+      </tr>
+      <tr>
+        <td>Options</td>
+        <td>The <span class="button">Options</span> button opens option pages for the extension.  The Options button is available in all views</td>
+      </tr>
+      <tr>
+        <td>Rerun Evaluation</td>
+        <td>The <span class="button">Rerun Evaluation</span> button prompts the user to rerun the evaluation on the current page. The Rerun button is available in all views.</td>
+      </tr>
+      <tr>
+        <td>Views</td>
+        <td>The  <span class="button">Views</span> button menu opens a menu to navigate to one of the rule group views and is an alternative to using the grid and details button.  Handy for keyboard users, especially when shortcuts are enabled.  The Views button is available in all views.</td>
+      </tr>
+    </tbody>
+  </table>
+
+
 
 
             

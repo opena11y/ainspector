@@ -106,10 +106,10 @@ const mainPages = [
   {
     dropdown: 'Views',
     pages: [
-      { content: 'content-view-all-rules.njk',
-        title: 'All Rules View',
-        link: 'All Rules',
-        filename: 'view-all-rules.html',
+      { content: 'content-view-summary.njk',
+        title: 'Summary View',
+        link: 'Summary',
+        filename: 'view-summary.html',
         breadcrumb: 'Views'
       },
       { content: 'content-view-rule-group.njk',
@@ -128,7 +128,7 @@ const mainPages = [
         spacer: ''
       },
       { content: 'content-view-rule-result-ccr.njk',
-        title: 'Color Contrast Rule',
+        title: 'Color Contrast Rule Results',
         link: 'Color Contrast Rules',
         filename: 'view-rule-result-ccr.html',
         breadcrumb: 'Views'
@@ -140,7 +140,7 @@ const mainPages = [
         breadcrumb: 'Views'
       },
       { content: 'content-view-rule-result-table-cell.njk',
-        title: 'Table Cell Rule Result',
+        title: 'Table Cell Rule Results',
         link: 'Table Cell Rules',
         filename: 'view-rule-result-table-cell.html',
         breadcrumb: 'Views'

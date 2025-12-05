@@ -1,0 +1,100 @@
+  <figure class="image">
+    <img  src="images/views-summary.png" alt="">
+    <figcaption>Screen shot of Summary View in Chrome Browser</figcaption>
+  </figure>
+
+  <h2 id="features">Features</h2>
+  <table class="table table-striped" aria-labelledby="features">
+    <thead>
+      <tr>
+          <th>Feature</th>
+          <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="width: 12em">
+          Summary Title
+        </td>
+        <td>
+          The summary title provides information of the rules include in the evaluation result.</p>
+          <div>Values include:</div>
+          <ul>
+            <li><strong>All Rules:</strong> All rules are included in evaluation results.</li>
+            <li><strong>Page Rules:</strong> Only rules with rule scope of <em>page</em>  are included in evaluation results.</li>
+            <li><strong>Website Rules:</strong> Only rules with rule scope of <em>website</em>  are included in evaluation results.</li>
+            <li><strong>First Step Rules:</strong> Only rules in the First Step rule set are includes in the evaluation result.</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>Results Summary</td>
+        <td>
+          Provides a count of the number of rules with Violations (V), Warnings (W), Manual Checks (MC) and Passed (P).
+        </td>
+      </tr>
+      <tr>
+        <td>Rule Groups Grid</td>
+        <td>
+          <p>The Rule Group Grid has two tabs: Rule Category and WCAG Guidelines.  Choosing a tab shows rule groups of rules based on the tab selected.</p>
+          <div>
+            The Rule Groups Grid has five columns:
+              <ol>
+               <li>Rule group title</li>
+               <li>Number of rules with violations</li>
+               <li>Number of rules with warnings</li>
+               <li>Number of rules with manual checks</li>
+               <li>Number of rules with pass.</li>
+              </ol>
+          <div>
+           <p>The rule groups grid helps identify which features are meeting accessibility requirements and what areas will require human inspection.  Each rule is associated with both a <a href="./concepts-categories.html">Rule Category</a> and WCAG Guideline.  The rule categories use labels familiar to designers and developers that have an understanding of html coding.  The WCAG Guidelines are part of the standards used to define accessibility and are familiar to accessibility specialists.
+          <p>
+        </td>
+      </tr>
+      <tr>
+        <td>Evaluation Information</td>
+        <td>
+          This section appears in every view and includes information on:
+          <ul>
+            <li>Page title</li>
+            <li>URL of the web page</li>
+            <li>The selected Ruleset</li>
+            <li>Scope of rules used in the results (e.g. All, Page, Website)</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="buttons">Buttons</h2>
+  <table class="table table-striped" aria-labelledby="buttons">
+    <thead>
+      <tr>
+          <th>Button</th>
+          <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="width: 10em">Details</td>
+        <td>The <span class="button">Details</span> button changes the view to the selected Rule Category or WCAG Guidelines rule group.</td>
+      </tr>
+      <tr>
+        <td>Export Data</td>
+        <td>The <span class="button">Export Data</span> button prompts to save the summary data to a local file system in CSV or JSON format.  The Export button is available in all views.</td>
+      </tr>
+      <tr>
+        <td>Options</td>
+        <td>The <span class="button">Options</span> button opens option pages for the extension.  The Options button is available in all views</td>
+      </tr>
+      <tr>
+        <td>Rerun Evaluation</td>
+        <td>The <span class="button">Rerun Evaluation</span> button prompts the user to rerun the evaluation on the current page. The Rerun button is available in all views.</td>
+      </tr>
+      <tr>
+        <td>Views</td>
+        <td>The  <span class="button">Views</span> button menu opens a menu to navigate to one of the rule group views and is an alternative to using the grid and details button.  Handy for keyboard users, especially when shortcuts are enabled.  The Views button is available in all views.</td>
+      </tr>
+    </tbody>
+  </table>
+
