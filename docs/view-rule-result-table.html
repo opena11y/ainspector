@@ -230,27 +230,33 @@
           Type
         </td>
         <td>
+          Identifies how the table is being used:
+          <ul>
+            <li><em>Layout</em>:  The table has been identified as be used for layout purposes and there for should not using table header markup or have an accessible name.  A manual check needs to be done that the reading order of content makes sense to screen reader users.</li>
+            <li><em>Data</em>:  The table is being used to render tabular data and should have a an accessible name and use table header markup.</li>
+            <li><em>Complex</em>:  The table is being used to render tabular data and is using row or column spans for the data cells, requiring more detailed definition of table header markup.</li>
+          </ul>
         </td>
       </tr>
       <tr>
         <td>Rows</td>
-        <td></td>
+        <td>Number of rows in a table.</td>
       </tr>
       <tr>
         <td>Columns</td>
-        <td></td>
+        <td>Number of columns in the table.</td>
       </tr>
       <tr>
         <td>Spanned cells</td>
-        <td></td>
+        <td>Number of cell that span more than one row or column.</td>
       </tr>
       <tr>
         <td>Total cells</td>
-        <td></td>
+        <td>Total number of header and data cells in the table.</td>
       </tr>
       <tr>
         <td>Total header cells</td>
-        <td></td>
+        <td>Total number of header cells in the table.</td>
       </tr>
     </tbody>
   </table>

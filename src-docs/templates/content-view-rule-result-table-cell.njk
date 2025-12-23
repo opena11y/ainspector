@@ -18,35 +18,46 @@
           Is header cell
         </td>
         <td>
+        Identifies the cell as being a header cell, there are three way of identifying a cell as a header cell:
+        <ul>
+          <li>Uses the <code>th</code> html element.</li>
+          <li>Uses the <code>role="header"</code> ARIA attribute.</li>
+          <li>Is referenced by a <code>headers</code> attribute.</li>
+        </ul>
         </td>
       </tr>
       <tr>
         <td>Row</td>
-        <td></td>
+        <td>The row the table cell is identified with.</td>
       </tr>
       <tr>
         <td>Column</td>
-        <td></td>
+        <td>The column the table cell is identified with.</td>
       </tr>
       <tr>
         <td>Row span</td>
-        <td></td>
+        <td>How many rows the cell spans, by default most cells only span one row.</td>
       </tr>
       <tr>
         <td>Column span</td>
-        <td></td>
+        <td>How many columns the cell spans, by default most cells only span one column.</td>
       </tr>
       <tr>
         <td>Headers</td>
-        <td></td>
+        <td>The header cell content associated with data cells, when more than one header cell the content of each header is separated with the "|" character.</td>
       </tr>
       <tr>
         <td>Header from</td>
-        <td></td>
+        <td>Identifies where the header cells came from:
+          <ul>
+            <li><em>Row/Column</em>: From row and column heading cells.</li>
+            <li><em>Headers</em>: From the <code>id</code> references in a <code>headers</code> attribute.</li>
+          </ul>
+        </td>
       </tr>
       <tr>
         <td>Cell is empty</td>
-        <td></td>
+        <td>Is true it the cell does not have any content, otherwise false.</td>
       </tr>
     </tbody>
   </table>

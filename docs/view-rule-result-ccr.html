@@ -227,58 +227,67 @@
     <tbody>
       <tr>
         <td style="width: 12em">
-          Color Contrast Ratio
+          <a href="https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html">Color Contrast Ratio</a>
         </td>
         <td>
+          <p>The color contrast ratio is an indication of how easy it for people to see text content.  The higher the ratio the easier it is for people to see.</p>
+          <p>Formula:
+            <div>(L1 + 0.05) / (L2 + 0.05), where:</div>
+
+            <ul>
+              <li>L1 is the relative luminance of the lighter of the colors</li>
+              <li>L2 is the relative luminance of the darker of the colors.</li>
+            </ul>
+          </p>
         </td>
       </tr>
       <tr>
         <td>Background</td>
-        <td></td>
+        <td>The background color property for the element, either specified by a CSS selector, or inherited from an ancestor.</td>
       </tr>
       <tr>
         <td>Rendered Background</td>
-        <td></td>
+        <td>The actual rendered background color that includes opacity settings.</td>
       </tr>
       <tr>
         <td>Text</td>
-        <td></td>
+        <td>The text color property for the element, either specified by a CSS selector or inherited from an ancestor.</td>
       </tr>
       <tr>
         <td>Rendered Text</td>
-        <td></td>
+        <td>Actual rendered background color that includes opacity settings.</td>
       </tr>
       <tr>
         <td>Opacity</td>
-        <td></td>
+        <td>The opacity value for the text color.</td>
       </tr>
       <tr>
         <td>Is positioned</td>
-        <td></td>
+        <td>Us the element using a CSS absolute positioning, which may mean the background is different that background color value if the element has a transparent background.</td>
       </tr>
       <tr>
         <td>Font family</td>
-        <td></td>
+        <td>The font family used to render the text, while this does not affect the color contrast ratio calculation, some fonts maybe more difficult to perceive than others.</td>
       </tr>
       <tr>
         <td>Font size</td>
-        <td></td>
+        <td>Larger fonts are easier to perceive than smaller fonts and WCAG requires a 3:1 contrast ratio fir large text for AA conformance and 4.5:1 for AAA conformance.</td>
       </tr>
       <tr>
         <td>Font weight</td>
-        <td></td>
+        <td>Bold text is easier to perceive than normal text and is a factor in determining if text is large enough to use the WCAG 3:1 and 4.5:1 contrast ratios for color contrast.</td>
       </tr>
       <tr>
         <td>Background image</td>
-        <td></td>
+        <td>When the text is over an element with a background image the evaluation library cannot determine the color contrast ratio and the user must perform a manual check to determine if color contrast requirements are met.</td>
       </tr>
       <tr>
         <td>Background repeat</td>
-        <td></td>
+        <td>Provides information about how the background image is being rendered, which maybe useful for manual checking of the contrast ratio.</td>
       </tr>
       <tr>
         <td>Background position</td>
-        <td></td>
+        <td>Provides information about how the background image is being rendered, which maybe useful for manual checking of the contrast ratio.</td>
       </tr>
     </tbody>
   </table>
