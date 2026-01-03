@@ -166,9 +166,14 @@ nav ol.breadcrumb {
 }
 
 nav.second-level {
+  padding: 0;
   margin: 0;
-  margin-bottom: 0.5em;
 }
+
+nav.second-level + h1 {
+  margin-top: 0;
+}
+
 
 nav.second-level a {
   display: inline-block;
@@ -356,6 +361,7 @@ figure.image figcaption {
 main h1 {
   padding: 0;
   margin: 0;
+  margin-top: 1em;
   margin-bottom: 0.5em;
   font-size: 2rem;
 }
