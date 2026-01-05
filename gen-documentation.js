@@ -6,11 +6,13 @@ const fs = require('fs');
 const path = require('path');
 const nunjucks  = require('nunjucks');
 
+/* Constants */
+
 const version     = "4.1";
 const tagLineName = "Accessibility Inspector for WCAG Evaluation";
-const extName     = "AInspector for WCAG Evaluation";
-
-/* Constants */
+const projectName = "AInspector for WCAG Evaluation";
+const issuesURL   = "https://github.com/opena11y/ainspector/issues";
+const issuesEmail = "jongund@illinois.edu";
 
 const outputDirectory   = './docs/';
 const templateDirectory = './src-docs/templates/';
@@ -23,15 +25,6 @@ const repositoryURL     = 'https://github.com/opena11y/ainspector';
 
 function outputFile(fname, data) {
   fs.writeFile(path.join(outputDirectory, fname), data, err => {
-      if (err) {
-        console.error(err)
-        return
-      }
-  })
-}
-
-function outputTemplate(fname, data) {
-  fs.writeFile(path.join(templateDirectory, fname), data, err => {
       if (err) {
         console.error(err)
         return
@@ -237,15 +230,12 @@ function createNavigation(pages) {
   return html;
 }
 
+const mainNav = createNavigation(mainPages);
+
+
 function createPage(page, mainNav, dropdownName='', dropdownPages=false) {
   if (page.filename) {
     console.log(`  [createPage]: ${page.filename}`);
-
-    const breadcrumb =  page.breadcrumb ?
-                        page.breadcrumb :
-                        page.filename !== 'index.html' ?
-                          page.title :
-                          '';
 
     outputFile(page.filename,
       nunjucks.render('./src-docs/templates/page.njk',{
@@ -255,17 +245,19 @@ function createPage(page, mainNav, dropdownName='', dropdownPages=false) {
         dropdownPages: dropdownPages,
         websiteURL: websiteURL,
         repositoryURL: repositoryURL,
-        extName: extName,
+        projectName: projectName,
         tagLineName: tagLineName,
+        issuesURL: issuesURL,
+        issuesEmail: issuesEmail,
         version: version,
-        title: page.title,
-        breadcrumb: breadcrumb
+        title: page.title
       })
     );
   }
 }
 
-const mainNav = createNavigation(mainPages);
+
+// createPages(supportPages);
 
 function createPages(pages) {
   console.log(`[create pages]`);
@@ -279,9 +271,7 @@ function createPages(pages) {
       createPage(item, mainNav);
     }
   });
-
 }
 
 createPages(mainPages);
-// createPages(supportPages);
 
