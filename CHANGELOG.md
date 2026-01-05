@@ -4,6 +4,7 @@
 
 | Version      |    Date     | Notes |
 |--------------|:-----------:|-----------------------------------------------------|
+| 4.1.3        |             | FIxed issue with control 14 rule
 | 4.1.2        |   11/24/25  | Updated title and fixed some other issues
 | 4.1.1        |   11/01/25  | Updated some rule result views
 | 4.1          |   10/06/25  | Updated evaluation library to version 2.0.7
@@ -28,6 +29,9 @@
 | 0.96.0       |  10/30/19   | Fixes bug in highlight option not being remembered
 
 =======
+
+### 4.1.3
+* Updated evaluation library to fix issue with control 14 rule
 
 ### 4.1.2
 * Updated summary view title based on rule scope: All, Page or Website Rules

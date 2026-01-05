@@ -1,2 +1,2 @@
 # ainspector
-Update on AInspector for Firefox that will work in Chrome, Opera and other Chromium based browsers
+[documentation on AInspector for WCAG Evaluation browser extension](https://opena11y.github.io/ainspector/)
