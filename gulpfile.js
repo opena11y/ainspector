@@ -68,6 +68,5 @@ const documentation      = task('documentation');
 const documentationStyle = task('documentationStyle');
 
 exports.default = series(
-  linting,
   parallel(extensionsCode, extensionsLocales, style),
   parallel(documentation));

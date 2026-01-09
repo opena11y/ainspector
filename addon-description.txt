@@ -28,7 +28,6 @@ zip -r ../docs/dist/ainspector-firefox-4.1.3.zip . -x ".*" -x "__MACOSX"
 zip -r ../docs/dist/ainspector-chrome-4.1.3.zip . -x ".*" -x "__MACOSX"
 zip -r ../docs/dist/ainspector-edge-4.1.3.zip . -x ".*" -x "__MACOSX"
 
-
 Questions
 ---------
 

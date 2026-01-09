@@ -1477,7 +1477,7 @@
     "description": "Property name in color contrast information"
   },
   "ccr_background_color_hex": {
-    "message": "Rendered background",
+    "message": "Rendered Background",
     "description": "Property name in color contrast information"
   },
   "ccr_color": {

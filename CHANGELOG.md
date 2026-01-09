@@ -4,11 +4,11 @@
 
 | Version      |    Date     | Notes |
 |--------------|:-----------:|-----------------------------------------------------|
-| 4.1.3        |             | FIxed issue with control 14 rule
+| 4.1.3        |             | FIxed issue with control 14 rule and color contrast computation
 | 4.1.2        |   11/24/25  | Updated title and fixed some other issues
 | 4.1.1        |   11/01/25  | Updated some rule result views
-| 4.1          |   10/06/25  | Updated evaluation library to version 2.0.7
-| 4.0          |   9/25/25   | Updated evaluation library to version 2.0.6 and support for Chrome
+| 4.1          |   10/06/25  | Updated evaluation library to version 2.0.7 and fixed data export issues
+| 4.0          |   9/25/25   | Updated evaluation library to version 2.0.6 and support for Chrome, Opera and Edge browsers
 | 3.1          |   4/25/24   | Updated evaluation library to version 2.0.5 and added ARIA 1.3 option
 | 3.0.4        |   3/4/24    | Updated evaluation library to version 2.0.4
 | 3.0.2        |   2/29/24   | Updated evaluation library to version 2.0.3
@@ -31,7 +31,7 @@
 =======
 
 ### 4.1.3
-* Updated evaluation library to fix issue with control 14 rule
+* Updated evaluation library to 2.2 to fix issue with control 14 rule and improve color contrast calculation
 
 ### 4.1.2
 * Updated summary view title based on rule scope: All, Page or Website Rules
