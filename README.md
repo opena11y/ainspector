@@ -6,10 +6,10 @@
 
 | Browser | Store Link |
 | :--- | :--- |
-| **Firefox** | [**Get AInspector for Firefox**](https://addons.mozilla.org/en-US/firefox/addon/ainspector-wcag/) |
-| **Chrome** | [**Get AInspector for Chrome**](https://www.google.com/url?sa=E&source=gmail&q=https://chromewebstore.google.com/detail/ainspector-for-wcag-evalu/dhllbiaionalkdpankidadkoaaenenie) |
-| **Edge** | [**Get AInspector for Edge**](https://microsoftedge.microsoft.com/addons/detail/ainspector-for-wcag-evalu/enilnlbjbmnfleppphmbodnhkecoddhg) |
-| **Opera** | Supported (via Chrome extension compatibility). |
+| **Firefox** | [**Get AInspector WCAG for Firefox**](https://addons.mozilla.org/en-US/firefox/addon/ainspector-wcag/) |
+| **Chrome** | [**Get AInspector WCAG for Chrome**](https://www.google.com/url?sa=E&source=gmail&q=https://chromewebstore.google.com/detail/ainspector-for-wcag-evalu/dhllbiaionalkdpankidadkoaaenenie) |
+| **Edge** | [**Get AInspector WCAG for Edge**](https://microsoftedge.microsoft.com/addons/detail/ainspector-for-wcag-evalu/enilnlbjbmnfleppphmbodnhkecoddhg) |
+| **Opera** | [**Get AInspector WCAG for Edge**](https://opena11y.github.io/ainspector/dist/ainspector-opera-4.1.3.crx) |
 
 ## 🚀 Features
 
