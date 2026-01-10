@@ -9,11 +9,11 @@
 | **Firefox** | [**Get AInspector WCAG for Firefox**](https://addons.mozilla.org/en-US/firefox/addon/ainspector-wcag/) |
 | **Chrome** | [**Get AInspector WCAG for Chrome**](https://www.google.com/url?sa=E&source=gmail&q=https://chromewebstore.google.com/detail/ainspector-for-wcag-evalu/dhllbiaionalkdpankidadkoaaenenie) |
 | **Edge** | [**Get AInspector WCAG for Edge**](https://microsoftedge.microsoft.com/addons/detail/ainspector-for-wcag-evalu/enilnlbjbmnfleppphmbodnhkecoddhg) |
-| **Opera** | [**Get AInspector WCAG for Edge**](https://opena11y.github.io/ainspector/dist/ainspector-opera-4.1.3.crx) |
+| **Opera** | [**Get AInspector WCAG for Opera** (self-hosted)](https://opena11y.github.io/ainspector/dist/ainspector-opera-4.1.3.crx) |
 
 ## 🚀 Features
 
-AInspectorfor WCAG Evaluation utilizes the [OpenA11y Evaluation Library](https://github.com/opena11y/evaluation-library) to provide comprehensive accessibility reports.
+AInspector for WCAG Evaluation utilizes the [OpenA11y Evaluation Library](https://github.com/opena11y/evaluation-library) to provide comprehensive accessibility reports.
 
   * **Standards Support:**
       * **WCAG:** Evaluates compliance with WCAG 2.0, 2.1, and 2.2 (Level A and AA).
@@ -36,9 +36,10 @@ For full user guides, concepts, and advanced usage, visit the official documenta
 
 1.  **Open the Side Panel:**
       * Click the **AI** extension icon in your browser toolbar.
-      * *Alternatively, use the keyboard shortcut:*
+      * *Alternatively, for Firefox and Opera use the keyboard shortcut:*
           * **Windows:** `Ctrl` + `Shift` + `U`
-          * **Mac:** `Cmd` + `Shift` + `U`
+          * **Mac:** `Cmd` + `Shift` + `U
+      * *Alternatively, Chrome and Edge allow the user to define their own keyboard shortcut*`
 2.  **Analyze:** The extension will automatically evaluate the current page.
 3.  **Inspect:** Drill down into Rule Categories to see specific element results.
 4.  **Re-evaluate:** Use the "Rerun" button to check dynamic content changes or after making edits.
