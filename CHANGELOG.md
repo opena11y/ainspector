@@ -4,7 +4,7 @@
 
 | Version      |    Date     | Notes |
 |--------------|:-----------:|-----------------------------------------------------|
-| 4.1.4        |   3/8/26    | Updated icon and dixed highlight bug
+| 4.1.4        |   4/7/26    | Updated icon and fixed highlight bug
 | 4.1.3        |   12/9/25   | Fixed issue with control 14 rule and color contrast computation
 | 4.1.2        |   11/24/25  | Updated title and fixed some other issues
 | 4.1.1        |   11/01/25  | Updated some rule result views
