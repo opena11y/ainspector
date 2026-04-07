@@ -15,7 +15,7 @@
   "default_locale": "en",
 
   "icons": {
-   "32":  "icons/light-ai-sidebar-32.png",
+    "32":  "icons/light-ai-sidebar-32.png",
     "48":  "icons/light-ai-sidebar-48.png",
     "64":  "icons/light-ai-sidebar-64.png",
     "128": "icons/light-ai-sidebar-128.png"
