@@ -358,7 +358,6 @@ class AISidePanel extends HTMLElement {
 
   runEvaluation() {
     this.clearView(getMessage('loading_content'));
-    debug.log(`runEvaluation`);
 
     const aiSidePanelObj = this;
 
