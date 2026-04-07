@@ -59,6 +59,10 @@ gulp.task('documentation', function (cb) {
     cb(err);  });
 })
 
+gulp.task('buildext', function () {
+    return run('npm run buildext');
+})
+
 const linting            = task('linting');
 const extensionsCode     = task('extensionsCode');
 const extensionsLocales  = task('extensionsLocales');

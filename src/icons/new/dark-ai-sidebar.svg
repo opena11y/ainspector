@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 576 720">
+  <!-- Generator: Adobe Illustrator 30.2.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 1)  -->
+  <defs>
+    <style>
+      .st0 {
+        stroke-width: .9px;
+      }
+
+      .st0, .st1, .st2, .st3 {
+        stroke: #122a4b;
+        stroke-miterlimit: 10;
+      }
+
+      .st0, .st3 {
+        fill: #122a4b;
+      }
+
+      .st1, .st2 {
+        fill: none;
+      }
+
+      .st1, .st3 {
+        stroke-width: 4.4px;
+      }
+
+      .st2 {
+        stroke-width: 3px;
+      }
+
+      .st4 {
+        fill: #f26122;
+      }
+    </style>
+  </defs>
+  <rect class="st2" x="214.1" y="285.4" width="148.5" height="148.5" rx="21.2" ry="21.2"/>
+  <path class="st0" d="M267.6,300.9l40,119.4h-14.5l-12.9-38.9h-36.5l-13.4,38.9h-7.2l40.9-119.4h3.6ZM246.2,373.8h31.3l-15.4-46.2-15.9,46.2Z"/>
+  <g>
+    <circle class="st1" cx="321.4" cy="328.9" r="30.6"/>
+    <circle class="st4" cx="321.5" cy="329.3" r="10.5"/>
+  </g>
+  <polyline class="st3" points="317.2 360 317.4 417.6 328.6 417.8 328.2 359.9"/>
+</svg>

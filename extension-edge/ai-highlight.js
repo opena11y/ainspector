@@ -14,7 +14,6 @@ class AIHighlightELement extends HTMLElement {
     const template = document.createElement('template');
     template.textContent = `
 :root {
-  color-scheme: light dark;
 }
 
 .ai-highlight {

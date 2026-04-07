@@ -150,7 +150,7 @@
   /* Constants */
   const debug$1a = new DebugLogging('constants', false);
 
-  const VERSION = '2.2.0';
+  const VERSION = '2.2.1';
 
   /**
    * @constant RULESET
@@ -1069,6 +1069,7 @@
         const dataItem = {
           level:             de.ariaInfo.ariaLevel,
           name:              cleanName(de.accName.name),
+          nameSource:        de.accName.source,
           ordinalPosition:   de.ordinalPosition,
           isVisibleOnScreen: de.visibility.isVisibleOnScreen,
           isVisibleToAT:     de.visibility.isVisibleToAT
@@ -1127,6 +1128,7 @@
         const dataItem = {
           role:              de.role.toLowerCase(),
           name:              cleanName(de.accName.name),
+          nameSource:        de.accName.source,
           ordinalPosition:   de.ordinalPosition,
           isVisibleOnScreen: de.visibility.isVisibleOnScreen,
           isVisibleToAT:     de.visibility.isVisibleToAT
@@ -1277,7 +1279,9 @@
           const dataItem = {
             url:               de.node.href,
             name:              cleanName(de.accName.name),
+            nameSource:        de.accName.source,
             desc:              cleanName(de.accDescription.name),
+            descSource:        de.accDescription.source,
             ordinalPosition:   de.ordinalPosition,
             isInternal:        sameHostname && samePathname,
             isExternal:        !sameDomain,
@@ -31371,6 +31375,23 @@
         debug$11.tag(elementNode);
       }
 
+      this.display  = style.getPropertyValue("display");
+      this.position =  style.getPropertyValue("position").toLowerCase();
+      this.overflow =  style.getPropertyValue("overflow").toLowerCase();
+      this.isPosition = ['absolute', 'fixed', 'sticky'].includes(this.position);
+      this.isOverflow = ['auto', 'hidden'].includes(this.overflow);
+      this.isPositionRef = this.isPosition || this.isOverflow;
+
+      this.positionValue = 'static';
+      if (this.isPosition) {
+        this.positionValue = this.position;
+      }
+      else {
+        if (this.isOverflow) {
+          this.positionValue = 'overflow';
+        }
+      }
+
       this.hasTextNodes = this.getHasTextNodes(elementNode);
 
       this.opacity            = this.normalizeOpacity(style, parentColorContrast);
@@ -31820,6 +31841,7 @@
 
   /* Constants */
   const debug$10 = new DebugLogging('EventInfo', false);
+  debug$10.flag = false;
 
   /**
    * @class EventInfo
@@ -31924,7 +31946,7 @@
         ],
         id: 'article'
       },
-      aside: {
+      'aside[complementary]': {
         tagName: 'aside',
         defaultRole: 'complementary',
         noRoleAllowed: false,
@@ -31938,7 +31960,31 @@
           'search',
           'complementary'
         ],
-        id: 'aside'
+        id: 'aside[complementary]'
+      },
+      aside: {
+        tagName: 'aside',
+        defaultRole: 'generic',
+        noRoleAllowed: false,
+        anyRoleAllowed: false,
+        allowedRoles: [
+          'group',
+          'none',
+          'presentation',
+          'article',
+          'aside',
+          'main',
+          'nav',
+          'section',
+          'role=article',
+          'complementary',
+          'main',
+          'navigation',
+          'region',
+          'role=contentinfo',
+          'role=generic'
+        ],
+        id: 'header'
       },
       audio: {
         tagName: 'audio',
@@ -33433,16 +33479,38 @@
 
   /* Constants */
   const debug$$ = new DebugLogging('ariaInHtml', false);
+  debug$$.flag = false;
+
   const higherLevelElements = [
     'article',
     'aside',
     'footer',
+    'form',
     'header',
     'main',
     'nav',
-    'region',
     'section'
     ];
+
+  const asideNotAllowedContextElements = [
+    'footer',
+    'form',
+    'header'
+    ];
+
+  const asideNotAllowedContextRoles = [
+    'banner',
+    'contentinfo',
+    'form'
+    ];
+
+  const sectioningElements = [
+    'article',
+    'aside',
+    'nav',
+    'section'
+    ];
+
 
   const landmarkRoles$1 = [
     'banner',
@@ -33462,9 +33530,10 @@
   *       role restriction information
   *
   * @param  {Object}  node        - Element node from a browser DOM
+  * @param  {String}  name - Accessible name
   */
 
-  function getAriaInHTMLInfo (node) {
+  function getAriaInHTMLInfo (node, name) {
     let elemInfo, type, selector;
 
     let tagName = node.tagName.toLowerCase();
@@ -33484,6 +33553,14 @@
           elemInfo = elementInfo['area[href]'];
         } else {
           elemInfo = elementInfo['area'];
+        }
+        break;
+
+      case 'aside':
+        if (isInContextForComplementary(node, name)) {
+          elemInfo = elementInfo['aside[complementary]'];
+        } else {
+          elemInfo = elementInfo['aside'];
         }
         break;
 
@@ -33663,7 +33740,7 @@
   /**
   * @function isTopLevel
   *
-  * @desc Tests the node to see if it is in the content of any other
+  * @desc Tests the node to see if it is in the context of any other
   *       elements with default landmark roles or is the descendant
   *       of an element with a defined landmark role
   *
@@ -33680,6 +33757,40 @@
           landmarkRoles$1.includes(role)) {
         return false;
       }
+      node = node.parentNode;
+    }
+    return true;
+  }
+
+
+  /**
+  * @function isInContextForComplementary
+  *
+  * @desc Tests the node to see if it is in the context of any other
+  *       elements with default landmark roles or is the descendant
+  *       of an element with a main landmark role
+  *
+  * @param  {Object}  node - Element node from a browser DOM
+  * @param  {String}  name - Accessible name
+  */
+
+  function isInContextForComplementary (node, name='') {
+    node = node && node.parentNode;
+    while (node && (node.nodeType === Node.ELEMENT_NODE)) {
+      const tagName = getString(node.tagName);
+      const role = node.role ? node.role.toLowerCase().trim() : '';
+      if (role && asideNotAllowedContextRoles.includes(role)) {
+        return false;
+      }
+
+      if (asideNotAllowedContextElements.includes(tagName)) {
+        return false;
+      }
+
+      if (sectioningElements.includes(tagName)) {
+        return name.length ? true : false;
+      }
+
       node = node.parentNode;
     }
     return true;
@@ -33782,6 +33893,7 @@
       this.isSmallHeight      = this.normalizeHeight(style, parentVisibility);
       this.isSmallFont        = this.getFontSize(style);
       this.isInClosedDetails  = this.normalizeInClosedDetails(elementNode, parentVisibility);
+      this.zIndex             = this.normalizeZIndex(style, parentVisibility.zIndex);
 
       // Set default values for visibility
       this.isVisibleOnScreen = true;
@@ -33967,8 +34079,10 @@
 
     normalizeHeight (style, parentVisibility) {
       const height   = parseFloat(style.getPropertyValue("height"));
-      const overflow = style.getPropertyValue("overflow");
-      return parentVisibility.isSmallHeight || ((height <= 1) && (overflow === 'hidden'));
+      const overflow  = (style.getPropertyValue("overflow") === 'hidden') ||
+                        (style.getPropertyValue("overflowX") === 'hidden') ||
+                        (style.getPropertyValue("overflowY") === 'hidden');
+      return parentVisibility.isSmallHeight || ((height <= 1) && overflow);
     }
 
     /**
@@ -33987,6 +34101,23 @@
       const fontSize = parseFloat(style.getPropertyValue("font-size"));
       return fontSize <= 1;
     }
+
+    /**
+     * @method normalizedZIndex
+     *
+     * @desc Computes the zIndex of for the DOM element
+     *
+     * @param {Object}  style         - Computed style object for an element node
+     * @param {Object}  parentZIndex  - Computed zIndex of the parent
+     *
+     * @return {Number}  Returns numerical value for ZIndex
+     */
+
+    normalizeZIndex (style, parentZIndex) {
+      const zIndex = parseFloat(style.getPropertyValue("zIndex"));
+      return !isNaN(zIndex) ? zIndex : parentZIndex ? parentZIndex : 0;
+    }
+
   }
 
   /*
@@ -35198,7 +35329,9 @@
         elementNode.dataset.opena11yPosition = ordinalPosition.toString();
       }
 
-      this.ariaInHTMLInfo  = getAriaInHTMLInfo(elementNode);
+      this.accName        = getAccessibleName(accNameDoc, elementNode);
+
+      this.ariaInHTMLInfo  = getAriaInHTMLInfo(elementNode, this.accName.name);
       const defaultRole = this.ariaInHTMLInfo.defaultRole;
 
       this.hasRole = elementNode.hasAttribute('role');
@@ -35251,7 +35384,6 @@
                             elementNode.getAttribute('aria-braillelabel') :
                             '';
 
-
       this.colorContrast = new ColorContrast(parentDomElement, elementNode);
       this.visibility    = new Visibility(parentDomElement, elementNode);
 
@@ -35267,7 +35399,7 @@
 
       this.isButton    = this.role === 'button' && this.tagName === 'button';
       this.isLink      = this.role === 'link' && this.tagName === 'a';
-      this.isLandmark  = this.checkIsLandamrk();
+      this.isLandmark  = this.checkIsLandamrk(this.role || this.defaultRole, this.accName.name);
       this.isHeading   = this.role === 'heading';
       this.isInDialog  = this.tagName === 'dialog' ||
                          this.role === 'dialog' ||
@@ -35364,11 +35496,8 @@
      * @returns  {Boolean}  see @desc
      */
 
-    checkIsLandamrk () {
+    checkIsLandamrk (role, name) {
       let flag = false;
-      const role = this.role || this.defaultRole;
-      const name = this.accName.name;
-
       if (landmarkRoles.includes(role)) {
         if (requireAccessibleNames.includes(role)) {
           flag = name && name.length;
@@ -35645,6 +35774,7 @@
 
   /* Constants */
   const debug$W = new DebugLogging('domText', false);
+  debug$W.flag = false;
 
   /**
    * @class DOMText
@@ -35728,6 +35858,7 @@
 
   /* Constants */
   const debug$V = new DebugLogging('iframeInfo', false);
+  debug$V.flag = false;
 
   /**
    * @class IFrameElement
@@ -35796,6 +35927,7 @@
 
   /* Constants */
   const debug$U = new DebugLogging('idInfo', false);
+  debug$U.flag = false;
 
   /**
    * @class idInfo
@@ -37409,7 +37541,8 @@
     'shadow',
     'title',
     'h2l-highlight',
-    'opena11y-ai-highlight'
+    'opena11y-ai-highlight',
+    'opena11y-h2l-highlight'
   ];
 
   /**
@@ -37437,6 +37570,8 @@
       this.tableRowGroup   = null;
       this.tableCell       = null;
 
+      this.positionDomElement = null;
+
       this.inLink      = false;
       this.inParagraph = false;
       this.inDialog    = false;
@@ -37456,6 +37591,9 @@
         this.mediaElement    = info.mediaElement;
         this.tableElement    = info.tableElement;
         this.tableRowGroup   = info.tableRowGroup;
+        this.tableCell       = info.tableCell;
+
+        this.positionDomElement = info.positionDomElement;
 
         this.inLink       = info.inLink;
         this.inParagraph  = info.inParagraph;
@@ -37521,6 +37659,7 @@
       this.iframeInfo    = new IframeInfo();
 
       this.startingDomElement = new DOMElement(parentInfo, startingElement, 1, this.ariaVersion, addDataId);
+      parentInfo.positionDomElement = this.startingDomElement;
       this.allDomElements.push(this.startingDomElement);
 
       // Information on rule results associated with page
@@ -37748,6 +37887,10 @@
 
       this.idInfo.update(documentIndex, domElement);
       this.timingInfo.update(domElement);
+
+      newParentInfo.positionDomElement = domElement.colorContrast.isPositionRef ?
+                                      domElement :
+                                      parentInfo.positionDomElement;
 
       return newParentInfo;
     }
@@ -50868,6 +51011,12 @@
 
   // Helper functions
 
+  function removeHighlightElements () {
+    while(highlightElements[0]) {
+      highlightElements.pop().remove();
+    }
+  }
+
   function hideHighlightElements (option='none') {
     highlightElements.forEach( (he) => {
       if ((option === 'all') ||
@@ -51044,7 +51193,7 @@
 
         switch (response.result_view) {
           case 'rules-all':
-            hideHighlightElements();
+            removeHighlightElements();
 
             response.rule_summary          = er.ruleResultSummary.data;
             response.rc_rule_results_group = er.rcRuleGroupResults.data;
@@ -51053,7 +51202,7 @@
             break;
 
           case 'rule-group':
-            hideHighlightElements();
+            removeHighlightElements();
 
             if (parts[0] === 'rc') {
               [group_title, rule_summary, rule_results, info_rules] = aiRuleResultsByCategory(er.allRuleResults, group_id);
@@ -51070,7 +51219,7 @@
             break;
 
           case 'rule':
-            hideHighlightElements();
+            removeHighlightElements();
             [rule_title, rule_id_nls, result_summary, website_result, page_result, element_results] = aiRuleResult(er.allRuleResults, r.rule_id);
 
             response.rule_title      = rule_title;
@@ -51125,14 +51274,14 @@
       .then((result) => {
         if (openFlag && result !== true) {
   //        console.log(`Sidebar closed: ${openFlag}`);
-          hideHighlightElements();
+          removeHighlightElements();
         }
         openFlag = result === true;
       })
       .catch( () => {
         if (openFlag) {
   //        console.log(`Sidebar closed: ${openFlag}`);
-          hideHighlightElements();
+          removeHighlightElements();
           openFlag = false;
         }
     });

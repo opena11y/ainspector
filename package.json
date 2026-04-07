@@ -33,11 +33,13 @@
     "example": "example"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "buildext": "/Users/jongunderson/Sites/ainspector/build-extensions.sh"
   },
   "license": "MPL-2.0",
   "dependencies": {
     "colorjs.io": "^0.6.0",
+    "crx3": "^2.0.0",
     "eslint": "^8.24.0",
     "gulp": "^5.0.0",
     "gulp-concat": "^2.6.1",

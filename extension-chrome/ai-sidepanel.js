@@ -165,15 +165,15 @@ class AISidePanel extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     // Use external CSS style sheets
-    let link = document.createElement('link');
-    link.setAttribute('rel', 'stylesheet');
-    link.setAttribute('href', 'base.css');
-    this.shadowRoot.appendChild(link);
+    const linkBase = document.createElement('link');
+    linkBase.setAttribute('rel', 'stylesheet');
+    linkBase.setAttribute('href', 'base.css');
+    this.shadowRoot.appendChild(linkBase);
 
-    link = document.createElement('link');
-    link.setAttribute('rel', 'stylesheet');
-    link.setAttribute('href', 'ai-sidepanel.css');
-    this.shadowRoot.appendChild(link);
+    const linkSidepanel = document.createElement('link');
+    linkSidepanel.setAttribute('rel', 'stylesheet');
+    linkSidepanel.setAttribute('href', 'ai-sidepanel.css');
+    this.shadowRoot.appendChild(linkSidepanel);
 
     // Options button
     const optionsButton = this.shadowRoot.querySelector(`#options-button`);

@@ -88,6 +88,7 @@ header nav {
   display: inline-block;
 }
 
+
 li .icon svg {
   width: 32px;
   height: 32px;
@@ -124,17 +125,23 @@ footer a:visited {
   margin: 0.25em;
 }
 
-.brand .icon {
-  padding: 0;
+
+.icon img {
+  padding: 4px;
   margin: 0;
-  display: inline-block;
+  height: 28px;
+  border-radius: 5px;
+  border: solid 1px light-dark(var(--iconBlue), var(--iconBlueDark));
 }
 
 .brand .icon img {
   padding: 0;
   margin: 0;
-  height: 32px;
-  border: 1px solid light-dark(var(--iconBlue), var(--iconBlueDark));
+  padding: 5px;
+  display: inline-block;
+  height: 53px;
+  margin-right: 0.5em;
+  border: solid 2px light-dark(var(--iconBlue), var(--iconBlueDark));
 }
 
 .brand .version {

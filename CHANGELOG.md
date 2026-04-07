@@ -4,7 +4,8 @@
 
 | Version      |    Date     | Notes |
 |--------------|:-----------:|-----------------------------------------------------|
-| 4.1.3        |   12/9/26   | Fixed issue with control 14 rule and color contrast computation
+| 4.1.4        |   3/8/26    | Updated icon and dixed highlight bug
+| 4.1.3        |   12/9/25   | Fixed issue with control 14 rule and color contrast computation
 | 4.1.2        |   11/24/25  | Updated title and fixed some other issues
 | 4.1.1        |   11/01/25  | Updated some rule result views
 | 4.1          |   10/06/25  | Updated evaluation library to version 2.0.7 and fixed data export issues
@@ -29,6 +30,10 @@
 | 0.96.0       |  10/30/19   | Fixes bug in highlight option not being remembered
 
 =======
+
+### 4.1.4
+* Fixed highlighting element not being deleted bug
+* Updated icon
 
 ### 4.1.3
 * Updated evaluation library to 2.2 to fix issue with control 14 rule and improve color contrast calculation
