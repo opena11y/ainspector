@@ -150,7 +150,7 @@
   /* Constants */
   const debug$1a = new DebugLogging('constants', false);
 
-  const VERSION = '2.2.1';
+  const VERSION = '2.2.2';
 
   /**
    * @constant RULESET
@@ -31383,12 +31383,18 @@
       this.isPositionRef = this.isPosition || this.isOverflow;
 
       this.positionValue = 'static';
-      if (this.isPosition) {
-        this.positionValue = this.position;
+      if (this.display === 'contents') {
+        this.isPosition = true;
+        this.positionValue = 'contents';
       }
       else {
-        if (this.isOverflow) {
-          this.positionValue = 'overflow';
+        if (this.isPosition) {
+          this.positionValue = this.position;
+        }
+        else {
+          if (this.isOverflow) {
+            this.positionValue = 'overflow';
+          }
         }
       }
 
@@ -37714,15 +37720,15 @@
      *       that are used by the accessibility rules to test accessibility 
      *       requirements 
      *
-     * @param {Object}  parentinfo    - Parent DomElement associated with the
-     *                                  parent element node of the starting node
-     * @param {Object}  startingNode  - The DOM element to start transversing the
-     *                                  DOM
-     * @param {Boolean} addDataId     - If true, add data attribute to DOM element
-     *                                  indicating its ordinal position
+     * @param {Object}  parentinfo         - Parent DomElement associated with the
+     *                                       parent element node of the starting node
+     * @param {Object}  startingNode       - The DOM element to start transversing the
+     *                                       DOM
+     * @param {Boolean} addDataId          - If true, add data attribute to DOM element
+     *                                       indicating its ordinal position
      */
 
-    transverseDOM(parentInfo, startingNode, addDataId) {
+    transverseDOM(parentInfo, startingNode, addDataId=false) {
       let tagName, newParentInfo;
       let domItem = null;
       let parentDomElement = parentInfo.domElement;
@@ -37778,7 +37784,6 @@
 
                   if (assignedNode.nodeType === Node.ELEMENT_NODE) {
                     domItem = new DOMElement(parentInfo, assignedNode, this.ordinalPosition, this.ariaVersion, addDataId);
-
                     this.ordinalPosition += 1;
                     this.allDomElements.push(domItem);
 
@@ -37823,7 +37828,10 @@
                     let isCrossDomain = false;
                     try {
                       const doc = node.contentDocument || node.contentWindow.document;
+
                       newParentInfo.document = doc;
+                      newParentInfo.positionDomElement = doc;
+
                       this.documentIndex += 1;
                       newParentInfo.documentIndex = this.documentIndex;
                       this.transverseDOM(newParentInfo, doc, addDataId);

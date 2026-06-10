@@ -11,8 +11,9 @@ class AIHighlightELement extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
 
-    const template = document.createElement('template');
-    template.textContent = `
+    const styleElem = document.createElement('style');
+    styleElem.type = "text/css";
+    styleElem.textContent = `
 :root {
 }
 
@@ -177,9 +178,7 @@ class AIHighlightELement extends HTMLElement {
 
     `;
 
-    const styleNode = document.createElement('style');
-    styleNode.textContent = template.textContent;
-    this.shadowRoot.appendChild(styleNode);
+    this.shadowRoot.appendChild(styleElem);
 
     // Get references
 
