@@ -31380,23 +31380,8 @@
       this.overflow =  style.getPropertyValue("overflow").toLowerCase();
       this.isPosition = ['absolute', 'fixed', 'sticky'].includes(this.position);
       this.isOverflow = ['auto', 'hidden'].includes(this.overflow);
-      this.isPositionRef = this.isPosition || this.isOverflow;
 
-      this.positionValue = 'static';
-      if (this.display === 'contents') {
-        this.isPosition = true;
-        this.positionValue = 'contents';
-      }
-      else {
-        if (this.isPosition) {
-          this.positionValue = this.position;
-        }
-        else {
-          if (this.isOverflow) {
-            this.positionValue = 'overflow';
-          }
-        }
-      }
+      this.positionValue = this.isPosition ? this.position : 'static';
 
       this.hasTextNodes = this.getHasTextNodes(elementNode);
 
@@ -35911,6 +35896,7 @@
     update (domElement, isCrossDomain) {
       const ife = new IFrameElement(domElement, isCrossDomain);
       this.allIFrameElements.push(ife);
+      debug$V.flag && ife.showInfo();
     }
 
     /**
@@ -37896,7 +37882,7 @@
       this.idInfo.update(documentIndex, domElement);
       this.timingInfo.update(domElement);
 
-      newParentInfo.positionDomElement = domElement.colorContrast.isPositionRef ?
+      newParentInfo.positionDomElement = domElement.colorContrast.isPosition ?
                                       domElement :
                                       parentInfo.positionDomElement;
 
