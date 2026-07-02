@@ -31375,13 +31375,16 @@
         debug$11.tag(elementNode);
       }
 
-      this.display  = style.getPropertyValue("display");
-      this.position =  style.getPropertyValue("position").toLowerCase();
-      this.overflow =  style.getPropertyValue("overflow").toLowerCase();
-      this.isPosition = ['absolute', 'fixed', 'sticky'].includes(this.position);
-      this.isOverflow = ['auto', 'hidden'].includes(this.overflow);
+      this.display    = style.getPropertyValue("display");
+      this.position   =  style.getPropertyValue("position").toLowerCase();
 
-      this.positionValue = this.isPosition ? this.position : 'static';
+      this.isPosition = ['absolute', 'fixed', 'sticky'].includes(this.position);
+
+
+      this.positionValue = this.isPosition ? this.position :
+                           parentColorContrast.positionValue ?
+                           parentColorContrast.positionValue :
+                           'absolute';
 
       this.hasTextNodes = this.getHasTextNodes(elementNode);
 
@@ -37632,8 +37635,8 @@
       this.ordinalPosition = 2;
       this.documentIndex = 0;
 
-      this.allDomElements = [];
-      this.allDomTexts    = [];
+      this.allDomElements   = [];
+      this.allDomTexts      = [];
 
       const parentInfo = new ParentInfo();
       parentInfo.document        = startingDoc;
@@ -49758,8 +49761,8 @@
       debug$3.flag && debug$3.log(`[evaluateWCAG][ariaVersion]: ${this.ariaVersion}`);
       debug$3.flag && debug$3.log(`[evaluateWCAG][  addDataId]: ${addDataId}`);
 
-      const domCache      = new DOMCache(this.startingDoc, this.startingDoc.body, this.ariaVersion, addDataId);
-      this.allDomElements = domCache.allDomElements;
+      const domCache        = new DOMCache(this.startingDoc, this.startingDoc.body, this.ariaVersion, addDataId);
+      this.allDomElements   = domCache.allDomElements;
       this._allRuleResults = [];
       this._ruleResultsSummary.clear();
       this._rcRuleResultsGroup.clear();
@@ -50130,7 +50133,6 @@
       });
       return rgr;
     }
-
 
     /**
      * @method getDataForJSON
