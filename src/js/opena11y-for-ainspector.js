@@ -150,7 +150,7 @@
   /* Constants */
   const debug$1a = new DebugLogging('constants', false);
 
-  const VERSION = '2.2.2';
+  const VERSION = '2.3';
 
   /**
    * @constant RULESET
