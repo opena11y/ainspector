@@ -8,7 +8,7 @@ const nunjucks  = require('nunjucks');
 
 /* Constants */
 
-const version     = "4.1.5";
+const version     = "4.2";
 const tagLineName = "Accessibility Inspector for WCAG Evaluation";
 const projectName = "AInspector for WCAG Evaluation";
 const issuesURL   = "https://github.com/opena11y/ainspector/issues";
@@ -40,6 +40,7 @@ const mainPages = [
   },
   {
     dropdown: 'Getting Started',
+    id: 'id-getting-started',
     pages: [
       { content: 'content-getting-started-chrome.njk',
         title: 'Chrome Browser',
@@ -65,6 +66,7 @@ const mainPages = [
   },
   {
     dropdown: 'Options',
+    id: 'id-options',
     pages: [
       { content: 'content-option-ruleset.njk',
         title: 'Ruleset Options',
@@ -90,6 +92,7 @@ const mainPages = [
   },
   {
     dropdown: 'Views',
+    id: 'id-views',
     pages: [
       { content: 'content-view-summary.njk',
         title: 'Summary View',
@@ -132,6 +135,7 @@ const mainPages = [
     ]
   },
   { dropdown: 'Concepts and Terms',
+    id: 'id-concepts-terms',
     pages: [
       { content: 'content-concepts-basic.njk',
         title: 'Basic Concepts',
@@ -161,6 +165,7 @@ const mainPages = [
     filename: 'faq.html'
   },
   { dropdown: 'About',
+    id: 'id-about',
     pages: [
       { content: 'content-about-history.njk',
         title: 'History',
@@ -211,8 +216,9 @@ function createNavigation(pages) {
              data-bs-toggle="dropdown"
             href="#"
             role="button"
-            aria-expanded="false">${item.dropdown}</a>
-          <ul class="dropdown-menu">`;
+            aria-expanded="false"
+            aria-controls="${item.id}">${item.dropdown}</a>
+          <ul class="dropdown-menu" id="${item.id}">`;
 
       item.pages.forEach( p => {
         console.log(`[dropdown][page]: ${p.filename}`);

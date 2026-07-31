@@ -755,8 +755,8 @@
   },
 
   "element_result_braille_name": {
-    "message": "Braille Name",
-    "description": "Braille name heading in element results view."
+    "message": "Braille Label",
+    "description": "Braille label heading in element results view."
   },
 
   "element_result_acc_name_required": {
