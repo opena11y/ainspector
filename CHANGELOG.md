@@ -4,7 +4,7 @@
 
 | Version      |    Date     | Notes |
 |--------------|:-----------:|-----------------------------------------------------|
-| 4.1.5        |   5/4/26    | Updated highlighting code
+| 4.2          |   5/18/26    | new rule and added support for element collections
 | 4.1.4        |   4/7/26    | Updated icon and fixed highlight bug
 | 4.1.3        |   12/9/25   | Fixed issue with control 14 rule and color contrast computation
 | 4.1.2        |   11/24/25  | Updated title and fixed some other issues
@@ -31,6 +31,14 @@
 | 0.96.0       |  10/30/19   | Fixes bug in highlight option not being remembered
 
 =======
+
+### 4.2
+* Fixed highlighting issue for hidden elements
+* Updated to Evaluation Library 2.3 which includes:
+  * Added widget rule 16 for aria-haspopup
+  * Added 'source' element to ignored tags
+  * added support for element collections: ariaLabelledByElements, ariaDescribedByElements,
+          ariaErrorDescriptionElements, ariaControlsElements, ariaOwensElements.
 
 ### 4.1.4
 * Fixed highlighting element not being deleted bug

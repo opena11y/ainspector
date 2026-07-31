@@ -86,7 +86,6 @@ optionsRulesetTemplate.innerHTML = `
         </span>
       </label>
 
-<!--
       <label>
         <input type="radio"
                data-option="ruleset"
@@ -106,7 +105,6 @@ optionsRulesetTemplate.innerHTML = `
           Only Related WAVE/popetech Rules
         </span>
       </label>
--->
     </fieldset>
 
     <fieldset id="level">
