@@ -8,7 +8,7 @@ const nunjucks  = require('nunjucks');
 
 /* Constants */
 
-const version     = "4.2";
+const version     = "5.0";
 const tagLineName = "Accessibility Inspector for WCAG Evaluation";
 const projectName = "AInspector for WCAG Evaluation";
 const issuesURL   = "https://github.com/opena11y/ainspector/issues";

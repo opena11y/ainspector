@@ -299,8 +299,8 @@ class OptionsRuleset extends HTMLElement {
     this.formControls =  Array.from(this.shadowRoot.querySelectorAll('[data-option]'));
 
     this.firstStepRadioButton   = this.shadowRoot.querySelector('[value="FIRSTSTEP');
-//    this.relatedAxeRadioButton  = this.shadowRoot.querySelector('[value="AXE');
-//    this.relatedWaveRadioButton = this.shadowRoot.querySelector('[value="WAVE');
+    this.relatedAxeRadioButton  = this.shadowRoot.querySelector('[value="AXE');
+    this.relatedWaveRadioButton = this.shadowRoot.querySelector('[value="WAVE');
 
     this.levelFieldset = this.shadowRoot.querySelector('#level');
     this.scopeFieldset = this.shadowRoot.querySelector('#scope');
@@ -326,8 +326,8 @@ class OptionsRuleset extends HTMLElement {
 
   setDisabled () {
     const disable = this.firstStepRadioButton.checked;
-//                    this.relatedAxeRadioButton.checked ||
-//                    this.relatedWaveRadioButton.checked;
+                    this.relatedAxeRadioButton.checked ||
+                    this.relatedWaveRadioButton.checked;
 
     this.levelFieldset.disabled = disable;
     this.scopeFieldset.disabled = disable;
