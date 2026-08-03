@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 echo "Building extensions.."
 
-version="4.2.0"
+version="5.0.0"
 
 echo "
 Building AInspector browser extenions

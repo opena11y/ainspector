@@ -3851,25 +3851,29 @@
         SUMMARY:    '@label@ must reference control',
         TARGET_RESOURCES_DESC: '@label@ elements',
         RULE_RESULT_MESSAGES: {
-          FAIL_S:   'Change the @label@ element to use the @for@ attribute to label its form control.',
-          FAIL_P:   'Change the %N_F @label@ elements to use the @for@ attribute to label their respective form controls.',
+          FAIL_S:   'Change the @label[for]@ element to use a valid @id@ reference to a form control or remove a @label[for]@ element if there is more than one @label[for]@ element referencing a control.',
+          FAIL_P:   'Change the %N_F @label[for]@ elements to use a valid #id@ reference to a form control or remove a @label[for]@ element if there is more than one @label[for]@ element referencing a control.',
           MANUAL_CHECK_S: 'There is one form control being labeled by more than one labeling technique.',
           MANUAL_CHECK_P: 'There are %N_MC form controls being labeled by more than one labeling technique.',
-          HIDDEN_S: 'The @label@ element that is hidden was not evaluated.',
-          HIDDEN_P: 'The %N_H @label@ elements that are hidden were not evaluated.',
-          NOT_APPLICABLE: 'No visible @label@ elements with invalid @for@ references on this page.'
+          HIDDEN_S: 'The @label[for]@ element that is hidden was not evaluated.',
+          HIDDEN_P: 'The %N_H @label[for]@ elements that are hidden were not evaluated.',
+          NOT_APPLICABLE: 'No visible @label[for]@ elements with invalid @for@ references on this page.'
         },
         BASE_RESULT_MESSAGES: {
           ELEMENT_PASS_1: '@label[for=%1]@ references a form control.',
           ELEMENT_FAIL_1: 'Change the @label@ element with the @for@ attribute value \'%1\' to reference a form control.',
-          ELEMENT_MC_1:   'The @label[for=%1]@ is being ingored as a label because the form control is being labeled with @aria-labelledby@ or @aria-label@ attribute.',
+          ELEMENT_FAIL_2: 'There is more than one @label[for="%1"]@ element referencing a form control. The form control should only be referenced by one @label[for=%2]@ element.',
+          ELEMENT_MC_1:   'The @label[for=%1]@ is being ignored as a label because the form control is being labeled with @aria-labelledby@ or @aria-label@ attribute.  Verify the ARIA labeling technique is an improvement over the visible label.',
           ELEMENT_HIDDEN_1: 'The @label@ element was not evaluated because it is hidden from assistive technologies.'
         },
         PURPOSES: [
-          '@label@ elements are useful for accessibility only when they reference form controls.  The use of labels increase the effective size for activation of the control and provide a speak-able label for speech input activation.'
+          '@label[for]@ elements are useful for accessibility only when they reference form controls.',
+          'Use only one @label[for]@ element per control, using more than one @label[for]@ element per control is not supported consistently between browsers.',
+          'The use of labels increase the effective size for activation of the control and provide a speak-able label for speech input activation.'
         ],
         TECHNIQUES: [
-          'For a @label@ element to properly reference a form control, ensure that the @for@ attribute value on the @label@ element exactly matches the @id@ attribute value on the form control.'
+          'For a @label[for]@ element to properly reference a form control, ensure that the @for@ attribute value on the @label@ element exactly matches the @id@ attribute value on the form control.',
+          'Define only one @label[for]@ element per form control.'
         ],
         MANUAL_CHECKS: [
         ],
@@ -34717,11 +34721,19 @@
   *   @returns {Object}  @desc
   */
   function nameFromLabelElement (doc, element) {
-    let label, name, inclAlt, inclAriaLabel, notVisible;
+    let labelCount;
+    let label;
+    let name;
+    let inclAlt;
+    let inclAriaLabel;
+    let notVisible;
+
     // label [for=id]
     if (element.id) {
       try {
-        label = doc.querySelector('[for="' + element.id + '"]');
+        const labels = doc.querySelectorAll('[for="' + element.id + '"]');
+        label = labels ? label[0] : '';
+        labelCount = labels && labels.length ? labels.length : 0;
         if (label) {
           [name, inclAlt, inclAriaLabel, notVisible] = label.hasAttribute('aria-label') ?
                  [label.getAttribute('aria-label'), false, true, true] :
@@ -34730,7 +34742,8 @@
                                     source: 'label reference',
                                     includeAlt: inclAlt,
                                     includeAriaLabel: inclAriaLabel,
-                                    nameIsNotVisibile: notVisible
+                                    nameIsNotVisibile: notVisible,
+                                    labelCount: labelCount
                                    };
         }
       } catch (error) {
@@ -35552,7 +35565,13 @@
   */
   function nameFromAttributeIdRefs (doc, element, attribute) {
     let value = getAttributeValue(element, attribute);
-    let idRefs, i, refElement, name, names, arr = [];
+    let idRefs;
+    let i;
+    let refElement;
+    let brokenRefs = [];
+    let name;
+    let names;
+    let arr = [];
     let includesAlt = false;
     let includesAriaLabel = false;
     let refNotVisible = false;
@@ -35589,6 +35608,9 @@
           name = addCssGeneratedContent(refElement, name);
           if (name.length) arr.push(name);
         }
+        else {
+          brokenRefs.push(idRefs[i]);
+        }
       }
     }
 
@@ -35597,7 +35619,8 @@
                source: attribute,
                includesAlt: includesAlt,
                includesAriaLabel: includesAriaLabel,
-               nameIsNotVisible: refNotVisible
+               nameIsNotVisible: refNotVisible,
+               brokenRefs: brokenRefs
              };
 
     return null;
@@ -39412,6 +39435,7 @@
       const r = axeInfo.rules[ref];
       if (r) {
         const info = {};
+        info.ref    = ref;
         info.title  = convert ? convertRuleTitle(r.title) : r.title;
         info.url    = r.url;
         info.type   = r.bestPractice ? 'Best Practices' : r.experimental ? 'Experimental' : 'Required';
@@ -40212,6 +40236,7 @@
       const r = waveInfo.rules[ref];
       if (r) {
         const info = {};
+        info.ref    = ref;
         info.title  = convert ? convertRuleTitle(r.title) : r.title;
         info.url    = r.url;
         info.type   = r.error ? 'Error' : r.contrast ? 'Contrast' : 'Alert';
@@ -41859,7 +41884,8 @@
       rule_required       : true,
       first_step          : true,
       axe_refs            : [],
-      wave_refs           : [],
+      wave_refs           : ['audio_video',
+                             'html5_video_audio'],
       wcag_primary_id     : '1.2.1',
       wcag_related_ids    : ['1.2.2', '1.2.4', '1.2.9'],
       target_resources    : ['audio', 'embed', 'object', 'track'],
@@ -42000,7 +42026,9 @@
       first_step          : true,
       axe_refs            : ['skip-link',
                              'bypass'],
-      wave_refs           : [],
+      wave_refs           : ['link_skip_broken',
+                             'link_skip',
+                             'link_skip_target'],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['2.4.4'],
       target_resources    : ['a'],
@@ -42210,7 +42238,7 @@
       rule_required       : true,
       first_step          : true,
       axe_refs            : ['color-contrast'],
-      wave_refs           : [],
+      wave_refs           : ['contrast'],
       wcag_primary_id     : '1.4.3',
       wcag_related_ids    : ['1.4.1','1.4.6'],
       target_resources    : ['text content'],
@@ -42653,8 +42681,8 @@
       rule_category       : RULE_CATEGORIES.COLOR_CONTENT,
       rule_required       : true,
       first_step          : false,
-      axe_refs            : [],
-      wave_refs           : [],
+      axe_refs            : ['frame-title'],
+      wave_refs           : ['iframe'],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : [],
       target_resources    : ['iframe'],
@@ -42769,7 +42797,9 @@
     first_step          : true,
     axe_refs            : ['label',
                            'select-name'],
-    wave_refs           : ['label_missing'],
+    wave_refs           : ['label_missing',
+                           'label_title',
+                           'select_missing_label'],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['input[type="checkbox"]', 'input[type="date"]', 'input[type="file"]', 'input[type="radio"]', 'input[type="number"]', 'input[type="password"]', 'input[type="tel"]' , 'input[type="text"]', 'input[type="url"]', 'select', 'textarea', 'meter', 'progress'],
@@ -42814,7 +42844,8 @@
     rule_required       : true,
     first_step          : true,
     axe_refs            : ['input-image-alt'],
-    wave_refs           : [],
+    wave_refs           : ['alt_input_missing',
+                           'label_title'],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['input[type="image"]'],
@@ -42855,7 +42886,9 @@
     rule_required       : true,
     first_step          : true,
     axe_refs            : [],
-    wave_refs           : [],
+    wave_refs           : ['fieldset_missing',
+                           'legend_missing',
+                           'fieldset'],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['input[type="radio"]'],
@@ -42909,7 +42942,8 @@
     first_step          : false,
     axe_refs            : ['button-name',
                            'summary-name'],
-    wave_refs           : [],
+    wave_refs           : ['button_empty',
+                           'label_title'],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['button'],
@@ -43027,12 +43061,39 @@
     rule_category       : RULE_CATEGORIES.FORMS,
     rule_required       : true,
     first_step          : false,
-    axe_refs            : [],
-    wave_refs           : [],
+    axe_refs            : ['form-field-multiple-labels'],
+    wave_refs           : ['label_orphaned',
+                           'label_multiple'],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['label'],
     validate            : function (dom_cache, rule_result) {
+
+      const forRefs = [];
+      const multipleForRefs = [];
+
+      // Identify label for values that reference the same form control
+      dom_cache.controlInfo.allControlElements.forEach(ce => {
+        if (ce.isLabel && ce.labelForAttr) {
+          if (forRefs.includes(ce.labelForAttr)) {
+            multipleForRefs.push(ce.labelForAttr);
+          }
+          else {
+            forRefs.push(ce.labelForAttr);
+          }
+        }
+      });
+
+      // Mark labels that reference the same form control
+      dom_cache.controlInfo.allControlElements.forEach(ce => {
+        if (ce.isLabel && ce.labelForAttr) {
+          if (multipleForRefs.includes(ce.labelForAttr)) {
+            ce.isLabelForAttrValid  = false;
+            ce.multipleForRefs = true;
+          }
+        }
+      });
+
       dom_cache.controlInfo.allControlElements.forEach(ce => {
         const de = ce.domElement;
         if (ce.isLabel && ce.labelForAttr) {
@@ -43046,7 +43107,11 @@
               }
             }
             else {
-              rule_result.addElementResult(TEST_RESULT.FAIL, de, 'ELEMENT_FAIL_1', [ce.labelForAttr]);
+              if (ce.multipleForRefs) {
+                rule_result.addElementResult(TEST_RESULT.FAIL, de, 'ELEMENT_FAIL_2', [ce.labelForAttr, ce.labelForAttr]);
+              } else {
+                rule_result.addElementResult(TEST_RESULT.FAIL, de, 'ELEMENT_FAIL_1', [ce.labelForAttr]);
+              }
             }
           } else {
             rule_result.addElementResult(TEST_RESULT.HIDDEN, de, 'ELEMENT_HIDDEN_1', []);
@@ -43069,7 +43134,7 @@
     rule_required       : true,
     first_step          : false,
     axe_refs            : [],
-    wave_refs           : [],
+    wave_refs           : ['label_empty'],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['label', 'legend'],
@@ -43757,7 +43822,7 @@
       rule_required       : false,
       first_step          : true,
       axe_refs            : ['page-has-heading-one'],
-      wave_refs           : [],
+      wave_refs           : ['h1_missing'],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.2', '2.4.6', '2.4.10'],
       target_resources    : ['h1'],
@@ -43857,7 +43922,12 @@
     rule_required       : false,
     first_step          : false,
     axe_refs            : [],
-    wave_refs           : [],
+    wave_refs           : ['h1',
+                           'h2',
+                           'h3',
+                           'h4',
+                           'h5',
+                           'h6'],
     wcag_primary_id     : '2.4.6',
     wcag_related_ids    : ['1.3.1', '2.4.10'],
     target_resources    : ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
@@ -43968,7 +44038,8 @@
     rule_required       : false,
     first_step          : false,
     axe_refs            : ['heading-order'],
-    wave_refs           : [],
+    wave_refs           : ['heading_missing',
+                           'heading_skipped'],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6', '2.4.10'],
     target_resources    : ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
@@ -44036,7 +44107,7 @@
     rule_required       : false,
     first_step          : false,
     axe_refs            : [],
-    wave_refs           : [],
+    wave_refs           : ['heading_empty'],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6', '2.4.10'],
     target_resources    : ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
@@ -44209,7 +44280,8 @@
       first_step          : false,
       axe_refs            : ['marquee',
                              'blink'],
-      wave_refs           : [],
+      wave_refs           : ['marquee',
+                             'blink'],
       wcag_primary_id     : '2.3.1',
       wcag_related_ids    : ['2.2.2', '4.1.1'],
       target_resources    : ['marquee'],
@@ -44260,7 +44332,10 @@
                            'role-img-alt',
                            'svg-img-alt',
                            'object-alt'],
-    wave_refs           : ['alt_missing'],
+    wave_refs           : ['alt_missing',
+                          'alt_spacer_missing',
+                          'alt_area_missing',
+                          'image_title'],
     wcag_primary_id     : '1.1.1',
     wcag_related_ids    : [],
     target_resources    : ['img', 'area', '[role="img"]'],
@@ -44344,7 +44419,7 @@
     rule_required       : true,
     first_step          : false,
     axe_refs            : [],
-    wave_refs           : [],
+    wave_refs           : ['alt_suspicious'],
     wcag_primary_id     : '1.1.1',
     wcag_related_ids    : [],
     target_resources    : ['img', '[role="img"]'],
@@ -44380,7 +44455,7 @@
     rule_required       : true,
     first_step          : false,
     axe_refs            : [],
-    wave_refs           : [],
+    wave_refs           : ['alt_long'],
     wcag_primary_id     : '1.1.1',
     wcag_related_ids    : [],
     target_resources    : ['img', 'area'],
@@ -44594,7 +44669,9 @@
       rule_required       : true,
       first_step          : true,
       axe_refs            : [],
-      wave_refs           : [],
+      wave_refs           : ['aria_menu',
+                             'aria_menu_broken',
+                             'aria_button'],
       wcag_primary_id     : '2.1.1',
       wcag_related_ids    : ['4.1.2'],
       target_resources    : ['widgets'],
@@ -44627,7 +44704,7 @@
       rule_required       : true,
       first_step          : true,
       axe_refs            : [],
-      wave_refs           : [],
+      wave_refs           : ['aria_tabindex'],
       wcag_primary_id     : '2.4.3',
       wcag_related_ids    : ['2.1.1', '2.1.2', '2.4.7', '3.2.1'],
       target_resources    : ['links', 'controls', 'widgets'],
@@ -44732,7 +44809,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : ['tabindex'],
-      wave_refs           : [],
+      wave_refs           : ['tabindex'],
       wcag_primary_id     : '2.4.3',
       wcag_related_ids    : ['2.1.1', '2.1.2', '2.4.7', '3.2.1'],
       target_resources    : ['[tabindex]'],
@@ -44917,8 +44994,8 @@
       rule_category       : RULE_CATEGORIES.KEYBOARD_SUPPORT,
       rule_required       : true,
       first_step          : false,
-      axe_refs            : [],
-      wave_refs           : ['presentation-role-conflict'],
+      axe_refs            : ['presentation-role-conflict'],
+      wave_refs           : ['aria_tabindex'],
       wcag_primary_id     : '2.4.3',
       wcag_related_ids    : ['2.1.1', '2.1.2', '2.4.7', '3.2.1'],
       target_resources    : ['[tabindex]'],
@@ -44972,7 +45049,7 @@
       first_step          : true,
       axe_refs            : ['landmark-one-main',
                              'landmark-no-duplicate-main'],
-      wave_refs           : [],
+      wave_refs           : ['region_missing'],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['main', '[role="main"]'],
@@ -45037,7 +45114,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : [],
-      wave_refs           : [],
+      wave_refs           : ['region_missing'],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['nav', '[role="navigation"]'],
@@ -45104,7 +45181,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : ['landmark-no-duplicate-banner'],
-      wave_refs           : [],
+      wave_refs           : ['region_missing'],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['header', '[role="banner"]'],
@@ -45854,7 +45931,8 @@
                              'html-lang-valid',
                              'html-xml-lang-mismatch',
                              'valid-lang'],
-      wave_refs           : [],
+      wave_refs           : ['language_missing',
+                             'lang'],
       wcag_primary_id     : '3.1.1',
       wcag_related_ids    : [],
       target_resources    : ['html'],
@@ -45953,7 +46031,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : [],
-      wave_refs           : [],
+      wave_refs           : ['table_layout'],
       wcag_primary_id     : '1.3.2',
       wcag_related_ids    : ['1.3.1'],
       target_resources    : ['Page', 'table'],
@@ -46129,7 +46207,8 @@
       first_step          : true,
       axe_refs            : ['link-name',
                              'aria-command-name'],
-      wave_refs           : ['alt_link_missing'],
+      wave_refs           : ['alt_link_missing',
+                             'link_empty'],
       wcag_primary_id     : '2.4.4',
       wcag_related_ids    : ['2.4.9'],
       target_resources    : ['a', 'area', '[role=link]'],
@@ -46154,7 +46233,7 @@
             rule_result.addElementResult(TEST_RESULT.HIDDEN, de, 'ELEMENT_HIDDEN_1', [de.tagName]);
           }
         });
-      } // end valifdation function
+      } // end validation function
     },
 
     /**
@@ -46276,7 +46355,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : [],
-      wave_refs           : [],
+      wave_refs           : ['alt_redundant'],
       wcag_primary_id     : '2.5.3',
       wcag_related_ids    : [],
       target_resources    : ["a", "[role=link]"],
@@ -46348,7 +46427,9 @@
       first_step          : false,
       axe_refs            : ['list',
                              'listitem'],
-      wave_refs           : [],
+      wave_refs           : ['ol',
+                             'ul',
+                             'dl'],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : [],
       target_resources    : ['ul', 'ol', 'li', '[role="list"]', '[role="listitem"]'],
@@ -46452,7 +46533,7 @@
     rule_category       : RULE_CATEGORIES.TIMING_LIVE,
     rule_required       : true,
     axe_refs            : [],
-    wave_refs           : [],
+    wave_refs           : ['aria_live_region'],
     wcag_primary_id     : '4.1.3',
     wcag_related_ids    : [],
     target_resources    : ['[role="alert"]','[role="log"]','[role="status"]','[aria-live]'],
@@ -47099,7 +47180,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : ['accesskeys'],
-      wave_refs           : [],
+      wave_refs           : ['accesskey'],
       wcag_primary_id     : '2.1.4',
       wcag_related_ids    : [],
       target_resources    : ['a', 'input', 'output', 'select', 'textarea'],
@@ -47272,7 +47353,7 @@
     rule_required       : true,
     first_step          : true,
     axe_refs            : [],
-    wave_refs           : [],
+    wave_refs           : ['table_caption_possible'],
     wcag_primary_id     : '2.4.6',
     wcag_related_ids    : ['1.3.1'],
     target_resources    : ['table', 'caption'],
@@ -47417,7 +47498,7 @@
     rule_required       : true,
     first_step          : true,
     axe_refs            : [],
-    wave_refs           : [],
+    wave_refs           : ['table_layout'],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6'],
     target_resources    : ['table'],
@@ -48061,7 +48142,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : ['document-title'],
-      wave_refs           : [],
+      wave_refs           : ['title_invalid'],
       wcag_primary_id     : '2.4.2',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['Page', 'title'],
@@ -48217,7 +48298,8 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : [],
-      wave_refs           : [],
+      wave_refs           : ['audio_video',
+                             'html5_video_audio'],
       wcag_primary_id     : '1.2.1',
       wcag_related_ids    : ['1.2.2', '1.2.4'],
       target_resources    : ['embed', 'object', 'track', 'video'],
@@ -48284,7 +48366,8 @@
       rule_required       : true,
       first_step          : true,
       axe_refs            : ['video-caption'],
-      wave_refs           : [],
+      wave_refs           : ['audio_video',
+                             'html5_video_audio'],
       wcag_primary_id     : '1.2.2',
       wcag_related_ids    : ['1.2.4'],
       target_resources    : ['embed', 'object', 'track', 'video'],
@@ -48333,7 +48416,8 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : [],
-      wave_refs           : [],
+      wave_refs           : ['audio_video',
+                             'html5_video_audio'],
       wcag_primary_id     : '1.2.3',
       wcag_related_ids    : ['1.2.5'],
       target_resources    : ['embed', 'object', 'track', 'video'],
@@ -48382,7 +48466,8 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : ['video-caption'],
-      wave_refs           : [],
+      wave_refs           : ['audio_video',
+                             'html5_video_audio'],
       wcag_primary_id     : '1.2.4',
       wcag_related_ids    : ['1.2.2'],
       target_resources    : ['embed', 'object', 'track', 'video'],
@@ -48500,7 +48585,7 @@
                            'aria-treeitem-name',
                            'aria-toggle-field-name',
                            'aria-tooltip-name'],
-    wave_refs           : [],
+    wave_refs           : ['aria_label'],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['ARIA Widget roles'],
@@ -48610,7 +48695,7 @@
     axe_refs            : ['aria-deprecated-role',
                            'aria-roles',
                            'aria-allowed-role'],
-    wave_refs           : [],
+    wave_refs           : ['aria'],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['[role]'],
@@ -48682,7 +48767,7 @@
     first_step          : true,
     axe_refs            : ['aria-conditional-attr',
                            'aria-valid-attr-value'],
-    wave_refs           : [],
+    wave_refs           : ['aria'],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['[aria-atomic]',
@@ -48798,7 +48883,7 @@
     rule_required       : true,
     first_step          : true,
     axe_refs            : ['aria-valid-attr'],
-    wave_refs           : [],
+    wave_refs           : ['aria'],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['[aria-atomic]',
@@ -49484,7 +49569,7 @@
     rule_required       : true,
     first_step          : false,
     axe_refs            : [],
-    wave_refs           : [],
+    wave_refs           : ['aria_haspopup'],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '2.1.1'],
     target_resources    : ["aria-haspopup"],
@@ -51093,6 +51178,7 @@
       for (const id in axeInfo.rules) {
         const r = axeInfo.rules[id];
         const info = {};
+        info.ref    = r.ref;
         info.title  = r.title;
         info.url    = r.url;
         info.type   = r.bestPractice ? 'Best Practices' : r.experimental ? 'Experimental' : 'Required';
@@ -51126,6 +51212,7 @@
         if (flag) {
           const r = axeInfo.rules[id];
           const info = {};
+          info.ref    = id;
           info.title  = r.title;
           info.url    = r.url;
           info.type   = r.bestPractice ? 'Best Practices' : r.experimental ? 'Experimental' : 'Required';
@@ -51150,6 +51237,7 @@
 
       for (const rule in waveInfo.rules) {
         const info = {};
+        info.ref    = rule.ref;
         info.title  = rule.title;
         info.url    = rule.url;
         info.type   = rule.error ? 'Error' : rule.contrast ? 'Contrast' : 'Alert';
@@ -51183,6 +51271,7 @@
         if (flag) {
           const r = waveInfo.rules[id];
           const info = {};
+          info.ref    = id;
           info.title  = r.title;
           info.url    = r.url;
           info.type   = r.error ? 'Error' : r.contrast ? 'Contrast' : 'Alert';
