@@ -71,12 +71,37 @@
 
   "info_ruleset_label": {
     "message": "Ruleset: ",
-    "description": "Label for ruleset value"
+    "description": "Label for ruleset select"
+  },
+
+  "info_ruleset_label_select": {
+    "message": "Rule set ",
+    "description": "Label for ruleset select"
+  },
+
+  "info_level_label_select": {
+    "message": "WCAG Level",
+    "description": "Label for wcag level"
   },
 
   "info_rule_scope_label": {
     "message": "Scope: ",
     "description": "Label for scope filter value"
+  },
+
+  "info_rule_scope_label_select": {
+    "message": "Rule Scope",
+    "description": "Label for scope filter value"
+  },
+
+  "info_aria_label": {
+    "message": "ARIA: ",
+    "description": "Label for aria version information"
+  },
+
+  "info_aria_label_select": {
+    "message": "ARIA Version",
+    "description": "Label for aria version information"
   },
 
   "rule_related_axe": {

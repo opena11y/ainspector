@@ -65,6 +65,10 @@ footer .info .label {
   grid-column: 1;
 }
 
+footer .info:has(select) .label {
+  padding-top: 1px;
+}
+
 footer .info .value {
   margin: 0;
   padding: 0;
@@ -72,6 +76,30 @@ footer .info .value {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  grid-column: 2;
+}
+
+footer .info .group{
+  margin: 0;
+  padding: 0;
+  grid-column: 2;
+}
+
+footer .info .group > select {
+  display: inline-block;
+  width: 10em;
+  grid-column: initial;
+}
+
+footer .info .group > select#info-level {
+  width: 4em;
+}
+
+footer .info > select {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  width: 10em;
   grid-column: 2;
 }
 

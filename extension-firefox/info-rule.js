@@ -151,7 +151,6 @@ export default class InfoRule extends HTMLElement {
       }
 
       addH3(divElem, getMessage('rule_related_wave'));
-      console.log(`[wave_rules]: ${info_rule.wave_rules}`);
       if (info_rule.axe_rules) {
         renderContent(divElem, info_rule.wave_rules);
         this.copyText[id] += getCopyTextContent(getMessage('rule_related_wave'), info_rule.wave_rules);
@@ -194,7 +193,6 @@ export default class InfoRule extends HTMLElement {
   }
 
   getCopyText () {
-    debug.log(`[show][currentCopyText]: ${currentCopyText}`);
     return currentCopyText;
   }
 
