@@ -1,9 +1,10 @@
-# AInspector Version History
+# AInspector for WCAG Evaluation Version History
 
 ## Summary
 
 | Version      |    Date     | Notes |
 |--------------|:-----------:|-----------------------------------------------------|
+| 5.0          |   10/20/26    | Updated evaluation library to version 3.0 and new evalaution controls in side panel
 | 4.2          |   5/18/26    | new rule and added support for element collections
 | 4.1.4        |   4/7/26    | Updated icon and fixed highlight bug
 | 4.1.3        |   12/9/25   | Fixed issue with control 14 rule and color contrast computation
@@ -31,6 +32,13 @@
 | 0.96.0       |  10/30/19   | Fixes bug in highlight option not being remembered
 
 =======
+
+## Detials
+
+### 5.0
+* Updated evaluation library to 3.0, including initial emulation of aXe and WAVE rules
+* Default ARIA setting is 1.3
+* New controls for changing and viewing evaluation information from the side panel
 
 ### 4.2
 * Fixed highlighting issue for hidden elements

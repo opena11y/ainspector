@@ -117,20 +117,47 @@ template.innerHTML = `
       <span class="label"
             data-i18n="info_ruleset_label">
       </span>
-      <span id="info-ruleset"
-            class="value">
-      </span>
+
+      <div class="group" data-i18n-aria-label="info_ruleset_label_select">
+        <select id="info-ruleset">
+          <option value="WCAG20">WCAG 2.0</option>
+          <option value="WCAG21" selected>WCAG 2.1</option>
+          <option value="WCAG22">WCAG 2.2</option>
+          <option value="FIRSTSTEP">First Step</option>
+          <option value="AXE">aXe Emulation</option>
+          <option value="WAVE">WAVE Emulation</option>
+        </select>
+
+        <select id="info-level" data-i18n-title="info_level_label_select">
+          <option value="" hidden></option>
+          <option value="A">A</option>
+          <option value="AA" selected>AA</option>
+          <option value="AAA">AA+2</option>
+        </select>
+      </div>
+
     </div>
 
     <div class="info">
       <span class="label"
-            data-i18n="info_rule_scope_label">
+             data-i18n="info_rule_scope_label">
       </span>
-      <span id="info-rule-scope"
-            class="value">
-      </span>
+      <select id="info-scope" data-i18n-title="info_rule_scope_label_select">
+        <option value="ALL" selected>All rules</option>
+        <option value="PAGE">Page rules only</option>
+        <option value="WEBSITE">Website rules only</option>
+      </select>
     </div>
 
+    <div class="info">
+      <span class="label"
+             data-i18n="info_aria_label">
+      </span>
+      <select id="info-aria" data-i18n-title="info_aria_label_select">
+        <option value="ARIA12">ARIA 1.2</option>
+        <option value="ARIA13" selected>ARIA 1.3</option>
+      </select>
+    </div>
 
     <div class="buttons">
       <div class="first">
@@ -155,6 +182,35 @@ template.innerHTML = `
   <export-dialog></export-dialog>
 </div>
 `;
+
+function setSelect (node, value, flag=false) {
+  const option = node.querySelector(`[value="${value}"]`);
+  if (option) {
+    option.selected = true;
+  }
+
+  if (flag) {
+    const options = Array.from(node.querySelector(`option`));
+    node.disabled = value === '';
+    options.forEach( (o) => {
+      if (value === '') {
+        if (o.value === '') {
+          o.removeAttribute('hidden');
+        }
+        else {
+          o.setAttribute('hidden', '');
+        }
+      } else {
+        if (o.value === '') {
+          o.setAttribute('hidden', '');
+        }
+        else {
+          o.removeAttribute('hidden');
+        }
+      }
+    });
+  }
+}
 
 class AISidePanel extends HTMLElement {
   constructor () {
@@ -194,7 +250,9 @@ class AISidePanel extends HTMLElement {
     this.infoTitleElem      = this.shadowRoot.querySelector(`#info-title`);
     this.infoLocationElem   = this.shadowRoot.querySelector(`#info-location`);
     this.infoRulesetElem    = this.shadowRoot.querySelector(`#info-ruleset`);
-    this.infoRuleScopeElem  = this.shadowRoot.querySelector(`#info-rule-scope`);
+    this.infoLevelElem      = this.shadowRoot.querySelector(`#info-level`);
+    this.infoRuleScopeElem  = this.shadowRoot.querySelector(`#info-scope`);
+    this.infoAriaElem       = this.shadowRoot.querySelector(`#info-aria`);
 
     this.viewRulesAllElem  = this.shadowRoot.querySelector(`view-rules-all`);
     this.viewRulesAllElem.setSidepanel(this);
@@ -262,8 +320,6 @@ class AISidePanel extends HTMLElement {
   clearView(message1 = '', message2 = '') {
     this.infoTitleElem.textContent    = message2;
     this.infoLocationElem.textContent = message1;
-    this.infoRulesetElem.textContent  = '';
-    this.infoRuleScopeElem.textContent = '';
 
     this.viewRulesAllElem.clear(message1, message2);
     this.viewRuleGroupElem.clear(message1, message2);
@@ -273,8 +329,13 @@ class AISidePanel extends HTMLElement {
   updateView(result) {
     this.infoTitleElem.textContent      = result.title;
     this.infoLocationElem.textContent   = result.location;
-    this.infoRulesetElem.textContent    = result.ruleset_label;
-    this.infoRuleScopeElem.textContent  = result.rule_scope_filter;
+//    this.infoRulesetElem.textContent    = `${result.ruleset_label} (${result.ruleset} ${result.wcag_level} ${result.aria_version})`;
+//    this.infoRuleScopeElem.textContent  = `${result.scope_filter_label} (${result.scope_filter})`;
+
+    setSelect(this.infoRulesetElem,   result.ruleset);
+    setSelect(this.infoLevelElem,     result.wcag_level, true);
+    setSelect(this.infoRuleScopeElem, result.scope_filter);
+    setSelect(this.infoAriaElem,      result.aria_version);
 
     debug.flag && debug.log(`[result][        title]: ${result.title}`);
     debug.flag && debug.log(`[result][     location]: ${result.location}`);

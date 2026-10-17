@@ -15,6 +15,7 @@ const issuesURL   = "https://github.com/opena11y/ainspector/issues";
 const issuesEmail = "jongund@illinois.edu";
 
 const outputDirectory   = './docs/';
+
 const templateDirectory = './src-docs/templates/';
 const websiteURL        = 'https://opena11y.github.io/ainspector/';
 const repositoryURL     = 'https://github.com/opena11y/ainspector';

@@ -34,7 +34,7 @@ export const rulesetOptions = {
   ruleset: 'WCAG21',
   level : 'AA',
   scopeFilter: 'ALL',
-  ariaVersion: 'ARIA12'
+  ariaVersion: 'ARIA13'
 };
 
 export const generalOptions = {

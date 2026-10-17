@@ -150,7 +150,7 @@
   /* Constants */
   const debug$1a = new DebugLogging('constants', false);
 
-  const VERSION = '2.3';
+  const VERSION = '3.0';
 
   /**
    * @constant RULESET
@@ -32168,7 +32168,7 @@
       },
       abbr: {
         tagName: 'abbr',
-        defaultRole: '',
+        defaultRole: 'generic',
         noRoleAllowed: false,
         anyRoleAllowed: true,
         id: 'abbr'
@@ -33119,21 +33119,21 @@
       },
       kbd: {
         tagName: 'kbd',
-        defaultRole: '',
+        defaultRole: 'generic',
         noRoleAllowed: false,
         anyRoleAllowed: true,
         id: 'kbd'
       },
       label: {
         tagName: 'label',
-        defaultRole: '',
+        defaultRole: 'generic',
         noRoleAllowed: true,
         anyRoleAllowed: false,
         id: 'label'
       },
       legend: {
         tagName: 'legend',
-        defaultRole: '',
+        defaultRole: 'generic',
         noRoleAllowed: true,
         anyRoleAllowed: false,
         id: 'legend'
@@ -33171,14 +33171,14 @@
       },
       map: {
         tagName: 'map',
-        defaultRole: '',
+        defaultRole: 'generic',
         noRoleAllowed: true,
         anyRoleAllowed: false,
         id: 'map'
       },
       mark: {
         tagName: 'mark',
-        defaultRole: '',
+        defaultRole: 'genric',
         noRoleAllowed: false,
         anyRoleAllowed: true,
         id: 'mark'
@@ -34721,33 +34721,22 @@
   *   @returns {Object}  @desc
   */
   function nameFromLabelElement (doc, element) {
-    let labelCount;
-    let label;
-    let name;
-    let inclAlt;
-    let inclAriaLabel;
-    let notVisible;
-
+    let label, name, inclAlt, inclAriaLabel, notVisible;
     // label [for=id]
     if (element.id) {
-      try {
-        const labels = doc.querySelectorAll('[for="' + element.id + '"]');
-        label = labels ? label[0] : '';
-        labelCount = labels && labels.length ? labels.length : 0;
-        if (label) {
-          [name, inclAlt, inclAriaLabel, notVisible] = label.hasAttribute('aria-label') ?
-                 [label.getAttribute('aria-label'), false, true, true] :
-                 getElementContents(label, element);
-          if (name.length) return { name: normalize(name),
-                                    source: 'label reference',
-                                    includeAlt: inclAlt,
-                                    includeAriaLabel: inclAriaLabel,
-                                    nameIsNotVisibile: notVisible,
-                                    labelCount: labelCount
-                                   };
-        }
-      } catch (error) {
-        debug$Z.log(`[nameFromLabelElement][error]: ${error}`);
+      const labels = doc.querySelectorAll('label[for="' + element.id + '"]');
+      if (labels && labels.length) {
+        label = labels[0];
+        [name, inclAlt, inclAriaLabel, notVisible] = label.hasAttribute('aria-label') ?
+               [label.getAttribute('aria-label'), false, true, true] :
+               getElementContents(label, element);
+        if (name.length) return { name: normalize(name),
+                                  source: 'label reference',
+                                  includeAlt: inclAlt,
+                                  includeAriaLabel: inclAriaLabel,
+                                  nameIsNotVisibile: notVisible,
+                                  labelCount: labels.length
+                                 };
       }
     }
 
@@ -35694,7 +35683,7 @@
       const accNameDoc       = parentInfo.useParentDocForName ?
                                parentInfo.parentDocument :
                                parentInfo.document;
-
+      this.doc              = parentInfo.document ? parentInfo.document : window.document;
       this.ordinalPosition  = ordinalPosition;
       this.parentInfo       = parentInfo;
       this.node             = elementNode;
@@ -35862,6 +35851,25 @@
 
     }
 
+    /**
+     * @method getBodyElement
+     *
+     * @desc Returns the DOM node to attach highlighting element for this DOM element
+     *
+     * @return {String} see description
+     */
+
+    getBodyElement () {
+      let bodyElem = this.doc.body ?
+                       this.doc.body :
+                       this.doc.documentElement;
+
+      if (!bodyElem) {
+        bodyElem = window.document;
+      }
+
+      return bodyElem;
+    }
 
     /**
      * @method isDomText
@@ -37999,7 +38007,9 @@
   class DOMCache {
     constructor (startingDoc, startingElement, ariaVersion='ARIA12', addDataId=false) {
       if (typeof startingElement !== 'object') {
-        startingElement = startingDoc.body;
+        startingElement = startingDoc.body ?
+                          startingDoc.body :
+                          startingDoc.documentElement;
       }
 
       this.hasTitle = startingDoc.title.trim().length > 0;
@@ -38012,6 +38022,12 @@
       }
 
       this.document = startingDoc;
+      this.bodyElem = startingDoc.body ?
+                      startingDoc.body :
+                      startingDoc.documentElement;
+
+      debug$M.log(`[bodyELem]: ${this.bodyElem}`);
+
       this.ariaVersion = ariaVersion;
 
       this.ordinalPosition = 2;
@@ -40263,6 +40279,7 @@
    * @desc Constructor for an object that contains a the results of
    *          the evaluation of a rule on a element or page
    *
+   * @param  {Object}       domElement   - DomElement reference to element information used by this rule result
    * @param  {ResultRule}   ruleResult   - reference to the rule result object
    * @param  {Number}       resultValue  - Constant representing result value of the evaluation result
    * @param  {String}       msgId        - String reference to the message string in the NLS file
@@ -40279,10 +40296,11 @@
    */
 
   class BaseResult {
-    constructor (ruleResult, resultValue, msgId, msgArgs, resultIdentifier) {
+    constructor (domElement, ruleResult, resultValue, msgId, msgArgs, resultIdentifier) {
 
       const msg = ruleResult.rule.base_result_msgs[msgId];
 
+      this.domElement = domElement;
       this.result_type       = RESULT_TYPE.BASE;
       this.rule_result       = ruleResult;
       this.result_value      = resultValue;
@@ -40342,6 +40360,20 @@
 
     get isWebsiteResult () {
       return false;
+    }
+
+    /**
+     * @method getBodyElement
+     *
+     * @desc Returns the DOM node to attach highlighting element
+     *
+     * @return {String} see description
+     */
+
+    getBodyElement () {
+      const bodyElem = this.domElement.getBodyElement();
+      debug$H.log(`[getBodyElement][bodyElem]: ${bodyElem}`);
+      return bodyElem;
     }
 
     /**
@@ -40516,13 +40548,13 @@
 
   class ElementResult extends BaseResult {
     constructor (rule_result, result_value, domElement, message_id, message_arguments, resultIndex) {
-      super(rule_result,
+      super(domElement,
+            rule_result,
             result_value,
             message_id,
             message_arguments,
             domElement.getIdentifier());
 
-      this.domElement = domElement;
       this.result_type    = RESULT_TYPE.ELEMENT;
       this.resultId = 'er-' + resultIndex + '-' + this.domElement.ordinalPosition;
 
@@ -41074,7 +41106,7 @@
    *
    * @param  {ResultRule}   rule_result         - reference to the rule result object
    * @param  {Number}       result_value        - Constant representing result value of the evaluation result
-   * @param  {Object}       domCache            - DomCache reference to element information used by this rule result
+   * @param  {Object}       domElement          - DomElement of the body element of the document
    * @param  {String}       message_id          - String reference to the message string in the NLS file
    * @param  {Array}        message_arguments   - Array  array of values used in the message string
    * @param  {Array}        props               - Array of properties that are defined in the validation function (NOTE: typically undefined)
@@ -41093,10 +41125,14 @@
    */
 
   class PageResult extends BaseResult {
-    constructor (rule_result, result_value, domCache, message_id, message_arguments, resultIndex) {
-      super(rule_result, result_value, message_id, message_arguments, 'page');
+    constructor (rule_result, result_value, domElement, message_id, message_arguments, resultIndex) {
+      super(domElement,
+            rule_result,
+            result_value,
+            message_id,
+            message_arguments,
+            'page');
 
-      this.domCache     = domCache;
       this.result_type  = RESULT_TYPE.PAGE;
 
       this.resultId = 'pr-' + resultIndex;
@@ -41148,7 +41184,7 @@
 
   /* Constants */
 
-  const debug$D = new DebugLogging('PageResult', false);
+  const debug$D = new DebugLogging('websiteResult', false);
   debug$D.flag = false;
 
   /**
@@ -41159,7 +41195,7 @@
    *
    * @param  {ResultRule}   rule_result         - reference to the rule result object
    * @param  {Number}       result_value        - Constant representing result value of the evaluation result
-   * @param  {Object}       domCache            - DomCache reference to element information used by this rule result
+   * @param  {Object}       domElement          - DomElement of the body element of the document
    * @param  {String}       message_id          - String reference to the message string in the NLS file
    * @param  {Array}        message_arguments   - Array  array of values used in the message string
    * @param  {Array}        props               - Array of properties that are defined in the validation function (NOTE: typically undefined)
@@ -41178,10 +41214,14 @@
    */
 
   class WebsiteResult extends BaseResult {
-    constructor (rule_result, result_value, domCache, message_id, message_arguments, resultIndex) {
-      super(rule_result, result_value, message_id, message_arguments, 'website');
+    constructor (rule_result, result_value, domElement, message_id, message_arguments, resultIndex) {
+      super(domElement,
+            rule_result,
+            result_value,
+            message_id,
+            message_arguments,
+            'website');
 
-      this.domCache     = domCache;
       this.result_type  = RESULT_TYPE.WEBSITE;
 
       this.resultId = 'wr-' + resultIndex;
@@ -48595,7 +48635,11 @@
         const ai = de.ariaInfo;
         // There are other rules that check for accessible name for labelable controls, landmarks, headings and links
         // Ignore option role, since web developers are very sloppy about giving them content before they are made visible
-        if (ai.isWidget && !de.isButton && !de.isLabelable && !de.isLink && (de.role !== 'option')) {
+        if (ai.isWidget &&
+            !de.isButton &&
+            !de.isLabelable &&
+            !de.isLink &&
+            !(de.role === 'option')) {
           if (de.visibility.isVisibleToAT) {
             if (de.accName.name) {
               rule_result.addElementResult(TEST_RESULT.PASS, de, 'ELEMENT_PASS_1', [de.tagName, de.role, de.accName.name]);
@@ -49384,6 +49428,8 @@
       dom_cache.allDomElements.forEach( de => {
         if (!de.ariaInfo.isDPUBRole &&
             de.ariaInfo.isNameProhibited &&
+            de.accName.source !== 'title' &&
+            de.accName.source !== 'contents' &&
             de.accName.name) {
 
           if (de.visibility.isVisibleToAT) {
@@ -50320,6 +50366,18 @@
 
     }
 
+    get libraryVersion () {
+      return VERSION;
+    }
+
+    get wcagLevel () {
+      return this.level;
+    }
+
+    get evalRuleset () {
+      return this.ruleset;
+    }
+
     get headings () {
       return this._headings;
     }
@@ -50481,7 +50539,8 @@
      *
      * @desc Updates rule results array with results from a specific set of rules
      *
-     * @param  {Array}   ruleList  - Array of rule IDs to include in the evaluation
+     * @param  {Array}   ruleList    - Array of rule IDs to include in the evaluation
+     * @param  {String}  scopeFilter - Filter rules by scope (values: "ALL" | "PAGE" | "WEBSITE")
      * @param  {String}  ariaVersion - Version of ARIA used for validation rules
      *                                 (values: 'ARIA12' | ARIA13")
      * @param  {Boolean} addDataId   - If true, create a data-opena11y-oridinal-position attribute
@@ -50531,14 +50590,16 @@
      *
      * @desc Updates rule results array with results first step rules
      *
+     * @param  {String}  scopeFilter - Filter rules by scope (values: "ALL" | "PAGE" | "WEBSITE")
      * @param  {String}  ariaVersion - Version of ARIA used for validation rules
      *                                 (values: 'ARIA12' | ARIA13")
      * @param  {Boolean} addDataId   - If true, create a data-opena11y-oridinal-position attribute
      *                                 on element nodes for use in navigation and highlighting
      */
 
-    runFirstStepRules (ariaVersion='ARIA12',
-                       addDataId=false) {
+    runFirstStepRules (scopeFilter='ALL',
+                      ariaVersion='ARIA12',
+                      addDataId=false) {
       const startTime = new Date();
 
       this.ruleset     = 'FIRSTSTEP';
@@ -50579,13 +50640,13 @@
      *
      * @desc Updates rule results array with results using rules with aXe references
      *
+     * @param  {String}  scopeFilter - Filter rules by scope (values: "ALL" | "PAGE" | "WEBSITE")
      * @param  {String}  ariaVersion - Version of ARIA used for validation rules
      *                                 (values: 'ARIA12' | ARIA13")
-     * @param  {Boolean} addDataId   - If true, create a data-opena11y-oridinal-position attribute
-     *                                 on element nodes for use in navigation and highlighting
      */
 
-    runAxeRules (ariaVersion='ARIA12') {
+    runAxeRules (scopeFilter='ALL',
+                 ariaVersion='ARIA12') {
       const startTime = new Date();
 
       this.ruleset     = 'AXE';
@@ -50626,13 +50687,13 @@
      *
      * @desc Updates rule results array with results using rules with WAVE/popetech references
      *
+     * @param  {String}  scopeFilter - Filter rules by scope (values: "ALL" | "PAGE" | "WEBSITE")
      * @param  {String}  ariaVersion - Version of ARIA used for validation rules
      *                                 (values: 'ARIA12' | ARIA13")
-     * @param  {Boolean} addDataId   - If true, create a data-opena11y-oridinal-position attribute
-     *                                 on element nodes for use in navigation and highlighting
      */
 
-    runWaveRules (ariaVersion='ARIA12') {
+    runWaveRules (scopeFiltert='ALL',
+                  ariaVersion='ARIA12') {
       const startTime = new Date();
 
       this.ruleset     = 'WAVE';
@@ -50964,6 +51025,7 @@
      * @param  {Object}  startingDoc - Browser document object model (DOM) to be evaluated
      * @param  {String}  title       - Title of document being analyzed
      * @param  {String}  url         - url of document being analyzed
+     * @param  {String}  scopeFilter - Filter rules by scope (values: "ALL" | "PAGE" | "WEBSITE")
      * @param  {String}  ariaVersion - Version of ARIA used for validation rules
      *                                 Values: 'ARIA12' | 'ARIA13'
      * @param  {Boolean} addDataId   - If true, add an data-opena11y-id attribute based on
@@ -50973,12 +51035,15 @@
      * @returns {Object}  see @desc
     */
 
-    evaluateFirstStepRules (startingDoc, title='', url='',
+    evaluateFirstStepRules (startingDoc,
+                            title='',
+                            url='',
+                            scopeFilter='ALL',
                             ariaVersion="ARIA12",
                             addDataId=false) {
 
       const evaluationResult = new EvaluationResult(startingDoc, title, url);
-      evaluationResult.runFirstStepRules(ariaVersion, addDataId);
+      evaluationResult.runFirstStepRules(scopeFilter, ariaVersion, addDataId);
 
       // Debug features
       if (debug$2.flag) {
@@ -50995,6 +51060,7 @@
      * @param  {Object}  startingDoc - Browser document object model (DOM) to be evaluated
      * @param  {String}  title       - Title of document being analyzed
      * @param  {String}  url         - url of document being analyzed
+     * @param  {String}  scopeFilter - Filter rules by scope (values: "ALL" | "PAGE" | "WEBSITE")
      * @param  {String}  ariaVersion - Version of ARIA used for validation rules
      *                                 Values: 'ARIA12' | 'ARIA13'
      * @param  {Boolean} addDataId   - If true, add an data-opena11y-id attribute based on
@@ -51004,10 +51070,14 @@
      * @returns {Object}  see @desc
     */
 
-    evaluateAxeRules (startingDoc, title='', url='', ariaVersion="ARIA12") {
+    evaluateAxeRules (startingDoc,
+                      title='',
+                      url='',
+                      scopeFilter='ALL',
+                      ariaVersion="ARIA12") {
 
       const evaluationResult = new EvaluationResult(startingDoc, title, url);
-      evaluationResult.runAxeRules(ariaVersion);
+      evaluationResult.runAxeRules(scopeFilter, ariaVersion);
 
       // Debug features
       if (debug$2.flag) {
@@ -51025,6 +51095,7 @@
      * @param  {Object}  startingDoc - Browser document object model (DOM) to be evaluated
      * @param  {String}  title       - Title of document being analyzed
      * @param  {String}  url         - url of document being analyzed
+     * @param  {String}  scopeFilter - Filter rules by scope (values: "ALL" | "PAGE" | "WEBSITE")
      * @param  {String}  ariaVersion - Version of ARIA used for validation rules
      *                                 Values: 'ARIA12' | 'ARIA13'
      * @param  {Boolean} addDataId   - If true, add an data-opena11y-id attribute based on
@@ -51034,10 +51105,14 @@
      * @returns {Object}  see @desc
     */
 
-    evaluateWaveRules (startingDoc, title='', url='', ariaVersion="ARIA12") {
+    evaluateWaveRules (startingDoc,
+                       title='',
+                       url='',
+                       scopeFilter='ALL',
+                       ariaVersion="ARIA12") {
 
       const evaluationResult = new EvaluationResult(startingDoc, title, url);
-      evaluationResult.runWaveRules(ariaVersion);
+      evaluationResult.runWaveRules(scopeFilter, ariaVersion);
 
       // Debug features
       if (debug$2.flag) {
@@ -51365,7 +51440,7 @@
             html_attributes:            de.htmlAttrs,
             aria_attributes:            de.ariaAttrs,
 
-              is_element: true,
+            is_element: true,
             is_page: false,
             is_website: false
           };
@@ -51687,10 +51762,6 @@
 
   let lastEvaluationResult = false;
 
-  const contentElem = document.body ?
-                      document.body :
-                      document.documentElement;
-
   const highlightElements = [];
 
   // Helper functions
@@ -51719,13 +51790,13 @@
     highlightElements.forEach( (he) => { he.setAttribute('focus', 'false'); });
   }
 
-  function getHighlightElement(highlightId, result_abbrev) {
+  function getHighlightElement(attachElem, highlightId, result_abbrev) {
     let he = document.getElementById(highlightId);
     if (!he) {
       he = document.createElement('opena11y-ai-highlight');
       he.id = highlightId;
       he.setAttribute(`data-result`, result_abbrev);
-      contentElem.appendChild(he);
+      attachElem.appendChild(he);
       highlightElements.push(he);
     }
     return he;
@@ -51736,7 +51807,16 @@
       if ((option === 'all') ||
           ((option === 'vw') && ((r.result_abbrev === 'V') || (r.result_abbrev === 'W')))) {
 
-        const he = getHighlightElement(r.highlightId, r.result_abbrev);
+        const de = er.getDomElementByPosition(r.position);
+
+        const attachElem = de ? de.getBodyElement() :
+                           document.body ?
+                           document.body :
+                           document.documentElement;
+
+        console.log(`[attachElem]: ${attachElem} ${de.getBodyElement}`);
+
+        const he = getHighlightElement(attachElem, r.highlightId, r.result_abbrev);
 
         if (r.isWebsite) {
           he.setAttribute('set', `${r.result_abbrev} website false`);
@@ -51786,7 +51866,7 @@
           rect = de.node.getBoundingClientRect();
         }
 
-        const he = getHighlightElement(highlightId, result_type);
+        const he = getHighlightElement(de.getBodyElement(), highlightId, result_type);
 
         if (option !== 'none' && he) {
           removeFocusFromHighlightElements();
@@ -51817,6 +51897,7 @@
                             doc,
                             doc.title,
                             doc.location.href,
+                            r.scope_filter,
                             r.aria_version);
             break;
 
@@ -51825,6 +51906,7 @@
                             doc,
                             doc.title,
                             doc.location.href,
+                            r.scope_filter,
                             r.aria_version,
                             false);
             break;
@@ -51834,6 +51916,7 @@
                             doc,
                             doc.title,
                             doc.location.href,
+                            r.scope_filter,
                             r.aria_version);
             break;
 
@@ -51856,15 +51939,18 @@
         const now = new Date();
 
         let response = {
-          title:             er.getTitle(),
-          location:          er.getURL(),
-          ruleset:           r.ruleset,
-          ruleset_label:     er.getRulesetLabel(),
-          rule_scope_filter: er.getRuleScopeFilterLabel(),
-          result_view:       r.result_view,
-          date:              now.toLocaleDateString(),
-          time:              now.toLocaleTimeString(),
-          ainspector_version: ''
+          title:              er.getTitle(),
+          location:           er.getURL(),
+          ruleset:            er.evalRuleset,
+          ruleset_label:      er.getRulesetLabel(),
+          wcag_level:         er.wcagLevel,
+          scope_filter:       er.scopeFilter,
+          scope_filter_label: er.getRuleScopeFilterLabel(),
+          aria_version:       er.ariaVersion,
+          result_view:        r.result_view,
+          date:               now.toLocaleDateString(),
+          time:               now.toLocaleTimeString(),
+          library_version:    er.libraryVersion
         };
 
         let group_title, rule_summary, rule_results, info_rules;
