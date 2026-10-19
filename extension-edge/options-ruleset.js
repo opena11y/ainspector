@@ -358,8 +358,8 @@ class OptionsRuleset extends HTMLElement {
   }
 
   saveRulesetOptions () {
-   const formControls = this.formControls;
-  getOptions().then( (options) => {
+    const formControls = this.formControls;
+    getOptions().then( (options) => {
 
       formControls.forEach( input => {
         debug.flag && console.log(`[update][${input.id}]: ${options[input.getAttribute('data-option')]} (${input.getAttribute('data-option')})`);

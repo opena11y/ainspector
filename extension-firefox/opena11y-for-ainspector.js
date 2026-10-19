@@ -1406,7 +1406,8 @@
   }
 
   const common = {
-    aria13: ' (ARIA 1.3)',
+    aria12: 'ARIA 1.2',
+    aria13: 'ARIA 1.3',
     level: ['undefined', 'AAA', 'AA', 'undefined', 'A'],
     baseResult: ['undefined','P','H','MC','W','V'],
     baseResultLong: ['undefined','Pass','Hidden','Manual Check','Warning','Violation'],
@@ -11620,6 +11621,27 @@
   }
 
   /**
+   * @function getAriaVersionLabel
+   *
+   * @desc Returns a localize string describing the aria version
+   *
+   * @param {String} ariaVersionId  - Used to identify the ruleset
+   *
+   * @return {String}  see @desc
+   */
+
+  function getAriaVersionLabel(ariaVersionId) {
+    switch (ariaVersionId) {
+      case 'ARIA12':
+        return messages[locale].common.aria12;
+      case 'ARIA13':
+        return messages[locale].common.aria13;
+    }
+    return '??';
+  }
+
+
+  /**
    * @function getRulesetLabel
    *
    * @desc Returns a localize string describing the options
@@ -11627,20 +11649,11 @@
    *
    * @param {String} rulesetId      - Used to identify the ruleset
    * @param {String} level          - Used to identify the WCAG level
-   * @param {String} ariaVersionId  - Used to identify the ARIA version
    *
    * @return {String}  see @desc
    */
 
-  function getRulesetLabel(rulesetId, level, ariaVersionId) {
-
-      function addAria () {
-        switch (ariaVersionId) {
-          case 'ARIA13':
-            return messages[locale].common.aria13;
-        }
-        return '';
-      }
+  function getRulesetLabel(rulesetId, level) {
 
       function addLevel () {
         switch (level) {
@@ -11661,27 +11674,27 @@
       switch (rulesetId) {
 
         case 'AXE':
-          label = messages[locale].common.rulesetAxe + addAria();
+          label = messages[locale].common.rulesetAxe;
           break;
 
         case 'FIRSTSTEP':
-          label = messages[locale].common.rulesetFirstStep + addAria();
+          label = messages[locale].common.rulesetFirstStep;
           break;
 
         case 'WAVE':
-          label = messages[locale].common.rulesetWave + addAria();
+          label = messages[locale].common.rulesetWave ;
           break;
 
         case 'WCAG22':
-          label = messages[locale].common.rulesetWCAG22 + addLevel() + addAria();
+          label = messages[locale].common.rulesetWCAG22 + addLevel();
           break;
 
         case 'WCAG21':
-          label = messages[locale].common.rulesetWCAG21 + addLevel() + addAria();
+          label = messages[locale].common.rulesetWCAG21 + addLevel();
           break;
 
         default:
-          label = messages[locale].common.rulesetWCAG20 + addLevel() + addAria();
+          label = messages[locale].common.rulesetWCAG20 + addLevel();
           break;
       }
 
@@ -50451,8 +50464,21 @@
      */
 
     getRulesetLabel () {
-      return getRulesetLabel(this.ruleset, this.level, this.ariaVersion);
+      return getRulesetLabel(this.ruleset, this.level);
     }
+
+    /**
+     * @method getAriaVersionLabel
+     *
+     * @desc Get the Aria version information
+     *
+     * @return {String}  String representing the aria version
+     */
+
+    getAriaVersionLabel () {
+      return getAriaVersionLabel(this.ariaVersion);
+    }
+
 
     /**
      * @method getRuleScopeFilterLabel
@@ -51947,6 +51973,7 @@
           scope_filter:       er.scopeFilter,
           scope_filter_label: er.getRuleScopeFilterLabel(),
           aria_version:       er.ariaVersion,
+          aria_version_label: er.getAriaVersionLabel(),
           result_view:        r.result_view,
           date:               now.toLocaleDateString(),
           time:               now.toLocaleTimeString(),

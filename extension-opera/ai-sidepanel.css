@@ -44,6 +44,7 @@ footer {
   width: 100%;
   margin: 0;
   padding: 0;
+  padding-top: 0.5em;
 }
 
 footer .info {
@@ -104,6 +105,7 @@ footer .info > select {
 }
 
 footer .buttons {
+  padding-top: 0.25em;
   margin-top: 0.75em;
   width: 100%;
   display: flex;
