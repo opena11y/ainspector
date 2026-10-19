@@ -50629,7 +50629,7 @@
       const startTime = new Date();
 
       this.ruleset     = 'FIRSTSTEP';
-      this.scopeFilter = '';
+      this.scopeFilter = validateScopeFilter(scopeFilter);
       this.ariaVersion = ariaVersion;
 
       const domCache      = new DOMCache(this.startingDoc, this.startingDoc.body, ariaVersion, addDataId);
@@ -50642,13 +50642,18 @@
       allRules.forEach (rule => {
 
         if (rule.isFirstStep) {
-          const ruleResult = new RuleResult(rule);
+          if ((this.scopeFilter === 'ALL') ||
+              ((this.scopeFilter === 'PAGE')    && rule.isScopePage) ||
+              ((this.scopeFilter === 'WEBSITE') && rule.isScopeWebsite)) {
 
-          ruleResult.validate(domCache);
-          this._allRuleResults.push(ruleResult);
-          this._ruleResultsSummary.update(ruleResult);
-          this._rcRuleResultsGroup.update(rule.rule_category_id, ruleResult);
-          this._glRuleResultsGroup.update(rule.wcag_guideline_id, ruleResult);
+            const ruleResult = new RuleResult(rule);
+
+            ruleResult.validate(domCache);
+            this._allRuleResults.push(ruleResult);
+            this._ruleResultsSummary.update(ruleResult);
+            this._rcRuleResultsGroup.update(rule.rule_category_id, ruleResult);
+            this._glRuleResultsGroup.update(rule.wcag_guideline_id, ruleResult);
+          }
         }
       });
 
@@ -50676,7 +50681,7 @@
       const startTime = new Date();
 
       this.ruleset     = 'AXE';
-      this.scopeFilter = '';
+      this.scopeFilter = validateScopeFilter(scopeFilter);
       this.ariaVersion = ariaVersion;
 
       const domCache      = new DOMCache(this.startingDoc, this.startingDoc.body, ariaVersion);
@@ -50689,13 +50694,18 @@
       allRules.forEach (rule => {
 
         if (rule.axe_refs.length) {
-          const ruleResult = new RuleResult(rule);
+          if ((this.scopeFilter === 'ALL') ||
+              ((this.scopeFilter === 'PAGE')    && rule.isScopePage) ||
+              ((this.scopeFilter === 'WEBSITE') && rule.isScopeWebsite)) {
 
-          ruleResult.validate(domCache);
-          this._allRuleResults.push(ruleResult);
-          this._ruleResultsSummary.update(ruleResult);
-          this._rcRuleResultsGroup.update(rule.rule_category_id, ruleResult);
-          this._glRuleResultsGroup.update(rule.wcag_guideline_id, ruleResult);
+            const ruleResult = new RuleResult(rule);
+
+            ruleResult.validate(domCache);
+            this._allRuleResults.push(ruleResult);
+            this._ruleResultsSummary.update(ruleResult);
+            this._rcRuleResultsGroup.update(rule.rule_category_id, ruleResult);
+            this._glRuleResultsGroup.update(rule.wcag_guideline_id, ruleResult);
+          }
         }
       });
 
@@ -50718,12 +50728,12 @@
      *                                 (values: 'ARIA12' | ARIA13")
      */
 
-    runWaveRules (scopeFiltert='ALL',
+    runWaveRules (scopeFilter='ALL',
                   ariaVersion='ARIA12') {
       const startTime = new Date();
 
       this.ruleset     = 'WAVE';
-      this.scopeFilter = '';
+      this.scopeFilter = validateScopeFilter(scopeFilter);
       this.ariaVersion = ariaVersion;
 
       const domCache      = new DOMCache(this.startingDoc, this.startingDoc.body, ariaVersion);
@@ -50737,12 +50747,16 @@
 
         if (rule.wave_refs.length) {
           const ruleResult = new RuleResult(rule);
+          if ((this.scopeFilter === 'ALL') ||
+              ((this.scopeFilter === 'PAGE')    && rule.isScopePage) ||
+              ((this.scopeFilter === 'WEBSITE') && rule.isScopeWebsite)) {
 
-          ruleResult.validate(domCache);
-          this._allRuleResults.push(ruleResult);
-          this._ruleResultsSummary.update(ruleResult);
-          this._rcRuleResultsGroup.update(rule.rule_category_id, ruleResult);
-          this._glRuleResultsGroup.update(rule.wcag_guideline_id, ruleResult);
+            ruleResult.validate(domCache);
+            this._allRuleResults.push(ruleResult);
+            this._ruleResultsSummary.update(ruleResult);
+            this._rcRuleResultsGroup.update(rule.rule_category_id, ruleResult);
+            this._glRuleResultsGroup.update(rule.wcag_guideline_id, ruleResult);
+          }
         }
       });
 
