@@ -113,50 +113,94 @@ template.innerHTML = `
       </span>
     </div>
 
-    <div class="info">
-      <span class="label"
-            data-i18n="info_ruleset_label">
-      </span>
+    <div id="info-eval-options">
+      <div class="info">
+        <span class="label"
+              data-i18n="info_ruleset_label">
+        </span>
 
-      <div class="group" data-i18n-aria-label="info_ruleset_label_select">
-        <select id="info-ruleset">
-          <option value="WCAG20">WCAG 2.0</option>
-          <option value="WCAG21" selected>WCAG 2.1</option>
-          <option value="WCAG22">WCAG 2.2</option>
-          <option value="FIRSTSTEP">First Step</option>
-          <option value="AXE">aXe Emulation</option>
-          <option value="WAVE">WAVE Emulation</option>
-        </select>
+        <div class="group" data-i18n-aria-label="info_ruleset_label_select">
+          <select id="info-ruleset-options">
+            <option value="WCAG20">WCAG 2.0</option>
+            <option value="WCAG21" selected>WCAG 2.1</option>
+            <option value="WCAG22">WCAG 2.2</option>
+            <option value="FIRSTSTEP">First Step</option>
+            <option value="AXE">aXe Emulation</option>
+            <option value="WAVE">WAVE Emulation</option>
+          </select>
 
-        <select id="info-level" data-i18n-title="info_level_label_select">
-          <option value="" hidden></option>
-          <option value="A">A</option>
-          <option value="AA" selected>AA</option>
-          <option value="AAA">AA+2</option>
+          <select id="info-level-options" data-i18n-title="info_level_label_select">
+            <option value="" hidden></option>
+            <option value="A">A</option>
+            <option value="AA" selected>AA</option>
+            <option value="AAA">AA+2</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="info">
+        <span class="label"
+               data-i18n="info_rule_scope_label">
+        </span>
+
+        <select id="info-scope-options" data-i18n-title="info_rule_scope_label_select">
+          <option value="ALL" selected>All rules</option>
+          <option value="PAGE">Page rules only</option>
+          <option value="WEBSITE">Website rules only</option>
         </select>
       </div>
 
+      <div class="info">
+        <span class="label"
+               data-i18n="info_aria_label">
+        </span>
+
+        <select id="info-aria-options" data-i18n-title="info_aria_label_select">
+          <option value="ARIA12">ARIA 1.2</option>
+          <option value="ARIA13" selected>ARIA 1.3</option>
+        </select>
+
+      </div>
     </div>
 
-    <div class="info">
-      <span class="label"
-             data-i18n="info_rule_scope_label">
-      </span>
-      <select id="info-scope" data-i18n-title="info_rule_scope_label_select">
-        <option value="ALL" selected>All rules</option>
-        <option value="PAGE">Page rules only</option>
-        <option value="WEBSITE">Website rules only</option>
-      </select>
-    </div>
+    <div id="info-eval-settings" hidden>
 
-    <div class="info">
-      <span class="label"
-             data-i18n="info_aria_label">
-      </span>
-      <select id="info-aria" data-i18n-title="info_aria_label_select">
-        <option value="ARIA12">ARIA 1.2</option>
-        <option value="ARIA13" selected>ARIA 1.3</option>
-      </select>
+      <div class="info">
+        <span class="label"
+              data-i18n="info_ruleset_label">
+        </span>
+
+        <span  id="info-ruleset-setting"
+               class="value"
+               hidden>
+        </span>
+
+      </div>
+
+      <div class="info">
+        <span class="label"
+               data-i18n="info_rule_scope_label">
+        </span>
+
+        <span  id="info-scope-setting"
+               class="value"
+               hidden>
+        </span>
+      </div>
+
+      <div class="info">
+        <span class="label"
+               data-i18n="info_aria_label">
+        </span>
+
+        <span  id="info-aria-setting"
+               class="value"
+               hidden>
+        </span>
+
+      </div>
+
     </div>
 
     <div class="buttons">
@@ -249,10 +293,27 @@ class AISidePanel extends HTMLElement {
     this.viewTitleElem      = this.shadowRoot.querySelector(`#view-title`);
     this.infoTitleElem      = this.shadowRoot.querySelector(`#info-title`);
     this.infoLocationElem   = this.shadowRoot.querySelector(`#info-location`);
-    this.infoRulesetElem    = this.shadowRoot.querySelector(`#info-ruleset`);
-    this.infoLevelElem      = this.shadowRoot.querySelector(`#info-level`);
-    this.infoRuleScopeElem  = this.shadowRoot.querySelector(`#info-scope`);
-    this.infoAriaElem       = this.shadowRoot.querySelector(`#info-aria`);
+
+    this.infoEvalOptionsElem   = this.shadowRoot.querySelector(`#info-eval-options`);
+    this.infoEvalSettingsElem  = this.shadowRoot.querySelector(`#info-eval-settings`);
+
+    this.infoRulesetOptionsElem    = this.shadowRoot.querySelector(`#info-ruleset-options`);
+    this.infoRulesetOptionsElem.addEventListener('change', this.handleEvaluationChange.bind(this));
+    this.infoRulesetSettingElem    = this.shadowRoot.querySelector(`#info-ruleset-setting`);
+    this.infoRulesetSettingElem.setAttribute('hidden','');
+
+    this.infoLevelOptionsElem      = this.shadowRoot.querySelector(`#info-level-options`);
+    this.infoLevelOptionsElem.addEventListener('change', this.handleEvaluationChange.bind(this));
+
+    this.infoScopeOptionsElem  = this.shadowRoot.querySelector(`#info-scope-options`);
+    this.infoScopeOptionsElem.addEventListener('change', this.handleEvaluationChange.bind(this));
+    this.infoScopeSettingElem  = this.shadowRoot.querySelector(`#info-scope-setting`);
+    this.infoScopeSettingElem.setAttribute('hidden','');
+
+    this.infoAriaOptionsElem       = this.shadowRoot.querySelector(`#info-aria-options`);
+    this.infoAriaOptionsElem.addEventListener('change', this.handleEvaluationChange.bind(this));
+    this.infoAriaSettingElem  = this.shadowRoot.querySelector(`#info-aria-setting`);
+    this.infoAriaSettingElem.setAttribute('hidden','');
 
     this.viewRulesAllElem  = this.shadowRoot.querySelector(`view-rules-all`);
     this.viewRulesAllElem.setSidepanel(this);
@@ -321,21 +382,29 @@ class AISidePanel extends HTMLElement {
     this.infoTitleElem.textContent    = message2;
     this.infoLocationElem.textContent = message1;
 
+    this.infoRulesetSettingElem.textContent = '';
+    this.infoScopeSettingElem.textContent   = '';
+    this.infoAriaSettingElem.textContent    = '';
+
     this.viewRulesAllElem.clear(message1, message2);
     this.viewRuleGroupElem.clear(message1, message2);
     this.viewRuleElem.clear(message1, message2);
+
+
   }
 
   updateView(result) {
     this.infoTitleElem.textContent      = result.title;
     this.infoLocationElem.textContent   = result.location;
-//    this.infoRulesetElem.textContent    = `${result.ruleset_label} (${result.ruleset} ${result.wcag_level} ${result.aria_version})`;
-//    this.infoRuleScopeElem.textContent  = `${result.scope_filter_label} (${result.scope_filter})`;
 
-    setSelect(this.infoRulesetElem,   result.ruleset);
-    setSelect(this.infoLevelElem,     result.wcag_level, true);
-    setSelect(this.infoRuleScopeElem, result.scope_filter);
-    setSelect(this.infoAriaElem,      result.aria_version);
+    this.infoRulesetSettingElem.textContent = result.ruleset_label;
+    this.infoScopeSettingElem.textContent   = result.scope_filter_label;
+    this.infoAriaSettingElem.textContent    = result.aria_version_label;
+
+    setSelect(this.infoRulesetOptionsElem,  result.ruleset);
+    setSelect(this.infoLevelOptionsElem,    result.wcag_level, true);
+    setSelect(this.infoScopeOptionsElem,    result.scope_filter);
+    setSelect(this.infoAriaOptionsElem,     result.aria_version);
 
     debug.flag && debug.log(`[result][        title]: ${result.title}`);
     debug.flag && debug.log(`[result][     location]: ${result.location}`);
@@ -373,6 +442,9 @@ class AISidePanel extends HTMLElement {
         this.viewRuleElem.setAttribute('hidden', '');
         this.viewRulesAllElem.removeAttribute('hidden');
         this.viewRulesAllElem.update(result);
+
+        this.infoEvalSettingsElem.setAttribute('hidden', '');
+        this.infoEvalOptionsElem.removeAttribute('hidden');
         break;
 
       case 'rule-group':
@@ -382,6 +454,10 @@ class AISidePanel extends HTMLElement {
         this.viewRuleElem.setAttribute('hidden', '');
         this.viewRuleGroupElem.removeAttribute('hidden');
         this.viewRuleGroupElem.update(result);
+
+        this.infoEvalOptionsElem.setAttribute('hidden', '');
+        this.infoEvalSettingsElem.removeAttribute('hidden');
+
         this.handleResize();
         break;
 
@@ -392,6 +468,10 @@ class AISidePanel extends HTMLElement {
         this.viewRuleGroupElem.setAttribute('hidden', '');
         this.viewRuleElem.removeAttribute('hidden');
         this.viewRuleElem.update(result);
+
+        this.infoEvalOptionsElem.setAttribute('hidden', '');
+        this.infoEvalSettingsElem.removeAttribute('hidden');
+
         this.handleResize();
         break;
 
@@ -815,6 +895,35 @@ class AISidePanel extends HTMLElement {
 
   handleOptionsClick () {
      browserRuntime.openOptionsPage();
+  }
+
+  handleEvaluationChange (event) {
+
+    const tgt = event.target;
+
+    getOptions().then( (options) => {
+
+      debug.log(`ruleset: ${options.ruleset}`);
+
+      options.ruleset = this.infoRulesetOptionsElem.value;
+      if (options.ruleset.includes('WCAG')) {
+        if (tgt === this.infoLevelOptionsElem) {
+          options.level = this.infoLevelOptionsElem.value;
+        }
+        else {
+          setSelect(this.infoLevelOptionsElem, options.level);
+        }
+      }
+      else {
+        setSelect(this.infoLevelOptionsElem, '');
+      }
+      options.scopeFilter = this.infoScopeOptionsElem.value;
+      options.ariaVersion = this.infoAriaOptionsElem.value;
+
+      saveOptions(options).then( () => {
+        this.runEvaluation();
+      });
+    });
   }
 
 }

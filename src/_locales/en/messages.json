@@ -71,7 +71,7 @@
 
   "info_ruleset_label": {
     "message": "Ruleset: ",
-    "description": "Label for ruleset select"
+    "description": "Label for ruleset"
   },
 
   "info_ruleset_label_select": {
