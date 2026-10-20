@@ -62,8 +62,8 @@ footer .info-eval {
 footer .info {
   margin: 0;
   padding: 0;
-  margin-top: 0.125em;
-  margin-bottom: 0.125em;
+  padding-top: 0.125em;
+  padding-bottom: 0.125em;
   display: grid;
   grid-template-columns: 9ch auto;
 }
