@@ -17,7 +17,7 @@ table {
 table.rule-group,
 table.rule {
   display: block;
-  border: 1px solid #aaa;
+  border: 1px solid light-dark(var(--info-border-light), var(--info-border-dark));
   overflow-y: auto;
   margin-bottom: 0.5em;
 }
@@ -34,11 +34,11 @@ table thead {
 }
 
 table tbody tr:nth-child(even) {
-  background: light-dark(#eeeeee, #333333);
+  background: light-dark(var(--table-background-stripe-light), var(--table-background-stripe-dark));
 }
 
 table thead th {
-  border-bottom: 1px solid light-dark(#ddd, #444);
+  border-bottom: 1px solid light-dark(var(--table-header-border-light), var(--table-header-border-dark));
   overflow: hidden;
   text-overflow: ellipsis;
 

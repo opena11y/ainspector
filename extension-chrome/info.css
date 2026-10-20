@@ -15,7 +15,7 @@ h2 {
 .info-results {
   margin: 0;
   padding: 0.5em;
-  border: 1px solid light-dark(#aaa, #333);
+  border: 1px solid light-dark(var(--info-border-light), var(--info-border-dark));
   display: block;
   overflow: auto;
   user-select:  text;
@@ -79,11 +79,11 @@ table {
 }
 
 table thead tr {
-  border-bottom: 1px solid light-dark(#333, #ccc);
+  border-bottom: 1px solid light-dark(var(--table-header-border-light), var(--table-header-border-dark));
 }
 
 table tbody tr:nth-child(odd) {
-  background: light-dark(#eee, #222);
+  background: light-dark(var(--table-background-stripe-light), var(--table-background-stripe-dark));
 }
 
 table thead th,
@@ -123,7 +123,7 @@ table.attrs tbody td:first-child {
   display: inline-block;
   height: 12px;
   width: 12px;
-  border: 1px solid light-dark(#333, #bbb);
+  border: 1px solid light-dark(var(--table-header-border-light), var(--table-header-border-dark));
   margin-right: 0.25em;
 }
 
