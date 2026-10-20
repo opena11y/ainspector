@@ -55,6 +55,16 @@
 
   --not-applicable-color-light: hsl(0, 0%, 87%);
   --not-applicable-color-dark:  hsl(0, 0%, 13%);
+
+  --info-border-light: hsl(0, 0%, 66.7%);
+  --info-border-dark: hsl(0, 0%, 33.3%);
+
+  --table-background-stripe-light: hsl(0, 0%, 93.3%);
+  --table-background-stripe-dark: hsl(0, 0%, 20.0%);
+
+  --table-header-border-light: hsl(0, 0%, 20.0%);
+  --table-header-border-dark: hsl(0, 0%, 80.0%);
+
 /* Setting Content Variables */
 
 

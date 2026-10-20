@@ -94,26 +94,30 @@ template.innerHTML = `
 
   <footer>
 
-    <div class="info">
-      <span class="label"
-            data-i18n="info_title_label">
-      </span>
-      <span id="info-title"
-            class="value"
-            aria-live="polite">
-      </span>
+    <div id="info-location-title">
+
+      <div class="info">
+        <span class="label"
+              data-i18n="info_title_label">
+        </span>
+        <span id="info-title"
+              class="value"
+              aria-live="polite">
+        </span>
+      </div>
+
+      <div class="info">
+        <span class="label"
+              data-i18n="info_location_label">
+        </span>
+        <span  id="info-location"
+               class="value">
+        </span>
+      </div>
+
     </div>
 
-    <div class="info">
-      <span class="label"
-            data-i18n="info_location_label">
-      </span>
-      <span  id="info-location"
-             class="value">
-      </span>
-    </div>
-
-    <div id="info-eval-options">
+    <div id="info-eval-options" class="info-eval">
       <div class="info">
         <span class="label"
               data-i18n="info_ruleset_label">
@@ -164,7 +168,7 @@ template.innerHTML = `
       </div>
     </div>
 
-    <div id="info-eval-settings" hidden>
+    <div id="info-eval-settings"  class="info-eval" hidden>
 
       <div class="info">
         <span class="label"
