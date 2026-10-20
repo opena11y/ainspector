@@ -191,8 +191,11 @@ optionsRulesetTemplate.innerHTML = `
                name="scopeFilter"
                value="ALL"
                checked/>
-        <span data-i18n="options_rule_scope_all_label">
-          All rules (Element, Page, and Website scopes)
+        <span>
+          <span data-i18n="options_rule_scope_all_label" aria-describedby="scope-all-desc">
+          </span>
+          <span id="scope-all-desc" data-i18n="options_rule_scope_all_desc" class="desc">
+          </span>
         </span>
       </label>
 
@@ -246,7 +249,11 @@ optionsRulesetTemplate.innerHTML = `
                data-option="ariaVersion"
                name="aria"
                value="ARIA12"/>
-          <span data-i18n="options_ruleset_aria_12_label">
+          <span>
+            <span data-i18n="options_ruleset_aria_12_label" aria-describedby="aria-12-desc">
+          </span>
+            <span id="aria-12-desc" data-i18n="options_ruleset_aria_12_desc" class="desc">
+          </span>
           </span>
       </label>
 
@@ -255,7 +262,11 @@ optionsRulesetTemplate.innerHTML = `
                data-option="ariaVersion"
                name="aria"
                value="ARIA13"/>
-          <span data-i18n="options_ruleset_aria_13_label">
+          <span>
+            <span data-i18n="options_ruleset_aria_13_label" aria-describedby="aria-13-desc">
+            </span>
+            <span  id="aria-13-desc" data-i18n="options_ruleset_aria_13_desc" class="desc">
+            </span>
           </span>
       </label>
     </fieldset>

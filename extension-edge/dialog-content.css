@@ -44,6 +44,12 @@ table.table td {
     margin-bottom: 1em;
 }
 
+table thead th {
+  border-bottom: 1px solid light-dark(var(--table-header-border-light), var(--table-header-border-dark));
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 table.table th {
   font-weight: bold;
 }
@@ -52,8 +58,8 @@ table.table td {
   font-weight: normal;
 }
 
-table.table-striped tbody tr:nth-child(odd) {
-  background-color: light-dark(#eee, #333);
+table.table-striped tbody tr:nth-child(even) {
+  background-color: light-dark(var(--table-background-stripe-light), var(--table-background-stripe-dark));
 }
 
 table.table .text-end {

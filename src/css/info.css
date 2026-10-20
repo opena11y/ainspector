@@ -82,7 +82,7 @@ table thead tr {
   border-bottom: 1px solid light-dark(var(--table-header-border-light), var(--table-header-border-dark));
 }
 
-table tbody tr:nth-child(odd) {
+table tbody tr:nth-child(even) {
   background: light-dark(var(--table-background-stripe-light), var(--table-background-stripe-dark));
 }
 
