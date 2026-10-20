@@ -125,12 +125,12 @@ template.innerHTML = `
 
         <div class="group" data-i18n-aria-label="info_ruleset_label_select">
           <select id="info-ruleset-options">
-            <option value="WCAG20">WCAG 2.0</option>
-            <option value="WCAG21" selected>WCAG 2.1</option>
-            <option value="WCAG22">WCAG 2.2</option>
-            <option value="FIRSTSTEP">First Step</option>
-            <option value="AXE">aXe Emulation</option>
-            <option value="WAVE">WAVE Emulation</option>
+            <option value="WCAG20"    data-i18n="options_ruleset_wcag_20_label"></option>
+            <option value="WCAG21"    data-i18n="options_ruleset_wcag_21_label" selected></option>
+            <option value="WCAG22"    data-i18n="options_ruleset_wcag_22_label"></option>
+            <option value="FIRSTSTEP" data-i18n="options_ruleset_first_step_label"></option>
+            <option value="AXE"       data-i18n="options_ruleset_axe_label"></option>
+            <option value="WAVE"      data-i18n="options_ruleset_wave_label"></option>
           </select>
 
           <select id="info-level-options" data-i18n-title="info_level_label_select">
@@ -149,9 +149,9 @@ template.innerHTML = `
         </span>
 
         <select id="info-scope-options" data-i18n-title="info_rule_scope_label_select">
-          <option value="ALL" selected>All rules</option>
-          <option value="PAGE">Page rules only</option>
-          <option value="WEBSITE">Website rules only</option>
+          <option value="ALL"      data-i18n="options_rule_scope_all_label" selected></option>
+          <option value="PAGE"     data-i18n="options_rule_scope_page_label"></option>
+          <option value="WEBSITE"  data-i18n="options_rule_scope_website_label"></option>
         </select>
       </div>
 
