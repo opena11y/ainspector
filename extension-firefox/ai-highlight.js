@@ -75,7 +75,14 @@ class AIHighlightELement extends HTMLElement {
   --overlay-adjust: 2px;
 
 
-  --z-index-highlight: 199999;
+  --z-index-highlight: 2000000000;
+}
+
+.ai-highlight {
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  z-index: var(--z-index-highlight);
 }
 
 .overlay {
@@ -214,6 +221,9 @@ class AIHighlightELement extends HTMLElement {
       ];
   }
 
+ /*
+  * @method attributeChangedCallback
+  */
 
   attributeChangedCallback(name, old_value, new_value) {
 
@@ -428,8 +438,7 @@ class AIHighlightELement extends HTMLElement {
 
         const hiddenRect = this.hiddenElem.getBoundingClientRect();
 
-        scrollElement = this.updateHighlightElement(hiddenRect,
-                                                    label, focus);
+        scrollElement = this.updateHighlightElement(hiddenRect, label, focus);
       }
       else {
         this.hiddenElem.style.display = 'none';
@@ -437,8 +446,7 @@ class AIHighlightELement extends HTMLElement {
         rect.left = rect.left + window.scrollX;
         rect.top = rect.top + window.scrollY;
 
-        scrollElement = this.updateHighlightElement(rect,
-                                                    label, focus);
+        scrollElement = this.updateHighlightElement(rect, label, focus);
       }
 
       if (this.isElementInHeightLarge(rect)) {

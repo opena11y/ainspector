@@ -539,7 +539,7 @@ class AISidePanel extends HTMLElement {
 
   }
 
-  highlightResult(position, highlightId, resultType,  focus=true) {
+  highlightResult(itemType, position, highlightId, resultType,  focus=true) {
 
     function onHighlightError(error) {
       console.error(`[highlight] ${error}`);
@@ -551,6 +551,7 @@ class AISidePanel extends HTMLElement {
         for (const tab of tabs) {
           const myResult = await myBrowser.tabs
             .sendMessage(tab.id, {highlight: {
+                                      item_type: itemType,
                                       option: options.highlightOption,
                                       position: position,
                                       result_type: resultType,

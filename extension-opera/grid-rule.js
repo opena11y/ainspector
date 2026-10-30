@@ -175,33 +175,31 @@ export default class GridRule extends Grid {
     removeChildContent(this.tbody);
 
     if (message1) {
-      debug.flag && debug.log(`[clear][message1]: ${message1}`);
       this.addMessageRow('msg1', message1);
       this.tbody.firstElementChild.tabIndex = 0;
     }
 
     if (message2) {
-      debug.flag && debug.log(`[clear][message2]: ${message2}`);
       this.addMessageRow('msg2', message2);
     }
 
   }
 
-  update (website_result, page_result, element_results) {
+  update (website_results, page_results, element_results) {
     let count = 0;
     removeChildContent(this.tbody);
 
-    if (website_result || page_result || element_results.length) {
+    if (website_results.length || page_results.length || element_results.length) {
 
       getOptions().then( (options) => {
 
-        if (website_result) {
-          count = renderResult(this, count, options, website_result);
-        }
+        website_results.forEach( (wsr) => {
+          count = renderResult(this, count, options, wsr);
+        });
 
-        if (page_result) {
-          count = renderResult(this, count, options, page_result);
-        }
+        page_results.forEach( (pr) => {
+          count = renderResult(this, count, options, pr);
+        });
 
         element_results = sortElementResults(element_results);
 
@@ -252,15 +250,15 @@ export default class GridRule extends Grid {
     const result = this.infoResultElem.show(id);
     if (this.sidepanelElem) {
       if (result.is_website) {
-        this.sidepanelElem.highlightResult('website', result.highlightId, result.result_abbrev, true);
+        this.sidepanelElem.highlightResult('website', result.position, result.highlightId, result.result_abbrev, true);
       }
       else {
         if (result.is_page) {
-          this.sidepanelElem.highlightResult('page', result.highlightId, result.result_abbrev, true);
+          this.sidepanelElem.highlightResult('page', result.position, result.highlightId, result.result_abbrev, true);
         }
         else {
           if (result.is_element) {
-            this.sidepanelElem.highlightResult(result.position, result.highlightId, result.result_abbrev, true);
+            this.sidepanelElem.highlightResult('element', result.position, result.highlightId, result.result_abbrev, true);
           }
           else {
             this.sidepanelElem.highlightResult('', '', false);

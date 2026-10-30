@@ -148,7 +148,7 @@
   /* constants.js */
 
   /* Constants */
-  const debug$1a = new DebugLogging('constants', false);
+  const debug$1b = new DebugLogging('constants', false);
 
   const VERSION = '3.0';
 
@@ -651,13 +651,13 @@
    */
 
   function getGuidelineId(sc) {
-    debug$1a.flag && debug$1a.log(`[getGuidelineId][sc]: ${sc}`);
+    debug$1b.flag && debug$1b.log(`[getGuidelineId][sc]: ${sc}`);
     const parts = sc.split('.');
     const gl = (parts.length === 3) ? `G_${parts[0]}_${parts[1]}` : ``;
     if (!gl) {
       return 0;
     }
-    debug$1a.flag && debug$1a.log(`[getGuidelineId][gl]: ${gl}`);
+    debug$1b.flag && debug$1b.log(`[getGuidelineId][gl]: ${gl}`);
     return WCAG_GUIDELINE[gl];
   }
 
@@ -1067,8 +1067,8 @@
   /* headingResults.js */
 
   /* constants */
-  const debug$19 = new DebugLogging('headingResults', false);
-  debug$19.flag = false;
+  const debug$1a = new DebugLogging('headingResults', false);
+  debug$1a.flag = false;
 
   /**
    * @class headingResults
@@ -1089,11 +1089,11 @@
 
       this.headingData = [];
 
-      debug$19.flag && debug$19.log(`[        structureInfo]: ${domCache.structureInfo}`);
-      debug$19.flag && debug$19.log(`[allHeadingDomElements]: ${domCache.structureInfo.allHeadingDomElements.length}`);
+      debug$1a.flag && debug$1a.log(`[        structureInfo]: ${domCache.structureInfo}`);
+      debug$1a.flag && debug$1a.log(`[allHeadingDomElements]: ${domCache.structureInfo.allHeadingDomElements.length}`);
 
       domCache.structureInfo.allHeadingDomElements.forEach( de => {
-        debug$19.flag && debug$19.log(`[tagName]: ${de.tagName}`);
+        debug$1a.flag && debug$1a.log(`[tagName]: ${de.tagName}`);
 
         const dataItem = {
           level:             de.ariaInfo.ariaLevel,
@@ -1125,8 +1125,8 @@
   /* landmarkRegionResults.js */
 
   /* constants */
-  const debug$18 = new DebugLogging('landmarkRegionResults', false);
-  debug$18.flag = false;
+  const debug$19 = new DebugLogging('landmarkRegionResults', false);
+  debug$19.flag = false;
 
   /**
    * @class landmarkRegionResults
@@ -1145,14 +1145,14 @@
 
     update(domCache) {
 
-      debug$18.flag && debug$18.log(`[        structureInfo]: ${domCache.structureInfo}`);
-      debug$18.flag && debug$18.log(`[allLandmarkDomElements]: ${domCache.structureInfo.allLandmarkElements.length}`);
+      debug$19.flag && debug$19.log(`[        structureInfo]: ${domCache.structureInfo}`);
+      debug$19.flag && debug$19.log(`[allLandmarkDomElements]: ${domCache.structureInfo.allLandmarkElements.length}`);
 
       this.regionData = [];
 
       domCache.structureInfo.allLandmarkElements.forEach( le => {
         const de = le.domElement;
-        debug$18.flag && debug$18.log(`[role]: ${de.role}`);
+        debug$19.flag && debug$19.log(`[role]: ${de.role}`);
 
         const dataItem = {
           role:              de.role.toLowerCase(),
@@ -1184,8 +1184,8 @@
   /* linkResults.js */
 
   /* constants */
-  const debug$17 = new DebugLogging('linkResults', false);
-  debug$17.flag = false;
+  const debug$18 = new DebugLogging('linkResults', false);
+  debug$18.flag = false;
 
   const pdfExtensions = [
     'pdf'   // Protable document format
@@ -1346,8 +1346,8 @@
   /* ruleResultsSummary.js */
 
   /* constants */
-  const debug$16 = new DebugLogging('ruleResultsSummary', false);
-  debug$16.flag = false;
+  const debug$17 = new DebugLogging('ruleResultsSummary', false);
+  debug$17.flag = false;
 
   /**
    * @class ruleResultsSummary
@@ -5478,6 +5478,54 @@
           url:   'https://a11y-101.com/development/svg'
         }
       ]
+    },
+    IMAGE_9: {
+        ID:         'Image 9',
+        DEFINITION: 'Every @figure@ element must contain exactly one @figcaption@ element.',
+        SUMMARY:    '@figure@ must have one @figcaption@',
+        TARGET_RESOURCES_DESC: '@figure@ and @figcaption@ elements',
+        RULE_RESULT_MESSAGES: {
+          FAIL_S:   'Update the @figure@ element such that it contains only one @figcaption@ element.',
+          FAIL_P:   'Update %N_F @figure@ elements such that each contains only one @figcaption@ element.',
+          HIDDEN_S: 'One @figure@ element that is hidden was not evaluated.',
+          HIDDEN_P: 'The %N_H @figure@ elements that are hidden were not evaluated.',
+          NOT_APPLICABLE: 'No @figure@ elements on this page.'
+        },
+        BASE_RESULT_MESSAGES: {
+          ELEMENT_PASS_1: '@figure@ has one @figcaption@ element, verify the description accurately the content.',
+          ELEMENT_FAIL_1: 'The @figcapton@ element has no corresponding @figcaption@ element.  If the element does not contain a chart, graph or some other graphical image change the element to a @section@ or @div@ element, else add a @figcaption@ element describing the content.',
+          ELEMENT_FAIL_2: '@figcaption@ element is hidden from assistive technologies. Use CSS off-screen positioning instead of CSS display or visibility properties to remove @figcaption@ from graphical rendering.',
+          ELEMENT_FAIL_3: 'There are %1 @figcaption@ elements, update the code so the @figure@ contains only one @figcaption@ element.',
+          ELEMENT_HIDDEN_1: '@figure@ element was not evaluated because it is hidden from assistive technologies.'
+        },
+        PURPOSES: [
+          '@figure@ elements are like images, and the @figcaption@ is the way to provide the figure with an accessible name.',
+          'Multiple @figcaption@ elements contained in the same @figure@ may result in the improper calculation of labels for assistive technologies.',
+          'The @figure@ element without a corresponding @figcaption@ can be used as a generic container with any @role@, but it is a best practice to use the @section@ or @div@ elements instead, and reserve the @figure@/@figcaption@ elements for charts, graphs, or other composite images.'
+        ],
+        TECHNIQUES: [
+          'A @figure@ element should have one and only one @figcaption@ element to describe the purpose of the form controls it contains.'
+        ],
+        MANUAL_CHECKS: [
+        ],
+        INFORMATIONAL_LINKS: [
+          { type:  REFERENCES.SPECIFICATION,
+            title: 'HTML Specification: The @figure@ element',
+            url:   'https://html.spec.whatwg.org/dev/form-elements.html#the-figure-element'
+          },
+          { type:  REFERENCES.SPECIFICATION,
+            title: 'HTML Specification: The @figcpation@ element',
+            url:   'https://html.spec.whatwg.org/dev/form-elements.html#the-figcaption-element'
+          },
+          { type:  REFERENCES.SPECIFICATION,
+            title: 'MDN <figure>: The Figure element',
+            url:   'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figure'
+          },
+          { type:  REFERENCES.SPECIFICATION,
+            title: 'MDN <figcaption>: The Figcaption element',
+            url:   'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figcaption'
+          }
+        ]
     }
   };
 
@@ -9863,6 +9911,46 @@
             url:   'https://www.w3.org/WAI/WCAG20/Understanding/three-flashes-or-below-threshold'
           }
         ]
+    },
+    TIMING_4: {
+        ID:                    'Timing 4',
+        DEFINITION:            'Users must be able to control refreshing or other major changes in content of a page.',
+        SUMMARY:               'Automatic refresh',
+        TARGET_RESOURCES_DESC: 'Meta elements and scripting used to automatically refresh content or change context to another window',
+        RULE_RESULT_MESSAGES: {
+          MANUAL_CHECK_S:     'Verify the page does not include scripting that automatically reloads page content or cause unanticipated changes in focus.',
+          MANUAL_CHECK_P:     'Verify the page and any of the @iframe@s do not include scripting the automatically reloads page content or cause unanticipated changes in focus .',
+          FAIL_S:             'Remove the @meta http-equiv="refresh"@ element.',
+          FAIL_P:             'Remove the %N_F @meta http-equiv="refresh"@ elements.',
+          HIDDEN_S:           'Element in hidden @iframe@ was not tested for automatic refresh.',
+          HIDDEN_P:           '%N_F elements in hidden @iframe@s were not tested for automatic refresh.'
+         },
+        BASE_RESULT_MESSAGES: {
+          PAGE_MC_1:        'Verify the scripting on the page does not automatically refresh content or cause unanticipated changes in focus.',
+          PAGE_FAIL_1:      'Remove the @meta http-equiv="refresh"@ element from the @iframe@ .',
+          PAGE_FAIL_2:      'Remove the @meta http-equiv="refresh"@ element.',
+          PAGE_HIDDEN_1:    '@iframe@ was hidden and was not tested for automatically refreshing content.'
+        },
+        PURPOSES: [
+          'Pages that automatically change location or refresh are unusable by screen reader and keyboard users since focus will constantly be taking them back to the top of the page.'
+        ],
+        TECHNIQUES: [
+          'Remove @meta http-equiv="refresh" content="{time}; url..@ elements with @time@ greater than 0 which cause automatic refresh or redirects.',
+          'Provide users with controls to update of content.'
+        ],
+        MANUAL_CHECKS: [
+        ],
+        INFORMATIONAL_LINKS: [
+          { type:  REFERENCES.WCAG_TECHNIQUE,
+            title: 'Understanding 2.2.1 ',
+            url:   'https://www.w3.org/WAI/WCAG21/Understanding/timing-adjustable.html'
+          },
+          { type:  REFERENCES.WCAG_TECHNIQUE,
+            title: 'Understanding 2.2.1 ',
+            url:   'https://www.w3.org/WAI/WCAG22/Techniques/failures/F40'
+          }
+
+        ]
     }
   };
 
@@ -11471,7 +11559,7 @@
   /* locale.js */
 
   /* Constants */
-  const debug$15 = new DebugLogging('locale', false);
+  const debug$16 = new DebugLogging('locale', false);
 
   // const globalUseCodeTags = true;
 
@@ -11527,7 +11615,7 @@
     if (!message) {
       message = `[common][error]: id="${id}"`;
     }
-    debug$15.flag && debug$15.log(`[${id}][${value}]: ${message}`);
+    debug$16.flag && debug$16.log(`[${id}][${value}]: ${message}`);
     return message;
   }
 
@@ -11754,7 +11842,7 @@
       for (const g in principle.guidelines) {
         const guideline = principle.guidelines[g];
         if (guideline.id === guidelineId) {
-          debug$15.flag && debug$15.log(`[getGuidelineInfo][${guidelineId}]: ${guideline.title}`);
+          debug$16.flag && debug$16.log(`[getGuidelineInfo][${guidelineId}]: ${guideline.title}`);
           return {
             num: g,
             title: guideline.title,
@@ -11764,7 +11852,7 @@
         }
       }
     }
-    debug$15.flag && debug$15.log(`[getGuidelineInfo][${guidelineId}][ERROR]: `);
+    debug$16.flag && debug$16.log(`[getGuidelineInfo][${guidelineId}][ERROR]: `);
     // Assume all rules
     return {
       title: messages[locale].common.allRules,
@@ -11797,7 +11885,7 @@
         for (const sc in guideline.success_criteria) {
           const success_criterion = guideline.success_criteria[sc];
           if (sc === successCriterionId) {
-            debug$15.flag && debug$15.log(`[getSuccessCriterionInfo][${successCriterionId}]: ${success_criterion.title}`);
+            debug$16.flag && debug$16.log(`[getSuccessCriterionInfo][${successCriterionId}]: ${success_criterion.title}`);
             return {
               id: successCriterionId,
               level: success_criterion.level,
@@ -11809,7 +11897,7 @@
         }
       }
     }
-    debug$15.flag && debug$15.log(`[getSuccessCriterionInfo][${successCriterionId}]: ERROR`);
+    debug$16.flag && debug$16.log(`[getSuccessCriterionInfo][${successCriterionId}]: ERROR`);
     return null;
   }
 
@@ -11829,7 +11917,7 @@
    */
 
   function getSuccessCriteriaInfo(successCriteriaIds) {
-    debug$15.flag && debug$15.log(`[getSuccessCriteriaInfo]: ${successCriteriaIds.length}`);
+    debug$16.flag && debug$16.log(`[getSuccessCriteriaInfo]: ${successCriteriaIds.length}`);
     const scInfoArray = [];
     successCriteriaIds.forEach( sc => {
       scInfoArray.push(getSuccessCriterionInfo(sc));
@@ -11877,7 +11965,7 @@
    */
 
   function getRuleDefinition (ruleId, transform=false) {
-    debug$15.flag && debug$15.log(`[getRuleDefinition][${ruleId}]: ${messages[locale].rules[ruleId].DEFINITION}`);
+    debug$16.flag && debug$16.log(`[getRuleDefinition][${ruleId}]: ${messages[locale].rules[ruleId].DEFINITION}`);
     let m = messages[locale].rules[ruleId].DEFINITION;
     if (transform) m = transformToCode(m);
     return m;
@@ -11895,7 +11983,7 @@
    */
 
   function getRuleSummary (ruleId, transform=false) {
-    debug$15.flag && debug$15.log(`[getRuleSummary][${ruleId}]: ${messages[locale].rules[ruleId].SUMMARY}`);
+    debug$16.flag && debug$16.log(`[getRuleSummary][${ruleId}]: ${messages[locale].rules[ruleId].SUMMARY}`);
     let m = messages[locale].rules[ruleId].SUMMARY;
     if (transform) m = transformToCode(m);
     return m;
@@ -11913,7 +12001,7 @@
    */
 
   function getTargetResourcesDesc (ruleId, transform=false) {
-    debug$15.flag && debug$15.log(`[getTargetResourcesDesc][${ruleId}]: ${messages[locale].rules[ruleId].TARGET_RESOURCES_DESC}`);
+    debug$16.flag && debug$16.log(`[getTargetResourcesDesc][${ruleId}]: ${messages[locale].rules[ruleId].TARGET_RESOURCES_DESC}`);
     let m = messages[locale].rules[ruleId].TARGET_RESOURCES_DESC;
     if (transform) m = transformToCode(m);
     return m;
@@ -11936,7 +12024,7 @@
       if (transform) p = transformToCode(p);
       purposes.push(p);
     });
-    debug$15.flag && debug$15.log(`[getPurposes][${ruleId}]: ${purposes.join('; ')}`);
+    debug$16.flag && debug$16.log(`[getPurposes][${ruleId}]: ${purposes.join('; ')}`);
     return purposes;
   }
 
@@ -11957,7 +12045,7 @@
       if (transform) t = transformToCode(t);
       techniques.push(t);
     });
-    debug$15.flag && debug$15.log(`[getTechniques][${ruleId}]: ${techniques.join('; ')}`);
+    debug$16.flag && debug$16.log(`[getTechniques][${ruleId}]: ${techniques.join('; ')}`);
     return techniques;
   }
 
@@ -11986,8 +12074,8 @@
           url: infoLink.url
         }
       );
-      debug$15.flag && debug$15.log(`[infoLink][title]: ${infoLink.title}`);
-      debug$15.flag && debug$15.log(`[infoLink][  url]: ${infoLink.url}`);
+      debug$16.flag && debug$16.log(`[infoLink][title]: ${infoLink.title}`);
+      debug$16.flag && debug$16.log(`[infoLink][  url]: ${infoLink.url}`);
     });
     return infoLinks;
   }
@@ -12009,7 +12097,7 @@
       if (transform) mc = transformToCode(mc);
       manualChecks.push(mc);
     });
-    debug$15.flag && debug$15.log(`[getManualChecks][${ruleId}]: ${manualChecks.join('; ')}`);
+    debug$16.flag && debug$16.log(`[getManualChecks][${ruleId}]: ${manualChecks.join('; ')}`);
     return manualChecks;
   }
 
@@ -12029,7 +12117,7 @@
     const msgs = messages[locale].rules[ruleId].RULE_RESULT_MESSAGES;
     for ( const key in msgs ) {
       resultMessages[key] = transform ? transformToCode(msgs[key]) : msgs[key];
-      debug$15.flag && debug$15.log(`[getRuleResultMessages][${ruleId}][${key}]: ${resultMessages[key]}`);
+      debug$16.flag && debug$16.log(`[getRuleResultMessages][${ruleId}][${key}]: ${resultMessages[key]}`);
     }
     return resultMessages;
   }
@@ -12050,7 +12138,7 @@
     const msgs = messages[locale].rules[ruleId].BASE_RESULT_MESSAGES;
     for ( const key in msgs ) {
       resultMessages[key] = transform ? transformToCode(msgs[key]) : msgs[key];
-      debug$15.flag && debug$15.log(`[getBaseResultMessages][${ruleId}][${key}]: ${resultMessages[key]}`);
+      debug$16.flag && debug$16.log(`[getBaseResultMessages][${ruleId}][${key}]: ${resultMessages[key]}`);
     }
     return resultMessages;
   }
@@ -12194,8 +12282,8 @@
   /* ruleResultsGroup.js */
 
   /* constants */
-  const debug$14 = new DebugLogging('ruleResultsGroup', false);
-  debug$14.flag = false;
+  const debug$15 = new DebugLogging('ruleResultsGroup', false);
+  debug$15.flag = false;
 
   /**
    * @class ruleResultsGroup
@@ -12255,8 +12343,8 @@
   /* controlInfo.js */
 
   /* Constants */
-  const debug$13 = new DebugLogging('ControlInfo', false);
-  debug$13.flag = false;
+  const debug$14 = new DebugLogging('ControlInfo', false);
+  debug$14.flag = false;
 
   /**
    * @class ControlElement
@@ -12460,7 +12548,7 @@
         prefix = '';
       }
       this.childControlElements.forEach( ce => {
-        debug$13.domElement(ce.domElement, prefix);
+        debug$14.domElement(ce.domElement, prefix);
         ce.showControlInfo(prefix + '  ');
       });
     }
@@ -12746,18 +12834,120 @@
      */
 
     showControlInfo () {
-      if (debug$13.flag) {
-        debug$13.log('== Control Tree ==', 1);
+      if (debug$14.flag) {
+        debug$14.log('== Control Tree ==', 1);
         this.childControlElements.forEach( ce => {
-          debug$13.domElement(ce.domElement);
+          debug$14.domElement(ce.domElement);
           ce.showControlInfo('  ');
         });
-        debug$13.log('== Forms ==', 1);
+        debug$14.log('== Forms ==', 1);
         this.allFormElements.forEach( ce => {
-          debug$13.domElement(ce.domElement);
+          debug$14.domElement(ce.domElement);
         });
       }
     }
+  }
+
+  /* domDocument.js */
+
+  /* Constants */
+  const debug$13 = new DebugLogging('domDocument', false);
+  debug$13.flag = false;
+
+  /**
+   * @class DOMDocument
+   *
+   * @desc Used to represent a dom document node for use in computing information
+   *       useful for accessibility rules.
+   *
+   * @param  {Object}  parentInfo - ParentInfo object 
+   * @param  {Object}  doc        - Document object
+   */
+
+  class DOMDocument {
+    constructor (parentInfo, position, doc, domElem=null) {
+      this.parentInfo = parentInfo;
+      this.ordinalPosition = position;
+      this.doc = doc;
+      this.domElement = domElem;
+
+      this.tagName = domElem && domElem.tagName ? domElem.tagName.toLowerCase() : 'root';
+      this.title   = domElem && domElem.node.title   ? domElem.node.title : doc.title;
+
+      this.hasRefresh = false;
+      this.refreshTime = '';
+      this.refreshURL = '';
+
+      const metas = doc && doc.documentElement ?
+                       Array.from(doc.querySelectorAll('head meta')) :
+                       [];
+
+      metas.forEach( (meta) => {
+        const hasRefresh = meta.hasAttribute('http-equiv') &&
+                           meta.getAttribute('http-equiv').toLowerCase() === 'refresh';
+        const content    = meta.hasAttribute('content') ?
+                           meta.getAttribute('content').split(';') :
+                           '';
+
+        const refreshTime = hasRefresh ? parseInt(content[0]) : '';
+
+        const refreshURL  = hasRefresh &&
+                            content.length > 1 &&
+                            content[1].includes('=')
+                            ? content[1].split('=')[1] : [];
+        if (hasRefresh && !isNaN(refreshTime)) {
+          this.hasRefresh   = true;
+          this.refreshTime  = refreshTime;
+          this.refreshURL   = refreshURL;
+        }
+      });
+
+      // Information on rule results associated with this element
+      this.resultsHidden       = [];
+      this.resultsPassed       = [];
+      this.resultsViolations   = [];
+      this.resultsWarnings     = [];
+      this.resultsManualChecks = [];
+    }
+
+
+
+    /**
+     * @method getBodyElement
+     *
+     * @desc Returns the DOM node to attach highlighting element for this DOM element
+     *
+     * @return {String} see description
+     */
+
+    getBodyElement () {
+      return this.doc && this.doc.body ?
+             this.doc.body :
+             window.document.body;
+     }
+
+    /**
+     * @method metaElems
+     *
+     * @desc
+     *
+     * @return {obj} Returns body element of document
+     */
+
+    getMetaItems () {
+      return this._metaElems;
+    }
+
+    /**
+     * @method getIndentifier
+     *
+     * @desc
+     */
+
+    getIdentifier () {
+      return this.title ? `${this.tagName}: ${this.title}` : this.tagName;
+    }
+
   }
 
   /* gen-aria-property-data-types-1.2.js is a generated file, see https://github.com/opena11y/aria-to-code */
@@ -35705,6 +35895,7 @@
       this.lang             = elementNode.hasAttribute('lang') ?
                               elementNode.getAttribute('lang') :
                               '';
+      this.domDoc           = parentInfo.domDocument;
 
       if (addDataId) {
         elementNode.dataset.opena11yPosition = ordinalPosition.toString();
@@ -35873,16 +36064,10 @@
      */
 
     getBodyElement () {
-      let bodyElem = this.doc.body ?
-                       this.doc.body :
-                       this.doc.documentElement;
-
-      if (!bodyElem) {
-        bodyElem = window.document;
-      }
-
-      return bodyElem;
-    }
+      return this.domDoc && this.domDoc.getBodyElement() ?
+             this.domDoc.getBodyElement() :
+             window.document.body;
+     }
 
     /**
      * @method isDomText
@@ -36461,6 +36646,29 @@
 
 
   /**
+   * @class FigureElement
+   *
+   * @desc Identifies a DOM element as an figure element
+   *
+   * @param  {Object}  domElement   - Structural Information
+   */
+
+  class FigureElement {
+    constructor (domElement) {
+      this.domElement = domElement;
+      this.figcaptionDomElements = [];
+    }
+
+    addFigcaptionDomElement (domElement) {
+      this.figcaptionDomElements.push(domElement);
+    }
+
+    toString () {
+      return this.domElement.role;
+    }
+  }
+
+  /**
    * @class ImageInfo
    *
    * @desc Collects information on the image elements on a web page for use in
@@ -36469,9 +36677,10 @@
 
   class ImageInfo {
     constructor () {
-      this.allImageElements  = [];
+      this.allImageElements     = [];
       this.allSVGDomElements    = [];
       this.allMapElements       = [];
+      this.allFigureElements    = [];
     }
 
     /**
@@ -36507,6 +36716,23 @@
     }
 
     /**
+     * @method addFigureElement
+     *
+     * @desc Creates a new FigureElementto the array of
+     *       FigureElements
+     *
+     * @param  {Object}  domElement -
+     *
+     */
+
+    addFigureElement (domElement) {
+      const fe = new FigureElement(domElement);
+      this.allFigureElements.push(fe);
+      return fe;
+    }
+
+
+    /**
      * @method isImage
      *
      * @desc Tests if a domElement for role of "img"
@@ -36518,6 +36744,31 @@
       return (domElement.role === 'img') ||
              (domElement.role === 'image') || // Support in ARIA 1.3
              (domElement.tagName === 'img');
+    }
+
+    /**
+     * @method isFigure
+     *
+     * @desc Tests if a domElement for role of "figure"
+     *
+     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
+     */
+
+    isFigure (domElement) {
+      return (domElement.role === 'figure') ||
+             (domElement.tagName === 'figure');
+    }
+
+    /**
+     * @method isFigcaption
+     *
+     * @desc Tests if a domElement for role of "figcaption"
+     *
+     * @param  {Object}  domElement - DOMElement object representing an element in the DOM
+     */
+
+    isFigcaption (domElement) {
+      return (domElement.tagName === 'figcaption');
     }
 
     /**
@@ -36561,14 +36812,16 @@
      *
      * @desc Checks to see if the domElement has a role of "img" or a graphical tag name
      *
-     * @param  {Object}  parentMapElement  - current ancestor MapElement object
-     * @param  {Object}  domElement        - DOMElement object representing an element in the DOM
+     * @param  {Object}  parentMapElement     - current ancestor MapElement object
+     * @param  {Object}  parentFigureElement  - current ancestor FigureElement object
+     * @param  {Object}  domElement           - DOMElement object representing an element in the DOM
      *
      * @return {Object}  Last MapElement object
      */
 
-    update (parentMapElement, domElement) {
+    update (parentMapElement, parentFigureElement, domElement) {
       let currentMapElement = parentMapElement;
+      let currentFigureElement = parentFigureElement;
 
       if (this.isImage(domElement)) {
         this.addImageElement(domElement);
@@ -36588,7 +36841,18 @@
         }
       }
 
-      return currentMapElement;
+      if (this.isFigure(domElement)) {
+        currentFigureElement = this.addFigureElement(domElement);
+      }
+
+      if (this.isFigcaption(domElement)) {
+        if (parentFigureElement) {
+          parentFigureElement.addFigcaptionDomElement(domElement);
+        }
+      }
+
+
+      return [currentMapElement, currentFigureElement];
     }
 
     /**
@@ -37955,6 +38219,7 @@
     constructor (info) {
       this.controlElement  = null;
       this.document        = null;
+      this.domDocument     = null;
       this.parentDocument  = null;
       this.useParentDocForName = false;
       this.documentIndex   = 0;
@@ -37963,6 +38228,7 @@
       this.landmarkElement = null;
       this.listElement     = null;
       this.mapElement      = null;
+      this.figureElement   = null;
       this.mediaElement    = null;
       this.tableElement    = null;
       this.tableRowGroup   = null;
@@ -37977,6 +38243,7 @@
       if (info) {
         this.controlElement  = info.controlElement;
         this.document        = info.document;
+        this.domDocument     = info.domDocument;
         this.parentDocument  = info.parentDocument;
         this.useParentDocForName = info.useParentDocForName;
         this.documentIndex   = info.documentIndex;
@@ -37986,6 +38253,7 @@
         this.landmarkElement = info.landmarkElement;
         this.listElement     = info.listElement;
         this.mapElement      = info.mapElement;
+        this.figureElement   = info.figureElement;
         this.mediaElement    = info.mediaElement;
         this.tableElement    = info.tableElement;
         this.tableRowGroup   = info.tableRowGroup;
@@ -38034,24 +38302,14 @@
         this.lang = '';
       }
 
-      this.document = startingDoc;
-      this.bodyElem = startingDoc.body ?
-                      startingDoc.body :
-                      startingDoc.documentElement;
-
-      debug$M.log(`[bodyELem]: ${this.bodyElem}`);
-
       this.ariaVersion = ariaVersion;
 
       this.ordinalPosition = 2;
       this.documentIndex = 0;
 
+      this.allDomDocuments  = [];
       this.allDomElements   = [];
       this.allDomTexts      = [];
-
-      const parentInfo = new ParentInfo();
-      parentInfo.document        = startingDoc;
-      parentInfo.accNameDocument = startingDoc;
 
       this.controlInfo   = new ControlInfo();
       this.idInfo        = new IdInfo();
@@ -38064,6 +38322,18 @@
       this.timingInfo    = new TimingInfo();
       this.iframeInfo    = new IframeInfo();
 
+      const parentInfo = new ParentInfo();
+      const domDoc = new DOMDocument(parentInfo, 1, startingDoc, null);
+      this.allDomDocuments.push(domDoc);
+      parentInfo.document        = startingDoc;
+      parentInfo.domDocument     = domDoc;
+      parentInfo.accNameDocument = startingDoc;
+
+      this.document = startingDoc;
+      this.bodyElem = startingDoc.body ?
+                      startingDoc.body :
+                      startingDoc.documentElement;
+
       this.startingDomElement = new DOMElement(parentInfo, startingElement, 1, this.ariaVersion, addDataId);
       parentInfo.positionDomElement = this.startingDomElement;
       this.allDomElements.push(this.startingDomElement);
@@ -38075,6 +38345,7 @@
       this.resultsWarnings     = [];
       this.resultsManualChecks = [];
 
+
       parentInfo.domElement = this.startingDomElement;
       this.transverseDOM(parentInfo, startingElement, addDataId);
       this.computeAriaOwnsRefs();
@@ -38083,6 +38354,10 @@
       this.controlInfo.updateLabelForReferences();
 
       this.hasScripting = startingDoc.querySelector('script') ? true : false;
+    }
+
+    getRootDomDocument() {
+      return this.allDomDocuments[0];
     }
 
     getDomElementById(id) {
@@ -38233,12 +38508,19 @@
                     let isCrossDomain = false;
                     try {
                       const doc = node.contentDocument || node.contentWindow.document;
-
                       newParentInfo.document = doc;
-                      newParentInfo.positionDomElement = doc;
+
+                      const pos = this.allDomDocuments.length + 1;
+
+                      const domDoc = new DOMDocument(parentInfo, pos, doc, domItem);
+
+                      this.allDomDocuments.push(domDoc);
 
                       this.documentIndex += 1;
                       newParentInfo.documentIndex = this.documentIndex;
+                      newParentInfo.positionDomElement = doc;
+                      newParentInfo.domDocument = domDoc;
+
                       this.transverseDOM(newParentInfo, doc, addDataId);
                     } catch (error) {
                       isCrossDomain = true;
@@ -38275,6 +38557,7 @@
       const landmarkElement = parentInfo.landmarkElement;
       const listElement     = parentInfo.listElement;
       const mapElement      = parentInfo.mapElement;
+      const figureElement   = parentInfo.figureElement;
       const mediaElement    = parentInfo.mediaElement;
       const tableElement    = parentInfo.tableElement;
       const tableRowGroup   = parentInfo.tableRowGroup;
@@ -38286,7 +38569,7 @@
       newParentInfo.isDisabled      = domElement.isDisabled;
 
       newParentInfo.controlElement  = this.controlInfo.update(controlElement, domElement);
-      newParentInfo.mapElement      = this.imageInfo.update(mapElement, domElement);
+      [newParentInfo.mapElement, newParentInfo.figureElement] = this.imageInfo.update(mapElement, figureElement, domElement);
       newParentInfo.inLink          = this.linkInfo.update(domElement, parentInfo.inLink);
       newParentInfo.listElement     = this.listInfo.update(listElement, domElement);
       newParentInfo.mediaElement    = this.mediaInfo.update(mediaElement, domElement);
@@ -40292,7 +40575,7 @@
    * @desc Constructor for an object that contains a the results of
    *          the evaluation of a rule on a element or page
    *
-   * @param  {Object}       domElement   - DomElement reference to element information used by this rule result
+   * @param  {Object}       domItem       - DomElement od DomDocument reference to element information used by this rule result
    * @param  {ResultRule}   ruleResult   - reference to the rule result object
    * @param  {Number}       resultValue  - Constant representing result value of the evaluation result
    * @param  {String}       msgId        - String reference to the message string in the NLS file
@@ -40309,11 +40592,11 @@
    */
 
   class BaseResult {
-    constructor (domElement, ruleResult, resultValue, msgId, msgArgs, resultIdentifier) {
+    constructor (domItem, ruleResult, resultValue, msgId, msgArgs, resultIdentifier) {
 
       const msg = ruleResult.rule.base_result_msgs[msgId];
 
-      this.domElement = domElement;
+      this.domItem = domItem;
       this.result_type       = RESULT_TYPE.BASE;
       this.rule_result       = ruleResult;
       this.result_value      = resultValue;
@@ -40324,6 +40607,20 @@
       this.result_identifier = resultIdentifier;
 
     }
+
+    /**
+     * @method getOrdinalPosition
+     *
+     * @desc Gets a string identifying the ordinal position,
+     *       is overrided by ElementResult and PageResult
+     *
+     * @return {String} see description
+     */
+
+    getOrdinalPosition () {
+      return this.domItem.ordinalPosition;
+    }
+
 
     /**
      * @getter isActionMessage
@@ -40384,7 +40681,7 @@
      */
 
     getBodyElement () {
-      const bodyElem = this.domElement.getBodyElement();
+      const bodyElem = this.domItem.getBodyElement();
       debug$H.log(`[getBodyElement][bodyElem]: ${bodyElem}`);
       return bodyElem;
     }
@@ -40567,6 +40864,8 @@
             message_id,
             message_arguments,
             domElement.getIdentifier());
+
+      this.domElement = domElement;
 
       this.result_type    = RESULT_TYPE.ELEMENT;
       this.resultId = 'er-' + resultIndex + '-' + this.domElement.ordinalPosition;
@@ -41119,7 +41418,7 @@
    *
    * @param  {ResultRule}   rule_result         - reference to the rule result object
    * @param  {Number}       result_value        - Constant representing result value of the evaluation result
-   * @param  {Object}       domElement          - DomElement of the body element of the document
+   * @param  {DOMDocument}  domDocument         - Object reference to DOMDocument object item associated with the test
    * @param  {String}       message_id          - String reference to the message string in the NLS file
    * @param  {Array}        message_arguments   - Array  array of values used in the message string
    * @param  {Array}        props               - Array of properties that are defined in the validation function (NOTE: typically undefined)
@@ -41130,16 +41429,16 @@
    * @private
    * @constructor Internal Properties
    *
-   * @property  {RuleResult} rule_result         - reference to the rule result object
-   * @property  {Number}     result_value        - Constant representing result value of the evaluation result
-   * @property  {DOMElement} cache_item          - Object reference to cache item associated with the test
-   * @property  {String}     message_id          - String reference to the message string in the NLS file
-   * @property  {Array}      message_arguments   - Array  array of values used in the message string
+   * @property  {RuleResult}  rule_result         - reference to the rule result object
+   * @property  {Number}      result_value        - Constant representing result value of the evaluation result
+   * @property  {DOMDocument} domDocument         - Object reference to DOMDocument object item associated with the test
+   * @property  {String}      message_id          - String reference to the message string in the NLS file
+   * @property  {Array}       message_arguments   - Array  array of values used in the message string
    */
 
   class PageResult extends BaseResult {
-    constructor (rule_result, result_value, domElement, message_id, message_arguments, resultIndex) {
-      super(domElement,
+    constructor (rule_result, result_value, domDocument, message_id, message_arguments, resultIndex) {
+      super(domDocument,
             rule_result,
             result_value,
             message_id,
@@ -41208,7 +41507,7 @@
    *
    * @param  {ResultRule}   rule_result         - reference to the rule result object
    * @param  {Number}       result_value        - Constant representing result value of the evaluation result
-   * @param  {Object}       domElement          - DomElement of the body element of the document
+   * @param  {DOMDocument}  domDocument         - Object reference to DOMDocument object item associated with the test
    * @param  {String}       message_id          - String reference to the message string in the NLS file
    * @param  {Array}        message_arguments   - Array  array of values used in the message string
    * @param  {Array}        props               - Array of properties that are defined in the validation function (NOTE: typically undefined)
@@ -41219,16 +41518,16 @@
    * @private
    * @constructor Internal Properties
    *
-   * @property  {RuleResult} rule_result         - reference to the rule result object
-   * @property  {Number}     result_value        - Constant representing result value of the evaluation result
-   * @property  {DOMElement} cache_item          - Object reference to cache item associated with the test
-   * @property  {String}     message_id          - String reference to the message string in the NLS file
-   * @property  {Array}      message_arguments   - Array  array of values used in the message string
+   * @property  {RuleResult}  rule_result         - reference to the rule result object
+   * @property  {Number}      result_value        - Constant representing result value of the evaluation result
+   * @property  {DOMDocument} domDocument         - Object reference to DOMDocument object item associated with the test
+  * @property  {String}       message_id          - String reference to the message string in the NLS file
+   * @property  {Array}       message_arguments   - Array  array of values used in the message string
    */
 
   class WebsiteResult extends BaseResult {
-    constructor (rule_result, result_value, domElement, message_id, message_arguments, resultIndex) {
-      super(domElement,
+    constructor (rule_result, result_value, domDocument, message_id, message_arguments, resultIndex) {
+      super(domDocument,
             rule_result,
             result_value,
             message_id,
@@ -41618,7 +41917,7 @@
      *
      * @param  {Integer}  test_result   - Number representing a result value
      * @param  {Object}   result_item   - Reference to ElementResult or PageResult object
-     * @param  {Object}   dom_item      - Reference to DOMcache or domElement objects
+     * @param  {Object}   dom_item      - Reference to DOMDocument or domElement objects
      */
 
     updateResults (result_value, result_item, dom_item) {
@@ -41680,17 +41979,17 @@
      * @desc Adds a page result from an evaluation of rule on the dom
      *
      * @param  {Integer}  test_result         - Number representing if a node passed, failed, manual check or other test result
-     * @param  {Object}   dom_cache           - Reference to DOMcache for saving page results
+     * @param  {Object}   domDoc              - Reference to DOMDocument for saving page results
      * @param  {String}   message_id          - Reference to the message string in the NLS file
      * @param  {Array}    message_arguements  - Array of values used in the message string
      */
 
-    addPageResult (test_result, dom_cache, message_id, message_arguments) {
+    addPageResult (test_result, domDoc, message_id, message_arguments) {
       const result_value = getResultValue(test_result, this.isRuleRequired());
-      const page_result = new PageResult(this, result_value, dom_cache, message_id, message_arguments, this.pageResultIndex);
+      const page_result = new PageResult(this, result_value, domDoc, message_id, message_arguments, this.pageResultIndex);
       this.pageResultIndex += 1;
 
-      this.updateResults(result_value, page_result, dom_cache);
+      this.updateResults(result_value, page_result, domDoc);
     }
 
     /**
@@ -42005,7 +42304,9 @@
       target_resources    : ['video', 'audio', 'embed', 'object'],
       validate            : function (dom_cache, rule_result) {
 
-        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+        const domDoc = dom_cache.getRootDomDocument();
+
+        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
 
       } // end validate function
     }
@@ -42044,8 +42345,10 @@
       target_resources    : ['widgets'],
       validate          : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         if (dom_cache.controlInfo.hasTextInput) {
-          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
         }
 
       } // end validate function
@@ -42086,6 +42389,8 @@
       wcag_related_ids    : ['2.4.4'],
       target_resources    : ['a'],
       validate            : function (dom_cache, rule_result) {
+
+        const domDoc = dom_cache.getRootDomDocument();
 
         const bypassTargets = [
           'content',
@@ -42148,19 +42453,19 @@
         }
 
         if (hasSkipToButton) {
-          rule_result.addPageResult(TEST_RESULT.PASS, dom_cache, 'PAGE_PASS_1', []);
+          rule_result.addPageResult(TEST_RESULT.PASS, domDoc, 'PAGE_PASS_1', []);
         }
         else {
           if (hasBypassLink) {
             if (targetDomElem) {
-              rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+              rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
             }
             else {
-              rule_result.addPageResult(TEST_RESULT.FAIL, dom_cache, 'PAGE_FAIL_1', []);
+              rule_result.addPageResult(TEST_RESULT.FAIL, domDoc, 'PAGE_FAIL_1', []);
             }
           }
           else {
-            rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_2', []);
+            rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_2', []);
           }
         }
       } // end validation function  }
@@ -42324,7 +42629,9 @@
       target_resources    : [],
       validate            : function (dom_cache, rule_result) {
 
-        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+        const domDoc = dom_cache.getRootDomDocument();
+
+        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
 
       } // end validate function
     },
@@ -42641,6 +42948,8 @@
       target_resources    : ['input[type="text"]', 'input[type="date"]', 'input[type="file"]', 'input[type="number"]', 'input[type="password"]', 'input[type="tel"]' , 'input[type="text"]', 'input[type="url"]', 'select', 'textarea', '[role="textbox"]', '[role="combobox"]', '[role="gridcell"]'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         const excludeRoles = ['group',
                               'listitem',
                               'menuitem',
@@ -42666,7 +42975,7 @@
         });
 
         if (count) {
-          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
         }
       } // end validate function
     }
@@ -42898,7 +43207,8 @@
     first_step          : true,
     axe_refs            : ['input-image-alt'],
     wave_refs           : ['alt_input_missing',
-                           'label_title'],
+                           'label_title',
+                           'alt_input'],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['input[type="image"]'],
@@ -43116,7 +43426,8 @@
     first_step          : false,
     axe_refs            : ['form-field-multiple-labels'],
     wave_refs           : ['label_orphaned',
-                           'label_multiple'],
+                           'label_multiple',
+                           'label'],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['label'],
@@ -43187,7 +43498,8 @@
     rule_required       : true,
     first_step          : false,
     axe_refs            : [],
-    wave_refs           : ['label_empty'],
+    wave_refs           : ['label_empty',
+                           'label'],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6'],
     target_resources    : ['label', 'legend'],
@@ -43231,7 +43543,8 @@
     wave_refs           : [],
     wcag_primary_id     : '3.3.2',
     wcag_related_ids    : ['1.3.1', '2.4.6', '4.1.1'],
-    target_resources    : ['fieldset'],
+    target_resources    : ['fieldset',
+                           'label'],
     validate            : function (dom_cache, rule_result) {
       dom_cache.controlInfo.allControlElements.forEach(ce => {
         const de = ce.domElement;
@@ -43880,6 +44193,9 @@
       wcag_related_ids    : ['1.3.1', '2.4.2', '2.4.6', '2.4.10'],
       target_resources    : ['h1'],
       validate            : function (dom_cache, rule_result) {
+
+        const domDoc = dom_cache.getRootDomDocument();
+
         let h1Count = 0;
 
         dom_cache.structureInfo.allHeadingDomElements.forEach( de => {
@@ -43900,10 +44216,10 @@
         });
 
         if (h1Count === 0) {
-          rule_result.addPageResult(TEST_RESULT.FAIL, dom_cache, 'PAGE_FAIL_1', []);
+          rule_result.addPageResult(TEST_RESULT.FAIL, domDoc, 'PAGE_FAIL_1', []);
         }
         else {
-          rule_result.addPageResult(TEST_RESULT.PASS, dom_cache, 'PAGE_PASS_1', []);
+          rule_result.addPageResult(TEST_RESULT.PASS, domDoc, 'PAGE_PASS_1', []);
         }
       } // end validate function
     },
@@ -44097,6 +44413,9 @@
     wcag_related_ids    : ['2.4.6', '2.4.10'],
     target_resources    : ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
     validate            : function (dom_cache, rule_result) {
+
+      const domDoc = dom_cache.getRootDomDocument();
+
       let nestingErrors = 0;
       let manualChecks = 0;
 
@@ -44126,23 +44445,22 @@
       }
 
       if (nestingErrors > 0) {
-        rule_result.addPageResult(TEST_RESULT.FAIL, dom_cache, 'PAGE_FAIL_1', [nestingErrors]);
+        rule_result.addPageResult(TEST_RESULT.FAIL, domDoc, 'PAGE_FAIL_1', [nestingErrors]);
       }
       else {
         if (dom_cache.structureInfo.allHeadingDomElements.length > 0) {
           if (manualChecks > 0) {
             if (manualChecks === 1) {
-              rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+              rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
             }
             else {
-              rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_2', [manualChecks]);
+              rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_2', [manualChecks]);
             }
           } else {
-            rule_result.addPageResult(TEST_RESULT.PASS, dom_cache, 'PAGE_PASS_1', []);
+            rule_result.addPageResult(TEST_RESULT.PASS, domDoc, 'PAGE_PASS_1', []);
           }
         }
       }
-
 
     } // end validate function
   },
@@ -44299,7 +44617,9 @@
       target_resources    : ['page'],
       validate            : function (dom_cache, rule_result) {
 
-        rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+        const domDoc = dom_cache.getRootDomDocument();
+
+        rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
 
      } // end validation function  }
     }
@@ -44388,7 +44708,12 @@
     wave_refs           : ['alt_missing',
                           'alt_spacer_missing',
                           'alt_area_missing',
-                          'image_title'],
+                          'alt_map_missing',
+                          'image_title',
+                           'alt_null',
+                           'alt_link',
+                           'alt_map',
+                           'alt_area'],
     wcag_primary_id     : '1.1.1',
     wcag_related_ids    : [],
     target_resources    : ['img', 'area', '[role="img"]'],
@@ -44681,6 +45006,60 @@
     });
     } // end validation function
   },
+
+  /**
+   * @object IMAGE 9
+   *
+   * @desc Figure element must contain exactly one figcaption element
+   */
+
+  { rule_id             : 'IMAGE_9',
+    last_updated        : '2026-10-30',
+    rule_scope          : RULE_SCOPE.ELEMENT,
+    rule_category       : RULE_CATEGORIES.IMAGES,
+    rule_required       : false,
+    first_step          : false,
+    axe_refs            : [],
+    wave_refs           : ['figure'],
+    wcag_primary_id     : '1.1.1',
+    wcag_related_ids    : [],
+    target_resources    : ['figure',
+                           'figcaption'],
+    validate            : function (dom_cache, rule_result) {
+
+      dom_cache.imageInfo.allFigureElements.forEach( fe => {
+        const de = fe.domElement;
+        let fce;
+        if (de.visibility.isVisibleToAT) {
+
+          const figcaptionCount = fe.figcaptionDomElements.length;
+
+          switch (figcaptionCount) {
+            case 0:
+              rule_result.addElementResult(TEST_RESULT.FAIL, de, 'ELEMENT_FAIL_1', []);
+              break;
+
+            case 1:
+              fce = fe.figcaptionDomElements[0];
+              if (fce.visibility.isVisibleToAT) {
+                rule_result.addElementResult(TEST_RESULT.PASS, de, 'ELEMENT_PASS_1', []);
+              }
+              else {
+                rule_result.addElementResult(TEST_RESULT.FAIL, de, 'ELEMENT_FAIL_2', []);
+              }
+              break;
+
+            default:
+              rule_result.addElementResult(TEST_RESULT.FAIL, de, 'ELEMENT_FAIL_3', [figcaptionCount]);
+              break;
+          }
+
+        } else {
+          rule_result.addElementResult(TEST_RESULT.HIDDEN, de, 'ELEMENT_HIDDEN_1', [de.tagName]);
+        }
+      });
+    } // end validate function
+  }
   ];
 
   /* keyboardRules.js */
@@ -44763,6 +45142,8 @@
       target_resources    : ['links', 'controls', 'widgets'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         let mcCount = 0;
         let passCount = 0;
 
@@ -44807,11 +45188,11 @@
         });
 
         if (mcCount) {
-          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
         }
         else {
           if (passCount) {
-            rule_result.addPageResult(TEST_RESULT.PASS, dom_cache, 'PAGE_PASS_1', []);
+            rule_result.addPageResult(TEST_RESULT.PASS, domDoc, 'PAGE_PASS_1', []);
           }
         }
 
@@ -44900,6 +45281,8 @@
       target_resources    : ['Page', 'a', 'applet', 'area', 'button', 'input', 'object', 'select', 'area', 'widgets'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         let controlCount = 0;
         let hiddenCount = 0;
 
@@ -44918,10 +45301,10 @@
 
         if (controlCount > 1) {
           if (hiddenCount == 0) {
-            rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', [controlCount]);
+            rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', [controlCount]);
           }
           else {
-            rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_2', [controlCount, hiddenCount]);
+            rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_2', [controlCount, hiddenCount]);
           }
         }
 
@@ -44981,8 +45364,10 @@
       target_resources    : ['button', 'input', 'links', 'output', 'textarea', 'widgets'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         if (dom_cache.hasScripting) {
-          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
         }
 
       } // end validation function
@@ -45007,7 +45392,9 @@
       target_resources    : ['button', 'input', 'links', 'output', 'textarea', 'widgets'],
       validate            : function (dom_cache, rule_result) {
 
-        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+        const domDoc = dom_cache.getRootDomDocument();
+
+        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
 
       } // end validation function
     },
@@ -45031,7 +45418,9 @@
       target_resources    : ['button', 'input', 'links', 'output', 'textarea', 'widgets'],
       validate            : function (dom_cache, rule_result) {
 
-        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+        const domDoc = dom_cache.getRootDomDocument();
+
+        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
 
       } // end validation function
     },
@@ -45102,7 +45491,8 @@
       first_step          : true,
       axe_refs            : ['landmark-one-main',
                              'landmark-no-duplicate-main'],
-      wave_refs           : ['region_missing'],
+      wave_refs           : ['region_missing',
+                             'main'],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['main', '[role="main"]'],
@@ -45167,11 +45557,14 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : [],
-      wave_refs           : ['region_missing'],
+      wave_refs           : ['region_missing',
+                             'nav'],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['nav', '[role="navigation"]'],
       validate            : function (dom_cache, rule_result) {
+
+        const domDoc = dom_cache.getRootDomDocument();
 
         const MINIMUM_LINKS = 4;
         const allLandmarkElements = dom_cache.structureInfo.allLandmarkElements;
@@ -45208,13 +45601,13 @@
           });
 
           if (listWithLinksCount > 0) {
-            rule_result.addWebsiteResult(TEST_RESULT.FAIL, dom_cache, 'WEBSITE_FAIL_1', []);
+            rule_result.addWebsiteResult(TEST_RESULT.FAIL, domDoc, 'WEBSITE_FAIL_1', []);
           }
         } else {
           if (navigationCount === 1) {
-            rule_result.addWebsiteResult(TEST_RESULT.PASS, dom_cache, 'WEBSITE_PASS_1', []);
+            rule_result.addWebsiteResult(TEST_RESULT.PASS, domDoc, 'WEBSITE_PASS_1', []);
           } else {
-            rule_result.addWebsiteResult(TEST_RESULT.PASS, dom_cache, 'WEBSITE_PASS_2', [navigationCount]);
+            rule_result.addWebsiteResult(TEST_RESULT.PASS, domDoc, 'WEBSITE_PASS_2', [navigationCount]);
           }
         }
       } // end validate function
@@ -45234,7 +45627,8 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : ['landmark-no-duplicate-banner'],
-      wave_refs           : ['region_missing'],
+      wave_refs           : ['region_missing',
+                             'header'],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['header', '[role="banner"]'],
@@ -45257,7 +45651,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : ['landmark-no-duplicate-banner'],
-      wave_refs           : [],
+      wave_refs           : ['header'],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['header', '[role="banner"]'],
@@ -45279,7 +45673,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : ['landmark-no-duplicate-contentinfo'],
-      wave_refs           : [],
+      wave_refs           : ['footer'],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['footer', '[role="contentinfo"]'],
@@ -45301,7 +45695,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : ['landmark-no-duplicate-contentinfo'],
-      wave_refs           : [],
+      wave_refs           : ['footer'],
       wcag_primary_id     : '2.4.1',
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['footer', '[role="contentinfo"]'],
@@ -45322,7 +45716,7 @@
       required            : true,
       first_step          : false,
       axe_refs            : ['landmark-banner-is-top-level'],
-      wave_refs           : [],
+      wave_refs           : ['header'],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['header', '[role="banner"]'],
@@ -45343,7 +45737,9 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : [],
-      wave_refs           : [],
+      wave_refs           : ['header',
+                            'nav',
+                            'search'],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['header', '[role="banner"]'],
@@ -45364,7 +45760,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : [],
-      wave_refs           : [],
+      wave_refs           : ['nav'],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['nav', '[role="naviation"]'],
@@ -45385,7 +45781,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : ['landmark-main-is-top-level'],
-      wave_refs           : [],
+      wave_refs           : ['main'],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['main', '[role="main"]'],
@@ -45406,7 +45802,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : ['landmark-contentinfo-is-top-level'],
-      wave_refs           : [],
+      wave_refs           : ['footer'],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['footer', '[role="contentinfo"]'],
@@ -45427,7 +45823,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : [],
-      wave_refs           : [],
+      wave_refs           : ['footer'],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['header', '[role="banner"]'],
@@ -45448,7 +45844,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : [],
-      wave_refs           : [],
+      wave_refs           : ['search'],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['[role="search"]'],
@@ -45490,7 +45886,7 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : [],
-      wave_refs           : [],
+      wave_refs           : ['region'],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['[role="region"]'],
@@ -45526,7 +45922,12 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : ['landmark-unique'],
-      wave_refs           : [],
+      wave_refs           : ['aside',
+                             'footer',
+                             'header',
+                             'main',
+                             'nav',
+                             'region'],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['main', 'nav', 'header', 'footer', 'section', 'aside', '[role="application"]','[role="banner"]', '[role="complementary"]','[role="contentinfo"]','[role="form"]','[role="main"]','[role="navigation"]','[role="region"]','[role="search"]'],
@@ -45551,7 +45952,12 @@
       rule_required       : true,
       first_step          : false,
       axe_refs            : [],
-      wave_refs           : [],
+      wave_refs           : ['aside',
+                             'footer',
+                             'header',
+                             'main',
+                             'nav',
+                             'region'],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['main', 'nav', 'header', 'footer', 'section', 'aside', '[role="application"]','[role="banner"]', '[role="complementary"]','[role="contentinfo"]','[role="form"]','[role="main"]','[role="navigation"]','[role="region"]','[role="search"]'],
@@ -45581,7 +45987,7 @@
       rule_required       : false,
       first_step          : false,
       axe_refs            : ['landmark-complementary-is-top-level'],
-      wave_refs           : [],
+      wave_refs           : ['aside'],
       wcag_primary_id     : '1.3.1',
       wcag_related_ids    : ['2.4.1', '2.4.6', '2.4.10'],
       target_resources    : ['aside', '[role="complementary"]'],
@@ -45670,6 +46076,9 @@
    */
 
   function validateAtLeastOne(dom_cache, rule_result, role, roleRequired) {
+
+    const domDoc = dom_cache.getRootDomDocument();
+
     const allLandmarkElements = dom_cache.structureInfo.allLandmarkElements;
     let roleCount = 0;
 
@@ -45697,16 +46106,16 @@
 
     if (roleCount === 0) {
       if (roleRequired) {
-        rule_result.addPageResult(TEST_RESULT.FAIL, dom_cache, 'PAGE_FAIL_1', []);
+        rule_result.addPageResult(TEST_RESULT.FAIL, domDoc, 'PAGE_FAIL_1', []);
       }
       else {
-        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
       }
     } else {
       if (roleCount === 1) {
-        rule_result.addPageResult(TEST_RESULT.PASS, dom_cache, 'PAGE_PASS_1', []);
+        rule_result.addPageResult(TEST_RESULT.PASS, domDoc, 'PAGE_PASS_1', []);
       } else {
-        rule_result.addPageResult(TEST_RESULT.PASS, dom_cache, 'PAGE_PASS_2', [roleCount]);
+        rule_result.addPageResult(TEST_RESULT.PASS, domDoc, 'PAGE_PASS_2', [roleCount]);
       }
     }
   }
@@ -45723,6 +46132,8 @@
    */
 
   function validateNoMoreThanOne(dom_cache, rule_result, role) {
+
+    const domDoc = dom_cache.getRootDomDocument();
 
     const landmarkElementsByDoc = dom_cache.structureInfo.landmarkElementsByDoc;
     let totalRoleCount = 0;
@@ -45771,10 +46182,10 @@
 
     if (totalRoleCount > 0) {
       if (anyMoreThanOne) {
-        rule_result.addPageResult(TEST_RESULT.FAIL, dom_cache, 'PAGE_FAIL_1', [totalRoleCount]);
+        rule_result.addPageResult(TEST_RESULT.FAIL, domDoc, 'PAGE_FAIL_1', [totalRoleCount]);
       }
       else {
-        rule_result.addPageResult(TEST_RESULT.PASS, dom_cache, 'PAGE_PASS_1', []);
+        rule_result.addPageResult(TEST_RESULT.PASS, domDoc, 'PAGE_PASS_1', []);
       }
     }
   }
@@ -45990,16 +46401,19 @@
       wcag_related_ids    : [],
       target_resources    : ['html'],
       validate            : function (dom_cache, rule_result) {
+
+        const domDoc = dom_cache.getRootDomDocument();
+
         if (dom_cache.lang) {
           if (validLanguageCode(dom_cache.lang)) {
-            rule_result.addPageResult(TEST_RESULT.PASS, dom_cache, 'PAGE_PASS_1', [dom_cache.lang]);
+            rule_result.addPageResult(TEST_RESULT.PASS, domDoc, 'PAGE_PASS_1', [dom_cache.lang]);
           }
           else {
-            rule_result.addPageResult(TEST_RESULT.FAIL, dom_cache, 'PAGE_FAIL_2', [dom_cache.lang]);
+            rule_result.addPageResult(TEST_RESULT.FAIL, domDoc, 'PAGE_FAIL_2', [dom_cache.lang]);
           }
         }
         else {
-          rule_result.addPageResult(TEST_RESULT.FAIL, dom_cache, 'PAGE_FAIL_1', []);
+          rule_result.addPageResult(TEST_RESULT.FAIL, domDoc, 'PAGE_FAIL_1', []);
         }
       } // end validation function
     },
@@ -46023,6 +46437,8 @@
       target_resources    : ['[lang]'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         let passCount = 0;
         let failCount = 0;
 
@@ -46044,11 +46460,11 @@
           }
         });
 
-        if (failCount === 1) rule_result.addPageResult(TEST_RESULT.FAIL, dom_cache, 'PAGE_FAIL_1', []);
-        else if (failCount > 1) rule_result.addPageResult(TEST_RESULT.FAIL, dom_cache, 'PAGE_FAIL_2', [failCount]);
-        else if (passCount === 1) rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
-        else if (passCount > 1) rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_2', [passCount]);
-        else rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_3', []);
+        if (failCount === 1) rule_result.addPageResult(TEST_RESULT.FAIL, domDoc, 'PAGE_FAIL_1', []);
+        else if (failCount > 1) rule_result.addPageResult(TEST_RESULT.FAIL, domDoc, 'PAGE_FAIL_2', [failCount]);
+        else if (passCount === 1) rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
+        else if (passCount > 1) rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_2', [passCount]);
+        else rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_3', []);
 
       } // end validation function
     }
@@ -46090,6 +46506,8 @@
       target_resources    : ['Page', 'table'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         let layoutPass = 0;
         let layoutManualCheck = 0;
 
@@ -46120,11 +46538,11 @@
         });
 
         if (layoutManualCheck) {
-          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', [layoutManualCheck]);
+          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', [layoutManualCheck]);
         }
         else {
           if (layoutPass) {
-            rule_result.addPageResult(TEST_RESULT.PASS, dom_cache, 'PAGE_PASS_1', []);
+            rule_result.addPageResult(TEST_RESULT.PASS, domDoc, 'PAGE_PASS_1', []);
           }
         }
       }  // end validation function
@@ -46227,7 +46645,9 @@
       target_resources    : ['page'],
       validate          : function (dom_cache, rule_result) {
 
-        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+        const domDoc = dom_cache.getRootDomDocument();
+
+        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
 
       } // end validate function
     }
@@ -46488,6 +46908,8 @@
       target_resources    : ['ul', 'ol', 'li', '[role="list"]', '[role="listitem"]'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         let listCount = 0;
 
         dom_cache.listInfo.allListElements.forEach ( le => {
@@ -46516,7 +46938,7 @@
         });
 
         if (listCount) {
-          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', [listCount]);
+          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', [listCount]);
         }
 
       } // end validate function
@@ -46592,6 +47014,8 @@
     target_resources    : ['[role="alert"]','[role="log"]','[role="status"]','[aria-live]'],
     validate          : function (dom_cache, rule_result) {
 
+      const domDoc = dom_cache.getRootDomDocument();
+
       let liveCount = 0;
 
       dom_cache.allDomElements.forEach( de => {
@@ -46628,7 +47052,7 @@
 
       if (dom_cache.hasScripting || liveCount) {
         {
-          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_2', []);
+          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_2', []);
         }
       }
     } // end validation function
@@ -46668,8 +47092,10 @@
       target_resources    : ['page'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         if (dom_cache.hasScripting) {
-          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
         }
 
      } // end validation function  }
@@ -46725,6 +47151,8 @@
       target_resources    : ['Website', 'role=\'search\'', 'role=\'navigation\''],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         let navigationCount = 0;
         let searchCount = 0;
 
@@ -46746,10 +47174,10 @@
         });
 
         if ((navigationCount > 0) && (searchCount > 0)) {
-          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'WEBSITE_MC_1', []);
+          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'WEBSITE_MC_1', []);
         }
         else {
-          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'WEBSITE_MC_2', []);
+          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'WEBSITE_MC_2', []);
         }
 
       } // end validation function
@@ -46775,6 +47203,8 @@
       target_resources    : ['Website', 'role=\'main\'', 'role=\'navigation\'', 'role=\'banner\'', 'role=\'contentinfo\'','role=\'search\''],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         const landmarkRoles = [
           'banner',
           'complementary',
@@ -46796,7 +47226,7 @@
         });
 
         if ((landmarks.length > 0)) {
-          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'WEBSITE_MC_1', [landmarks.join(', ')]);
+          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'WEBSITE_MC_1', [landmarks.join(', ')]);
         }
       } // end validation function
     },
@@ -46821,6 +47251,8 @@
       target_resources    : ['Website', 'h2'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         let headingCount = 0;
 
         dom_cache.structureInfo.allHeadingDomElements.forEach( de => {
@@ -46838,10 +47270,10 @@
         });
 
         if ((headingCount > 0)) {
-          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'WEBSITE_MC_1', []);
+          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'WEBSITE_MC_1', []);
         }
         else {
-          rule_result.addWebsiteResult(TEST_RESULT.FAIL, dom_cache, 'WEBSITE_FAIL_1', []);
+          rule_result.addWebsiteResult(TEST_RESULT.FAIL, domDoc, 'WEBSITE_FAIL_1', []);
         }
 
       } // end validation function
@@ -46867,6 +47299,8 @@
       target_resources    : ['Website', 'role=\'search\'', 'role=\'navigation\'', 'role=\'main\'', 'role=\'banner\'', 'role=\'contentinfo\'', 'h2'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         const landmarkRoles = [
           'banner',
           'complementary',
@@ -46888,7 +47322,7 @@
         });
 
         if ((landmarks.length > 0)) {
-          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'WEBSITE_MC_1', [landmarks.join(', ')]);
+          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'WEBSITE_MC_1', [landmarks.join(', ')]);
         }
 
       } // end validation function
@@ -46914,6 +47348,8 @@
       target_resources    : ['Website', 'h2'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         let headingCount = 0;
 
         dom_cache.structureInfo.allHeadingDomElements.forEach( de => {
@@ -46931,10 +47367,10 @@
         });
 
         if ((headingCount > 0)) {
-          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'WEBSITE_MC_1', []);
+          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'WEBSITE_MC_1', []);
         }
         else {
-          rule_result.addWebsiteResult(TEST_RESULT.FAIL, dom_cache, 'WEBSITE_FAIL_1', []);
+          rule_result.addWebsiteResult(TEST_RESULT.FAIL, domDoc, 'WEBSITE_FAIL_1', []);
         }
 
       } // end validation function
@@ -46973,8 +47409,10 @@
       target_resources    : ['widgets'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         if (dom_cache.hasScripting) {
-          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
         }
 
      } // end validation function  }
@@ -46999,8 +47437,10 @@
       target_resources    : ['widgets'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         if (dom_cache.hasScripting) {
-          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
         }
 
      } // end validation function  }
@@ -47025,8 +47465,10 @@
       target_resources    : ['widgets'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         if (dom_cache.hasScripting) {
-          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
         }
 
      } // end validation function  }
@@ -47116,7 +47558,9 @@
       wcag_related_ids    : [],
       target_resources    : ['content'],
       validate          : function (dom_cache, rule_result) {
-        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+        const domDoc = dom_cache.getRootDomDocument();
+
+        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
       } // end validate function
     },
 
@@ -47138,7 +47582,10 @@
       wcag_related_ids    : [],
       target_resources    : ['content'],
       validate          : function (dom_cache, rule_result) {
-        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+
+        const domDoc = dom_cache.getRootDomDocument();
+
+        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
       } // end validate function
     }
 
@@ -47175,7 +47622,9 @@
       wcag_related_ids    : [],
       target_resources    : ['button', 'link'],
       validate          : function (dom_cache, rule_result) {
-        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+        const domDoc = dom_cache.getRootDomDocument();
+
+        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
       } // end validate function
     }
 
@@ -47213,8 +47662,10 @@
       target_resources    : ['page'],
       validate            : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         if (dom_cache.hasScripting) {
-          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
         }
 
      } // end validation function  }
@@ -47307,7 +47758,9 @@
       target_resources    : ['text'],
       validate          : function (dom_cache, rule_result) {
 
-        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+        const domDoc = dom_cache.getRootDomDocument();
+
+        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
 
       } // end validate function
     }
@@ -48092,8 +48545,10 @@
       target_resources    : ['a', 'input', 'button', 'wdiget'],
       validate          : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
       if (dom_cache.controlInfo.allControlElements.length) {
-        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+        rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
       }
 
       } // end validate function
@@ -48118,6 +48573,8 @@
       target_resources    : ['canvas', 'embed', 'img', 'object', 'svg'],
       validate          : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         dom_cache.timingInfo.allTimingDomElements.forEach( de => {
           if (de.visibility.isVisibleToAT) {
             rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, de, 'ELEMENT_MC_1', [de.elemName]);
@@ -48128,7 +48585,7 @@
         });
 
         if (dom_cache.timingInfo.allTimingDomElements.length > 0) {
-          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
         }
       } // end validate function
     },
@@ -48152,6 +48609,8 @@
       target_resources    : ['canvas', 'embed', 'img', 'object', 'svg'],
       validate          : function (dom_cache, rule_result) {
 
+        const domDoc = dom_cache.getRootDomDocument();
+
         dom_cache.timingInfo.allTimingDomElements.forEach( de => {
           if (de.visibility.isVisibleToAT) {
             rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, de, 'ELEMENT_MC_1', [de.elemName]);
@@ -48162,9 +48621,69 @@
         });
 
         if (dom_cache.timingInfo.allTimingDomElements.length > 0) {
-          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+          rule_result.addWebsiteResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
         }
 
+      } // end validate function
+    },
+
+    /**
+     * @object TIMING_4
+     *
+     * @desc Web pages do automatically refresh
+     */
+
+    { rule_id             : 'TIMING_4',
+      last_updated        : '2026-10-25',
+      rule_scope          : RULE_SCOPE.PAGE,
+      rule_category       : RULE_CATEGORIES.TIMING_LIVE,
+      rule_required       : true,
+      first_step          : false,
+      axe_refs            : ['meta-refresh'],
+      wave_refs           : ['meta_refresh'],
+      wcag_primary_id     : '2.2.1',
+      wcag_related_ids    : ['2.2.2', '3.2.5'],
+      target_resources    : [],
+      validate          : function (dom_cache, rule_result) {
+
+
+        const rootDoc = dom_cache.getRootDomDocument();
+        let fails = 0;
+
+        const domDocs = dom_cache.allDomDocuments;
+
+        domDocs.forEach( (dd) => {
+          if (dd) {
+            if (dd.domElement) {
+              if (dd.hasRefresh) {
+                if (dd.domElement.visibility.isVisibleOnScreen) {
+                  rule_result.addPageResult(TEST_RESULT.FAIL, dd, 'PAGE_FAIL_1', []);
+                  fails += 1;
+                }
+                else {
+                  rule_result.addPageResult(TEST_RESULT.HIDDEN, dd, 'PAGE_HIDDEN_1', []);
+                }
+              }
+              else {
+                if (dd.domElement.visibility.isVisibleOnScreen) {
+                  rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dd, 'PAGE_MC_1', []);
+                }
+                else {
+                  rule_result.addPageResult(TEST_RESULT.HIDDEN, dd, 'PAGE_HIDDEN_1', []);
+                }
+              }
+            }
+          }
+        });
+
+        if (rootDoc.hasRefresh) {
+          rule_result.addPageResult(TEST_RESULT.FAIL, rootDoc, 'PAGE_FAIL_1', []);
+        }
+        else {
+          fails ?
+            rule_result.addPageResult(TEST_RESULT.FAIL, rootDoc, 'PAGE_FAIL_2', []) :
+            rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, rootDoc, 'PAGE_MC_1', []);
+        }
       } // end validate function
     }
   ];
@@ -48200,11 +48719,14 @@
       wcag_related_ids    : ['1.3.1', '2.4.6'],
       target_resources    : ['Page', 'title'],
       validate            : function (dom_cache, rule_result) {
+
+        const domDoc = dom_cache.getRootDomDocument();
+
         if (dom_cache.hasTitle) {
-          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, dom_cache, 'PAGE_MC_1', []);
+          rule_result.addPageResult(TEST_RESULT.MANUAL_CHECK, domDoc, 'PAGE_MC_1', []);
         }
         else {
-          rule_result.addPageResult(TEST_RESULT.FAIL, dom_cache, 'PAGE_FAIL_1', []);
+          rule_result.addPageResult(TEST_RESULT.FAIL, domDoc, 'PAGE_FAIL_1', []);
         }
       } // end validate function
     },
@@ -48940,7 +49462,8 @@
     rule_required       : true,
     first_step          : true,
     axe_refs            : ['aria-valid-attr'],
-    wave_refs           : ['aria'],
+    wave_refs           : ['aria',
+                           'aria_reference_broken'],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
     target_resources    : ['[aria-atomic]',
@@ -50371,6 +50894,7 @@
       this.date           = getFormattedDate();
       this.version        = VERSION;
       this.allDomElements = [];
+      this.allDomDocuments = [];
 
       this._allRuleResults = [];
 
@@ -50536,6 +51060,7 @@
 
       const domCache        = new DOMCache(this.startingDoc, this.startingDoc.body, this.ariaVersion, addDataId);
       this.allDomElements   = domCache.allDomElements;
+      this.allDomDocuments  = domCache.allDomDocuments;
       this._allRuleResults = [];
       this._ruleResultsSummary.clear();
       this._rcRuleResultsGroup.clear();
@@ -50589,7 +51114,8 @@
       this.ariaVersion = validateAriaVersion(ariaVersion);
 
       const domCache      = new DOMCache(this.startingDoc, this.startingDoc.body, ariaVersion, addDataId);
-      this.allDomElements = domCache.allDomElements;
+      this.allDomElements  = domCache.allDomElements;
+      this.allDomDocuments = domCache.allDomDocuments;
       this._allRuleResults = [];
       this._ruleResultsSummary.clear();
       this._rcRuleResultsGroup.clear();
@@ -50638,7 +51164,8 @@
       this.ariaVersion = ariaVersion;
 
       const domCache      = new DOMCache(this.startingDoc, this.startingDoc.body, ariaVersion, addDataId);
-      this.allDomElements = domCache.allDomElements;
+      this.allDomElements  = domCache.allDomElements;
+      this.allDomDocuments = domCache.allDomDocuments;
       this._allRuleResults = [];
       this._ruleResultsSummary.clear();
       this._rcRuleResultsGroup.clear();
@@ -50687,7 +51214,8 @@
       this.ariaVersion = ariaVersion;
 
       const domCache      = new DOMCache(this.startingDoc, this.startingDoc.body, ariaVersion);
-      this.allDomElements = domCache.allDomElements;
+      this.allDomElements  = domCache.allDomElements;
+      this.allDomDocuments = domCache.allDomDocuments;
       this._allRuleResults = [];
       this._ruleResultsSummary.clear();
       this._rcRuleResultsGroup.clear();
@@ -50734,7 +51262,8 @@
       this.ariaVersion = ariaVersion;
 
       const domCache      = new DOMCache(this.startingDoc, this.startingDoc.body, ariaVersion);
-      this.allDomElements = domCache.allDomElements;
+      this.allDomElements  = domCache.allDomElements;
+      this.allDomDocuments = domCache.allDomDocuments;
       this._allRuleResults = [];
       this._ruleResultsSummary.clear();
       this._rcRuleResultsGroup.clear();
@@ -50813,6 +51342,26 @@
       for (let i = 0; i < this.allDomElements.length; i += 1) {
         if (this.allDomElements[i].ordinalPosition === position) {
           return this.allDomElements[i];
+        }
+      }
+      return null;
+    }
+
+    /**
+     * @method getDomDocumentByPosition
+     *
+     * @desc Returns an DomDocument object with the associated id, otherwise
+     *       null if the DomDocument does not exist
+     *
+     * @param  {Number}  position  -  Position of the DOMDocument
+     *
+     * @return {DomDocument}  see @desc
+     */
+
+    getDomDocumentByPosition (position) {
+      for (let i = 0; i < this.allDomDocuments.length; i += 1) {
+        if (this.allDomDocuments[i].ordinalPosition === position) {
+          return this.allDomDocuments[i];
         }
       }
       return null;
@@ -51411,6 +51960,8 @@
     let website_result = false;
 
     const element_results = [];
+    const page_results    = [];
+    const website_results = [];
 
     let result_summary = {
               violations:    0,
@@ -51432,6 +51983,7 @@
             };
 
       rule_result.getAllResultsArray().forEach( (er) => {
+
         if (er.isElementResult) {
           const de = er.domElement;
           const element_result = {
@@ -51543,7 +52095,6 @@
             te_result.cell_count         = te.cellCount;
             te_result.header_cell_count  = te.headerCellCount;
           }
-
           element_results.push(element_result);
         }
 
@@ -51561,12 +52112,14 @@
             rule_id:       rule_id,
             rule_nls_id:   getRuleId(rule_id),
             rule_scope:    rule_scope,
-            position:      'page',
-            highlightId:   'opena11y-pos-page',
+            position:      er.getOrdinalPosition(),
+            highlightId:   `opena11y-pos-page-${er.getOrdinalPosition()}`,
+
             is_element: false,
             is_page: true,
             is_website: false,
           };
+          page_results.push(page_result);
         }
 
         if (er.isWebsiteResult) {
@@ -51584,19 +52137,20 @@
             rule_nls_id:   getRuleId(rule_id),
             rule_scope:    rule_scope,
 
-            position:      'website',
-            highlightId:   'opena11y-pos-website',
+            position:      er.getOrdinalPosition(),
+            highlightId:   `opena11y-pos-website-${er.getOrdinalPosition()}`,
             is_element: false,
             is_page: false,
             is_website: true
 
           };
+          website_results.push(website_result);
         }
 
       });
     }
 
-    return [rule_title, rule_id_nls, result_summary, website_result, page_result, element_results];
+    return [rule_title, rule_id_nls, result_summary, website_results, page_results, element_results];
   }
 
   /* aiRuleGroupResult.js */
@@ -51784,6 +52338,7 @@
 
   const evaluationLibrary = new EvaluationLibrary();
   let er;
+  let lastEvaluationResult = false;
 
   // Load element highlight custom element
 
@@ -51793,7 +52348,6 @@
   scriptNode.src = browserRuntime.getURL('ai-highlight.js');
   document.body.appendChild(scriptNode);
 
-  let lastEvaluationResult = false;
 
   const highlightElements = [];
 
@@ -51835,19 +52389,20 @@
     return he;
   }
 
-  function hightlightResults(evaluation_result, results, option) {
+  function hightlightResults(results, option) {
     results.forEach( (r) => {
       if ((option === 'all') ||
           ((option === 'vw') && ((r.result_abbrev === 'V') || (r.result_abbrev === 'W')))) {
 
-        const de = er.getDomElementByPosition(r.position);
+        const attachObj = r.isWebsite || r.isPage ?
+                           er.getDomDocumentByPosition(r.position) :
+                           er.getDomElementByPosition(r.position);
 
-        const attachElem = de ? de.getBodyElement() :
-                           document.body ?
-                           document.body :
-                           document.documentElement;
-
-        console.log(`[attachElem]: ${attachElem} ${de.getBodyElement}`);
+        const attachElem = attachObj ?
+                             attachObj.getBodyElement() :
+                             document.body ?
+                               document.body :
+                               document.documentElement;
 
         const he = getHighlightElement(attachElem, r.highlightId, r.result_abbrev);
 
@@ -51859,9 +52414,9 @@
             he.setAttribute('set', `${r.result_abbrev} page false`);
           }
           else {
-            const de = evaluation_result.getDomElementByPosition(r.position);
+            const de = er.getDomElementByPosition(r.position);
             if (de) {
-              const rect = de.node.getBoundingClientRect();
+              const rect = getRect(de.node);
               he.setAttribute('set', `${r.result_abbrev} element false ${Math.round(rect.left)} ${Math.round(rect.top)} ${Math.round(rect.width)} ${Math.round(rect.height)}`);
             }
           }
@@ -51870,6 +52425,71 @@
     });
   }
 
+  /*
+   *   @function isZeroDimension
+   *
+   *   @desc  Returns true if element is not visible
+   *
+   *   @param {Object} rect : Rect of element to test height
+   *
+   *   @returns see @desc
+   */
+
+  function isZeroDimension (rect) {
+    return rect.height === 0 && rect.width === 0;
+  }
+
+
+  /*
+   *   @function getRect
+   *
+   *   @desc  Returns Rect with dimensions of the element
+   *
+   *   @param {Object} elem : DOM element
+   *
+   *   @returns see @desc
+   */
+
+  function getRect (elem) {
+
+    let rect = elem.getBoundingClientRect();
+
+    if (isZeroDimension(rect)) {
+
+      let childElem = elem.firstElementChild;
+
+      let r = childElem.getBoundingClientRect();
+
+      rect = {
+        top: r.top,
+        right: r.right,
+        bottom: r.bottom,
+        left: r.left,
+        height: r.height,
+        width: r.width
+      };
+
+      childElem = childElem.nextElementSibling;
+
+      while (childElem) {
+        r = childElem.getBoundingClientRect();
+
+        if (!isZeroDimension(r)) {
+          rect.top    = Math.min(r.top,    rect.top);
+          rect.right  = Math.max(r.right,  rect.right);
+          rect.bottom = Math.max(r.bottom, rect.bottom);
+          rect.left   = Math.min(r.left,   rect.left);
+        }
+
+        childElem = childElem.nextElementSibling;
+      }
+
+      rect.height = rect.bottom - rect.top;
+      rect.width  = rect.right  - rect.left;
+    }
+    return rect;
+  } /* end getRect */
+
 
 
   // Listen for messages from side panel
@@ -51877,12 +52497,13 @@
     function(request, sender, sendResponse) {
 
       let rect = {};
-      let de = false;
 
       // Highlight result
       if(request.highlight) {
-        const isWebsite   = request.highlight.position === 'website';
-        const isPage      = request.highlight.position === 'page';
+
+        const isWebsite   = request.highlight.item_type === 'website';
+        const isPage      = request.highlight.item_type === 'page';
+        const isElement   = request.highlight.item_type === 'element';
         const position    = parseInt(request.highlight.position);
         const result_type = request.highlight.result_type;
         const option      = request.highlight.option;
@@ -51891,15 +52512,19 @@
 
         hideHighlightElements(option);
 
-        if (!isNaN(position)) {
-          de = lastEvaluationResult.getDomElementByPosition(position);
+        const di = isElement ?
+                   lastEvaluationResult.getDomElementByPosition(position) :
+                   lastEvaluationResult.getDomDocumentByPosition(position);
+
+        if (di && di.node) {
+          rect = getRect(di.node);
         }
 
-        if (de && de.node) {
-          rect = de.node.getBoundingClientRect();
-        }
+        const attachElem = di && di.getBodyElement?
+                           di.getBodyElement() :
+                           window.document.body;
 
-        const he = getHighlightElement(de.getBodyElement(), highlightId, result_type);
+        const he = getHighlightElement(attachElem, highlightId, result_type);
 
         if (option !== 'none' && he) {
           removeFocusFromHighlightElements();
@@ -51926,7 +52551,7 @@
 
         switch (r.ruleset) {
           case 'AXE':
-            er  = evaluationLibrary.evaluateAxeRules(
+            er = evaluationLibrary.evaluateAxeRules(
                             doc,
                             doc.title,
                             doc.location.href,
@@ -51935,7 +52560,7 @@
             break;
 
           case 'FIRSTSTEP':
-            er  = evaluationLibrary.evaluateFirstStepRules(
+            er = evaluationLibrary.evaluateFirstStepRules(
                             doc,
                             doc.title,
                             doc.location.href,
@@ -51945,7 +52570,7 @@
             break;
 
           case 'WAVE':
-            er  = evaluationLibrary.evaluateWaveRules(
+            er = evaluationLibrary.evaluateWaveRules(
                             doc,
                             doc.title,
                             doc.location.href,
@@ -51955,7 +52580,7 @@
 
 
           default:
-            er  = evaluationLibrary.evaluateWCAG(
+            er = evaluationLibrary.evaluateWCAG(
                   doc,
                   doc.title,
                   doc.location.href,
@@ -51988,7 +52613,7 @@
         };
 
         let group_title, rule_summary, rule_results, info_rules;
-        let rule_title, rule_id_nls, result_summary, website_result, page_result, element_results;
+        let rule_title, rule_id_nls, result_summary, website_results, page_results, element_results;
 
         const parts = r.rule_group_id.split('-');
         const group_id = parseInt(parts[1]);
@@ -52024,13 +52649,13 @@
 
           case 'rule':
             removeHighlightElements();
-            [rule_title, rule_id_nls, result_summary, website_result, page_result, element_results] = aiRuleResult(er.allRuleResults, r.rule_id);
+            [rule_title, rule_id_nls, result_summary, website_results, page_results, element_results] = aiRuleResult(er.allRuleResults, r.rule_id);
 
             response.rule_title      = rule_title;
             response.rule_id_nls     = rule_id_nls;
             response.result_summary  = result_summary;
-            response.website_result  = website_result;
-            response.page_result     = page_result;
+            response.website_results  = website_results;
+            response.page_results     = page_results;
             response.element_results = element_results;
 
             if (r.rule_id.includes('TITLE')) {
@@ -52040,19 +52665,19 @@
               });
             }
 
-            if (website_result) {
-              results.push(website_result);
+            if (website_results) {
+              results = results.concat(website_results);
             }
 
-            if (page_result) {
-              results.push(page_result);
+            if (page_results) {
+              results = results.concat(page_results);
             }
 
             if (element_results) {
               results = results.concat(element_results);
             }
 
-            hightlightResults(er, results, r.highlight_option);
+            hightlightResults(results, r.highlight_option);
 
             break;
 

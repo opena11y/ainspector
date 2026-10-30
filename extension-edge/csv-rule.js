@@ -52,16 +52,6 @@ function isTableCellRule (result) {
 function websiteOrPageToCSV(result) {
   let csv = `\n\n`;
 
-  if (result.is_website) {
-    csv += `"${getMessage('website_label')} Result"\n`;
-  }
-
-  if (result.is_page) {
-    csv += `"${getMessage('page_label')} Result"\n`;
-  }
-
-  csv += `"Rule ID","${escapeForCSV(convertStringCSV(result.rule_nls_id))}"\n`;
-  csv += `"Definition","${escapeForCSV(convertStringCSV(result.definition))}"\n`;
   csv += `"Action","${escapeForCSV(convertStringCSV(result.action))}"\n`;
 
   if (result.page_title) {
@@ -152,12 +142,19 @@ export function getCSVForRule (result) {
   csv += `"Passed","${rs.passed}"\n`;
   csv += `"Hidden","${rs.hidden}"\n`;
 
-  if (result.website_result) {
-    csv += websiteOrPageToCSV(result.website_result);
+  if (result.website_results && result.website_results.length) {
+    csv += `"${getMessage('website_label')} Result"\n`;
+
+    result.website_results.forEach( (wsr) => {
+      csv += websiteOrPageToCSV(wsr);
+    });
   }
 
-  if (result.page_result) {
-    csv += websiteOrPageToCSV(result.page_result);
+  if (result.page_results && result.page_results.length) {
+    csv += `"${getMessage('page_label')} Result"\n`;
+    result.page_results.forEach( (pr) => {
+      csv += websiteOrPageToCSV(pr);
+    });
   }
 
   csv += `\n\n"Element Results"\n`;
