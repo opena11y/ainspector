@@ -353,8 +353,8 @@ export default class InfoResult extends HTMLElement {
     this.copyButtonElem   = this.shadowRoot.querySelector('copy-button');
     this.copyButtonElem.setGetTextFunct(this.getCopyText);
 
-    this.website_result = false;
-    this.page_result = false;
+    this.website_results = false;
+    this.page_results = false;
     this.element_results = [];
 
   }
@@ -367,9 +367,9 @@ export default class InfoResult extends HTMLElement {
     removeChildContent(this.infoElementsElem);
   }
 
-  update (website_result, page_result, element_results) {
-    this.website_result = website_result;
-    this.page_result = page_result;
+  update (website_results, page_results, element_results) {
+    this.website_results = website_results;
+    this.page_results    = page_results;
     this.element_results = element_results;
 
     // Update copy icon based on light dark mode
@@ -383,26 +383,33 @@ export default class InfoResult extends HTMLElement {
   show(id) {
     this.clear();
 
-    if (this.website_result && (id === this.website_result.id)) {
-      renderResultInfo(this.infoElementsElem, this.website_result);
-      return this.website_result;
-    }
-    else {
-      if (this.page_result && (id === this.page_result.id)) {
-        renderResultInfo(this.infoElementsElem, this.page_result);
-        return this.page_result;
-      }
-      else {
-        const er = this.element_results.find( (er) => {
-          return er.id === id;
-        });
+    const wsr = this.website_results.find( (wsr) => {
+      return wsr.id === id;
+    });
 
-        if (er) {
-          renderResultInfo(this.infoElementsElem, er);
-          return er;
-        }
-      }
+    if (wsr) {
+      renderResultInfo(this.infoElementsElem, wsr);
+      return wsr;
     }
+
+    const pr = this.page_results.find( (pr) => {
+      return pr.id === id;
+    });
+
+    if (pr) {
+        renderResultInfo(this.infoElementsElem, pr);
+        return pr;
+    }
+
+    const er = this.element_results.find( (er) => {
+      return er.id === id;
+    });
+
+    if (er) {
+      renderResultInfo(this.infoElementsElem, er);
+      return er;
+    }
+
     return {};
   }
 

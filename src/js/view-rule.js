@@ -62,8 +62,8 @@ export default class ViewRule extends HTMLElement {
 
   update (result) {
     this.summaryRuleElem.update(result.result_summary);
-    this.gridRuleElem.update(result.website_result, result.page_result, result.element_results);
-    this.infoResultElem.update(result.website_result, result.page_result, result.element_results);
+    this.gridRuleElem.update(result.website_results, result.page_results, result.element_results);
+    this.infoResultElem.update(result.website_results, result.page_results, result.element_results);
   }
 
   resize (height) {

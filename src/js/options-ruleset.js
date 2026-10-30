@@ -192,9 +192,9 @@ optionsRulesetTemplate.innerHTML = `
                value="ALL"
                checked/>
         <span>
-          <span data-i18n="options_rule_scope_all_label" aria-describedby="scope-all-desc">
+          <span data-i18n="options_rule_scope_all_label">
           </span>
-          <span id="scope-all-desc" data-i18n="options_rule_scope_all_desc" class="desc">
+          <span data-i18n="options_rule_scope_all_desc" class="desc">
           </span>
         </span>
       </label>
@@ -250,9 +250,9 @@ optionsRulesetTemplate.innerHTML = `
                name="aria"
                value="ARIA12"/>
           <span>
-            <span data-i18n="options_ruleset_aria_12_label" aria-describedby="aria-12-desc">
+            <span data-i18n="options_ruleset_aria_12_label">
           </span>
-            <span id="aria-12-desc" data-i18n="options_ruleset_aria_12_desc" class="desc">
+            <span data-i18n="options_ruleset_aria_12_desc" class="desc">
           </span>
           </span>
       </label>
@@ -263,9 +263,9 @@ optionsRulesetTemplate.innerHTML = `
                name="aria"
                value="ARIA13"/>
           <span>
-            <span data-i18n="options_ruleset_aria_13_label" aria-describedby="aria-13-desc">
+            <span data-i18n="options_ruleset_aria_13_label">
             </span>
-            <span  id="aria-13-desc" data-i18n="options_ruleset_aria_13_desc" class="desc">
+            <span data-i18n="options_ruleset_aria_13_desc" class="desc">
             </span>
           </span>
       </label>

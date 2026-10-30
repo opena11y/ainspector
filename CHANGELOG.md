@@ -39,6 +39,7 @@
 * Updated evaluation library to 3.0, including initial emulation of aXe and WAVE rules
 * Default ARIA setting is 1.3
 * New controls for changing and viewing evaluation information from the side panel
+* Improved highlighting of content in frames
 
 ### 4.2
 * Fixed highlighting issue for hidden elements
