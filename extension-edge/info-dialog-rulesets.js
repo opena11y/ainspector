@@ -52,7 +52,21 @@ template.innerHTML = `
           <td class="text-end">0</td>
           <td class="text-end">27</td>
         </tr>
+        <tr>
+          <th class="text-start">aXe</th>
+          <td class="text-end">43</td>
+          <td class="text-end">8</td>
+          <td class="text-end">3</td>
+          <td class="text-end">54</td>
+        </tr>
       </tbody>
+        <tr>
+          <th class="text-start">WAVE/popetech</th>
+          <td class="text-end">55</td>
+          <td class="text-end">5</td>
+          <td class="text-end">0</td>
+          <td class="text-end">60</td>
+        </tr>
     </table>
   </div>
 

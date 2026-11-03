@@ -1241,9 +1241,17 @@
     "message": "Related aXe Rules",
     "description": "Label for WAVE/popetech ruleset radio"
   },
+  "options_ruleset_axe_desc": {
+    "message": "[69 of the 100 aXe rules](https://opena11y.github.io/evaluation-library/rules-axe.html) are related to an OpenA11y Rule.",
+    "description": "Description of WAVE/popetech ruleset radio"
+  },
   "options_ruleset_wave_label": {
     "message": "Related WAVE Rules",
     "description": "Label for WAVE/popetech ruleset radio"
+  },
+  "options_ruleset_wave_desc": {
+    "message": "[75 of the 109 WAVE rules](https://opena11y.github.io/evaluation-library/rules-wave.html) are related to an OpenA11y Rule.",
+    "description": "Description of WAVE/popetech ruleset radio"
   },
   "options_ruleset_wcag_levels_legend": {
     "message": "WCAG Rule Levels",

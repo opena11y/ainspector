@@ -231,33 +231,12 @@ template.innerHTML = `
 </div>
 `;
 
-function setSelect (node, value, flag=false) {
+function setSelect (node, value) {
   const option = node.querySelector(`[value="${value}"]`);
   if (option) {
     option.selected = true;
   }
-
-  if (flag) {
-    const options = Array.from(node.querySelector(`option`));
-    node.disabled = value === '';
-    options.forEach( (o) => {
-      if (value === '') {
-        if (o.value === '') {
-          o.removeAttribute('hidden');
-        }
-        else {
-          o.setAttribute('hidden', '');
-        }
-      } else {
-        if (o.value === '') {
-          o.setAttribute('hidden', '');
-        }
-        else {
-          o.removeAttribute('hidden');
-        }
-      }
-    });
-  }
+  node.disabled = value === '';
 }
 
 class AISidePanel extends HTMLElement {
@@ -406,7 +385,7 @@ class AISidePanel extends HTMLElement {
     this.infoAriaSettingElem.textContent    = result.aria_version_label;
 
     setSelect(this.infoRulesetOptionsElem,  result.ruleset);
-    setSelect(this.infoLevelOptionsElem,    result.wcag_level, true);
+    setSelect(this.infoLevelOptionsElem,    result.wcag_level);
     setSelect(this.infoScopeOptionsElem,    result.scope_filter);
     setSelect(this.infoAriaOptionsElem,     result.aria_version);
 

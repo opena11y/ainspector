@@ -52,6 +52,10 @@ input[type="number"] {
   font-style: italic;
 }
 
+fieldset div.desc {
+  margin-left: 1.5em;
+}
+
 .desc code {
   font-family: var(--code-font-family);
   font-style: normal !important;

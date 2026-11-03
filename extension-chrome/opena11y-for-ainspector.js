@@ -52659,7 +52659,12 @@
             response.element_results = element_results;
 
             if (r.rule_id.includes('TITLE')) {
-              response.page_result.page_title = response.title;
+              response.page_results.forEach( (pr) => {
+                pr.page_title = response.title;
+              });
+              response.website_results.forEach( (wr) => {
+                wr.page_title = response.title;
+              });
               response.element_results.forEach( (er) => {
                 er.page_title = response.title;
               });
