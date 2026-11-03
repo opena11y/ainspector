@@ -46,12 +46,79 @@
                <h2>New Features in Version 5</h2>
 
                <ul>
-                  <li>New ruleset options to emulate <a href="https://opena11y.github.io/evaluation-library/rules-axe.html">aXe</a> and <a href="https://opena11y.github.io/evaluation-library/rules-wave.html">WAVE/poptech</a> rules.</li>
+                  <li>Ruleset options to run only rules related to <a href="https://opena11y.github.io/evaluation-library/rules-axe.html">aXe</a> and <a href="https://opena11y.github.io/evaluation-library/rules-wave.html">WAVE/poptech</a> rules. (<strong>Note:</strong> This is <em>not</em> a emulation but rules related OpenA11y rules and <em>not</em> all aXe rules or WAVE/popetech rules currently have a corresponding OpenA11y Rule.</li>
+                  <li>Improved element highlighting</li>
+
+                  <!-- New Rules -->
+
                   <li>New OpenA11y rules:
                      <ul>
-                        <li></li>
+                        <li>
+                        `<a href="https://opena11y.github.io/evaluation-library/rule-keyboard-10.html#rc">
+                           Keyboard Rule 10 related to tabindex on non-interactive roles.
+                           </a>
+                        </li>
+                        <li>
+                           <a href="https://opena11y.github.io/evaluation-library/rule-widget-16.html#rc">
+                             Widget Rule 16 for aria-haspopup.
+                           </a>
+                        </li>
+                        <li>
+                           <a href="https://opena11y.github.io/evaluation-library/rule-widget-17.html#rc">
+                              Widget Rule 17 for aria-braillelabel.
+                           </a>
+                        </li>
+                        <li>
+                           <a href="https://opena11y.github.io/evaluation-library/rule-widget-18.html#rc">
+                              Widget rule 18 for duplicate <code>accesskey</code> definitions.
+                           </a>
+                        </li>
+                        <li>
+                           <a href="https://opena11y.github.io/evaluation-library/rule-timing-4.html#rc">
+                              Timing Rule 4 for meta refresh.
+                           </a>
+                        </li>
                      </ul>
+                  </li>
+
+                <!-- Updated rules  -->
+
+                  <li>Updated OpenA11y rules:
+                     <ul>
+                        <li>
+                           <a href="https://opena11y.github.io/evaluation-library/rule-keyboard-4.html#rc">
+                              Keyboard Rule 4 to fail elements <code>tabindex</code> values greater than 0.
+                           </a>
+                        </li>
+                        <li>
+                           <a href="https://opena11y.github.io/evaluation-library/rule-keyboard-6.html#rc">
+                              Keyboard Rule 6 to include duplicate label[for] references to the same control.
+                           </a>
+                        </li>
+                        <li>
+                           <a href="https://opena11y.github.io/evaluation-library/rule-widget-1.html#rc">
+                              Widget Rule 1 to fix support for ignoring link and button roles.
+                           </a>
+                        </li>
+                        <li>
+                           <a href="https://opena11y.github.io/evaluation-library/rule-widget-13.html#rc">
+                              Widget Rule 13 to support <code>ariaLabelledByElements</code> property and to ignore elements using title or contents as the accessible name source.
+                           </a>
+                        </li>
+                     </ul>
+                  </li>
+
+                  <!-- Other updates -->
+
                   <li>
+                     Added support for element collections in computing accessible names and descriptions: <code>ariaLabelledByElements</code>, <code>ariaDescribedByElements</code>, and <code>ariaErrorDescriptionElements</code>.
+                  </li>
+                  <li>
+                     Added support for element collections in computing ownership and control relationships: <code>ariaControlsElements</code> and <code>ariaOwensElements</code>.
+                  </li>
+                  <li>
+                     Added rulesets for related <a href="rules-axe.html">aXe</a> and <a href="rules-wave.html">Wave/Popetech</a> rules
+                  </li>
                </ul>
 
                <h2>New Features in Version 4</h2>

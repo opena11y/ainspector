@@ -90,21 +90,32 @@ optionsRulesetTemplate.innerHTML = `
         <input type="radio"
                data-option="ruleset"
                name="ruleset"
-               value="AXE"/>
+               value="AXE"
+               aria-describedby="axe_desc/>
         <span data-i18n="options_ruleset_axe_label">
           Only Related aXe Rules
         </span>
       </label>
 
+      <div id="axe_desc"
+           class="desc"
+           data-i18n="options_ruleset_axe_desc"></div>
+
       <label>
         <input type="radio"
                data-option="ruleset"
                name="ruleset"
-               value="WAVE"/>
+               value="WAVE"
+               aria-describedby="wave_desc"/>
         <span data-i18n="options_ruleset_wave_label">
           Only Related WAVE/popetech Rules
         </span>
       </label>
+
+      <div id="wave_desc"
+           class="desc"
+           data-i18n="options_ruleset_wave_desc"></div>
+
     </fieldset>
 
     <fieldset id="level">
@@ -336,12 +347,11 @@ class OptionsRuleset extends HTMLElement {
   }
 
   setDisabled () {
-    const disable = this.firstStepRadioButton.checked;
+    const disable = this.firstStepRadioButton.checked ||
                     this.relatedAxeRadioButton.checked ||
                     this.relatedWaveRadioButton.checked;
 
     this.levelFieldset.disabled = disable;
-    this.scopeFieldset.disabled = disable;
   }
 
   updateOptions () {

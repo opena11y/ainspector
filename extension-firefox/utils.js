@@ -38,13 +38,35 @@ export function getMessage (id, debug=false) {
 **  @function setI18nLabels
 */
 
+function hasLink(label) {
+  return label.includes('[') && label.includes('](') && label.includes(')');
+}
+
+function addLink(node, label) {
+  const startLink = label.indexOf('[');
+  const startURL  = label.indexOf('](');
+  const endURL    = label.indexOf(')');
+
+  node.appendChild(document.createTextNode(label.substring(0,startLink)));
+  const aElem       = document.createElement('a');
+  aElem.textContent = label.substring(startLink+1, startURL);
+  aElem.href        = label.substring(startURL+2, endURL);
+
+  node.appendChild(aElem);
+  node.appendChild(document.createTextNode(label.substring(endURL+1)));
+}
 export function setI18nLabels (docNode, debug=false) {
     const i18nLabels =  Array.from(docNode.querySelectorAll('[data-i18n]'));
 
     i18nLabels.forEach( node => {
       const label = browserI18n.getMessage(node.getAttribute('data-i18n'));
       if (label) {
-        node.textContent = label + (debug ? ' (i18n)' : '');
+        if (hasLink(label)) {
+          addLink(node, label);
+        }
+        else {
+          node.textContent = label + (debug ? ' (i18n)' : '');
+        }
       }
       else {
         console.error(`[node][ textContent]: ${node.getAttribute('data-i18n')}`);

@@ -100,7 +100,7 @@ footer .info .group {
 
 footer .info .group > select {
   display: inline-block;
-  width: 10em;
+  width: 12em;
   grid-column: initial;
 }
 
@@ -112,7 +112,7 @@ footer .info > select {
   margin: 0;
   padding: 0;
   display: inline-block;
-  width: 10em;
+  width: 12em;
   grid-column: 2;
 }
 
