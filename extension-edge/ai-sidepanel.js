@@ -4,6 +4,10 @@
 import DebugLogging  from './debug.js';
 
 import {
+  MIN_AINSPECTOR_HEIGHT
+} from './constants.js';
+
+import {
   addContentToElement,
   getMessage,
   setI18nLabels
@@ -39,7 +43,9 @@ debug.flag = false;
 
 // Browser Constants
 
-const isMozilla = typeof browser === 'object';
+const ua = navigator.userAgent;
+
+const isMozilla = /Firefox\//i.test(ua);
 
 const myBrowser = typeof browser === 'object' ?
               browser :
@@ -861,7 +867,10 @@ class AISidePanel extends HTMLElement {
 
     const screenHeight = window.innerHeight - osAdjustHeight;
     const screenWidth  = window.innerWidth - osAdjustWidth;
-    const adjHeight = Math.max(610, screenHeight);
+
+    const minSidePanelHeight = MIN_AINSPECTOR_HEIGHT + (isMozilla ? 30 : 0);
+    const adjHeight = Math.max(minSidePanelHeight, screenHeight);
+
     const adjWidth  = screenWidth - 15;
     this.containerElem.style.height = adjHeight + 'px';
     this.containerElem.style.width  = adjWidth + 'px';

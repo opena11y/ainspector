@@ -4697,8 +4697,8 @@
       BASE_RESULT_MESSAGES: {
         ELEMENT_PASS_1:   'The %1 element is properly nested.',
         ELEMENT_FAIL_1:   'Adjust the level of the %1 element or other heading elements so that the headings are properly nested on the page.',
+        ELEMENT_FAIL_2:   'The %1 element does not have text content. Either add content, or remove it from the page if it is not needed.',
         ELEMENT_HIDDEN_1: 'The %1 element was not evaluated because it is hidden from assistive technologies.',
-        ELEMENT_HIDDEN_2: 'The %1 element has not text content either add content, or remove it from the page if it is not needed.',
         ELEMENT_MC_1:     'The %1 element is not contained a landmark, verify that it is properly nested with the associated landmarks and other headings not in landmarks.',
         PAGE_PASS_1:      'All heading elements are properly nested',
         PAGE_FAIL_1:      'There are at least %1 header nesting level problems on the page, adjust the use of heading elements on the page so they are properly nested.',
@@ -9292,7 +9292,7 @@
           FAIL_S:   'Change the @td[scope]@ element to a @th@ element',
           FAIL_P:   'Change the @td[scope]@ element to a @th@ element for each of the %N_F header cells using @td[scope]@',
           HIDDEN_S: 'One @table@ element that is hidden was not evaluated.',
-          HIDDEN_P: '%N_H @table@ elements elements that are hidden were not evaluated.',
+          HIDDEN_P: '%N_H @table@ elements that are hidden were not evaluated.',
           NOT_APPLICABLE:  'No td[scope]@ elements on the page'
         },
         BASE_RESULT_MESSAGES: {
@@ -9429,6 +9429,60 @@
           { type:  REFERENCES.EXAMPLE,
             title: 'W3C Web Accessibility Tutorials: Tables',
             url:   'https://www.w3.org/WAI/tutorials/tables/'
+          }
+        ]
+    },
+    TABLE_9: {
+        ID:                    'Table 9',
+        DEFINITION:            'Each table header cell must have content.',
+        SUMMARY:               'No empty @th@ elements',
+        TARGET_RESOURCES_DESC: '@th@ elements',
+        RULE_RESULT_MESSAGES: {
+          FAIL_S:   'Change the @th@ element to a @td@ element or if it is a header cell add appropriate header content',
+          FAIL_P:   'Change the %N_F @th@ elements to a @td@ element or if it is a header cell add appropriate header content',
+          HIDDEN_S: 'The empty @th@ element that is hidden was not evaluated.',
+          HIDDEN_P: 'The %N_H empty @th@ elements that are hidden were not evaluated.',
+          NOT_APPLICABLE:  'No empty @th@ elements on the page'
+        },
+        BASE_RESULT_MESSAGES: {
+          ELEMENT_FAIL_1:   'Change the @th@ element to a @td@ element, or it is is a header cell add appropriate header content.',
+          ELEMENT_HIDDEN_1: 'The @th@ element was not evaluated because it is hidden from assistive technologies.'
+        },
+        PURPOSES: [
+          '@th@ element is the web standards way to identify header cells in a table, and makes the data table source code easier to read and debug for accessibility problems.',
+          'Empty @th@ elements provide no information in identifying the meaning of @td@ elements and can confuse users of assistive technologies.'
+        ],
+        TECHNIQUES: [
+          'Use @th@ elements in the first row or column to identify row and column headers in a simple data tables.',
+          'Use @headers@ attribute on each @td@ element to identify header information in complex data tables.',
+          'Use @th@ element for cells used as header cells in the table.'
+        ],
+        MANUAL_CHECKS: [
+        ],
+        INFORMATIONAL_LINKS: [
+          { type:  REFERENCES.SPECIFICATION,
+            title: 'HTML Specification: The TD elements',
+            url:   'https://html.spec.whatwg.org/#the-td-element'
+          },
+          { type:  REFERENCES.SPECIFICATION,
+            title: 'HTML Specification: The TH elements',
+            url:   'https://html.spec.whatwg.org/#the-th-element'
+          },
+          { type:  REFERENCES.EXAMPLE,
+            title: 'W3C Web Accessibility Tutorials: Tables',
+            url:   'https://www.w3.org/WAI/tutorials/tables/'
+          },
+          { type:  REFERENCES.WCAG_TECHNIQUE,
+            title: 'H51: Using table markup to present tabular information',
+            url:   'https://www.w3.org/WAI/WCAG21/Techniques/html/H51'
+          },
+          { type:  REFERENCES.WCAG_TECHNIQUE,
+            title: 'H63: Using the scope attribute to associate header cells and data cells in data tables',
+            url:   'https://www.w3.org/WAI/WCAG21/Techniques/html/H63'
+          },
+          { type:  REFERENCES.EXAMPLE,
+            title: 'IBM Web checklist Checkpoint 1.3e: Tables',
+            url:   'https://www-03.ibm.com/able/guidelines/web/webtableheaders.html'
           }
         ]
     }
@@ -11509,7 +11563,51 @@
               url:   'https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-brailleroledescription'
             }
           ]
-      }
+      },
+      WIDGET_19: {
+          ID:                    'Widget 19',
+          DEFINITION:            '@aria-hidden=true@ not allowed on body elements or elements that contain interactive elements.',
+          SUMMARY:               '@aria-hidden=true@ restrictions',
+          TARGET_RESOURCES_DESC: 'Elements with @aria-hidden=true@',
+          RULE_RESULT_MESSAGES: {
+            FAIL_S:   'Remove @aria-hidden=true@ attribute from the body element or element that contains interactive content.',
+            FAIL_P:   'Remove @aria-hidden=true@ attribute from the the %N_F body elements or elements that contains interactive content.',
+            MANUAL_CHECK_S:  'Verify element with the @aria-hidden@ attribute is only being used to hide decorative, duplicate or off-screen content',
+            MANUAL_CHECK_P:  'Verify %N_MC elements with the @aria-hidden@ attribute are only being used to hide decorative, duplicate or off-screen content',
+            HIDDEN_S: 'The element with a @aria-hidden=true@ attribute is hidden and was not evaluated.',
+            HIDDEN_P: 'The %N_H elements with a @aria-hidden=true@ attribute is hidden and were not evaluated.',
+            NOT_APPLICABLE:  'No @aria-hidden=true@ attributes found on the page.'
+          },
+          BASE_RESULT_MESSAGES: {
+            ELEMENT_FAIL_1: 'Remove the @aria-hidden=true@ attribute from the @body@ element.',
+            ELEMENT_FAIL_2: 'Remove the @aria-hidden=true@ attribute from the @%1@ element that contains an interactive element.',
+            ELEMENT_FAIL_3: 'Remove the @aria-hidden=true@ attribute from the @%1@ element that contains %2 interactive elements.',
+            ELEMENT_MC_1:   'Verify @aria-hidden=true@ on the @%1@ element is hiding decorative, duplicate or off-screen content.',
+            ELEMENT_MC_2:   'Verify @aria-hidden=false@ on the @%1@ element is not suppose to hide content from accessibility APIs.',
+            ELEMENT_HIDDEN_1: 'The @%1@ element with @aria-hidden@ was not evaluated because the element is hidden.'
+          },
+          PURPOSES: [
+            'The @aria-hidden=true@ attribute is used to hide non-interactive content from accessibility APIs.',
+            'Content can be hidden if it is purely decorative, duplicated on other parts of the page, or off-screen or collapsed.',
+            'If @aria-hidden=true@ is used on the body element, none of the content on the page will be available to assistive technologies.',
+            'If @aria-hidden=true@ is used on elements that contain interactive elements, assistive technologies will have no information about those elements and it will leave users disoriented and confused.'
+          ],
+          TECHNIQUES: [
+            'Remove @aria-hidden=true" from the body element and any elements containing interactive elements.'
+          ],
+          MANUAL_CHECKS: [
+          ],
+          INFORMATIONAL_LINKS: [
+            { type: REFERENCES.SPECIFICATION,
+              title: 'Accessible Rich Internet Applications (WAI-ARIA) 1.3 Specification: aria-hidden',
+              url:   'https://www.w3.org/TR/wai-aria-1.3/#aria-hidden'
+            },
+            { type: REFERENCES.WCAG_TECHNIQUE,
+              title: 'MDN: aria-hidden attribute',
+              url:   'https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-hidden'
+            }
+          ]
+      },
   };
 
   /* messages.js for English messages */
@@ -12944,8 +13042,8 @@
      * @desc
      */
 
-    getIdentifier () {
-      return this.title ? `${this.tagName}: ${this.title}` : this.tagName;
+    getIdentifier (name) {
+      return this.tagName === 'root' ?  name : `${this.tagName}${this.title ? ':  ' + this.title : ''}`;
     }
 
   }
@@ -34360,6 +34458,9 @@
       let style = window.getComputedStyle(elementNode, null);
       let tagName = elementNode.tagName ? elementNode.tagName : '';
 
+      this.hasAriaHidden      = elementNode.hasAttribute('aria-hidden');
+      this.ariaHiddenValue    = this.hasAriaHidden ? elementNode.getAttribute('aria-hidden').toLowerCase() : '';
+
       this.isHidden           = this.normalizeHidden (elementNode, parentVisibility);
       this.isAriaHidden       = this.normalizeAriaHidden (elementNode, parentVisibility);
       this.isDisplayNone      = this.normalizeDisplay (style, parentVisibility);
@@ -35886,6 +35987,7 @@
       const accNameDoc       = parentInfo.useParentDocForName ?
                                parentInfo.parentDocument :
                                parentInfo.document;
+      this.parentDomElement = parentInfo.domElement;
       this.doc              = parentInfo.document ? parentInfo.document : window.document;
       this.ordinalPosition  = ordinalPosition;
       this.parentInfo       = parentInfo;
@@ -35902,6 +36004,8 @@
       }
 
       this.accName        = getAccessibleName(accNameDoc, elementNode);
+      this.accDescription = getAccessibleDesc(accNameDoc, elementNode, (this.accName.source !== 'title'));
+      this.errMessage     = getErrMessage(accNameDoc, elementNode);
 
       this.ariaInHTMLInfo  = getAriaInHTMLInfo(elementNode, this.accName.name);
       const defaultRole = this.ariaInHTMLInfo.defaultRole;
@@ -35953,10 +36057,11 @@
       this.tabIndex             = checkTabIndex(elementNode);
       this.isTabStop            = checkIsTabStop(elementNode);
       this.isInteractiveElement = checkForInteractiveElement(elementNode);
+      this.descendantInteractiveCount = this.isInteractiveElement ? 1 : 0;
+      if (this.isInteractiveElement) {
+        this.addInteractiveToAncestor(parentDomElement);
+      }
 
-      this.accName        = getAccessibleName(accNameDoc, elementNode);
-      this.accDescription = getAccessibleDesc(accNameDoc, elementNode, (this.accName.source !== 'title'));
-      this.errMessage     = getErrMessage(accNameDoc, elementNode);
 
       this.brailleName    = elementNode.hasAttribute('aria-braillelabel') ?
                             elementNode.getAttribute('aria-braillelabel') :
@@ -36054,6 +36159,19 @@
       }
 
     }
+
+    /**
+     * @method addInteractiveToAncestor
+     *
+     * @desc Updates interactive element count
+     */
+
+    addInteractiveToAncestor (parentDomElement) {
+      if (parentDomElement) {
+        parentDomElement.descendantInteractiveCount += 1;
+        parentDomElement.addInteractiveToAncestor(parentDomElement.parentDomElement);
+      }
+     }
 
     /**
      * @method getBodyElement
@@ -38241,29 +38359,29 @@
       this.inDialog    = false;
 
       if (info) {
-        this.controlElement  = info.controlElement;
-        this.document        = info.document;
-        this.domDocument     = info.domDocument;
-        this.parentDocument  = info.parentDocument;
+        this.controlElement      = info.controlElement;
+        this.document            = info.document;
+        this.domDocument         = info.domDocument;
+        this.parentDocument      = info.parentDocument;
         this.useParentDocForName = info.useParentDocForName;
-        this.documentIndex   = info.documentIndex;
-        this.domElement      = info.domElement;
-        this.isInert         = info.isInert;
-        this.isDisdabled     = info.isDisabled;
-        this.landmarkElement = info.landmarkElement;
-        this.listElement     = info.listElement;
-        this.mapElement      = info.mapElement;
-        this.figureElement   = info.figureElement;
-        this.mediaElement    = info.mediaElement;
-        this.tableElement    = info.tableElement;
-        this.tableRowGroup   = info.tableRowGroup;
-        this.tableCell       = info.tableCell;
+        this.documentIndex       = info.documentIndex;
+        this.domElement          = info.domElement;
+        this.isInert             = info.isInert;
+        this.isDisdabled         = info.isDisabled;
+        this.landmarkElement     = info.landmarkElement;
+        this.listElement         = info.listElement;
+        this.mapElement          = info.mapElement;
+        this.figureElement       = info.figureElement;
+        this.mediaElement        = info.mediaElement;
+        this.tableElement        = info.tableElement;
+        this.tableRowGroup       = info.tableRowGroup;
+        this.tableCell           = info.tableCell;
 
         this.positionDomElement = info.positionDomElement;
 
-        this.inLink       = info.inLink;
-        this.inParagraph  = info.inParagraph;
-        this.inDialog     = info.inDialog;
+        this.inLink                   = info.inLink;
+        this.inParagraph              = info.inParagraph;
+        this.inDialog                 = info.inDialog;
       }
     }
   }
@@ -38316,7 +38434,7 @@
       this.imageInfo     = new ImageInfo();
       this.linkInfo      = new LinkInfo();
       this.listInfo      = new ListInfo();
-      this.mediaInfo      = new MediaInfo();
+      this.mediaInfo     = new MediaInfo();
       this.structureInfo = new StructureInfo();
       this.tableInfo     = new TableInfo();
       this.timingInfo    = new TimingInfo();
@@ -41445,6 +41563,8 @@
             message_arguments,
             'page');
 
+      this.domDocument = domDocument;
+
       this.result_type  = RESULT_TYPE.PAGE;
 
       this.resultId = 'pr-' + resultIndex;
@@ -41487,7 +41607,7 @@
      */
 
     getResultIdentifier () {
-      return 'page';
+      return this.domDocument.getIdentifier('page');
     }
 
   }
@@ -41534,6 +41654,8 @@
             message_arguments,
             'website');
 
+      this.domDocument = domDocument;
+
       this.result_type  = RESULT_TYPE.WEBSITE;
 
       this.resultId = 'wr-' + resultIndex;
@@ -41576,7 +41698,7 @@
      */
 
     getResultIdentifier () {
-      return 'website';
+      return this.domDocument.getIdentifier('website');
     }
 
 
@@ -44406,7 +44528,8 @@
     rule_category       : RULE_CATEGORIES.HEADINGS,
     rule_required       : false,
     first_step          : false,
-    axe_refs            : ['heading-order'],
+    axe_refs            : ['heading-order',
+                           'empty-heading'],
     wave_refs           : ['heading_missing',
                            'heading_skipped'],
     wcag_primary_id     : '1.3.1',
@@ -44428,7 +44551,7 @@
           if (!de.parentInfo.landmarkElement) {
             if (de.visibility.isVisibleToAT) {
               if (de.accName.name.length === 0) {
-                rule_result.addElementResult(TEST_RESULT.HIDDEN, de, 'ELEMENT_HIDDEN_2', [de.tagName]);
+                rule_result.addElementResult(TEST_RESULT.FAIL, de, 'ELEMENT_FAIL_2', [de.tagName]);
               }
               else {
                 rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, de, 'ELEMENT_MC_1', [de.tagName]);
@@ -44559,7 +44682,7 @@
           visibleHeadings.push(de);
         }
         else {
-          rule_result.addElementResult(TEST_RESULT.HIDDEN, de, 'ELEMENT_HIDDEN_2', [de.tagName]);
+          rule_result.addElementResult(TEST_RESULT.FAIL, de, 'ELEMENT_FAIL_2', [de.tagName]);
         }
       }
       else {
@@ -47808,9 +47931,9 @@
                 }
               }
               else {
+                const headerCount = cell.headers.length;
+                const headerStr = headerCount ? cell.headers.join (' | ') : '';
                 if (de.accName.name) {
-                  const headerCount = cell.headers.length;
-                  const headerStr = cell.headers.join (' | ');
                   if (headerCount) {
                     if (cell.headerSource === HEADER_SOURCE.ROW_COLUMN) {
                       if (headerCount === 1) {
@@ -47834,7 +47957,12 @@
                   }
                 }
                 else {
-                  rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, de, 'ELEMENT_MC_1', [de.elemName]);
+                  if (headerCount) {
+                    rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, de, 'ELEMENT_MC_2', [de.elemName]);
+                  }
+                  else {
+                    rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, de, 'ELEMENT_MC_1', [de.elemName]);
+                  }
                 }
               }
             }
@@ -48004,7 +48132,8 @@
     rule_required       : true,
     first_step          : true,
     axe_refs            : [],
-    wave_refs           : ['table_layout'],
+    wave_refs           : ['table_layout',
+                           'table_data'],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6'],
     target_resources    : ['table'],
@@ -48073,8 +48202,10 @@
     rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
     rule_required       : false,
     first_step          : false,
-    axe_refs            : [],
-    wave_refs           : [],
+    axe_refs            : ['td-has-header'],
+    wave_refs           : ['th',
+                           'th_col',
+                           'th_row'],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6'],
     target_resources    : ['td[scope]'],
@@ -48175,7 +48306,7 @@
     rule_required       : true,
     first_step          : false,
     axe_refs            : [],
-    wave_refs           : [],
+    wave_refs           : ['table_caption'],
     wcag_primary_id     : '1.3.1',
     wcag_related_ids    : ['2.4.6'],
     target_resources    : ['caption', 'table[aria-label]', 'table[aria-labelledby]', 'table[aria-describedby]', 'table[title]'],
@@ -48204,6 +48335,41 @@
             rule_result.addElementResult(TEST_RESULT.HIDDEN, de, 'ELEMENT_HIDDEN_1', [de.elemName]);
           }
         }
+      });
+    } // end validation function
+  },
+
+  /**
+   * @object TABLE_9
+   *
+   * @desc    Tests if table headers use TH elements have content
+   */
+
+  { rule_id             : 'TABLE_9',
+    last_updated        : '2026-11-06',
+    rule_scope          : RULE_SCOPE.ELEMENT,
+    rule_category       : RULE_CATEGORIES.TABLES_LAYOUT,
+    rule_required       : true,
+    first_step          : false,
+    axe_refs            : ['empty-table-header'],
+    wave_refs           : ['th_empty'],
+    wcag_primary_id     : '1.3.1',
+    wcag_related_ids    : ['2.4.6'],
+    target_resources    : ['th'],
+    validate          : function (dom_cache, rule_result) {
+
+      dom_cache.tableInfo.allTableElements.forEach(te => {
+        te.cells.forEach( cell => {
+          const de = cell.domElement;
+          if (de.tagName === 'th' && !de.hasContent) {
+            if (de.visibility.isVisibleToAT) {
+              rule_result.addElementResult(TEST_RESULT.FAIL, de, 'ELEMENT_FAIL_1', []);
+            }
+            else {
+              rule_result.addElementResult(TEST_RESULT.HIDDEN, de, 'ELEMENT_HIDDEN_1', []);
+            }
+          }
+        });
       });
     } // end validation function
   }
@@ -49273,7 +49439,8 @@
     first_step          : true,
     axe_refs            : ['aria-deprecated-role',
                            'aria-roles',
-                           'aria-allowed-role'],
+                           'aria-allowed-role',
+                           'aria-text'],
     wave_refs           : ['aria'],
     wcag_primary_id     : '4.1.2',
     wcag_related_ids    : ['1.3.1', '3.3.2'],
@@ -50286,7 +50453,60 @@
       });
 
     } // end validation function
-  }
+  },
+  /**
+   * @object WIDGET_19
+   *
+   * @desc aria-hidden must not be on body or elements with interactive content
+   */
+
+  { rule_id             : 'WIDGET_19',
+    last_updated        : '2026-11-06',
+    rule_scope          : RULE_SCOPE.ELEMENT,
+    rule_category       : RULE_CATEGORIES.WIDGETS_SCRIPTS,
+    rule_required       : true,
+    first_step          : false,
+    axe_refs            : ['aria-hidden-body',
+                           'aria-hidden-focus'],
+    wave_refs           : ['aria_hidden'],
+    wcag_primary_id     : '4.1.2',
+    wcag_related_ids    : ['1.3.1', '3.3.2'],
+    target_resources    : ['[aria-hidden]'],
+    validate            : function (dom_cache, rule_result) {
+
+      debug$6.log(`[WIDGET_19]`);
+
+      dom_cache.allDomElements.forEach( de => {
+        debug$6.log(`[WIDGET_19][${de.ordinalPosition}]: ${de.tagName}  ${de.descendantInteractiveCount}`);
+        if (de.visibility.hasAriaHidden) {
+          debug$6.log(`[WIDGET_19][${de.ordinalPosition}]: ${de.tagName} aria-hidden=${de.node.getAttribute('aria-hidden')}`);
+
+          if (de.visibility.ariaHiddenValue === 'true') {
+            if (de.tagName === 'body') {
+              rule_result.addElementResult(TEST_RESULT.FAIL, de, 'ELEMENT_FAIL_1', []);
+            }
+            else {
+              if (de.descendantInteractiveCount) {
+                if (de.descendantInteractiveCount === 1) {
+                  rule_result.addElementResult(TEST_RESULT.FAIL, de, 'ELEMENT_FAIL_2', [de.tagName]);
+                }
+                else {
+                  rule_result.addElementResult(TEST_RESULT.FAIL, de, 'ELEMENT_FAIL_3', [de.tagName, de.descendantInteractiveCount]);
+                }
+              }
+              else {
+                rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, de, 'ELEMENT_MC_2', [de.tagName]);
+              }
+            }
+          }
+          else {
+            rule_result.addElementResult(TEST_RESULT.MANUAL_CHECK, de, 'ELEMENT_MC_1', [de.tagName]);
+          }
+        }
+      });
+     } // end validation function
+  },
+
 
   ];
 

@@ -65,6 +65,9 @@
   --table-header-border-light: --silver;
   --table-header-border-dark: --silverDark;
 
+  --footer-eval-light: hsl(216, 59.57%, 92%);
+  --footer-eval-dark: hsl(216, 59.57%, 12%);
+
 /* Setting Content Variables */
 
 

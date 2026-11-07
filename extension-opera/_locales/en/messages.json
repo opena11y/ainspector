@@ -1239,7 +1239,7 @@
   },
   "options_ruleset_axe_label": {
     "message": "Related aXe Rules",
-    "description": "Label for WAVE/popetech ruleset radio"
+    "description": "Label for aXe ruleset radio"
   },
   "options_ruleset_axe_desc": {
     "message": "[69 of the 100 aXe rules](https://opena11y.github.io/evaluation-library/rules-axe.html) are related to an OpenA11y Rule.",

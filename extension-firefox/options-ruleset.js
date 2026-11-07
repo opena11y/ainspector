@@ -93,7 +93,7 @@ optionsRulesetTemplate.innerHTML = `
                value="AXE"
                aria-describedby="axe_desc/>
         <span data-i18n="options_ruleset_axe_label">
-          Only Related aXe Rules
+          Related aXe Rules
         </span>
       </label>
 
@@ -108,7 +108,7 @@ optionsRulesetTemplate.innerHTML = `
                value="WAVE"
                aria-describedby="wave_desc"/>
         <span data-i18n="options_ruleset_wave_label">
-          Only Related WAVE/popetech Rules
+          Related WAVE/popetech Rules
         </span>
       </label>
 

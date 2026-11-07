@@ -1,0 +1,11 @@
+# Handle text files automatically and normalize them to Unix (LF) line endings
+* text=auto eol=lf
+
+# Explicitly ensure bash/sh scripts always use LF
+*.sh text eol=lf
+
+# Denote files that are binary and should not be modified
+*.png binary
+*.jpg binary
+*.gif binary
+

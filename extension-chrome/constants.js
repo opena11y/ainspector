@@ -6,6 +6,8 @@
 *  sidebar.
 */
 
+export const MIN_AINSPECTOR_HEIGHT = 640;  // number in pixels
+
 export const MAX_PREFIX_LENGTH = 32;
 
 export const GUIDELINES =  {

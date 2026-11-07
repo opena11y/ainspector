@@ -40,10 +40,10 @@ header .buttons button {
 
 footer {
   margin: 0;
-  padding: 0;
+  padding: 0.5em;
   padding-top: 0.5em;
   position: absolute;
-  bottom: 15px;
+  bottom: 0;
   width: 100%;
 }
 
@@ -56,7 +56,7 @@ footer .info-eval {
   padding-top: 0.25em;
   padding-bottom: 0.25em;
   width: 100%;
-  background-color: light-dark(var(--table-background-stripe-light), var(--table-background-stripe-dark));
+  background-color: light-dark(var(--footer-eval-light), var(--footer-eval-dark));
 }
 
 footer .info {
